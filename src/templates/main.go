@@ -3,6 +3,7 @@ package templates
 import (
 	"bytes"
 	"fmt"
+	"github.com/iancoleman/strcase"
 	"github.com/pepelazz/projectGenerator/src/types"
 	"github.com/pepelazz/projectGenerator/src/utils"
 	"io/ioutil"
@@ -15,20 +16,30 @@ import (
 var funcMap = template.FuncMap{
 	"ToUpper":        strings.ToUpper,
 	"UpperCaseFirst": utils.UpperCaseFirst,
+	"ToLowerCamel": strcase.ToLowerCamel,
 	"PrintVueFldTemplate": PrintVueFldTemplate,
 }
 
 func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 	// парсинг общих шаблонов
 	res := map[string]*template.Template{}
-	tmpls, err := template.New("").Funcs(funcMap).Delims("[[", "]]").ParseFiles("../../projectGenerator/src/templates/webClient/doc/index.vue", "../../projectGenerator/src/templates/webClient/doc/item.vue")
-	utils.CheckErr(err, "ParseFiles")
-	for _, t := range tmpls.Templates() {
-		res["webClient_"+t.Name()] = t
+	readFiles := func(prefix, delimLeft, delimRight string, path ...string) {
+		tmpls, err := template.New("").Funcs(funcMap).Delims(delimLeft, delimRight).ParseFiles(path...)
+		utils.CheckErr(err, "ParseFiles")
+		for _, t := range tmpls.Templates() {
+			res[prefix + t.Name()] = t
+		}
 	}
 
+	// webClient
+	path := "../../projectGenerator/src/templates/webClient/doc/"
+	readFiles("webClient_", "[[", "]]", path + "index.vue", path + "item.vue")
+	// sql
+	path = "../../projectGenerator/src/templates/sql/"
+	readFiles("sql_", "{{", "}}", path + "main.toml")
+
 	// парсинг шаблонов для конкретного документа
-	for _, d := range p.Docs {
+	for i, d := range p.Docs {
 		for tName, dt := range d.Templates {
 			t, err := template.New(tName).Funcs(funcMap).Delims("[[", "]]").ParseFiles(dt.Source)
 			utils.CheckErr(err, fmt.Sprintf("doc: %s tmpl: %s parse template error: %s", d.Name, tName, err))
@@ -37,10 +48,10 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 		}
 		// дописываем стандартные шаблоны
 		if d.IsBaseTemapltes {
-			for _, tName := range []string{"webClient_item.vue", "webClient_index.vue"} {
+			for _, tName := range []string{"webClient_item.vue", "webClient_index.vue", "sql_main.toml"} {
 				// если шаблона с таким именем нет, то добавляем стандартный
 				if _, ok := d.Templates[tName]; !ok {
-					distPath, distFilename := utils.ParseTemplateFilename(d.Name, tName, p.DistPath)
+					distPath, distFilename := utils.ParseDocTemplateFilename(d.Name, tName, p.DistPath, i)
 					d.Templates[tName]= &types.DocTemplate{Tmpl: res[tName], DistPath: distPath, DistFilename: distFilename}
 				}
 			}

@@ -1,0 +1,34 @@
+{{$PgName := .Name | ToLowerCamel -}}
+{{$doc := . -}}
+docType = "{{.Name | UpperCaseFirst}}"
+tableComment = "{{.NameRu}}"
+
+tableName ="{{$PgName}}"
+
+fields = [
+   {{range .Flds -}}
+    {{.PrintPgModel}}
+   {{end}}
+   {{- if $doc.Sql.IsSearchText}}{name="search_text",                 type="text",                comment="колонка для поиска" },{{- end}}
+]
+
+fkConstraints = [
+{{range .Flds}}
+{{- if .Sql.Ref}}  {fld="{{.Name}}", ref="{{.Sql.Ref}}", fk="id"},{{printf "\n"}}{{ end -}}
+{{- if .Sql.IsUniq}}  {name="{{$PgName}}_already_exist", ext="UNIQUE ({{.Name}})"},{{printf "\n"}}{{ end -}}{{- end -}}
+{{- if $doc.Sql.IsUniqLink}}  {{$doc.PrintSqlUniqLinkConstraint}}{{printf "\n"}}{{- end -}}
+]
+
+triggers = [
+    {name="{{$PgName}}_created", when="before insert or update", ref="for each row", funcName="builtin_fld_update"}
+{{- if $doc.Sql.IsBeforeTrigger}},{{printf "\n"}}    {name="{{$PgName}}_trigger_before", when="before insert or update", ref="for each row", funcName="{{$PgName}}_trigger_before"}{{- end}}
+{{- if $doc.Sql.IsAfterTrigger}},{{printf "\n"}}    {name="{{$PgName}}_trigger_after", when="after insert or update", ref="for each row", funcName="{{$PgName}}_trigger_after"}{{- end}}
+]
+
+methods = [
+    "{{$PgName}}_update",
+    "{{$PgName}}_list",
+    "{{$PgName}}_get_by_id"
+    {{- if $doc.Sql.IsBeforeTrigger}},{{printf "\n"}}    "{{$PgName}}_trigger_before"{{- end}}
+    {{- if $doc.Sql.IsAfterTrigger}},{{printf "\n"}}    "{{$PgName}}_trigger_after"{{- end}}
+]

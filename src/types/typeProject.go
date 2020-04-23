@@ -30,7 +30,7 @@ func (p *ProjectType) FillDocTemplatesFields()  {
 			if len(t.Source) == 0 {
 				t.Source = fmt.Sprintf("%s/tmpl/%s", d.Name, tName)
 			}
-			distPath, distFilename := utils.ParseTemplateFilename(d.Name, tName, p.DistPath)
+			distPath, distFilename := utils.ParseDocTemplateFilename(d.Name, tName, p.DistPath, i)
 			t.DistFilename = distFilename
 			t.DistPath = distPath
 		}

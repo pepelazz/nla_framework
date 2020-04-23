@@ -2,7 +2,6 @@ package projectGenerator
 
 import (
 	"fmt"
-	"github.com/pepelazz/projectGenerator/src/exampleProject"
 	"github.com/pepelazz/projectGenerator/src/templates"
 	"github.com/pepelazz/projectGenerator/src/types"
 	"github.com/pepelazz/projectGenerator/src/utils"
@@ -14,24 +13,6 @@ var (
 	tmplMap        map[string]*template.Template
 )
 
-func main() {
-	// читаем данные для проекта
-	readData(exampleProject.GetProject())
-	// читаем темплейты
-	tmplMap = templates.ParseTemplates(project)
-
-	//if tmpls, ok := tmplMap["webClient"]; ok {
-	//	t := tmpls.Lookup("docItem.vue")
-	//	if t == nil {
-	//		log.Fatalf("no found template: docItem.vue")
-	//	}
-	//	err := templates.ExecuteToFile(t, project.GetDocByName("city"), fmt.Sprintf("%s/webClient/src/app/components/city", globalDistPath), "item.vue")
-	//	utils.CheckErr(err, "ExecuteToFile")
-	//	err = templates.ExecuteToFile(t, project.GetDocByName("client"), fmt.Sprintf("%s/webClient/src/app/components/city", globalDistPath), "item.vue")
-	//	utils.CheckErr(err, "ExecuteToFile")
-	//}
-
-}
 
 func readData(p types.ProjectType)  {
 	project = p
