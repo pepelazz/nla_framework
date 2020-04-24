@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"github.com/serenize/snaker"
 	"log"
 	"strings"
 )
@@ -48,9 +49,20 @@ func ParseDocTemplateFilename(docName, filename, globalDistPath string, docIndex
 			path = fmt.Sprintf("%s/sql/model/%s_%s", globalDistPath, docIndexStr, UpperCaseFirst(docName))
 		} else {
 			path = fmt.Sprintf("%s/sql/template/function/_%s", globalDistPath, UpperCaseFirst(docName))
+			// в данном случае имя шаблона извлекаем по другому, потому что в имени функии используется нижние подчеркивания
+			distFilename = snaker.CamelToSnake(docName) + strings.TrimPrefix(filename, "sql_function")
 		}
 		distPath = path
 	}
 
 	return
+}
+
+func CheckContainsSliceStr(str string, arr ...string) bool {
+	for _, a := range arr {
+		if a == str {
+			return true
+		}
+	}
+	return false
 }

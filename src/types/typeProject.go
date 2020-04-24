@@ -25,6 +25,9 @@ func (p *ProjectType) GetDocByName(docName string) *DocType  {
 // заполняем поля темплейтов - из короткой формы записи в полную
 func (p *ProjectType) FillDocTemplatesFields()  {
 	for i, d := range p.Docs {
+		if d.Templates == nil {
+			d.Templates = map[string]*DocTemplate{}
+		}
 		for tName, t := range d.Templates {
 			// прописываем полный путь к файлу шаблона
 			if len(t.Source) == 0 {

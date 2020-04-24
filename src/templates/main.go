@@ -7,6 +7,7 @@ import (
 	"github.com/pepelazz/projectGenerator/src/types"
 	"github.com/pepelazz/projectGenerator/src/utils"
 	"io/ioutil"
+	"log"
 	"os"
 	"strings"
 	"text/template"
@@ -37,6 +38,8 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 	// sql
 	path = "../../projectGenerator/src/templates/sql/"
 	readFiles("sql_", "{{", "}}", path + "main.toml")
+	path = "../../projectGenerator/src/templates/sql/function/"
+	readFiles("sql_function_", "{{", "}}", path + "get_by_id.sql", path + "list.sql", path + "update.sql", path + "trigger_before.sql")
 
 	// парсинг шаблонов для конкретного документа
 	for i, d := range p.Docs {
@@ -47,13 +50,21 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 			dt.Tmpl = t
 		}
 		// дописываем стандартные шаблоны
-		if d.IsBaseTemapltes {
-			for _, tName := range []string{"webClient_item.vue", "webClient_index.vue", "sql_main.toml"} {
-				// если шаблона с таким именем нет, то добавляем стандартный
-				if _, ok := d.Templates[tName]; !ok {
-					distPath, distFilename := utils.ParseDocTemplateFilename(d.Name, tName, p.DistPath, i)
-					d.Templates[tName]= &types.DocTemplate{Tmpl: res[tName], DistPath: distPath, DistFilename: distFilename}
+		baseTmplNames := []string{}
+		if d.IsBaseTemapltes.Vue {
+			baseTmplNames = append(baseTmplNames, "webClient_item.vue", "webClient_index.vue")
+		}
+		if d.IsBaseTemapltes.Sql {
+			baseTmplNames = append(baseTmplNames, "sql_main.toml", "sql_function_get_by_id.sql", "sql_function_list.sql", "sql_function_update.sql", "sql_function_trigger_before.sql")
+		}
+		for _, tName := range baseTmplNames{
+			// если шаблона с таким именем нет, то добавляем стандартный
+			if _, ok := d.Templates[tName]; !ok {
+				if tName == "sql_function_trigger_before.sql" && !d.Sql.IsBeforeTrigger {
+					continue
 				}
+				distPath, distFilename := utils.ParseDocTemplateFilename(d.Name, tName, p.DistPath, i)
+				d.Templates[tName]= &types.DocTemplate{Tmpl: res[tName], DistPath: distPath, DistFilename: distFilename}
 			}
 		}
 	}
@@ -62,6 +73,9 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 }
 
 func ExecuteToFile(t *template.Template, d interface{}, path, filename string) error {
+	if t == nil {
+		log.Fatalf("template is nil for path '%s/%s'\n", path, filename)
+	}
 	err := os.MkdirAll(path, os.ModePerm)
 	if err != nil {
 		return err

@@ -15,7 +15,7 @@ type (
 		Vue DocVue
 		Sql DocSql
 		Templates map[string]*DocTemplate
-		IsBaseTemapltes bool // флаг что генерируем стандартные шаблоны для документа
+		IsBaseTemapltes DocIsBaseTemapltes // флаг что генерируем стандартные шаблоны для документа
 	}
 
 	DocVue struct {
@@ -44,7 +44,16 @@ type (
 		IsAfterTrigger	bool // флаг что добавляем after триггер
 		IsSearchText	bool // флаг что добавляем поле search_text
 	}
+
+	DocIsBaseTemapltes struct {
+		Vue bool
+		Sql bool
+	}
 )
+
+func (d DocType) PgName() string  {
+	return snaker.CamelToSnake(d.Name)
+}
 
 func (d DocVue) PrintImport(tmplName string) string  {
 	res := []string{}
@@ -70,18 +79,4 @@ func (d DocVue) PrintMixins(tmplName string) string  {
 	}
 
 	return strings.Join(res, ", ")
-}
-
-// формирование строчки для fkConstraints в случае если таблица является связью двух таблиц и эта связь уникальна
-func (d DocType) PrintSqlUniqLinkConstraint() string {
-	flds := []FldType{}
-	for _, fld := range d.Flds {
-		if len(fld.Sql.Ref) > 0 {
-			flds = append(flds, fld)
-		}
-	}
-	if len(flds) > 1 {
-		return fmt.Sprintf(`{name="%s_already_exist", ext="UNIQUE (%s, %s)"},`, snaker.CamelToSnake(d.Name), flds[0].Name, flds[1].Name)
-	}
-	return ""
 }

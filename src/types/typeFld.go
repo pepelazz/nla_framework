@@ -1,6 +1,8 @@
 package types
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type (
 	FldType struct {
@@ -21,8 +23,10 @@ type (
 	}
 
 	FldSql struct {
-		Ref string
-		IsUniq bool
+		IsSearch bool
+		IsRequired bool
+		Ref      string
+		IsUniq   bool
 	}
 )
 
@@ -35,7 +39,29 @@ func (fld *FldType) PrintPgModel() string {
 			typeStr = `type="text"`
 		}
 	}
-	res := fmt.Sprintf("{name=\"%s\",\t\t%s,\t comment=\"%s\"},", fld.Name, typeStr, fld.NameRu)
+	res := fmt.Sprintf("\t{name=\"%s\",\t\t\t\t\t%s,\t comment=\"%s\"}", fld.Name, typeStr, fld.NameRu)
 
 	return res
+}
+
+func (fld *FldType) PgInsertType() string {
+	switch fld.Type {
+	case "double":
+		return "double precision"
+	case "string":
+		return "text"
+	default:
+		return fld.Type
+	}
+}
+
+func (fld *FldType) PgUpdateType() string {
+	switch fld.Type {
+	case "int", "double":
+		return "number"
+	case "string":
+		return "text"
+	default:
+		return fld.Type
+	}
 }
