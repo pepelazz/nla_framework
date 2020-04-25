@@ -1,0 +1,25 @@
+{{$projectNameSnake := .Config.Postgres.DbName -}}
+version: '2'
+services:
+  app:
+    build: .
+    networks:
+      - {{$projectNameSnake}}_net
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:12
+    volumes:
+      - postgres_data_{{.Name}}_12:/var/lib/postgresql/data
+    ports:
+      - "5438:5432"
+    environment:
+      POSTGRES_PASSWORD: {{.Config.Postgres.Password}}
+
+volumes:
+  postgres_data_{{.Name}}_12:
+
+networks:
+  {{$projectNameSnake}}_net:
+    driver: bridge

@@ -1,0 +1,10 @@
+.idea/
+*.iml
+
+image/*
+postgres/volume
+postgres/logs
+src/webClient/node_modules
+src/app
+src/boltDb
+

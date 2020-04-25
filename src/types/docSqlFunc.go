@@ -278,3 +278,17 @@ func (d DocType) RequiredFldsString() string {
 	}
 	return strings.Join(arr, ", ")
 }
+
+// прописываем в модели документа список стандартных sql методов с указанными ролями
+func (ds *DocSql) FillBaseMethods(docName string, roles ...string)  {
+	if ds.Methods == nil {
+		ds.Methods = map[string]*DocSqlMethod{}
+	}
+	if roles == nil {
+		roles = []string{}
+	}
+	for _, name := range []string{"list", "update", "het_by_id"} {
+		name := docName+"_"+name
+		ds.Methods[name] = &DocSqlMethod{Name:name, Roles:roles}
+	}
+}

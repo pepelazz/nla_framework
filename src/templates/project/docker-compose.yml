@@ -1,0 +1,38 @@
+{{$projectNameSnake := .Config.Postgres.DbName -}}
+{{$serverPath := .Config.WebServer.Path -}}
+{{$webPort := .Config.WebServer.Port -}}
+version: '2'
+services:
+  bot:
+    build: .
+    cpu_shares: 73
+    networks:
+      - {{$projectNameSnake}}_net
+    volumes:
+      - {{$serverPath}}/src/config.toml:/config.toml
+      - {{$serverPath}}/image:/image
+    ports:
+      - "{{$webPort}}:{{$webPort}}"
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://85.143.214.161:12201"
+        tag: docker.app.{{$projectNameSnake}}
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:12
+    networks:
+      - {{$projectNameSnake}}_net
+    volumes:
+      - {{$serverPath}}/postgres/volume:/var/lib/postgresql/data
+      - {{$serverPath}}/postgres/logs:/logs
+    ports:
+      - "{{.Config.Postgres.Port}}:5432"
+    environment:
+      POSTGRES_PASSWORD: {{.Config.Postgres.Password}}
+
+networks:
+  {{$projectNameSnake}}_net:
+    driver: bridge

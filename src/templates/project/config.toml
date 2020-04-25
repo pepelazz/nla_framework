@@ -1,0 +1,28 @@
+
+[postgres]
+user = "postgres"
+password = "{{.Config.Postgres.Password}}"
+dbName = "{{.Config.Postgres.DbName}}"
+host = "postgres"
+port = 5432
+modelDir = ["./sql/model"]
+viewDir = ["./sql/view"]
+templateDir = ["./sql/template"]
+
+[webServer]
+enable = true
+port = {{.Config.WebServer.Port}}
+url = "{{.Config.WebServer.Url}}"
+
+[graylog]
+host = "85.143.214.161"
+port = 12201
+
+[email]
+sender = "info@nl-a.ru"
+password = "mark12345"
+host = "smtp.mail.ru"
+port = 465
+#port = 25
+senderName = "{{.Config.Email.SenderName}}"
+senderLogo = ""

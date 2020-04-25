@@ -16,6 +16,7 @@ import (
 
 var funcMap = template.FuncMap{
 	"ToUpper":        strings.ToUpper,
+	"ToLower":        strings.ToLower,
 	"UpperCaseFirst": utils.UpperCaseFirst,
 	"ToLowerCamel": strcase.ToLowerCamel,
 	"PrintVueFldTemplate": PrintVueFldTemplate,
@@ -31,9 +32,12 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 			res[prefix + t.Name()] = t
 		}
 	}
+	// project
+	path := "../../projectGenerator/src/templates/project/"
+	readFiles("project_", "{{", "}}", path+"config.toml", path+"docker-compose.yml", path+"docker-compose.dev.yml", path+"restoreDump.sh", path+"deploy.ps1")
 
 	// webClient
-	path := "../../projectGenerator/src/templates/webClient/doc/"
+	path = "../../projectGenerator/src/templates/webClient/doc/"
 	readFiles("webClient_", "[[", "]]", path + "index.vue", path + "item.vue")
 	// sql
 	path = "../../projectGenerator/src/templates/sql/"

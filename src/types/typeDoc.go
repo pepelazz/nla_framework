@@ -39,6 +39,7 @@ type (
 	}
 
 	DocSql struct {
+		Methods map[string]*DocSqlMethod
 		IsUniqLink 		bool // флаг, что таблица является связью двух таблиц и связь между ними уникальная
 		IsBeforeTrigger	bool // флаг что добавляем before триггер
 		IsAfterTrigger	bool // флаг что добавляем after триггер
@@ -48,6 +49,11 @@ type (
 	DocIsBaseTemapltes struct {
 		Vue bool
 		Sql bool
+	}
+
+	DocSqlMethod struct {
+		Name string
+		Roles []string
 	}
 )
 

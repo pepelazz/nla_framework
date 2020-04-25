@@ -7,13 +7,35 @@ import (
 
 type (
 	ProjectType struct {
-		Name string
-		Docs []DocType
+		Name     string
+		Docs     []DocType
 		DistPath string
+		Config   ProjectConfig
+	}
+	ProjectConfig struct {
+		LocalProjectPath string
+		Postgres  PostrgesConfig
+		WebServer WebServerConfig
+		Email     EmailConfig
+	}
+	PostrgesConfig struct {
+		DbName   string
+		Port     int64
+		Password string
+	}
+	WebServerConfig struct {
+		Port     int64
+		Url   	string
+		Path   	string
+		Ip   	string
+		Username   	string // root или ...
+	}
+	EmailConfig struct {
+		SenderName     string
 	}
 )
 
-func (p *ProjectType) GetDocByName(docName string) *DocType  {
+func (p *ProjectType) GetDocByName(docName string) *DocType {
 	for _, d := range p.Docs {
 		if d.Name == docName {
 			return &d
@@ -23,7 +45,7 @@ func (p *ProjectType) GetDocByName(docName string) *DocType  {
 }
 
 // заполняем поля темплейтов - из короткой формы записи в полную
-func (p *ProjectType) FillDocTemplatesFields()  {
+func (p *ProjectType) FillDocTemplatesFields() {
 	for i, d := range p.Docs {
 		if d.Templates == nil {
 			d.Templates = map[string]*DocTemplate{}
@@ -42,7 +64,7 @@ func (p *ProjectType) FillDocTemplatesFields()  {
 }
 
 // генерим сетку для Vue
-func (p *ProjectType) GenerateGrid()  {
+func (p *ProjectType) GenerateGrid() {
 	for i, d := range p.Docs {
 		d.Vue.Grid = makeGrid(d)
 		p.Docs[i] = d
