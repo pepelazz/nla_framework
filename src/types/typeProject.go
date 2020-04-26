@@ -11,6 +11,7 @@ type (
 		Docs     []DocType
 		DistPath string
 		Config   ProjectConfig
+		Vue ProjectVue
 	}
 	ProjectConfig struct {
 		LocalProjectPath string
@@ -32,6 +33,9 @@ type (
 	}
 	EmailConfig struct {
 		SenderName     string
+	}
+	ProjectVue struct {
+		Routes [][]string
 	}
 )
 

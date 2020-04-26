@@ -1,0 +1,43 @@
+docType = "User"
+tableComment = "Таблица пользователей"
+
+tableName ="\"user\""
+
+fields = [
+    {name="id",                 type="serial" },
+    {name="last_name",          type="char", size=100, comment="Фамилия"},
+    {name="first_name",         type="char", size=100, comment="Имя" },
+    {name="fullname",           type="char", size=200, comment="Полное имя"},
+    {name="role",               type="text[]",         comment="Роли в системе [admin, sewing_foreman, tailor, seamstress, sewing_otk]"},
+    {name="avatar",             type="char", size=500, comment="Ссылка на аватарку"},
+    {name="password",           type="char", size=200, comment="Пароль в случае авторизации через email"},
+    {name="phone",              type="char", size=15,  comment="Номер телефона"},
+    {name="email",              type="char", size=100,  comment="Email"},
+    {name="options",            type="jsonb",          comment="Разные дополнительные параметры"},
+    {name="created_at",         type="timestamp",   ext="with time zone"},
+    {name="updated_at",         type="timestamp",   ext="with time zone"},
+    {name="deleted",            type="bool",        ext="not null default false"},
+]
+
+triggers = [
+    {name="user_created", when="before insert or update", ref="for each row", funcName="builtin_fld_update"},
+    {name="user_fullname_update", when="before insert or update", ref="for each row", funcName="trigger_user_fullname_update"},
+    {name="user_event", when="after insert or update", ref="for each row", funcName="notify_event"},
+]
+
+methods = [
+    "user_set_auth_token",
+    "user_get_by_id",
+    "user_get_by_id_for_ui",
+    "user_list",
+    "user_get_by_auth_token",
+    "user_get_by_auth_provider_id",
+    "current_user_update",
+    "current_user_get_auth_providers",
+    "user_check_is_admin",
+    "user_update",
+    "user_get_admin_emails", # для рассылки админам
+    "user_get_by_email_with_password", # для рассылки админам
+#    "user_create",
+#    "user_change_role",
+]

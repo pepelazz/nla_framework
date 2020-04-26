@@ -10,7 +10,7 @@ import (
 
 // main.toml печать списка полей
 func (d DocType) PrintSqlModelFlds() (res string) {
-	arr := []string{}
+	arr := []string{"\t{name=\"id\",\t\t\ttype=\"serial\"}"}
 	for _, fld := range d.Flds {
 		arr = append(arr, fld.PrintPgModel())
 	}
@@ -99,6 +99,39 @@ func (d DocType) PrintSqlModelMethods() (res string) {
 	}
 	return
 }
+
+// main.toml печать methods
+func (d DocType) PrintSqlModelAlterScripts() (res string) {
+	// подбираем postgres тип для alter script
+	getType := func(fld FldType) string {
+		if fld.Type == "string" {
+			if fld.Sql.Size>0 {
+				return fmt.Sprintf("CHARACTER VARYING(%v)", fld.Sql.Size)
+			} else {
+				return "text"
+			}
+		}
+		if fld.Type == "double" {
+			return "double precision"
+		}
+		return fld.Type
+	}
+	arr := []string{}
+
+	for _, fld := range d.Flds {
+		if utils.CheckContainsSliceStr(fld.Name, "id", "created_at", "updated_at", "deleted") {
+			continue
+		}
+		arr = append(arr, fmt.Sprintf("\t\"alter table %s add column if not exists %s %s;\"", d.PgName(), fld.Name, getType(fld)))
+
+	}
+
+	if len(arr) > 0 {
+		res = fmt.Sprintf("alterScripts = [\n%s\n]", strings.Join(arr, ",\n"))
+	}
+	return
+}
+
 
 // get_by_id.sql функиця по добавлению join
 func (d DocType) PrintSqlFuncGetById() (res string) {
@@ -287,7 +320,7 @@ func (ds *DocSql) FillBaseMethods(docName string, roles ...string)  {
 	if roles == nil {
 		roles = []string{}
 	}
-	for _, name := range []string{"list", "update", "het_by_id"} {
+	for _, name := range []string{"list", "update", "get_by_id"} {
 		name := docName+"_"+name
 		ds.Methods[name] = &DocSqlMethod{Name:name, Roles:roles}
 	}

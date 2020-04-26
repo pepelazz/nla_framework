@@ -1,0 +1,31 @@
+docType = "UserTempEmailAuth"
+tableComment = "Таблица хранения временной информации о пользователях, которые авторизуются через email и создания пароля"
+
+tableName ="user_temp_email_auth"
+
+fields = [
+    {name="id",                       type="serial"},
+    {name="email",                    type="text",                          comment="Email он же username"},
+    {name="last_name",                type="char", size=100,                comment="Фамилия"},
+    {name="first_name",               type="char", size=100,                comment="Имя" },
+    {name="password",                 type="text",                          comment="Пароль" },
+    {name="token",                    type="text",                          comment="Проверочный токен для подтверждения email" },
+    {name="auth_token",               type="char", size=50,                 comment="Токен для авторизации"},
+    {name="updated_at",               type="timestamp",   ext="with time zone"},
+    {name="created_at",               type="timestamp",   ext="with time zone"},
+    {name="deleted",                  type="bool",        ext="not null default false"},
+]
+
+fkConstraints = [
+    {name="email_already_exist", ext="UNIQUE (email)"},
+]
+
+triggers = [
+    {name="user_temp_email_auth_created", when="before insert or update", ref="for each row", funcName="builtin_fld_update"},
+]
+
+methods = [
+    "user_temp_email_auth_create",
+    "user_temp_email_auth_check_token",
+]
+

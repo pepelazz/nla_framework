@@ -19,9 +19,9 @@ type (
 	}
 
 	DocVue struct {
-		Route string
-		Grid []VueGridDiv
-		Mixins map[string][]string // название файла - название миксина. Для прописывания импорта
+		RouteName string
+		Grid      []VueGridDiv
+		Mixins    map[string][]string // название файла - название миксина. Для прописывания импорта
 	}
 
 	// специальное представление для сетки

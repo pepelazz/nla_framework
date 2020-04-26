@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
 
-    <comp-breadcrumb :list="[{label:'[[.NameRu | UpperCaseFirst]]', to:'[[.Vue.Route]]'}, {label:'Редактирование'}]"/>
+    <comp-breadcrumb :list="[{label:'[[.NameRu | UpperCaseFirst]]', to:'[[.Vue.RouteName]]'}, {label:'Редактирование'}]"/>
 
     <div v-if="item" class="q-mt-sm">
       <!--  поля формы    -->

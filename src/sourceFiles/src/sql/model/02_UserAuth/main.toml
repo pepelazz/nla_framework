@@ -1,0 +1,42 @@
+docType = "UserAuth"
+tableComment = "Таблица профилей пользователей в сервисах авторизации"
+
+tableName ="user_auth"
+
+fields = [
+    {name="id",                 type="serial" },
+    {name="user_id",            type="int", ext="not null", comment="id пользователя"},
+    {name="auth_provider",      type="char", size=50,  ext="not null", comment="Название сервиса, через который авторизовались"},
+    {name="auth_provider_id",   type="char", size=100, ext="not null",  comment="Id пользователя в сервисе авторизации"},
+    {name="last_name",          type="char", size=100, comment="Фамилия"},
+    {name="first_name",         type="char", size=100, comment="Имя" },
+    {name="username",           type="char", size=100, comment="Ник" },
+    {name="avatar",             type="char", size=500, comment="Ссылка на аватарку"},
+    {name="email",              type="char", size=200, comment="Email"},
+    {name="auth_token",         type="char", size=200, comment="Токен для авторизации"},
+    {name="password",           type="char", size=200, comment="Пароль в случае авторизации через email"},
+    {name="options",            type="jsonb",          comment="Разные дополнительные параметры"},
+    {name="created_at",         type="timestamp",   ext="with time zone"},
+    {name="updated_at",         type="timestamp",   ext="with time zone"},
+    {name="deleted",            type="bool",        ext="not null default false"},
+]
+
+fkConstraints = [
+    {fld="user_id", ref="\"user\"", fk="id"},
+    {name="auth_token_already_exist", ext="UNIQUE (auth_token)"},
+]
+
+triggers = [
+    {name="user_auth_created", when="before insert or update", ref="for each row", funcName="builtin_fld_update"},
+]
+
+methods = [
+    "user_auth_create",
+    "user_auth_update_password",
+    "user_auth_set_email_by_auth_provider_id",
+    "vk_auth_check_email_exist",
+    "user_auth_add_to_exist_user"
+]
+
+alterScripts = [
+]

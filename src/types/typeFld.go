@@ -9,7 +9,6 @@ type (
 		Name string
 		NameRu string
 		Type string
-		Ext map[string]interface{}
 		Vue FldVue
 		Sql FldSql
 	}
@@ -27,14 +26,15 @@ type (
 		IsRequired bool
 		Ref      string
 		IsUniq   bool
+		Size int
 	}
 )
 
 func (fld *FldType) PrintPgModel() string {
 	typeStr := fmt.Sprintf(`type="%s"`, fld.Type)
 	if fld.Type == "string" {
-		if s, ok := fld.Ext["size"]; ok {
-			typeStr = fmt.Sprintf("type=\"char\",\tsize=%v", s)
+		if fld.Sql.Size >0  {
+			typeStr = fmt.Sprintf("type=\"char\",\tsize=%v", fld.Sql.Size)
 		} else {
 			typeStr = `type="text"`
 		}

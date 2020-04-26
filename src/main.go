@@ -6,6 +6,7 @@ import (
 	"github.com/pepelazz/projectGenerator/src/types"
 	"github.com/pepelazz/projectGenerator/src/utils"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -36,7 +37,9 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc)  {
 	// читаем темплейты
 	tmplMap = templates.ParseTemplates(project)
 
-
+	// удаляем старые файлы
+	removeOldFiles(project.DistPath)
+	
 	// генерим файлы для проекты
 	templates.WriteProjectFiles(p, tmplMap)
 
@@ -76,6 +79,18 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 				if strings.HasSuffix(info.Name(), ".go") {
 					file = []byte(strings.Replace(string(file), "github.com/pepelazz/projectGenerator", p.Config.LocalProjectPath, -1))
 				}
+				// добавляем названия pg методов в файл apiCallPgFunc.go
+				if strings.HasSuffix(info.Name(), "apiCallPgFunc.go") {
+					file = []byte(strings.Replace(string(file), "// for codeGenerate ##pgFuncList_slot1", printApiCallPgFuncMethods(), -1))
+				}
+				// изменение config.js
+				if strings.HasSuffix(path, "app"+string(os.PathSeparator)+"plugins"+string(os.PathSeparator)+"config.js") {
+					file = configJsModify(p, file)
+				}
+				// изменение routes.js
+				if strings.HasSuffix(path, "src"+string(os.PathSeparator)+"router"+string(os.PathSeparator)+"routes.js") {
+					file = []byte(strings.Replace(string(file), "// for codeGenerate ##routes_slot1", routesJsModify(), -1))
+				}
 				// применяем модификатор для текста файла
 				if modifyFunc != nil {
 					file = modifyFunc(dirPath + info.Name(), file)
@@ -90,3 +105,41 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 		})
 	return
 }
+
+func removeOldFiles(distPath string)  {
+	// удаляем модели в sql, потому что могула изменится нумерация файлов и тогдда риск дублирования
+	err := os.RemoveAll(distPath + "/sql/model")
+	utils.CheckErr(err, "removeOldFiles")
+}
+
+func printApiCallPgFuncMethods() (res string)  {
+	res = "// for codeGenerate ##pgFuncList_slot1"
+	for _, d := range project.Docs {
+		for _, m := range d.Sql.Methods {
+			roles := fmt.Sprintf(`"%s"`, strings.Join(m.Roles, `", "`))
+			res = fmt.Sprintf("%s\n\t\tPgMethod{\"%s\", []string{%s}, nil, BeforeHookAddUserId},", res, m.Name, roles)
+		}
+	}
+	return
+}
+
+func configJsModify(p types.ProjectType, file []byte) (res []byte)  {
+	fileStr := string(file)
+	fileStr = strings.Replace(fileStr, "[[appName]]", p.Name, -1)
+	fileStr = strings.Replace(fileStr, "[[webPort]]", fmt.Sprintf("%v", p.Config.WebServer.Port), -1)
+	fileStr = strings.Replace(fileStr, "[[url]]",  strings.TrimPrefix(p.Config.WebServer.Url, "https://"), -1)
+	return []byte(fileStr)
+}
+
+func routesJsModify() string  {
+	res := "// for codeGenerate ##routes_slot1"
+	for _, r := range project.Vue.Routes {
+		if len(r)<2 {
+			log.Fatalf("routesJsModify project.Vue.Route route array %v length < 2", r)
+		}
+		res = fmt.Sprintf("%s\n\t{path: '%s', component: () => import(`../app/components/%s`), props: true},", res, r[0], r[1])
+		//{path: '/users/:id', component: () => import(`../app/components/users/item.vue`), props: true},
+	}
+	return res
+}
+

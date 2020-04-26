@@ -10,3 +10,5 @@ tableName ="{{.Name | ToLowerCamel}}"
 {{.PrintSqlModelTriggers}}
 
 {{.PrintSqlModelMethods}}
+
+{{.PrintSqlModelAlterScripts}}
