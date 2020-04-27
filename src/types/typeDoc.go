@@ -20,8 +20,11 @@ type (
 
 	DocVue struct {
 		RouteName string
+		MenuIcon string
+		Roles []string
 		Grid      []VueGridDiv
 		Mixins    map[string][]string // название файла - название миксина. Для прописывания импорта
+		TmplFuncs map[string]func(DocType) string
 	}
 
 	// специальное представление для сетки

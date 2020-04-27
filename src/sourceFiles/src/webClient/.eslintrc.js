@@ -36,6 +36,11 @@ module.exports = {
     // allow paren-less arrow functions
     'arrow-parens': 'off',
     'one-var': 'off',
+    'no-tabs': 0,
+    'no-multiple-empty-lines': 0,
+    'object-property-newline': 0,
+    'key-spacing': 0,
+    'comma-spacing': 0,
 
     'import/first': 'off',
     'import/named': 'error',

@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 	"github.com/pepelazz/projectGenerator/src/utils"
+	"log"
 )
 
 type (
@@ -14,6 +15,7 @@ type (
 		Vue ProjectVue
 	}
 	ProjectConfig struct {
+		Logo string
 		LocalProjectPath string
 		Postgres  PostrgesConfig
 		WebServer WebServerConfig
@@ -35,7 +37,18 @@ type (
 		SenderName     string
 	}
 	ProjectVue struct {
+		UiAppName string
 		Routes [][]string
+		Menu []VueMenu
+	}
+	VueMenu struct {
+		DocName string // если указано docName, то url и иконка копируются из описания документа
+		Icon string
+		Text string
+		Url string
+		IsFolder bool
+		LinkList []VueMenu
+		Roles []string
 	}
 )
 
@@ -64,6 +77,55 @@ func (p *ProjectType) FillDocTemplatesFields() {
 			t.DistPath = distPath
 		}
 		p.Docs[i] = d
+	}
+}
+
+// заполняем боковое меню для Vue
+func (p *ProjectType) FillSideMenu() {
+	if (p.Vue.Menu ==  nil) {
+		log.Fatalf("ProjectType.FillSideMenu p.Vue.Menu == nil")
+	}
+	for i, v := range p.Vue.Menu {
+		if len(v.DocName) > 0 {
+			d := p.GetDocByName(v.DocName)
+			if d == nil {
+				log.Fatalf("ProjectType.FillSideMenu p.GetDocByName doc '%s' not found", v.DocName)
+			}
+			if len(v.Icon) == 0 {
+				p.Vue.Menu[i].Icon = d.Vue.MenuIcon
+			}
+			if len(v.Url) == 0 {
+				p.Vue.Menu[i].Url = d.Vue.RouteName
+			}
+			if len(v.Text) == 0 {
+				p.Vue.Menu[i].Text = d.NameRu
+			}
+			if len(v.Roles) == 0 {
+				p.Vue.Menu[i].Roles = d.Vue.Roles
+			}
+		}
+		if v.IsFolder {
+			for j, v1 := range v.LinkList {
+				if len(v1.DocName) > 0 {
+					d := p.GetDocByName(v1.DocName)
+					if d == nil {
+						log.Fatalf("ProjectType.FillSideMenu p.GetDocByName doc '%s' not found", v1.DocName)
+					}
+					if len(v1.Icon) == 0 {
+						p.Vue.Menu[i].LinkList[j].Icon = d.Vue.MenuIcon
+					}
+					if len(v1.Url) == 0 {
+						p.Vue.Menu[i].LinkList[j].Url = d.Vue.RouteName
+					}
+					if len(v1.Text) == 0 {
+						p.Vue.Menu[i].LinkList[j].Text = d.NameRu
+					}
+					if len(v1.Roles) == 0 {
+						p.Vue.Menu[i].LinkList[j].Roles = d.Vue.Roles
+					}
+				}
+			}
+		}
 	}
 }
 

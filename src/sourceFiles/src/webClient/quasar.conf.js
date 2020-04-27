@@ -10,7 +10,6 @@ module.exports = function (ctx) {
       'utils',
       'currentUser',
       'myCommon',
-      'i18n',
     ],
 
     css: [

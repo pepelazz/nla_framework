@@ -1,0 +1,170 @@
+<template>
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-6 q-gutter-md q-pt-md">
+      <q-infinite-scroll @load="itemListLoad" :offset="250" ref="infiniteScroll">
+        <!-- список         -->
+        <q-list bordered class="rounded-borders" separator>
+          <q-item>
+            <q-item-section>
+              <q-item-label caption>{{listTitle}}</q-item-label>
+            </q-item-section>
+            <q-item-section top side>
+              <div class="text-grey-8 q-gutter-xs">
+                <q-btn size="12px" v-if="searchFldName" flat dense round icon="search" @click="toggleSearchFld"/>
+                <!--  СОРТИРОВКА ПО ВОЗРАСТАНИЮ  -->
+                <q-btn size="12px" flat dense round icon="expand_less">
+                  <q-menu auto-close>
+                    <q-list dense style="min-width: 100px">
+                      <q-item clickable v-for="item in listSortData" :key="item.value">
+                        <q-item-section @click="changeItemList({order_by: `${item.value}`})">{{item.title}}
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
+                <!--  СОРТИРОВКА ПО УБЫВАНИЮ  -->
+                <q-btn size="12px" flat dense round icon="expand_more">
+                  <q-menu auto-close>
+                    <q-list dense style="min-width: 100px">
+                      <q-item clickable v-for="item in listSortData" :key="item.value">
+                        <q-item-section @click="changeItemList({order_by: `${item.value} desc`})">{{item.title}}
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
+                <!--  ФИЛЬТР  -->
+                <q-btn size="12px" flat dense round icon="filter_list">
+                  <q-menu auto-close>
+                    <q-list dense style="min-width: 100px">
+                      <q-item clickable v-for="item in listFilterData" :key="item.title">
+                        <q-item-section @click="changeItemList(item.value)">{{item.title}}
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
+              </div>
+            </q-item-section>
+          </q-item>
+
+          <!--  поле поиска  -->
+          <q-item v-if="isShowSearchfld && searchFldName">
+            <q-item-section top>
+              <div class="text-grey-8 q-gutter-xs">
+                <q-input dense filled v-model="searchTxt" input-class="text-right" class="q-ml-md">
+                  <template v-slot:append>
+                    <q-icon v-if="searchTxt === ''" name="search"/>
+                    <q-icon v-else name="clear" class="cursor-pointer" @click="searchTxt = ''"/>
+                  </template>
+                </q-input>
+              </div>
+            </q-item-section>
+          </q-item>
+
+          <q-item v-for="item in itemList" :key="item.id">
+            <!--  слот для рендеринга элемента списка -->
+            <slot name="listItem" :item="item"></slot>
+          </q-item>
+
+        </q-list>
+        <!-- спинер загрузки   -->
+        <template v-slot:loading>
+          <div class="row justify-center q-my-md">
+            <q-spinner-dots color="primary" size="40px"/>
+          </div>
+        </template>
+      </q-infinite-scroll>
+    </div>
+    <!-- кнопка создания нового документа   -->
+    <q-page-sticky v-if="newDocUrl" position="bottom-right" :offset="[18, 18]">
+      <q-btn fab icon="add" color="accent" @click="$router.push(newDocUrl)"/>
+    </q-page-sticky>
+  </div>
+</template>
+
+<script>
+    import {debounce} from 'quasar'
+    import _ from 'lodash'
+
+    export default {
+        props: ['docName', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocUrl', 'urlQueryParams'],
+        computed: {
+            listTitle() {
+                return !this.listParams.deleted ? this.$t(`${this.docName}.listTitle`) : this.$t(`${this.docName}.listDeletedTitle`)
+            },
+        },
+        data() {
+            return {
+                searchTxt: '',
+                isShowSearchfld: false,
+                itemList: [],
+                listParams: {page: 0, per_page: 10, deleted: false},
+                isUrlQueryProcessed: false, // флаг для обработки query из url при первоначальной загрузке
+            }
+        },
+        methods: {
+            toggleSearchFld() {
+                this.isShowSearchfld = !this.isShowSearchfld
+                if (!this.isShowSearchfld) this.listParams[this.searchFldName] = ''
+            },
+            itemListLoad(index, done) {
+                // при первоначальной загрузке обрабатываем query из url
+                if (!this.isUrlQueryProcessed) {
+                    this.isUrlQueryProcessed = true
+                    if (this.urlQueryParams) {
+                        const urlParams = new URLSearchParams(window.location.search)
+                        this.urlQueryParams.map(v => {
+                            // объекты обрабатываем отдельно, например даты. Можно для них здесь написать отдельную обработку
+                            if (typeof v === 'string' && urlParams.has(v)) {
+                                this.$set(this.listParams, v, urlParams.get(v))
+                            }
+                        })
+                    }
+                }
+                this.loadList({list: this.itemList, params: this.listParams, done})
+            },
+            loadList({list = [], params = {}, done}) {
+                this.listParams.page++
+                // обновляем параметры в query параметрах списка
+                this.$utils.updateUrlQuery(_.omit(params, ['per_page', 'page']))
+                this.$utils.postCallPgMethod({method: this.pgMethod, params}).subscribe(res => {
+                    if (res.ok) {
+                        if (res.result && res.result.length > 0) {
+                            res.result.map(v => list.push(v))
+                            if (done) done()
+                        } else {
+                            if (done) done(true)
+                        }
+                    }
+                })
+            },
+            reloadList() {
+                this.itemList.length = 0
+                this.listParams.page = 0
+                this.$refs.infiniteScroll.resume()
+                this.loadList({list: this.itemList, params: this.listParams})
+                this.$forceUpdate()
+            },
+            reloadListDebounce() {
+                this.reloadList()
+            },
+            changeItemList(params) {
+                this.listParams = Object.assign(this.listParams, params)
+                this.reloadList()
+            }
+        },
+        watch: {
+            searchTxt(v) {
+                if (this.searchFldName && (v.length === 0 || v.length > 3)) {
+                    this.listParams[this.searchFldName] = v
+                    this.reloadListDebounce()
+                }
+            }
+        },
+        mounted() {
+            this.loadList({list: this.itemList, params: this.listParams})
+            this.reloadListDebounce = debounce(this.reloadListDebounce, 300)
+        }
+    }
+</script>

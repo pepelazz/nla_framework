@@ -13,10 +13,7 @@
             <img src="https://image.flaticon.com/icons/svg/589/589554.svg" alt="">
           </q-avatar>
         </q-item-section>
-        <q-item-section>
-          <q-item-label lines="1">{{item.title}}</q-item-label>
-
-        </q-item-section>
+        [[.PrintListRowLabel]]
         <q-item-section top side>
           <comp-item-dropdown-btn :item="item" itemProp="" :is-edit="true" :is-delete="true" fkProp=""
                                   pg-method="city_update"

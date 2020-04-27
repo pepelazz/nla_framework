@@ -16,7 +16,7 @@
 <!--              <img src="https://www.defly.ru/website/defly/template/images/logo.png">-->
 <!--            </q-avatar>-->
             <q-toolbar-title shrink class="text-weight-bold">
-              4PL
+              {{$config.uiAppName}}
             </q-toolbar-title>
           </q-btn>
 

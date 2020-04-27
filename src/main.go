@@ -87,9 +87,17 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 				if strings.HasSuffix(path, "app"+string(os.PathSeparator)+"plugins"+string(os.PathSeparator)+"config.js") {
 					file = configJsModify(p, file)
 				}
+				// изменение sidemenu/index.vue
+				if strings.HasSuffix(path, "components"+string(os.PathSeparator)+"sidemenu"+string(os.PathSeparator)+"index.vue") {
+					file = []byte(strings.Replace(string(file), "// for codeGenerate ##sidemenu_slot1", sidemenuJsModify(), -1))
+				}
 				// изменение routes.js
 				if strings.HasSuffix(path, "src"+string(os.PathSeparator)+"router"+string(os.PathSeparator)+"routes.js") {
 					file = []byte(strings.Replace(string(file), "// for codeGenerate ##routes_slot1", routesJsModify(), -1))
+				}
+				// изменение index.template.html
+				if strings.HasSuffix(path, "src"+string(os.PathSeparator)+"index.template.html") {
+					file = []byte(strings.Replace(string(file), "[[appName]]", p.Name, -1))
 				}
 				// применяем модификатор для текста файла
 				if modifyFunc != nil {
@@ -126,19 +134,52 @@ func printApiCallPgFuncMethods() (res string)  {
 func configJsModify(p types.ProjectType, file []byte) (res []byte)  {
 	fileStr := string(file)
 	fileStr = strings.Replace(fileStr, "[[appName]]", p.Name, -1)
+	fileStr = strings.Replace(fileStr, "[[uiAppName]]", p.Vue.UiAppName, -1)
 	fileStr = strings.Replace(fileStr, "[[webPort]]", fmt.Sprintf("%v", p.Config.WebServer.Port), -1)
 	fileStr = strings.Replace(fileStr, "[[url]]",  strings.TrimPrefix(p.Config.WebServer.Url, "https://"), -1)
+	fileStr = strings.Replace(fileStr, "[[logoSrc]]",  p.Config.Logo, -1)
 	return []byte(fileStr)
 }
 
+// функция по добавлению routes
 func routesJsModify() string  {
 	res := "// for codeGenerate ##routes_slot1"
 	for _, r := range project.Vue.Routes {
 		if len(r)<2 {
 			log.Fatalf("routesJsModify project.Vue.Route route array %v length < 2", r)
 		}
-		res = fmt.Sprintf("%s\n\t{path: '%s', component: () => import(`../app/components/%s`), props: true},", res, r[0], r[1])
+		res = fmt.Sprintf("%s\n\t{path: '/%s', component: () => import(`../app/components/%s`), props: true},", res, r[0], r[1])
 		//{path: '/users/:id', component: () => import(`../app/components/users/item.vue`), props: true},
+	}
+	return res
+}
+
+// функция для построения бокового меню во Vue
+func sidemenuJsModify() string  {
+	res := "// for codeGenerate ##sidemenu_slot1"
+	printMenuItem := func(m types.VueMenu) string{
+		roles := ""
+		if m.Roles != nil && len(m.Roles)>0 {
+			roles = fmt.Sprintf(`'%s'`, strings.Join(m.Roles, `', '`))
+		}
+		return fmt.Sprintf("{icon: '%s', text: '%s', url: '/%s', roles: [%s]},\n", m.Icon, m.Text, m.Url, roles)
+	}
+	for _, m := range project.Vue.Menu {
+		if !m.IsFolder {
+			res = fmt.Sprintf("%s\n\t\t\t\t\t\t\t\t\t%s", res, printMenuItem(m))
+			// {icon: 'people', text: 'Пользователи', url: '/users', role: ['admin']},
+		} else {
+			linkList := "\t\t\t\t\t\t\t\t[\n"
+			for _, m1 := range m.LinkList {
+				linkList = fmt.Sprintf("%s\t\t\t\t\t\t\t\t%s", linkList, printMenuItem(m1))
+			}
+			linkList = linkList + "],"
+			roles := ""
+			if m.Roles != nil && len(m.Roles)>0 {
+				roles = fmt.Sprintf(`'%s'`, strings.Join(m.Roles, `', '`))
+			}
+			res = fmt.Sprintf("%s{isFolder: true, icon: '%s', text: '%s', roles: [%s], linkList: %s}", res, m.Icon, m.Text, roles, linkList)
+		}
 	}
 	return res
 }
