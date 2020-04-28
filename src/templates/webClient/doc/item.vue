@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
 
-    <comp-breadcrumb :list="[{label:'[[.NameRu | UpperCaseFirst]]', to:'[[.Vue.RouteName]]'}, {label:'Редактирование'}]"/>
+    <comp-breadcrumb :list="[{label:'[[.NameRu | UpperCaseFirst]]', to:'/[[.Vue.RouteName]]'}, {label:'Редактирование'}]"/>
 
     <div v-if="item" class="q-mt-sm">
       <!--  поля формы    -->
@@ -33,23 +33,22 @@
         props: ['id'],
         mixins: [ [[- .Vue.PrintMixins "docItem" -]] ],
         computed: {
-            docUrl: () => '/city',
+            docUrl: () => '/[[.Vue.RouteName]]',
         },
         data() {
             return {
                 item: null,
                 flds: [
-                    [
-                        {name: 'title', type: 'string', label: 'Название', required: true},
-
-                    ],
+                    [[- range .Flds]]
+                        {name: '[[.Name]]', label: '[[.Vue.NameRu]]'[[if .Vue.IsRequred -]],  required: true[[- end]]},
+                    [[- end]]
                 ],
             }
         },
         methods: {
             save() {
                 this.$utils.saveItem.call(this, {
-                    method: 'city_update',
+                    method: '[[.PgName]]_update',
                     itemForSaveMod: {},
                     errMsgModify(msg) {
                         // локализация ошибки
@@ -63,7 +62,7 @@
             let cb = (v) => {
                 this.item = v
             }
-            this.$utils.getDocItemById.call(this, {method: 'city_get_by_id', cb})
+            this.$utils.getDocItemById.call(this, {method: '[[.PgName]]_get_by_id', cb})
         }
     }
 </script>

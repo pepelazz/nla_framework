@@ -25,6 +25,7 @@ type (
 		Grid      []VueGridDiv
 		Mixins    map[string][]string // название файла - название миксина. Для прописывания импорта
 		TmplFuncs map[string]func(DocType) string
+		I18n 	  map[string]string
 	}
 
 	// специальное представление для сетки
@@ -59,6 +60,11 @@ type (
 		Roles []string
 	}
 )
+
+// место вызова разных доп функций для инициализации документа, после того как основные поля заполнены
+func (d *DocType) Init()  {
+	d.Filli18n()
+}
 
 func (d DocType) PgName() string  {
 	return snaker.CamelToSnake(d.Name)

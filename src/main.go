@@ -29,6 +29,7 @@ func readData(p types.ProjectType)  {
 	project.DistPath = "../src"
 	project.FillDocTemplatesFields()
 	project.GenerateGrid()
+	project.FillVueFlds()
 }
 
 func Start(p types.ProjectType, modifyFunc copyFileModifyFunc)  {

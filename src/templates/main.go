@@ -106,8 +106,10 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		fldType = fld.Type
 	}
  	switch fldType {
-	case "string":
-		return fmt.Sprintf(`<q-input type='text' v-model="item.%s" label="%s" autogrow/>`, name, nameRu)
+	case "string", "text":
+		return fmt.Sprintf(`<q-input outlined type='text' v-model="item.%s" label="%s" autogrow/>`, name, nameRu)
+	case "int", "double":
+		return fmt.Sprintf(`<q-input outlined type='number' v-model="item.%s" label="%s"/>`, name, nameRu)
 	default:
 		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fld.Type)
 	}

@@ -6,7 +6,7 @@
         <q-list bordered class="rounded-borders" separator>
           <q-item>
             <q-item-section>
-              <q-item-label caption>{{listTitle}}</q-item-label>
+              <q-item-label caption>{{computedListTitle}}</q-item-label>
             </q-item-section>
             <q-item-section top side>
               <div class="text-grey-8 q-gutter-xs">
@@ -88,10 +88,10 @@
     import _ from 'lodash'
 
     export default {
-        props: ['docName', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocUrl', 'urlQueryParams'],
+        props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocUrl', 'urlQueryParams'],
         computed: {
-            listTitle() {
-                return !this.listParams.deleted ? this.$t(`${this.docName}.listTitle`) : this.$t(`${this.docName}.listDeletedTitle`)
+            computedListTitle() {
+                return !this.listParams.deleted ? this.listTitle : this.listDeletedTitle
             },
         },
         data() {

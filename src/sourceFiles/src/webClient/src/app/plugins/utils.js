@@ -70,7 +70,7 @@ const saveItem = function ({method, itemForSaveMod = {}, resultModify}) {
       this.$q.notify({
         color: 'negative',
         position: 'bottom',
-        message: this.$t('message.formEditNotFilledFld', {fldName: v.label}),
+        message: `не заполнено поле: ${v.label}`,
       })
     })
     return
@@ -78,7 +78,7 @@ const saveItem = function ({method, itemForSaveMod = {}, resultModify}) {
   postCallPgMethod({
     method,
     params: itemForSave,
-    successMsg: this.$t('message.changedSaved')
+    successMsg: 'изменения сохранены'
   }).subscribe(v => {
     if (v.ok) {
       // в случае создания нового документа, после сохранения и получения id из базы переходим по новому url

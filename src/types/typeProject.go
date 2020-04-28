@@ -80,6 +80,22 @@ func (p *ProjectType) FillDocTemplatesFields() {
 	}
 }
 
+// заполняем незаполненные поля для Vue
+func (p *ProjectType) FillVueFlds()  {
+	for i, d := range p.Docs {
+		for j, fld := range d.Flds {
+			// если NameRu не заполнено, то копируем из fld
+			if len(fld.Vue.NameRu) == 0 {
+				p.Docs[i].Flds[j].Vue.NameRu = fld.NameRu
+			}
+			// заполняем IsRequired
+			if fld.Sql.IsRequired {
+				p.Docs[i].Flds[j].Vue.IsRequred = fld.Sql.IsRequired
+			}
+		}
+	}
+}
+
 // заполняем боковое меню для Vue
 func (p *ProjectType) FillSideMenu() {
 	if (p.Vue.Menu ==  nil) {
