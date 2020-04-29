@@ -2,6 +2,7 @@ package templates
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/iancoleman/strcase"
 	"github.com/pepelazz/projectGenerator/src/types"
@@ -43,7 +44,7 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 	path = "../../projectGenerator/src/templates/sql/"
 	readFiles("sql_", "{{", "}}", path + "main.toml")
 	path = "../../projectGenerator/src/templates/sql/function/"
-	readFiles("sql_function_", "{{", "}}", path + "get_by_id.sql", path + "list.sql", path + "update.sql", path + "trigger_before.sql")
+	readFiles("sql_function_", "{{", "}}", path + "get_by_id.sql", path + "list.sql", path + "update.sql", path + "trigger_before.sql", path + "trigger_after.sql")
 
 	// парсинг шаблонов для конкретного документа
 	for i, d := range p.Docs {
@@ -59,12 +60,15 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 			baseTmplNames = append(baseTmplNames, "webClient_item.vue", "webClient_index.vue")
 		}
 		if d.IsBaseTemapltes.Sql {
-			baseTmplNames = append(baseTmplNames, "sql_main.toml", "sql_function_get_by_id.sql", "sql_function_list.sql", "sql_function_update.sql", "sql_function_trigger_before.sql")
+			baseTmplNames = append(baseTmplNames, "sql_main.toml", "sql_function_get_by_id.sql", "sql_function_list.sql", "sql_function_update.sql", "sql_function_trigger_before.sql", "sql_function_trigger_after.sql")
 		}
 		for _, tName := range baseTmplNames{
 			// если шаблона с таким именем нет, то добавляем стандартный
 			if _, ok := d.Templates[tName]; !ok {
 				if tName == "sql_function_trigger_before.sql" && !d.Sql.IsBeforeTrigger {
+					continue
+				}
+				if tName == "sql_function_trigger_after.sql" && !d.Sql.IsAfterTrigger {
 					continue
 				}
 				distPath, distFilename := utils.ParseDocTemplateFilename(d.Name, tName, p.DistPath, i)
@@ -104,12 +108,36 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	fldType := fld.Vue.Type
 	if len(fldType) == 0 {
 		fldType = fld.Type
+		// в случае ref поля
+		if fld.Type == "int" && len(fld.Sql.Ref) > 0 {
+			fldType = "ref"
+		}
 	}
  	switch fldType {
 	case "string", "text":
 		return fmt.Sprintf(`<q-input outlined type='text' v-model="item.%s" label="%s" autogrow/>`, name, nameRu)
 	case "int", "double":
 		return fmt.Sprintf(`<q-input outlined type='number' v-model="item.%s" label="%s"/>`, name, nameRu)
+	// вариант ссылки на другую таблицу
+	case "ref":
+		// если map Ext не инициализирован, то создаем его, чтобы не было ошибки при json.Marshal
+		if fld.Vue.Ext == nil  {
+			fld.Vue.Ext = map[string]string{}
+		}
+		// если специально не определено поле для ajaxSelectTitle, то формируем стандартное [ref_table_name]_title
+		ajaxSelectTitle := fld.Sql.Ref + "_title"
+		if v, ok := fld.Vue.Ext["ajaxSelectTitle"]; ok {
+			ajaxSelectTitle = v
+		}
+		extJsonStr, err := json.Marshal(fld.Vue.Ext)
+		utils.CheckErr(err, fmt.Sprintf("json.Marshal(fld.Vue.Ext) fld %s", fld.Name))
+
+		// заполняем название postgres метода для получения списка. По дефолту [ref_table_name]_list
+		pgMethod := fld.Sql.Ref + "_list"
+		if m, ok := fld.Vue.Ext["pgMethod"]; ok {
+			pgMethod = m
+		}
+		return fmt.Sprintf(`<comp-fld-ref-search pgMethod="%s" label="%s" :item='item.%s' :ext='%s' @update="v=> item.%s = v.id" />`, pgMethod, nameRu, ajaxSelectTitle, extJsonStr, name)
 	default:
 		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fld.Type)
 	}

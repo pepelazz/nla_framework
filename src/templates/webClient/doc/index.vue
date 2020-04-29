@@ -15,7 +15,7 @@
         </q-item-section>
         [[.PrintListRowLabel]]
         <q-item-section top side>
-          <comp-item-dropdown-btn :item="item" itemProp="" :is-edit="true" :is-delete="true" fkProp=""
+          <comp-item-dropdown-btn :item="item" itemProp="title" :is-edit="true" :is-delete="true" fkProp=""
                                   pg-method="[[.PgName]]_update"
                                   @edit="$router.push(`${currentUrl}${item.id}`)"
                                   @reload-list="$refs.docList.reloadList()"/>
@@ -35,7 +35,7 @@
       return {
         listSortData: [
           {value: 'created_at', title: 'Дата'},
-          {value: 'city', title: 'Название'}
+          {value: 'title', title: 'Название'}
         ],
         listFilterData: [
           {value: {deleted: false}, title: 'Активные'},

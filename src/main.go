@@ -30,6 +30,9 @@ func readData(p types.ProjectType)  {
 	project.FillDocTemplatesFields()
 	project.GenerateGrid()
 	project.FillVueFlds()
+
+	// передаем project в папку types, чтобы иметь доступ из функций шаблонов к проекту
+	types.SetProject(&project)
 }
 
 func Start(p types.ProjectType, modifyFunc copyFileModifyFunc)  {

@@ -125,6 +125,9 @@ func (d DocType) PrintSqlModelAlterScripts() (res string) {
 		arr = append(arr, fmt.Sprintf("\t\"alter table %s add column if not exists %s %s;\"", d.PgName(), fld.Name, getType(fld)))
 
 	}
+	if d.Sql.IsSearchText {
+		arr = append(arr, fmt.Sprintf("\t\"alter table %s add column if not exists search_text text;\"", d.PgName()))
+	}
 
 	if len(arr) > 0 {
 		res = fmt.Sprintf("alterScripts = [\n%s\n]", strings.Join(arr, ",\n"))
@@ -324,4 +327,36 @@ func (ds *DocSql) FillBaseMethods(docName string, roles ...string)  {
 		name := docName+"_"+name
 		ds.Methods[name] = &DocSqlMethod{Name:name, Roles:roles}
 	}
+}
+
+func (d DocType) PrintAfterTriggerUpdateLinkedRecords() string {
+	res := ""
+	// ищем таблицы, которые ссылаются на эту и если такие есть, то прописываем триггер, чтобы при обновлении записи, обновляем связанные записи чтобы обновились ссылки
+	linkedDocs := [][]string{}
+	for _, doc := range project.Docs {
+		for _, f := range doc.Flds {
+			if f.Sql.Ref == d.Name {
+				linkedDocs = append(linkedDocs, []string{doc.Name, f.Name})
+			}
+		}
+	}
+	if len(linkedDocs) > 0 {
+		// проверка что у документа есть поле title - по нему фиксируем изменения. Если нет, то выдаем ошибку.
+		var isFldTitleExist bool
+		for _, f := range d.Flds {
+			if f.Name == "title" {
+				isFldTitleExist = true
+				break
+			}
+		}
+		if !isFldTitleExist {
+			log.Fatal(fmt.Sprintf("PrintAfterTriggerUpdateLinkedRecords '%s' missed field 'title'", d.Name))
+		}
+		res1:= "IF (TG_OP = 'UPDATE') THEN\n-- при смене названия обновляем все ссылающиеся записи, чтобы там переписалось новое название\nif new.title != old.title then\n"
+		for _, arr := range linkedDocs {
+			res1 = fmt.Sprintf("%s for r in select * from %s where %s = new.id loop\n update %s set updated_at=now() where id = r.id;\n end loop;\n end if;\n end if;", res1, arr[0], arr[1], arr[0])
+		}
+		res = fmt.Sprintf("%s\n%s", res, res1)
+	}
+	return res
 }

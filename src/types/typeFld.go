@@ -20,6 +20,7 @@ type (
 		RowCol    [][]int
 		Class     []string
 		IsRequred bool
+		Ext       map[string]string
 	}
 
 	FldSql struct {
@@ -46,7 +47,7 @@ func (fld *FldType) PrintPgModel() string {
 	}
 	// ext может быть пустой
 	ext := ""
-	if len(extStr)>0 {
+	if len(extStr) > 0 {
 		ext = fmt.Sprintf(" \text=\"%s\",", extStr)
 	}
 	res := fmt.Sprintf("\t{name=\"%s\",\t\t\t\t\t%s,%s\t comment=\"%s\"}", fld.Name, typeStr, ext, fld.NameRu)

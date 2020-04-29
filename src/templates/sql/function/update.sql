@@ -24,12 +24,14 @@ BEGIN
     END IF;
 
     if (params ->> 'id')::int = -1 then
+        {{if .RequiredFldsString -}}
         -- проверика наличия обязательных параметров
         checkMsg = check_required_params(params, ARRAY [{{.RequiredFldsString}}]);
         IF checkMsg IS NOT NULL
         THEN
             RETURN checkMsg;
         END IF;
+        {{end -}}
 
         {{.PrintSqlFuncInsertNew}}
 

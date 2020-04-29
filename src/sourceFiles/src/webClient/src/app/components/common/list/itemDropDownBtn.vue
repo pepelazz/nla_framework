@@ -6,13 +6,13 @@
 
           <!--  кнопка редактирования    -->
           <q-item v-if="isEdit" clickable v-close-popup @click="$emit('edit')">
-            <q-item-section>{{$t("message.actionEditor")}}</q-item-section>
+            <q-item-section>редактировать</q-item-section>
           </q-item>
 
           <!--  кнопка удаления/восстановления        -->
           <q-item v-if="isDelete" clickable v-close-popup @click="confirmItemDeleteRecover(item)">
-            <q-item-section v-if="!item.deleted">{{$t("message.actionDelete")}}</q-item-section>
-            <q-item-section v-else>{{$t("message.actionRecover")}}</q-item-section>
+            <q-item-section v-if="!item.deleted">удалить</q-item-section>
+            <q-item-section v-else>восстановить</q-item-section>
           </q-item>
 
         </q-list>
@@ -29,10 +29,11 @@
         // let that = this
         const itemDetail = item[this.itemProp] ? item[this.itemProp] : ''
         this.$q.dialog({
-          title: this.$t('message.actionFormConfirm'),
-          message: `${item.deleted ? this.$t('message.actionRecoverQstn') : this.$t('message.actionDeleteQstn')} : ${itemDetail}`,
-          ok: this.$t('message.yes'),
-          cancel: this.$t('message.cancel'),
+          title: 'Подтвердите',
+            message: `${item.deleted ? 'восстановить' : 'удалить'} : <strong>${itemDetail}</strong>`,
+            ok: 'ok',
+            cancel: 'отмена',
+            html: true,
         }).onOk(() => {
           this.$utils.postCallPgMethod({
             method: this.pgMethod,

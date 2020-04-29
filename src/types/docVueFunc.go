@@ -8,6 +8,7 @@ func (d DocType) PrintListRowLabel() string  {
           <q-item-label lines="1">{{item.title}}</q-item-label>
         </q-item-section>
 	`
+	// проверяем есть ли переопределение шаблона
 	if d.Vue.TmplFuncs != nil {
 		if f, ok := d.Vue.TmplFuncs["PrintListRowLabel"]; ok {
 			res = f(d)

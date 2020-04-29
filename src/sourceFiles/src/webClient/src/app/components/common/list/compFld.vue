@@ -39,7 +39,7 @@
                           @update="v=>$emit('update', v.id)"
                           :readonly="readonly"/>
     <!-- выбор ajax-селектора -->
-    <comp-fld-ref-search v-if="type=='refSearch'" :label="label" :item="ajaxSelectTitle" :pgMethod="pgMethod" :itemTitleFldName="itemTitleFldName"
+    <comp-fld-ref-search v-if="type=='refSearch'" :label="label" :pgMethod="pgMethod" :itemTitleFldName="itemTitleFldName"
                          @update="v=>$emit('update', v.id)" :readonly="readonly" :ext="ext"/>
     <!-- date   -->
     <comp-fld-date  v-if="type=='date'" :label="label" :date-string="formatDateForSelector(fld)" @update="v=>$emit('update', v)" :readonly="readonly"/>
