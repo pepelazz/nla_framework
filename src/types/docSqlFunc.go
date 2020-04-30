@@ -50,7 +50,11 @@ func (d DocType) PrintSqlModelFkConstraints() (res string) {
 	for _, fld := range d.Flds {
 		// поле ссылка на другую таблицу
 		if len(fld.Sql.Ref) > 0 {
-			arr = append(arr, fmt.Sprintf("\t{fld=\"%s\", ref=\"%s\", fk=\"id\"}", fld.Name, fld.Sql.Ref))
+			if fld.Sql.Ref != "user" {
+				arr = append(arr, fmt.Sprintf("\t{fld=\"%s\", ref=\"%s\", fk=\"id\"}", fld.Name, fld.Sql.Ref))
+			} else {
+				arr = append(arr, fmt.Sprintf(`{fld="%s", ref="\"%s\"", fk="id"}`, fld.Name, fld.Sql.Ref))
+			}
 		}
 		// ограничение на уникальность
 		if fld.Sql.IsUniq {
@@ -149,7 +153,11 @@ func (d DocType) PrintSqlFuncGetById() (res string) {
 	for _, f := range d.Flds {
 		if len(f.Sql.Ref) > 0 {
 			cnt++
-			arr = append(arr, fmt.Sprintf("\t\tt%v as (select t%[2]v.*, c.title as %[3]s_title from t%[2]v left join %[3]s c on c.id = t%[2]v.%[4]s)", cnt, cnt-1, f.Sql.Ref, f.Name))
+			refTable := f.Sql.Ref
+			if refTable == "user" {
+				refTable = `"user"`
+			}
+			arr = append(arr, fmt.Sprintf("\t\tt%v as (select t%[2]v.*, c.title as %[3]s_title from t%[2]v left join %[4]s c on c.id = t%[2]v.%[5]s)", cnt, cnt-1, f.Sql.Ref, refTable, f.Name))
 		}
 	}
 	res = fmt.Sprintf("%s\n \tselect row_to_json(t%v.*)::jsonb into result from t%v;", strings.Join(arr, ",\n"), cnt, cnt)
@@ -168,7 +176,11 @@ func (d DocType) PrintSqlFuncList() (res string) {
 				continue
 			}
 			cnt++
-			arr = append(arr, fmt.Sprintf("\t\tt%v as (select t%[2]v.*, c.title as %[3]s_title from t%[2]v left join %[3]s c on c.id = t%[2]v.%[4]s)", cnt, cnt-1, f.Sql.Ref, f.Name))
+			refTable := f.Sql.Ref
+			if refTable == "user" {
+				refTable = `"user"`
+			}
+			arr = append(arr, fmt.Sprintf("\t\tt%v as (select t%[2]v.*, c.title as %[3]s_title from t%[2]v left join %[4]s c on c.id = t%[2]v.%[5]s)", cnt, cnt-1, f.Sql.Ref, refTable, f.Name))
 		}
 	}
 	res = fmt.Sprintf("%s\n \tselect array_to_json(array_agg(t%v.*)) from t%v') into result;", strings.Join(arr, ",\n"), cnt, cnt)
@@ -308,7 +320,11 @@ func (d DocType) GetBeforeTriggerFillRefVars() string {
 	res := ""
 	for _, fld := range d.Flds {
 		if fld.Sql.IsSearch && len(fld.Sql.Ref) > 0 {
-			res = fmt.Sprintf("%s\n		select title into %sTitle from %s where id = new.%s;", res, snaker.SnakeToCamelLower(strings.TrimSuffix(fld.Name, "_id")), fld.Sql.Ref, fld.Name)
+			refName := fld.Sql.Ref
+			if refName == "user" {
+				refName = `"user"`
+			}
+			res = fmt.Sprintf("%s\n		select title into %sTitle from %s where id = new.%s;", res, snaker.SnakeToCamelLower(strings.TrimSuffix(fld.Name, "_id")), refName, fld.Name)
 		}
 	}
 	if len(res) > 0 {

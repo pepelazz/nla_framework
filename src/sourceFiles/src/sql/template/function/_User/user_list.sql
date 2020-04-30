@@ -33,7 +33,7 @@ BEGIN
   condQueryStr = '' || whereStr || build_query_part_for_list(params);
 
   EXECUTE (
-    ' SELECT array_to_json(array_agg(t)) FROM (SELECT id, avatar, first_name, last_name, fullname, role, email, options, deleted, created_at  FROM "user" as doc ' ||  condQueryStr || ') AS t')
+    ' SELECT array_to_json(array_agg(t)) FROM (SELECT id, avatar, first_name, last_name, fullname, title, role, email, options, deleted, created_at  FROM "user" as doc ' ||  condQueryStr || ') AS t')
   INTO result;
 
   RETURN json_build_object('ok', TRUE, 'result', coalesce(result, '[]'));

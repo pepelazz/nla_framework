@@ -121,10 +121,10 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		return fmt.Sprintf(`<q-input outlined type='number' v-model="item.%s" label="%s"/>`, name, nameRu)
 	// дата
 	case "date":
-		return fmt.Sprintf(`<comp-fld-date label="%s" :date-string="formatDateForSelector(item.%s)" @update="v=> item.%s = v"/>`, nameRu, name, name)
+		return fmt.Sprintf(`<comp-fld-date label="%s" :date-string="$utils.formatPgDate(item.%s)" @update="v=> item.%s = v"/>`, nameRu, name, name)
 	// дата с временем
 	case "datetime":
-		return fmt.Sprintf(`<comp-fld-date-time label="%s" :date-string="formatDateTimeForSelector(item.%s)" @update="v=> item.%s = v"/>`, nameRu, name, name)
+		return fmt.Sprintf(`<comp-fld-date-time label="%s" :date-string="$utils.formatPgDateTime(item.%s)" @update="v=> item.%s = v"/>`, nameRu, name, name)
 	// вариант ссылки на другую таблицу
 	case "ref":
 		// если map Ext не инициализирован, то создаем его, чтобы не было ошибки при json.Marshal

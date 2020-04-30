@@ -71,23 +71,6 @@ func (d DocType) PrintVueMethods(tmplName string) string  {
 			}
 		}
 	}
-	// добавление методов в шаблон docItem
-	if tmplName == "docItem" {
-		for _, fld := range d.Flds {
-			// если среди полей документа есть поле с типом date, то добаавлем функцию formatDateForSelector
-			if fld.Type == "date" {
-				if _, ok := methods["formatDateForSelector(d)"]; !ok {
-					methods["formatDateForSelector(d)"]= "\t\t\t\treturn this.$utils.formatPgDate(d)"
-				}
-			}
-			// если среди полей документа есть поле с типом datetime, то добаавлем функцию formatDateTimeForSelector
-			if fld.Type == "datetime" {
-				if _, ok := methods["formatDateTimeForSelector(d)"]; !ok {
-					methods["formatDateTimeForSelector(d)"]= "\t\t\t\treturn this.$utils.formatPgDateTime(d)"
-				}
-			}
-		}
-	}
 	// печатаем методы
 	res := ""
 	for mName, funcTxt := range methods {

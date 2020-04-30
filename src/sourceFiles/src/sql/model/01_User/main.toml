@@ -8,6 +8,7 @@ fields = [
     {name="last_name",          type="char", size=100, comment="Фамилия"},
     {name="first_name",         type="char", size=100, comment="Имя" },
     {name="fullname",           type="char", size=200, comment="Полное имя"},
+    {name="title",              type="char", size=200, comment="Полное имя - дублирование для совместимости"},
     {name="role",               type="text[]",         comment="Роли в системе [admin, sewing_foreman, tailor, seamstress, sewing_otk]"},
     {name="avatar",             type="char", size=500, comment="Ссылка на аватарку"},
     {name="password",           type="char", size=200, comment="Пароль в случае авторизации через email"},
@@ -40,4 +41,9 @@ methods = [
     "user_get_by_email_with_password", # для рассылки админам
 #    "user_create",
 #    "user_change_role",
+]
+
+
+alterScripts = [
+	"alter table \"user\" add column if not exists title CHARACTER VARYING(200);"
 ]
