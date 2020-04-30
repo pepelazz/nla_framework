@@ -12,6 +12,9 @@ import (
 func (d DocType) PrintSqlModelFlds() (res string) {
 	arr := []string{"\t{name=\"id\",\t\t\ttype=\"serial\"}"}
 	for _, fld := range d.Flds {
+		if fld.Sql.IsOptionFld {
+			continue
+		}
 		arr = append(arr, fld.PrintPgModel())
 	}
 	if d.Sql.IsSearchText {
@@ -114,12 +117,15 @@ func (d DocType) PrintSqlModelAlterScripts() (res string) {
 		if fld.Type == "double" {
 			return "double precision"
 		}
+		if utils.CheckContainsSliceStr(fld.Type, "date", "datetime") {
+			return "timestamp"
+		}
 		return fld.Type
 	}
 	arr := []string{}
 
 	for _, fld := range d.Flds {
-		if utils.CheckContainsSliceStr(fld.Name, "id", "created_at", "updated_at", "deleted") {
+		if fld.Sql.IsOptionFld || utils.CheckContainsSliceStr(fld.Name, "id", "created_at", "updated_at", "deleted") {
 			continue
 		}
 		arr = append(arr, fmt.Sprintf("\t\"alter table %s add column if not exists %s %s;\"", d.PgName(), fld.Name, getType(fld)))
@@ -156,6 +162,11 @@ func (d DocType) PrintSqlFuncList() (res string) {
 	arr := []string{fmt.Sprintf("EXECUTE ('\n\twith t%v as (select * from %s as doc ' || condQueryStr || ')", cnt, d.PgName())}
 	for _, f := range d.Flds {
 		if len(f.Sql.Ref) > 0 {
+			// в случае если у документа есть флаг IsSearchText, то в options прописывается объект title, в который при обновлении записывается инфа необходимая для поиска
+			// если поле отмечено как участвующее в поиске, то инфа по нему записывается в options.title. Соответственно не надо через join находить значение title
+			if d.Sql.IsSearchText && f.Sql.IsSearch {
+				continue
+			}
 			cnt++
 			arr = append(arr, fmt.Sprintf("\t\tt%v as (select t%[2]v.*, c.title as %[3]s_title from t%[2]v left join %[3]s c on c.id = t%[2]v.%[4]s)", cnt, cnt-1, f.Sql.Ref, f.Name))
 		}
@@ -211,7 +222,7 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 	arr2 := []string{}
 	arr3 := []string{}
 	for i, f := range d.Flds {
-		if utils.CheckContainsSliceStr(f.Name, "id", "created_at", "updated_at", "deleted") {
+		if f.Sql.IsOptionFld || utils.CheckContainsSliceStr(f.Name, "id", "created_at", "updated_at", "deleted") {
 			continue
 		}
 		arr1 = append(arr1, f.Name)
@@ -235,7 +246,7 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 func (d DocType) PrintSqlFuncUpdateFlds() (res string) {
 	arr := []string{}
 	for _, f := range d.Flds {
-		if utils.CheckContainsSliceStr(f.Name, "id", "created_at", "updated_at", "deleted") {
+		if f.Sql.IsOptionFld || utils.CheckContainsSliceStr(f.Name, "id", "created_at", "updated_at", "deleted") {
 			continue
 		}
 		arr = append(arr, fmt.Sprintf("\t\t\t['%[1]s', '%[1]s', '%[2]s'],", f.Name, f.PgUpdateType()))
@@ -269,6 +280,7 @@ func (d DocType) GetSearchTextJson() string  {
 				arr = append(arr, fmt.Sprintf("'%[1]s', new.%[1]s", fld.Name))
 			} else {
 				fldName := strings.TrimSuffix(fld.Name, "_id")
+				// переменная %sTitle заполняется внутри pg функции. Это title из таблицы, на которую ссылаются
 				arr = append(arr, fmt.Sprintf("'%s_title', %sTitle", fldName, snaker.SnakeToCamelLower(fldName)))
 			}
 		}

@@ -41,6 +41,9 @@ module.exports = {
     'object-property-newline': 0,
     'key-spacing': 0,
     'comma-spacing': 0,
+    'no-mixed-spaces-and-tabs': 0,
+    'no-multi-spaces': 0,
+    'no-return-assign': 'off',
 
     'import/first': 'off',
     'import/named': 'error',

@@ -28,7 +28,7 @@
 </template>
 
 <script>
-[[ .Vue.PrintImport "docItem" ]]
+[[ .PrintVueImport "docItem" ]]
     export default {
         props: ['id'],
         mixins: [ [[- .Vue.PrintMixins "docItem" -]] ],
@@ -43,9 +43,11 @@
                         {name: '[[.Name]]', label: '[[.Vue.NameRu]]'[[if .Vue.IsRequred -]],  required: true[[- end]]},
                     [[- end]]
                 ],
+                optionsFlds: [ [[- .PrintVueItemOptionsFld -]] ],
             }
         },
         methods: {
+          [[ .PrintVueMethods "docItem" ]]
             save() {
                 this.$utils.saveItem.call(this, {
                     method: '[[.PgName]]_update',

@@ -96,6 +96,7 @@ func ExecuteToFile(t *template.Template, d interface{}, path, filename string) e
 	return ioutil.WriteFile(path +"/" + filename, []byte(tpl.String()), 0644)
 }
 
+// печать vue темплейтов для
 func PrintVueFldTemplate(fld types.FldType) string {
 	name := fld.Vue.Name
 	if len(name) == 0 {
@@ -118,6 +119,12 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		return fmt.Sprintf(`<q-input outlined type='text' v-model="item.%s" label="%s" autogrow/>`, name, nameRu)
 	case "int", "double":
 		return fmt.Sprintf(`<q-input outlined type='number' v-model="item.%s" label="%s"/>`, name, nameRu)
+	// дата
+	case "date":
+		return fmt.Sprintf(`<comp-fld-date label="%s" :date-string="formatDateForSelector(item.%s)" @update="v=> item.%s = v"/>`, nameRu, name, name)
+	// дата с временем
+	case "datetime":
+		return fmt.Sprintf(`<comp-fld-date-time label="%s" :date-string="formatDateTimeForSelector(item.%s)" @update="v=> item.%s = v"/>`, nameRu, name, name)
 	// вариант ссылки на другую таблицу
 	case "ref":
 		// если map Ext не инициализирован, то создаем его, чтобы не было ошибки при json.Marshal

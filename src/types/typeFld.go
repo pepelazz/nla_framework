@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"github.com/pepelazz/projectGenerator/src/utils"
 )
 
 type (
@@ -29,6 +30,7 @@ type (
 		Ref        string
 		IsUniq     bool
 		Size       int
+		IsOptionFld bool
 	}
 )
 
@@ -41,6 +43,9 @@ func (fld *FldType) PrintPgModel() string {
 		} else {
 			typeStr = `type="text"`
 		}
+	}
+	if utils.CheckContainsSliceStr(fld.Type, "date", "datetime") {
+		typeStr = `type="timestamp"`
 	}
 	if fld.Sql.IsRequired {
 		extStr = "not null"
@@ -61,6 +66,8 @@ func (fld *FldType) PgInsertType() string {
 		return "double precision"
 	case "string":
 		return "text"
+	case "date", "datetime":
+		return "timestamp"
 	default:
 		return fld.Type
 	}
@@ -72,6 +79,8 @@ func (fld *FldType) PgUpdateType() string {
 		return "number"
 	case "string":
 		return "text"
+	case "date", "datetime":
+		return "timestamp"
 	default:
 		return fld.Type
 	}

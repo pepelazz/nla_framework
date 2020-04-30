@@ -1,9 +1,7 @@
 package types
 
 import (
-	"fmt"
 	"github.com/serenize/snaker"
-	"strings"
 	"text/template"
 )
 
@@ -24,6 +22,7 @@ type (
 		Roles []string
 		Grid      []VueGridDiv
 		Mixins    map[string][]string // название файла - название миксина. Для прописывания импорта
+		Methods   map[string]map[string]string // название файла - название метода - текст функции
 		TmplFuncs map[string]func(DocType) string
 		I18n 	  map[string]string
 	}
@@ -68,30 +67,4 @@ func (d *DocType) Init()  {
 
 func (d DocType) PgName() string  {
 	return snaker.CamelToSnake(d.Name)
-}
-
-func (d DocVue) PrintImport(tmplName string) string  {
-	res := []string{}
-	if d.Mixins != nil {
-		if arr, ok := d.Mixins[tmplName]; ok {
-			for _, s := range arr {
-				res = append(res, fmt.Sprintf("\timport %s from './mixins/%s'", s, s))
-			}
-		}
-	}
-
-	return strings.Join(res, "\n")
-}
-
-func (d DocVue) PrintMixins(tmplName string) string  {
-	res := []string{}
-	if d.Mixins != nil {
-		if arr, ok := d.Mixins[tmplName]; ok {
-			for _, s := range arr {
-				res = append(res, fmt.Sprintf("%s", s))
-			}
-		}
-	}
-
-	return strings.Join(res, ", ")
 }

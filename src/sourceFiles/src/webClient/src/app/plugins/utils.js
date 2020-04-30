@@ -4,6 +4,8 @@ import {ajax} from 'rxjs/ajax'
 import {Notify} from 'quasar'
 import config from './config'
 import _ from 'lodash'
+import fp from 'lodash/fp'
+import moment from 'moment'
 
 const postApiRequest = ({url, params, isShowError = true}) => {
   return ajax({
@@ -56,21 +58,29 @@ const getDocItemById = function ({method, cb}) {
     cb = cb || ((v) => {
       this.item = v
     })
-    pgCall({method, params: {id: this.id}, cb})
+    // добавляем в цепочку обработки функцию по извлечению полей из options
+    const composeCb = (v) => fp.compose(cb, extractOptionsFlds(this))(v)
+    pgCall({method, params: {id: this.id}, cb: composeCb})
   }
 }
 
 // функция сохранения/создани документа
 const saveItem = function ({method, itemForSaveMod = {}, resultModify}) {
+  let item = Object.assign({}, this.item)
   const fldNames = _.flattenDeep(this.flds).map(({name}) => name)
-  const itemForSave = Object.assign({}, _.pick(this.item, ['id', ...fldNames]), itemForSaveMod)
+  if (!item.options) item.options = {}
+  // накатываем на копию item модификатор полей itemForSaveMod
+  item = Object.assign(item, itemForSaveMod)
+  // отдельно обрабатываем поля, которые сохраняются в колонку options. Если есть this.optionsFlds, то переносим поля с такими именем из item в item.options
+  if (this.optionsFlds) this.optionsFlds.map(fldName => item.options[fldName] = item[fldName])
+  const itemForSave = Object.assign({}, _.pick(item, ['id', ...fldNames, 'options']))
   let notFilledFlds = _.flattenDeep(this.flds).filter(v => v.required && !itemForSave[v.name])
   if (notFilledFlds.length > 0) {
     notFilledFlds.map(v => {
       this.$q.notify({
         color: 'negative',
         position: 'bottom',
-        message: `не заполнено поле: ${v.label}`,
+        message: this.$t('message.formEditNotFilledFld', {fldName: v.label}),
       })
     })
     return
@@ -87,9 +97,15 @@ const saveItem = function ({method, itemForSaveMod = {}, resultModify}) {
         this.$router.push(`${this.docUrl}/${v.result.id}`)
       }
       resultModify = resultModify || (v => v)
-      this.item = resultModify(v.result)
+      this.item = fp.compose(resultModify, extractOptionsFlds(this))(v.result)
     }
   })
+}
+
+// функция для перекладывания поля из options в item, чтобы можно было их редактировать
+const extractOptionsFlds = (that) => (v) => {
+  if (that.optionsFlds) that.optionsFlds.map(fldName => v[fldName] = v.options[fldName])
+  return v
 }
 
 const updateUrlQuery = (params = {}, isAdd = true) => {
@@ -109,6 +125,14 @@ const updateUrlQuery = (params = {}, isAdd = true) => {
   window.history.pushState({path: newurl}, '', newurl)
 }
 
+const formatPgDateTime = (d) => {
+  return d ? moment(d, 'YYYY-MM-DDTHH:mm:ss').format('DD-MM-YYYY HH:mm') : null
+}
+
+const formatPgDate = (d) => {
+  return d ? moment(d, 'YYYY-MM-DDTHH:mm:ss').format('DD-MM-YYYY') : null
+}
+
 export default {
   postApiRequest,
   postCallPgMethod,
@@ -116,6 +140,8 @@ export default {
   getDocItemById,
   saveItem,
   updateUrlQuery,
+  formatPgDateTime,
+  formatPgDate,
 }
 
 const getHttpHeaders = () => {

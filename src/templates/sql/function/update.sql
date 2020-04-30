@@ -38,6 +38,7 @@ BEGIN
     else
         updateValue = '' || update_str_from_json(params, ARRAY [
 {{.PrintSqlFuncUpdateFlds}}
+            ['options', 'options', 'jsonb'],
             ['deleted', 'deleted', 'bool']
             ]);
 
