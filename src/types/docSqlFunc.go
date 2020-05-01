@@ -118,10 +118,10 @@ func (d DocType) PrintSqlModelAlterScripts() (res string) {
 				return "text"
 			}
 		}
-		if fld.Type == "double" {
+		if fld.Type == FldTypeDouble {
 			return "double precision"
 		}
-		if utils.CheckContainsSliceStr(fld.Type, "date", "datetime") {
+		if utils.CheckContainsSliceStr(fld.Type, FldTypeDate, FldTypeDatetime) {
 			return "timestamp"
 		}
 		return fld.Type

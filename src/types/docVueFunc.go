@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/pepelazz/projectGenerator/src/utils"
 	"strings"
@@ -75,6 +76,35 @@ func (d DocType) PrintVueMethods(tmplName string) string  {
 	res := ""
 	for mName, funcTxt := range methods {
 		res = fmt.Sprintf("%s\t%s {\n\t\t\t\t%s\n\t\t\t\t\t\t},\n", res, mName, funcTxt)
+	}
+	return res
+}
+
+func (d DocType) PrintVueItemForSave() string {
+	res := ""
+	for _, fld := range d.Flds {
+		if fld.Vue.Type == FldVueTypeSelect {
+			res = fmt.Sprintf("%s%[2]s: this.item.%[2]s ? this.item.%[2]s.value : undefined,\n", res, fld.Name)
+		}
+	}
+	return res
+}
+
+func (d DocType) PrintVueItemResultModify() string {
+	res := ""
+	for _, fld := range d.Flds {
+		if fld.Vue.Type == FldVueTypeSelect {
+			options, err := json.Marshal(fld.Vue.Options)
+			utils.CheckErr(err, fmt.Sprintf("'%s' json.Marshal(fld.Vue.Options)", fld.Name))
+			funcStr := fmt.Sprintf(`
+				if (res.%[1]s) {
+                    let arr = %[2]s
+                    let %[1]s_item = arr.find(v => v.value === res.%[1]s)
+                    if (%[1]s_item) res.%[1]s = {value: res.%[1]s, label: %[1]s_item.label}
+                    }
+			`, fld.Name, options)
+			res = fmt.Sprintf("%s%s", res, funcStr)
+		}
 	}
 	return res
 }

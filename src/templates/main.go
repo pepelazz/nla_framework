@@ -110,20 +110,20 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	if len(fldType) == 0 {
 		fldType = fld.Type
 		// в случае ref поля
-		if fld.Type == "int" && len(fld.Sql.Ref) > 0 {
+		if fld.Type == types.FldTypeInt && len(fld.Sql.Ref) > 0 {
 			fldType = "ref"
 		}
 	}
  	switch fldType {
-	case "string", "text":
+	case types.FldTypeString, types.FldTypeText:
 		return fmt.Sprintf(`<q-input outlined type='text' v-model="item.%s" label="%s" autogrow/>`, name, nameRu)
-	case "int", "double":
+	case types.FldTypeInt, types.FldTypeDouble:
 		return fmt.Sprintf(`<q-input outlined type='number' v-model="item.%s" label="%s"/>`, name, nameRu)
 	// дата
-	case "date":
+	case types.FldTypeDate:
 		return fmt.Sprintf(`<comp-fld-date label="%s" :date-string="$utils.formatPgDate(item.%s)" @update="v=> item.%s = v"/>`, nameRu, name, name)
 	// дата с временем
-	case "datetime":
+	case types.FldTypeDatetime:
 		return fmt.Sprintf(`<comp-fld-date-time label="%s" :date-string="$utils.formatPgDateTime(item.%s)" @update="v=> item.%s = v"/>`, nameRu, name, name)
 	// вариант ссылки на другую таблицу
 	case "ref":
@@ -145,7 +145,11 @@ func PrintVueFldTemplate(fld types.FldType) string {
 			pgMethod = m
 		}
 		return fmt.Sprintf(`<comp-fld-ref-search pgMethod="%s" label="%s" :item='item.%s' :ext='%s' @update="v=> item.%s = v.id" />`, pgMethod, nameRu, ajaxSelectTitle, extJsonStr, name)
+	case types.FldVueTypeSelect:
+		options, err := json.Marshal(fld.Vue.Options)
+		utils.CheckErr(err, fmt.Sprintf("'%s' json.Marshal(fld.Vue.Options)", fld.Name))
+		return fmt.Sprintf(`<q-select outlined label="%s" v-model='item.%s' :options='%s' />`, nameRu, name, options)
 	default:
-		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fld.Type)
+		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fldType)
 	}
 }

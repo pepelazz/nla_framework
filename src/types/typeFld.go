@@ -5,6 +5,17 @@ import (
 	"github.com/pepelazz/projectGenerator/src/utils"
 )
 
+const (
+	FldTypeString = "string"
+	FldTypeText = "text"
+	FldTypeInt = "int"
+	FldTypeDouble = "double"
+	FldTypeDate = "date"
+	FldTypeDatetime = "datetime"
+	FldVueTypeSelect = "select"
+	FldVueTypeMultipleSelect = "multipleSelect"
+)
+
 type (
 	FldType struct {
 		Name   string
@@ -22,6 +33,7 @@ type (
 		Class     []string
 		IsRequred bool
 		Ext       map[string]string
+		Options   []FldVueOptionsItem
 	}
 
 	FldSql struct {
@@ -31,6 +43,11 @@ type (
 		IsUniq     bool
 		Size       int
 		IsOptionFld bool
+	}
+
+	FldVueOptionsItem struct {
+		Label string `json:"label"`
+		Value interface{} `json:"value"`
 	}
 )
 
@@ -44,7 +61,7 @@ func (fld *FldType) PrintPgModel() string {
 			typeStr = `type="text"`
 		}
 	}
-	if utils.CheckContainsSliceStr(fld.Type, "date", "datetime") {
+	if utils.CheckContainsSliceStr(fld.Type, FldTypeDate, FldTypeDatetime) {
 		typeStr = `type="timestamp"`
 	}
 	if fld.Sql.IsRequired {
@@ -62,11 +79,11 @@ func (fld *FldType) PrintPgModel() string {
 
 func (fld *FldType) PgInsertType() string {
 	switch fld.Type {
-	case "double":
+	case FldTypeDouble:
 		return "double precision"
-	case "string":
+	case FldTypeString:
 		return "text"
-	case "date", "datetime":
+	case FldTypeDate, FldTypeDatetime:
 		return "timestamp"
 	default:
 		return fld.Type
@@ -75,11 +92,11 @@ func (fld *FldType) PgInsertType() string {
 
 func (fld *FldType) PgUpdateType() string {
 	switch fld.Type {
-	case "int", "double":
+	case FldTypeInt, FldTypeDouble:
 		return "number"
-	case "string":
+	case FldTypeString:
 		return "text"
-	case "date", "datetime":
+	case FldTypeDate, FldTypeDatetime:
 		return "timestamp"
 	default:
 		return fld.Type

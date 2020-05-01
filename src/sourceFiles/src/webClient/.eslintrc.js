@@ -44,6 +44,8 @@ module.exports = {
     'no-mixed-spaces-and-tabs': 0,
     'no-multi-spaces': 0,
     'no-return-assign': 'off',
+    'padded-blocks': 'off',
+    'quotes': 'off',
 
     'import/first': 'off',
     'import/named': 'error',

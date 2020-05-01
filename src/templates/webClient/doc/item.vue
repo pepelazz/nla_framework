@@ -48,21 +48,21 @@
         },
         methods: {
           [[ .PrintVueMethods "docItem" ]]
+            resultModify(res) {
+                [[.PrintVueItemResultModify]]
+                return res
+            },
             save() {
                 this.$utils.saveItem.call(this, {
                     method: '[[.PgName]]_update',
-                    itemForSaveMod: {},
-                    errMsgModify(msg) {
-                        // локализация ошибки
-                        // if (msg.includes('')) return ''
-                        return msg
-                    }
+                    itemForSaveMod: {[[.PrintVueItemForSave]]},
+                    resultModify: this.resultModify,
                 })
             },
         },
         mounted() {
             let cb = (v) => {
-                this.item = v
+                this.item = this.resultModify(v)
             }
             this.$utils.getDocItemById.call(this, {method: '[[.PgName]]_get_by_id', cb})
         }
