@@ -41,7 +41,7 @@ func (d DocType) PrintSqlModelFkConstraints() (res string) {
 			}
 		}
 		if len(flds) > 1 {
-			return fmt.Sprintf(`{name="%s_already_exist", ext="UNIQUE (%s, %s)"},`, snaker.CamelToSnake(d.Name), flds[0].Name, flds[1].Name)
+			return fmt.Sprintf(`	{name="%s_already_exist", ext="UNIQUE (%s, %s)"},`, snaker.CamelToSnake(d.Name), flds[0].Name, flds[1].Name)
 		}
 		return ""
 	}
@@ -60,11 +60,10 @@ func (d DocType) PrintSqlModelFkConstraints() (res string) {
 		if fld.Sql.IsUniq {
 			arr = append(arr, fmt.Sprintf("\t{name=\"%s_%s_already_exist\", ext=\"UNIQUE (%s)\"}", d.Name, fld.Name, fld.Name))
 		}
-		// ограничение на уникальность связи между таблицами
-		if d.Sql.IsUniqLink {
-			arr = append(arr, printSqlUniqLinkConstraint(d))
-		}
-
+	}
+	// ограничение на уникальность связи между таблицами
+	if d.Sql.IsUniqLink {
+		arr = append(arr, printSqlUniqLinkConstraint(d))
 	}
 	if len(arr) > 0 {
 		res = fmt.Sprintf("fkConstraints = [\n%s\n]", strings.Join(arr, ",\n"))
@@ -240,10 +239,15 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 		arr1 = append(arr1, f.Name)
 		arr2 = append(arr2, fmt.Sprintf("$%v", i+1))
 		arrow := "->>"
-		if f.Type == "jsonb" {
+		if utils.CheckContainsSliceStr(f.Type, "jsonb", FldTypeTextArray)  {
 			arrow = "->"
 		}
 		paramStr := fmt.Sprintf("\t\t\t(params %s '%s')::%s", arrow, f.Name, f.PgInsertType())
+		// для text[] своя форма записи
+		if f.Type == FldTypeTextArray {
+			paramStr = fmt.Sprintf("\t\t\ttext_array_from_json(params %s '%s')", arrow, f.Name)
+			//text_array_from_json(params -> 'role')
+		}
 		arr3 = append(arr3, paramStr)
 		if f.Name == "options" {
 			optionsFldIndex = i + 1

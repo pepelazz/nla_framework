@@ -48,12 +48,23 @@ func (d DocType) PrintVueItemOptionsFld() string  {
 }
 
 func (d DocType) PrintVueImport(tmplName string) string  {
+	isLodashAdded := false
 	res := []string{}
 	// ссылки на миксины
 	if d.Vue.Mixins != nil {
 		if arr, ok := d.Vue.Mixins[tmplName]; ok {
 			for _, s := range arr {
 				res = append(res, fmt.Sprintf("\timport %s from './mixins/%s'", s, s))
+			}
+		}
+	}
+	if tmplName == "docItem" {
+		// если есть поле с типом multipleSelect то добавляем lodash
+		for _, fld := range d.Flds {
+			if fld.Vue.Type == FldVueTypeMultipleSelect && !isLodashAdded{
+				res = append(res, "\timport _ from 'lodash'")
+				isLodashAdded = true
+				break
 			}
 		}
 	}
@@ -86,6 +97,9 @@ func (d DocType) PrintVueItemForSave() string {
 		if fld.Vue.Type == FldVueTypeSelect {
 			res = fmt.Sprintf("%s%[2]s: this.item.%[2]s ? this.item.%[2]s.value : undefined,\n", res, fld.Name)
 		}
+		if fld.Vue.Type == FldVueTypeMultipleSelect {
+			res = fmt.Sprintf("%s%[2]s: this.item.%[2]s ? this.item.%[2]s.map(({value}) => value).filter(v => v)  : [],\n", res, fld.Name)
+		}
 	}
 	return res
 }
@@ -93,6 +107,7 @@ func (d DocType) PrintVueItemForSave() string {
 func (d DocType) PrintVueItemResultModify() string {
 	res := ""
 	for _, fld := range d.Flds {
+		// single select - преобразуем v -> {label: label, value: v}
 		if fld.Vue.Type == FldVueTypeSelect {
 			options, err := json.Marshal(fld.Vue.Options)
 			utils.CheckErr(err, fmt.Sprintf("'%s' json.Marshal(fld.Vue.Options)", fld.Name))
@@ -101,6 +116,18 @@ func (d DocType) PrintVueItemResultModify() string {
                     let arr = %[2]s
                     let %[1]s_item = arr.find(v => v.value === res.%[1]s)
                     if (%[1]s_item) res.%[1]s = {value: res.%[1]s, label: %[1]s_item.label}
+                    }
+			`, fld.Name, options)
+			res = fmt.Sprintf("%s%s", res, funcStr)
+		}
+		// multiple select - преобразуем v -> {label: label, value: v}
+		if fld.Vue.Type == FldVueTypeMultipleSelect {
+			options, err := json.Marshal(fld.Vue.Options)
+			utils.CheckErr(err, fmt.Sprintf("'%s' json.Marshal(fld.Vue.Options)", fld.Name))
+			funcStr := fmt.Sprintf(`
+				if (res.%[1]s) {
+                    let arr = %[2]s
+					res.%[1]s = res.%[1]s.map(name => _.find(arr, {value: name})).filter(v => v)
                     }
 			`, fld.Name, options)
 			res = fmt.Sprintf("%s%s", res, funcStr)

@@ -12,6 +12,7 @@ const (
 	FldTypeDouble = "double"
 	FldTypeDate = "date"
 	FldTypeDatetime = "datetime"
+	FldTypeTextArray = "text[]"
 	FldVueTypeSelect = "select"
 	FldVueTypeMultipleSelect = "multipleSelect"
 )
@@ -98,6 +99,8 @@ func (fld *FldType) PgUpdateType() string {
 		return "text"
 	case FldTypeDate, FldTypeDatetime:
 		return "timestamp"
+	case FldTypeTextArray:
+		return "jsonArrayText"
 	default:
 		return fld.Type
 	}

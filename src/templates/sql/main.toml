@@ -1,7 +1,7 @@
-docType = "{{.Name | UpperCaseFirst}}"
+docType = "{{.NameCamelCase }}"
 tableComment = "{{.NameRu}}"
 
-tableName ="{{.Name | ToLowerCamel}}"
+tableName ="{{.Name }}"
 
 {{.PrintSqlModelFlds}}
 

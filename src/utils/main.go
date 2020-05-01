@@ -42,9 +42,9 @@ func ParseDocTemplateFilename(docName, filename, globalDistPath string, docIndex
 			// формируем числовой префикс для названия файла (для устойчивой сортировки)
 			// отсчитываем не от 1, потому что есть файлы, которые копируются, а не генерятся из модели. Например, 01_User, 02_UserAuth и пр
 			docIndexStr := fmt.Sprintf("%v", docIndex+10)
-			path = fmt.Sprintf("%s/sql/model/%s_%s", globalDistPath, docIndexStr, UpperCaseFirst(docName))
+			path = fmt.Sprintf("%s/sql/model/%s_%s", globalDistPath, docIndexStr, snaker.SnakeToCamel(docName))
 		} else {
-			path = fmt.Sprintf("%s/sql/template/function/_%s", globalDistPath, UpperCaseFirst(docName))
+			path = fmt.Sprintf("%s/sql/template/function/_%s", globalDistPath, snaker.SnakeToCamel(docName))
 			// в данном случае имя шаблона извлекаем по другому, потому что в имени функии используется нижние подчеркивания
 			distFilename = snaker.CamelToSnake(docName) + strings.TrimPrefix(filename, "sql_function")
 		}

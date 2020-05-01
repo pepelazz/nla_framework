@@ -9,9 +9,9 @@ func (p *ProjectType) FillVueBaseRoutes() {
 	}
 	for _, d := range p.Docs {
 		if len(d.Vue.RouteName) == 0 {
-			log.Fatalf("'%s' missed RouteName", d.Name)
+			continue
 		}
-		// индексы для возможных дублей роутов. Если найдутся аткие же, то перезаписываем
+		// индексы для возможных дублей роутов. Если найдутся такие же, то перезаписываем
 		indexRouteIndex := 0
 		itemRouteIndex := 0
 		for i, arr := range p.Vue.Routes {

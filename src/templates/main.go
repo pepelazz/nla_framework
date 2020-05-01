@@ -145,10 +145,14 @@ func PrintVueFldTemplate(fld types.FldType) string {
 			pgMethod = m
 		}
 		return fmt.Sprintf(`<comp-fld-ref-search pgMethod="%s" label="%s" :item='item.%s' :ext='%s' @update="v=> item.%s = v.id" />`, pgMethod, nameRu, ajaxSelectTitle, extJsonStr, name)
-	case types.FldVueTypeSelect:
+	case types.FldVueTypeSelect, types.FldVueTypeMultipleSelect:
 		options, err := json.Marshal(fld.Vue.Options)
 		utils.CheckErr(err, fmt.Sprintf("'%s' json.Marshal(fld.Vue.Options)", fld.Name))
-		return fmt.Sprintf(`<q-select outlined label="%s" v-model='item.%s' :options='%s' />`, nameRu, name, options)
+		multiple := ""
+		if fldType == types.FldVueTypeMultipleSelect {
+			multiple = "multiple"
+		}
+		return fmt.Sprintf(`<q-select outlined label="%s" v-model='item.%s' :options='%s' %s/>`, nameRu, name, options, multiple)
 	default:
 		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fldType)
 	}
