@@ -21,7 +21,7 @@ BEGIN
 
     -- сборка условия WHERE (where_str_build - функция из папки base)
     whereStr = where_str_build(params, 'doc', ARRAY [
-        ['ilike', 'search_text', '{{.SearchTxt}}']
+        {{.PrintSqlFuncListWhereCond}}
     ]);
 
     -- финальная сборка строки с условиями выборки (build_query_part_for_list - функция из папки base)

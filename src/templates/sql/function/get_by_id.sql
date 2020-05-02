@@ -1,5 +1,5 @@
 {{$doc := . -}}
-{{$PgName := .Name | ToLowerCamel -}}
+{{$PgName := .Name -}}
 -- поиск {{.NameRu}} по id
 -- параметры:
 -- id       type: int

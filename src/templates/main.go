@@ -14,6 +14,12 @@ import (
 	"text/template"
 )
 
+var project *types.ProjectType
+
+func SetProject(p *types.ProjectType)  {
+	project = p
+}
+
 
 var funcMap = template.FuncMap{
 	"ToUpper":        strings.ToUpper,
@@ -153,6 +159,11 @@ func PrintVueFldTemplate(fld types.FldType) string {
 			multiple = "multiple"
 		}
 		return fmt.Sprintf(`<q-select outlined label="%s" v-model='item.%s' :options='%s' %s/>`, nameRu, name, options, multiple)
+	case types.FldTypeVueComposition:
+		if fld.Vue.Composition == nil {
+			log.Fatal(fmt.Sprintf("fld have type '%s', but fld.Vue.Composition function is nil", types.FldTypeVueComposition))
+		}
+		return fld.Vue.Composition(*project, *fld.Doc)
 	default:
 		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fldType)
 	}

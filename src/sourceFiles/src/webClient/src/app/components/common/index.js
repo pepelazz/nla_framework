@@ -13,6 +13,7 @@ import compFldContact from './list/compFldContact'
 import compDadataSuggestion from './list/compDadataSuggestion'
 import compDadataAddress from './list/compDadataAddress'
 import compSearchRefInListWidget from './list/compSearchRefInListWidget'
+import compLinkListWidget from './list/compLinkListWidget'
 
 export default (Vue) => {
   Vue.component('comp-doc-list', compDocList)
@@ -30,4 +31,5 @@ export default (Vue) => {
   Vue.component('comp-dadata-suggestion', compDadataSuggestion)
   Vue.component('comp-dadata-address', compDadataAddress)
   Vue.component('comp-search-ref-in-list-widget', compSearchRefInListWidget)
+  Vue.component('comp-link-list-widget', compLinkListWidget)
 }

@@ -68,6 +68,9 @@ type (
 // место вызова разных доп функций для инициализации документа, после того как основные поля заполнены
 func (d *DocType) Init() {
 	d.Filli18n()
+	for i := range d.Flds {
+		d.Flds[i].Doc = d
+	}
 }
 
 func (d DocType) PgName() string {

@@ -26,6 +26,8 @@ var (
 
 func readData(p types.ProjectType)  {
 	project = p
+	// передаем project в папку types, чтобы иметь доступ из функций шаблонов к проекту
+	templates.SetProject(&project)
 	project.DistPath = "../src"
 	project.FillDocTemplatesFields()
 	project.GenerateGrid()

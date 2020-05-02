@@ -6,14 +6,15 @@ import (
 )
 
 const (
-	FldTypeString = "string"
-	FldTypeText = "text"
-	FldTypeInt = "int"
-	FldTypeDouble = "double"
-	FldTypeDate = "date"
-	FldTypeDatetime = "datetime"
-	FldTypeTextArray = "text[]"
-	FldVueTypeSelect = "select"
+	FldTypeString            = "string"
+	FldTypeText              = "text"
+	FldTypeInt               = "int"
+	FldTypeDouble            = "double"
+	FldTypeDate              = "date"
+	FldTypeVueComposition    = "vueComposition"
+	FldTypeDatetime          = "datetime"
+	FldTypeTextArray         = "text[]"
+	FldVueTypeSelect         = "select"
 	FldVueTypeMultipleSelect = "multipleSelect"
 )
 
@@ -24,30 +25,32 @@ type (
 		Type   string
 		Vue    FldVue
 		Sql    FldSql
+		Doc    *DocType // ссылка на сам документ, к которому принадлежит поле
 	}
 
 	FldVue struct {
-		Name      string
-		NameRu    string
-		Type      string
-		RowCol    [][]int
-		Class     []string
-		IsRequred bool
-		Ext       map[string]string
-		Options   []FldVueOptionsItem
+		Name        string
+		NameRu      string
+		Type        string
+		RowCol      [][]int
+		Class       []string
+		IsRequred   bool
+		Ext         map[string]string
+		Options     []FldVueOptionsItem
+		Composition func(ProjectType, DocType) string
 	}
 
 	FldSql struct {
-		IsSearch   bool
-		IsRequired bool
-		Ref        string
-		IsUniq     bool
-		Size       int
-		IsOptionFld bool
+		IsSearch    bool
+		IsRequired  bool
+		Ref         string
+		IsUniq      bool
+		Size        int
+		IsOptionFld bool // признак что поле пишется не в отдельную колонку таблицы, а в json поле options
 	}
 
 	FldVueOptionsItem struct {
-		Label string `json:"label"`
+		Label string      `json:"label"`
 		Value interface{} `json:"value"`
 	}
 )

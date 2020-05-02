@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/pepelazz/projectGenerator/src/utils"
+	"log"
 	"strings"
 )
 
@@ -147,4 +148,30 @@ func (d DocVue) PrintMixins(tmplName string) string  {
 	}
 
 	return strings.Join(res, ", ")
+}
+
+func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts map[string]interface{}) string {
+	var tableDependName, tableDependRoute, label, avatarSrc string
+	tableIdName := d.Name
+	linkTableName := tableName
+	// находим документы, на которые идет ссылка
+	for _, doc := range p.Docs {
+		if doc.Name == tableName {
+			for _, f := range doc.Flds {
+				if len(f.Sql.Ref) > 0 && f.Sql.Ref != d.Name {
+					depDoc := p.GetDocByName(f.Sql.Ref)
+					if depDoc == nil {
+						log.Fatalf(fmt.Sprintf("GetVueCompLinkListWidget not found '%s'", f.Sql.Ref))
+					}
+					tableDependName = depDoc.Name
+					tableDependRoute = depDoc.Vue.RouteName
+					avatarSrc = depDoc.Vue.MenuIcon
+					label = depDoc.Vue.I18n["listTitle"]
+				}
+			}
+		}
+	}
+
+
+	return fmt.Sprintf("<comp-link-list-widget label='%s' :id='id' tableIdName='%s' tableDependName='%s' tableDependRoute='/%s' linkTableName='%s' avatarSrc='%s'/>", label, tableIdName, tableDependName, tableDependRoute, linkTableName, avatarSrc)
 }

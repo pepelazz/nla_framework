@@ -12,7 +12,7 @@ import (
 func (d DocType) PrintSqlModelFlds() (res string) {
 	arr := []string{"\t{name=\"id\",\t\t\ttype=\"serial\"}"}
 	for _, fld := range d.Flds {
-		if fld.Sql.IsOptionFld {
+		if len(fld.Name) == 0 || fld.Sql.IsOptionFld {
 			continue
 		}
 		arr = append(arr, fld.PrintPgModel())
@@ -128,7 +128,7 @@ func (d DocType) PrintSqlModelAlterScripts() (res string) {
 	arr := []string{}
 
 	for _, fld := range d.Flds {
-		if fld.Sql.IsOptionFld || utils.CheckContainsSliceStr(fld.Name, "id", "created_at", "updated_at", "deleted") {
+		if len(fld.Name) == 0 ||  fld.Sql.IsOptionFld || utils.CheckContainsSliceStr(fld.Name, "id", "created_at", "updated_at", "deleted") {
 			continue
 		}
 		arr = append(arr, fmt.Sprintf("\t\"alter table %s add column if not exists %s %s;\"", d.PgName(), fld.Name, getType(fld)))
@@ -161,6 +161,16 @@ func (d DocType) PrintSqlFuncGetById() (res string) {
 	}
 	res = fmt.Sprintf("%s\n \tselect row_to_json(t%v.*)::jsonb into result from t%v;", strings.Join(arr, ",\n"), cnt, cnt)
 	return
+}
+
+func (d DocType) PrintSqlFuncListWhereCond() string  {
+	arr := []string{"['ilike', 'search_text', 'search_text']"}
+	for _, fld := range d.Flds {
+		if len(fld.Sql.Ref)>0 {
+			arr = append(arr, fmt.Sprintf("\t\t['notQuoted', '%[1]s', 'doc.%[1]s']", fld.Name))
+		}
+	}
+	return strings.Join(arr, ",\n")
 }
 
 // get_by_id.sql функиця по добавлению join
@@ -233,6 +243,9 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 	arr2 := []string{}
 	arr3 := []string{}
 	for i, f := range d.Flds {
+		if len(f.Name) == 0 {
+			continue
+		}
 		if f.Sql.IsOptionFld || utils.CheckContainsSliceStr(f.Name, "id", "created_at", "updated_at", "deleted") {
 			continue
 		}
@@ -249,10 +262,14 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 			//text_array_from_json(params -> 'role')
 		}
 		arr3 = append(arr3, paramStr)
-		if f.Name == "options" {
-			optionsFldIndex = i + 1
-		}
+		// options добавляем последним, поэтому optionsFldIndex увеличиваем на единицу с каждым новым полем, которое будем добавлять
+		optionsFldIndex = i+2
 	}
+	// отдельно добавляем options
+	arr1 = append(arr1, "options")
+	arr2 = append(arr2, fmt.Sprintf("$%v", optionsFldIndex))
+	arr3 = append(arr3, "\t\t\tcoalesce(params -> 'options', '{}')::jsonb")
+
 	res = fmt.Sprintf("EXECUTE ('INSERT INTO %s (%s) VALUES (%s) %s RETURNING *;')", d.Name, strings.Join(arr1, ", "), strings.Join(arr2, ", "), printLinkOnConflict())
 	res = fmt.Sprintf("%s\n\t\tINTO %sRow\n\t\tUSING\n%s;", res, d.Name, strings.Join(arr3, ",\n"))
 	return
@@ -262,6 +279,9 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 func (d DocType) PrintSqlFuncUpdateFlds() (res string) {
 	arr := []string{}
 	for _, f := range d.Flds {
+		if len(f.Name) == 0 {
+			continue
+		}
 		if f.Sql.IsOptionFld || utils.CheckContainsSliceStr(f.Name, "id", "created_at", "updated_at", "deleted") {
 			continue
 		}
