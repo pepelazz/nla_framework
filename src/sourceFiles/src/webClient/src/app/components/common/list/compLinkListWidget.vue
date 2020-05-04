@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="id != 'new'">
     <q-bar class="bg-secondary text-white shadow-2">
       <div>{{label}}</div>
       <q-space />

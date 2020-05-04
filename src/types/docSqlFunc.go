@@ -86,6 +86,20 @@ func (d DocType) PrintSqlModelTriggers() (res string) {
 	return
 }
 
+// main.toml печать fk_constraints
+func (d DocType) PrintSqlModelIndexes() string {
+	res := []string{}
+	if d.Sql.Indexes != nil {
+		for _, v := range d.Sql.Indexes {
+			res = append(res, v)
+		}
+	}
+	if len(res) > 0 {
+		return fmt.Sprintf("indexes = [\n\t%s\n]", strings.Join(res, ",\n"))
+	}
+	return ""
+}
+
 // main.toml печать methods
 func (d DocType) PrintSqlModelMethods() (res string) {
 	arr := []string{
@@ -227,14 +241,16 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 
 	// формирование строчки для update в случае если таблица является связью двух таблиц и эта связь уникальна
 	printLinkOnConflict := func() string {
-		flds := []FldType{}
-		for _, fld := range d.Flds {
-			if len(fld.Sql.Ref) > 0 {
-				flds = append(flds, fld)
+		if d.Sql.IsUniqLink {
+			flds := []FldType{}
+			for _, fld := range d.Flds {
+				if len(fld.Sql.Ref) > 0 {
+					flds = append(flds, fld)
+				}
 			}
-		}
-		if len(flds) > 1 {
-			return fmt.Sprintf(` ON CONFLICT (%s, %s) DO UPDATE SET options=$%v, deleted=false `, flds[0].Name, flds[1].Name, optionsFldIndex)
+			if len(flds) > 1 {
+				return fmt.Sprintf(` ON CONFLICT (%s, %s) DO UPDATE SET options=$%v, deleted=false `, flds[0].Name, flds[1].Name, optionsFldIndex)
+			}
 		}
 		return ""
 	}
@@ -411,4 +427,23 @@ func (d DocType) PrintAfterTriggerUpdateLinkedRecords() string {
 		res = fmt.Sprintf("%s\n%s", res, res1)
 	}
 	return res
+}
+
+// печать sql hook'ов
+func (d DocSqlHooks) Print(tmplName, hookName string) string {
+	switch hookName {
+	case "declareVars":
+		if d.DeclareVars != nil {
+			if r, ok := d.DeclareVars[tmplName]; ok {
+				return "-- codogenerated from doc.Sql.Hooks.declareVars\n\t" + r
+			}
+		}
+	case "beforeInsertUpdate":
+		if d.BeforeInsertUpdate != nil {
+			return strings.Join(d.BeforeInsertUpdate, "\n\n")
+		}
+	default:
+		return fmt.Sprintf("DocSqlHooks.Print not found code for hook '%s'", hookName)
+	}
+	return ""
 }

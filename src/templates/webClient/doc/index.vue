@@ -10,7 +10,7 @@
       <template #listItem="{item}">
         <q-item-section avatar @click="$router.push(`${currentUrl}${item.id}`)">
           <q-avatar rounded>
-            <img src="https://image.flaticon.com/icons/svg/589/589554.svg" alt="">
+            <img src="[[.Vue.MenuIcon]]" alt="">
           </q-avatar>
         </q-item-section>
         [[.PrintListRowLabel]]

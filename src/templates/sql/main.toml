@@ -9,6 +9,8 @@ tableName ="{{.Name }}"
 
 {{.PrintSqlModelTriggers}}
 
+{{.PrintSqlModelIndexes}}
+
 {{.PrintSqlModelMethods}}
 
 {{.PrintSqlModelAlterScripts}}

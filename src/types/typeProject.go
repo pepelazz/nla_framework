@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 	"github.com/pepelazz/projectGenerator/src/utils"
+	"github.com/serenize/snaker"
 	"log"
 )
 
@@ -70,7 +71,7 @@ func (p *ProjectType) FillDocTemplatesFields() {
 		for tName, t := range d.Templates {
 			// прописываем полный путь к файлу шаблона
 			if len(t.Source) == 0 {
-				t.Source = fmt.Sprintf("%s/tmpl/%s", d.Name, tName)
+				t.Source = fmt.Sprintf("%s/tmpl/%s", snaker.SnakeToCamel(d.Name), tName)
 			}
 			distPath, distFilename := utils.ParseDocTemplateFilename(d.Name, tName, p.DistPath, i)
 			t.DistFilename = distFilename
@@ -114,7 +115,12 @@ func (p *ProjectType) FillSideMenu() {
 				p.Vue.Menu[i].Url = d.Vue.RouteName
 			}
 			if len(v.Text) == 0 {
-				p.Vue.Menu[i].Text = d.NameRu
+				// если есть локализованное название для списка, то используем его (там множественное число). Если нет, то название документа
+				if title, ok := d.Vue.I18n["listTitle"]; ok {
+					p.Vue.Menu[i].Text = title
+				} else {
+					p.Vue.Menu[i].Text = utils.UpperCaseFirst(d.NameRu)
+				}
 			}
 			if len(v.Roles) == 0 {
 				p.Vue.Menu[i].Roles = d.Vue.Roles

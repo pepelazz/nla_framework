@@ -22,14 +22,15 @@ type (
 	}
 
 	DocVue struct {
-		RouteName string
-		MenuIcon  string
-		Roles     []string
-		Grid      []VueGridDiv
-		Mixins    map[string][]string          // название файла - название миксина. Для прописывания импорта
-		Methods   map[string]map[string]string // название файла - название метода - текст функции
-		TmplFuncs map[string]func(DocType) string
-		I18n      map[string]string
+		RouteName  string
+		MenuIcon   string
+		Roles      []string
+		Grid       []VueGridDiv
+		Mixins     map[string][]string          // название файла - название миксина. Для прописывания импорта
+		Components map[string]map[string]string // название файла - название миксина: путь для импорта. Для прописывания импорта
+		Methods    map[string]map[string]string // название файла - название метода - текст функции
+		TmplFuncs  map[string]func(DocType) string
+		I18n       map[string]string
 	}
 
 	// специальное представление для сетки
@@ -52,6 +53,9 @@ type (
 		IsBeforeTrigger bool // флаг что добавляем before триггер
 		IsAfterTrigger  bool // флаг что добавляем after триггер
 		IsSearchText    bool // флаг что добавляем поле search_text
+		ComputedTitle   string // в случае если колонка title вычислимая, то прописываем формулу по которой заполняется
+		Indexes 		[]string // индексы
+		Hooks 			DocSqlHooks // куски sql кода
 	}
 
 	DocIsBaseTemapltes struct {
@@ -62,6 +66,11 @@ type (
 	DocSqlMethod struct {
 		Name  string
 		Roles []string
+	}
+
+	DocSqlHooks struct {
+		DeclareVars map[string]string
+		BeforeInsertUpdate []string
 	}
 )
 
@@ -77,6 +86,6 @@ func (d DocType) PgName() string {
 	return snaker.CamelToSnake(d.Name)
 }
 
-func (d DocType) NameCamelCase() string  {
+func (d DocType) NameCamelCase() string {
 	return snaker.SnakeToCamel(d.Name)
 }

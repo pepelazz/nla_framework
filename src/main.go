@@ -130,7 +130,10 @@ func printApiCallPgFuncMethods() (res string)  {
 	res = "// for codeGenerate ##pgFuncList_slot1"
 	for _, d := range project.Docs {
 		for _, m := range d.Sql.Methods {
-			roles := fmt.Sprintf(`"%s"`, strings.Join(m.Roles, `", "`))
+			var roles string
+			if len(m.Roles) > 0{
+				roles = fmt.Sprintf(`"%s"`, strings.Join(m.Roles, `", "`))
+			}
 			res = fmt.Sprintf("%s\n\t\tPgMethod{\"%s\", []string{%s}, nil, BeforeHookAddUserId},", res, m.Name, roles)
 		}
 	}

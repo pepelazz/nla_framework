@@ -11,6 +11,7 @@ const (
 	FldTypeInt               = "int"
 	FldTypeDouble            = "double"
 	FldTypeDate              = "date"
+	FldTypeJsonb             = "jsonb"
 	FldTypeVueComposition    = "vueComposition"
 	FldTypeDatetime          = "datetime"
 	FldTypeTextArray         = "text[]"
@@ -47,6 +48,7 @@ type (
 		IsUniq      bool
 		Size        int
 		IsOptionFld bool // признак что поле пишется не в отдельную колонку таблицы, а в json поле options
+		Default 	string
 	}
 
 	FldVueOptionsItem struct {
@@ -70,6 +72,9 @@ func (fld *FldType) PrintPgModel() string {
 	}
 	if fld.Sql.IsRequired {
 		extStr = "not null"
+	}
+	if len(fld.Sql.Default) > 0 {
+		extStr = extStr + " default " + fld.Sql.Default
 	}
 	// ext может быть пустой
 	ext := ""
@@ -107,4 +112,9 @@ func (fld *FldType) PgUpdateType() string {
 	default:
 		return fld.Type
 	}
+}
+
+func (fld FldType) SetIsRequired() FldType {
+	fld.Sql.IsRequired = true
+	return fld
 }

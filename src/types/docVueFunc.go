@@ -59,6 +59,15 @@ func (d DocType) PrintVueImport(tmplName string) string  {
 			}
 		}
 	}
+	// ссылки на компоненты
+	if d.Vue.Components != nil {
+		if m, ok := d.Vue.Components[tmplName]; ok {
+			for name, path := range m {
+				res = append(res, fmt.Sprintf("\timport %s from '%s'", name, path))
+			}
+		}
+	}
+
 	if tmplName == "docItem" {
 		// если есть поле с типом multipleSelect то добавляем lodash
 		for _, fld := range d.Flds {
@@ -143,6 +152,19 @@ func (d DocVue) PrintMixins(tmplName string) string  {
 		if arr, ok := d.Mixins[tmplName]; ok {
 			for _, s := range arr {
 				res = append(res, fmt.Sprintf("%s", s))
+			}
+		}
+	}
+
+	return strings.Join(res, ", ")
+}
+
+func (d DocVue) PrintComponents(tmplName string) string  {
+	res := []string{}
+	if d.Components != nil {
+		if m, ok := d.Components[tmplName]; ok {
+			for name := range m {
+				res = append(res, name)
 			}
 		}
 	}

@@ -34,7 +34,7 @@ var (
 	pgFuncCache = map[string]pgFuncCacheType{}
 	pgFuncList  = []PgMethod{
 		PgMethod{"user_update", []string{"admin"}, nil, nil},
-		PgMethod{"user_list", []string{"admin"}, nil, nil},
+		PgMethod{"user_list", []string{}, nil, nil},
 		PgMethod{"user_get_by_id", []string{"admin"}, nil, BeforeHookAddUserId},
 		PgMethod{"user_get_by_id_for_ui", []string{"admin"}, nil, BeforeHookAddUserId},
 		PgMethod{"current_user_update", []string{}, nil, BeforeHookAddUserId},

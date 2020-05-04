@@ -36,13 +36,13 @@
                 item: null,
                 flds: [
                     [
-                        {name: 'first_name', type: 'string', label: this.$t('user.formEditFldName'), required: true},
-                        {name: 'last_name', type: 'string', label: this.$t('user.formEditFldLastName'), required: true},
+                        {name: 'first_name', type: 'string', label: 'Имя', required: true},
+                        {name: 'last_name', type: 'string', label: 'Фамилия', required: true},
                     ],
                     [{
                         name: 'role',
                         type: 'selectMultiple',
-                        label: this.$t('user.formEditFldRole'),
+                        label: 'Роли',
                         selectOptions: () => this.options
                     }],
                 ],

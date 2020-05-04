@@ -5,7 +5,7 @@
     <q-scroll-area class="fit">
       <q-list padding>
         <div v-for="link in menuLinks" :key="link.text">
-            <span v-if="isRole(link.role)">
+            <span v-if="isRole(link.roles)">
               <q-item v-if="!link.isFolder" v-ripple clickable :to="link.url" exact>
                 <q-item-section avatar>
                   <q-avatar rounded>
@@ -28,7 +28,7 @@
                     </q-item-section>
                 </template>
                 <span v-for="link1 in link.linkList" :key="link1.text" >
-                  <q-item v-if="isRole(link1.role)" :inset-level="1" v-ripple clickable :to="link1.url"
+                  <q-item v-if="isRole(link1.roles)" :inset-level="1" v-ripple clickable :to="link1.url"
                           exact>
                   <q-item-section>
                     <q-item-label>{{ link1.text }}</q-item-label>

@@ -80,7 +80,7 @@ const saveItem = function ({method, itemForSaveMod = {}, resultModify}) {
       this.$q.notify({
         color: 'negative',
         position: 'bottom',
-        message: this.$t('message.formEditNotFilledFld', {fldName: v.label}),
+        message: `не заполнено поле '${v.label}'`,
       })
     })
     return

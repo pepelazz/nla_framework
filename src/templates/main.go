@@ -120,6 +120,10 @@ func PrintVueFldTemplate(fld types.FldType) string {
 			fldType = "ref"
 		}
 	}
+	// если указана функция для композиции, то меняем тип на vueComposition
+	if fld.Vue.Composition != nil {
+		fldType = types.FldTypeVueComposition
+	}
  	switch fldType {
 	case types.FldTypeString, types.FldTypeText:
 		return fmt.Sprintf(`<q-input outlined type='text' v-model="item.%s" label="%s" autogrow/>`, name, nameRu)

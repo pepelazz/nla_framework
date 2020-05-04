@@ -14,6 +14,7 @@ DECLARE
     result      JSONB;
     updateValue TEXT;
     queryStr    TEXT;
+    {{.Sql.Hooks.Print "update" "declareVars"}}
 BEGIN
 
     -- проверика наличия id
@@ -22,6 +23,8 @@ BEGIN
     THEN
         RETURN checkMsg;
     END IF;
+
+    {{.Sql.Hooks.Print "update" "beforeInsertUpdate"}}
 
     if (params ->> 'id')::int = -1 then
         {{if .RequiredFldsString -}}

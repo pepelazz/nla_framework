@@ -31,6 +31,7 @@
 [[ .PrintVueImport "docItem" ]]
     export default {
         props: ['id'],
+        components: {[[- .Vue.PrintComponents "docItem" -]]},
         mixins: [ [[- .Vue.PrintMixins "docItem" -]] ],
         computed: {
             docUrl: () => '/[[.Vue.RouteName]]',
