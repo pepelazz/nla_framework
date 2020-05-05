@@ -5,7 +5,16 @@ export default {
   computed: {
     isLoggedIn() {
       return this.currentUser
-    }
+    },
+    isWorking() {
+      return this.currentUser && this.currentUser.options && this.currentUser.options.state === 'working'
+    },
+    isWaitingAuth() {
+      return this.currentUser && this.currentUser.options && this.currentUser.options.state === 'waiting_auth'
+    },
+    isFired() {
+      return this.currentUser && this.currentUser.options && this.currentUser.options.state === 'fired'
+    },
   },
   data() {
     return {

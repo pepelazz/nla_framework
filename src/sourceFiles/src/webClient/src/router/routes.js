@@ -10,6 +10,11 @@ const routes = [
   },
   {path: '/users', component: () => import(`../app/components/users/index.vue`)},
   {path: '/users/:id', component: () => import(`../app/components/users/item.vue`), props: true},
+  {path: '/profile', component: () => import(`../app/components/currentUser/profile.vue`)},
+  {path: '/task', component: () => import(`../app/components/task/index.vue`)},
+  {path: '/task/:id', component: () => import(`../app/components/task/item.vue`), props: true},
+  {path: '/taskType', component: () => import(`../app/components/taskType/index.vue`)},
+  {path: '/taskType/:id', component: () => import(`../app/components/taskType/item.vue`), props: true},
   // for codeGenerate ##routes_slot1
 ]
 

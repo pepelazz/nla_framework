@@ -10,6 +10,7 @@ module.exports = function (ctx) {
       'utils',
       'currentUser',
       'myCommon',
+      'userTasks',
     ],
 
     css: [

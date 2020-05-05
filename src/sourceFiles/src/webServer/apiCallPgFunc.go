@@ -39,6 +39,18 @@ var (
 		PgMethod{"user_get_by_id_for_ui", []string{"admin"}, nil, BeforeHookAddUserId},
 		PgMethod{"current_user_update", []string{}, nil, BeforeHookAddUserId},
 		PgMethod{"current_user_get_auth_providers", []string{}, nil, BeforeHookAddUserId},
+		PgMethod{"message_list", []string{}, nil, BeforeHookAddUserId},
+		PgMethod{"message_update", []string{}, nil, BeforeHookAddUserId},
+		PgMethod{"message_mark_as_read", []string{}, nil, BeforeHookAddUserId},
+		PgMethod{"task_list", []string{}, nil, BeforeHookAddUserId},
+		PgMethod{"task_update", []string{"admin"}, nil, BeforeHookAddUserId},
+		PgMethod{"task_get_by_id", []string{}, nil, BeforeHookAddUserId},
+		PgMethod{"task_type_list", []string{}, nil, BeforeHookAddUserId},
+		PgMethod{"task_list_for_user", []string{}, nil, BeforeHookAddUserId},
+		PgMethod{"task_action_to_finished", []string{}, nil, BeforeHookAddUserId},
+		PgMethod{"task_type_update", []string{"admin"}, nil, BeforeHookAddUserId},
+		PgMethod{"task_type_get_by_id", []string{}, nil, BeforeHookAddUserId},
+
 		// for codeGenerate ##pgFuncList_slot1
 	}
 )

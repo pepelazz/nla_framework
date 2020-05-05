@@ -10,4 +10,7 @@ export default {
   logoSrc: '[[logoSrc]]',
   dadataToken: '1cf3a086e3dbe1306ed142d2b5fbc1b324b8eb60',
   // yandexMetrikaId: 54433825,
+  breadcrumbIcons: {
+    [[breadcrumbIcons]]
+  }
 }

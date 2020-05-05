@@ -9,6 +9,7 @@ import (
 	"github.com/pepelazz/projectGenerator/src/types"
 	"github.com/pepelazz/projectGenerator/src/utils"
 	"github.com/pepelazz/projectGenerator/src/webServer"
+	"github.com/pepelazz/projectGenerator/src/sse"
 	"math/rand"
 	"os"
 	"time"
@@ -55,6 +56,9 @@ func main() {
 	utils.SetEmailConfig(config.Email)
 
 	//go pg.GenerateFakeUsers(100)
+
+	// инициализируем брокера для обработки подключений по SSE
+	sse.Init()
 
 	webServer.StartWebServer(*config)
 }

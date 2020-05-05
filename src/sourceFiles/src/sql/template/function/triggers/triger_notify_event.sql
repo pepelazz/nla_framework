@@ -7,6 +7,9 @@ DECLARE
   hString HSTORE;
   result  JSONB;
   r       RECORD;
+  authToken text;
+  taskExecutorFullname text;
+  taskManagerFullname text;
 BEGIN
 
   IF (TG_OP = 'DELETE')
@@ -30,12 +33,26 @@ BEGIN
   result = jsonb_build_object('table', TG_TABLE_NAME, 'id', r.id, 'flds',
                               hstore_to_json_loose(hString));
 
-  -- в случае изменения user добавляем поля auth_provider и auth_provider_id
---   IF TG_TABLE_NAME = 'user'
---   THEN
---     result = result || jsonb_build_object('auth_provider', r.auth_provider, 'auth_provider_id', r.auth_provider_id);
---   END IF;
+  -- в случае изменения user добавляем поля auth_token
+  IF TG_TABLE_NAME = 'user'
+  THEN
+      select auth_token into authToken from user_auth where user_id = r.id;
+      result = result || jsonb_build_object('auth_token', authToken);
+  END IF;
 
+  -- в случае изменения message добавляем поля id и TG_OP
+  IF TG_TABLE_NAME = 'message'
+  THEN
+      result = jsonb_set(result, '{flds}', result->'flds' || jsonb_build_object('id', r.id, 'tg_op', TG_OP, 'sse_type', 'message'));
+  END IF;
+
+  -- в случае изменения task добавляем fullname по исполнителю и менеджеру
+  IF TG_TABLE_NAME = 'task'
+  THEN
+      select fullname into taskExecutorFullname from "user" where id = r.executor_id;
+      select fullname into taskManagerFullname from "user" where id = r.manager_id;
+      result = jsonb_set(result, '{flds}', result->'flds' || row_to_json(r)::jsonb || jsonb_build_object('id', r.id, 'tg_op', TG_OP, 'sse_type', 'task', 'executor_fullname', taskExecutorFullname, 'manager_fullname', taskManagerFullname));
+  END IF;
 
   IF char_length(hString :: TEXT) > 0 -- отправляем notification только если есть изменения
   THEN
@@ -45,8 +62,5 @@ BEGIN
   -- Result is ignored since this is an AFTER trigger
   RETURN NULL;
 END;
-
-
-
 
 $$ LANGUAGE plpgsql;

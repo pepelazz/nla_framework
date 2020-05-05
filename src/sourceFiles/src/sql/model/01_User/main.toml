@@ -14,6 +14,7 @@ fields = [
     {name="password",           type="char", size=200, comment="Пароль в случае авторизации через email"},
     {name="phone",              type="char", size=15,  comment="Номер телефона"},
     {name="email",              type="char", size=100,  comment="Email"},
+    {name="grade",              type="char", size=100,  comment="Должность"},
     {name="options",            type="jsonb",          comment="Разные дополнительные параметры"},
     {name="created_at",         type="timestamp",   ext="with time zone"},
     {name="updated_at",         type="timestamp",   ext="with time zone"},
@@ -45,5 +46,6 @@ methods = [
 
 
 alterScripts = [
-	"alter table \"user\" add column if not exists title CHARACTER VARYING(200);"
+	"alter table \"user\" add column if not exists title CHARACTER VARYING(200);",
+	"alter table \"user\" add column if not exists grade CHARACTER VARYING(100);",
 ]

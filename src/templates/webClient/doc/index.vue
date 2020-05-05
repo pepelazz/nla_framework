@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <comp-breadcrumb :list="[{label:'[[index .Vue.I18n "listTitle"]]'}]"/>
+    <comp-breadcrumb :list="[{label:'[[index .Vue.I18n "listTitle"]]', docType:'[[.Name]]'}]"/>
 
     <comp-doc-list ref="docList" listTitle='[[index .Vue.I18n "listTitle"]]' listDeletedTitle='[[index .Vue.I18n "listDeletedTitle"]]' pg-method="[[.PgName]]_list"
                    :list-sort-data="listSortData" :list-filter-data="listFilterData"

@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <comp-breadcrumb :list="[{label:'Пользователи'}]"/>
+    <comp-breadcrumb :list="[{label:'Пользователи', docType: 'users'}]"/>
 
     <comp-doc-list ref="docList" doc-name="user" pg-method="user_list"
                    :list-sort-data="listSortData" :list-filter-data="listFilterData"
@@ -9,7 +9,8 @@
       <template #listItem="{item}">
         <q-item-section avatar @click="$router.push(`${currentUrl}${item.id}`)">
           <q-avatar rounded>
-            <img :src="item.avatar || 'https://www.svgrepo.com/show/95333/avatar.svg'">
+            <comp-stat-img-src v-if="item.avatar" :src="item.avatar"/>
+            <img v-else src="https://www.svgrepo.com/show/95333/avatar.svg">
           </q-avatar>
         </q-item-section>
         <q-item-section>

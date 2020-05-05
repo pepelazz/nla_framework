@@ -1,7 +1,8 @@
 <template>
   <q-page padding>
 
-    <comp-breadcrumb :list="[{label:'Пользователи', to:'/users'}, {label:'Редактирование'}]"/>
+    <comp-breadcrumb :list="[{label:'Пользователи', to:'/users', docType: 'users'},
+    {label: item ? `${item.last_name} ${item.first_name}` : '',  docType: 'edit'}]"/>
 
     <div v-if="item" class="q-mt-sm">
       <!--  поля формы    -->
@@ -14,7 +15,12 @@
                   :selectOptions="fld.selectOptions ? fld.selectOptions() : []"
         />
       </div>
-
+      <!-- аватарка     -->
+      <div class="row q-col-gutter-md" v-if="item.avatar">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <comp-stat-img-src :src="item.avatar"/>
+        </div>
+      </div>
       <!--  кнопки   -->
       <comp-item-btn-save @save="save" @cancel="$router.push(docUrl)"/>
 
@@ -26,10 +32,21 @@
     import _ from 'lodash'
     import roles from './roles'
 
+    const i18nState = {
+        waiting_auth: 'ожидает авторизации',
+        working: 'работает',
+        fired: 'уволен',
+    }
     export default {
         props: ['id'],
         computed: {
             docUrl: () => '/users',
+            // локализация статусов
+            stateOptions: function () {
+                return ['waiting_auth', 'working', 'fired'].map(v => {
+                    return {value: v, label: i18nState[v]}
+                })
+            }
         },
         data() {
             return {
@@ -39,33 +56,50 @@
                         {name: 'first_name', type: 'string', label: 'Имя', required: true},
                         {name: 'last_name', type: 'string', label: 'Фамилия', required: true},
                     ],
-                    [{
-                        name: 'role',
-                        type: 'selectMultiple',
-                        label: 'Роли',
-                        selectOptions: () => this.options
-                    }],
+                    [
+                        {
+                            name: 'role',
+                            type: 'selectMultiple',
+                            label: 'роли',
+                            selectOptions: () => this.options
+                        },
+                        {
+                            name: 'state',
+                            type: 'select',
+                            label: 'Текущий статус',
+                            selectOptions: () => this.stateOptions
+                        },
+                    ],
+                    [
+                        {name: 'grade', type: 'string', label: 'Должность'},
+                    ],
+                    // for codeGenerate #flds_slot
                 ],
                 options: roles,
+                // for codeGenerate #ptionsFlds: ['state'] - не менять последовательность, это ключ для поиска и добавления новых полей
+                optionsFlds: ['state'],
             }
         },
         methods: {
+            resultModify(res) {
+                res.role = res.role.map(roleName => _.find(this.options, {value: roleName})).filter(v => v)
+                if (res.state) res.state = {value: res.state, label: i18nState[res.state]}
+                return res
+            },
             save() {
                 this.$utils.saveItem.call(this, {
                     method: 'user_update',
-                    itemForSaveMod: {role: this.item.role.map(({value}) => value).filter(v => v)},
-                    resultModify: (res) => {
-                        res.role = res.role.map(roleName => _.find(this.options, {value: roleName})).filter(v => v)
-                        return res
-                    }
+                    itemForSaveMod: {
+                        role: this.item.role.map(({value}) => value).filter(v => v),
+                        state: this.item.state ? this.item.state.value : undefined,
+                    },
+                    resultModify: this.resultModify,
                 })
             },
         },
         mounted() {
             let cb = (v) => {
-                this.item = v
-                // преобразуем роли из строк в объекты
-                this.item.role = this.item.role.map(roleName => _.find(this.options, {value: roleName})).filter(v => v)
+                this.item = this.resultModify(v)
             }
             this.$utils.getDocItemById.call(this, {method: 'user_get_by_id', cb})
         }

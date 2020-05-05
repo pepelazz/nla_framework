@@ -32,6 +32,10 @@ func readData(p types.ProjectType)  {
 	project.FillDocTemplatesFields()
 	project.GenerateGrid()
 	project.FillVueFlds()
+	// проставляем дефолтное время сервера, если не задано в настройках проекта
+	if len(project.Config.Postgres.TimeZone) == 0 {
+		project.Config.Postgres.TimeZone = "Europe/Moscow"
+	}
 
 	// передаем project в папку types, чтобы иметь доступ из функций шаблонов к проекту
 	types.SetProject(&project)
@@ -105,6 +109,14 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 				if strings.HasSuffix(path, "src"+string(os.PathSeparator)+"index.template.html") {
 					file = []byte(strings.Replace(string(file), "[[appName]]", p.Name, -1))
 				}
+				// изменение loginPage.vue и home.vue
+				if strings.HasSuffix(path, "loginPage.vue") || strings.HasSuffix(path, "home.vue") {
+					file = []byte(strings.Replace(string(file), "[[appLogoSrc]]", p.Config.Logo, -1))
+				}
+				// проставляем Config.Postgres.TimeZone в sql файлах
+				if strings.HasSuffix(path, ".sql") {
+					file = []byte(strings.Replace(string(file), "[[Config.Postgres.TimeZone]]", p.Config.Postgres.TimeZone, -1))
+				}
 				// применяем модификатор для текста файла
 				if modifyFunc != nil {
 					file = modifyFunc(dirPath + info.Name(), file)
@@ -141,12 +153,19 @@ func printApiCallPgFuncMethods() (res string)  {
 }
 
 func configJsModify(p types.ProjectType, file []byte) (res []byte)  {
+	breadcrumbIcons := []string{}
+	for _, d := range p.Docs {
+		if len(d.Vue.BreadcrumbIcon)>0 {
+			breadcrumbIcons = append(breadcrumbIcons, fmt.Sprintf("%s: '%s'", d.Name, d.Vue.BreadcrumbIcon))
+		}
+	}
 	fileStr := string(file)
 	fileStr = strings.Replace(fileStr, "[[appName]]", p.Name, -1)
 	fileStr = strings.Replace(fileStr, "[[uiAppName]]", p.Vue.UiAppName, -1)
 	fileStr = strings.Replace(fileStr, "[[webPort]]", fmt.Sprintf("%v", p.Config.WebServer.Port), -1)
 	fileStr = strings.Replace(fileStr, "[[url]]",  strings.TrimPrefix(p.Config.WebServer.Url, "https://"), -1)
 	fileStr = strings.Replace(fileStr, "[[logoSrc]]",  p.Config.Logo, -1)
+	fileStr = strings.Replace(fileStr, "[[breadcrumbIcons]]", strings.Join(breadcrumbIcons, ",\n"), -1)
 	return []byte(fileStr)
 }
 

@@ -35,6 +35,7 @@ BEGIN
         ['first_name', 'first_name', 'text'],
         ['role', 'role', 'jsonArrayText'],
         ['avatar', 'avatar', 'text'],
+        ['grade', 'grade', 'text'],
         ['options', 'options', 'jsonb'],
         ['deleted', 'deleted', 'bool']
         ]);

@@ -7,7 +7,9 @@ import (
 	"github.com/pepelazz/projectGenerator/src/cacheUtil"
 	"github.com/pepelazz/projectGenerator/src/types"
 	"github.com/pepelazz/projectGenerator/src/utils"
+	"github.com/pepelazz/projectGenerator/src/sse"
 	"github.com/tidwall/gjson"
+	"strconv"
 	"time"
 )
 
@@ -77,10 +79,18 @@ func processPgEvent(event string) {
 	switch tableName {
 	case "user":
 		// стираем пользователя из кэша
-		token := gjson.Get(event, "flds.auth_token").Str
+		token := gjson.Get(event, "auth_token").Str
 		if len(token) > 0 {
 			cacheUtil.UserRemoveByToken(token)
 		}
+	case "message":
+		if (gjson.Get(event, "flds.tg_op").Str == "INSERT") {
+			userIdInt := gjson.Get(event, "flds.user_id").Int()
+			sse.SendJson(strconv.FormatInt(userIdInt, 10), gjson.Get(event, "flds").Value())
+		}
+	case "task":
+		userIdInt := gjson.Get(event, "flds.executor_id").Int()
+		sse.SendJson(strconv.FormatInt(userIdInt, 10), gjson.Get(event, "flds").Value())
 	case "process_error":
 		fmt.Printf("postgres event %s\n", event)
 	}

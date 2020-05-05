@@ -62,6 +62,14 @@ func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) 
 	return
 }
 
+// поле с кастомной композицией
+func GetFldJsonbComposition(name, nameRu string, rowCol [][]int, classStr, htmlStr string) (fld FldType) {
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
+		return htmlStr
+	}}}
+	return
+}
+
 // простое html поле
 func GetFldSimpleHtml(rowCol [][]int, classStr, htmlStr string) (fld FldType) {
 	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
@@ -70,3 +78,11 @@ func GetFldSimpleHtml(rowCol [][]int, classStr, htmlStr string) (fld FldType) {
 	return
 }
 
+// функция конвертации списка имен файлов с шаблонами в  map[string]*DocTemplate
+func GetCustomTemplates(p ...string) map[string]*DocTemplate  {
+	res := map[string]*DocTemplate{}
+	for _, name := range p {
+		res[name] = &DocTemplate{}
+	}
+	return res
+}

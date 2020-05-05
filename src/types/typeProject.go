@@ -26,6 +26,7 @@ type (
 		DbName   string
 		Port     int64
 		Password string
+		TimeZone string // время для сервера default 'Europe/Moscow' (например 'Asia/Novosibirsk')
 	}
 	WebServerConfig struct {
 		Port     int64
@@ -140,7 +141,12 @@ func (p *ProjectType) FillSideMenu() {
 						p.Vue.Menu[i].LinkList[j].Url = d.Vue.RouteName
 					}
 					if len(v1.Text) == 0 {
-						p.Vue.Menu[i].LinkList[j].Text = d.NameRu
+						// если есть локализованное название для списка, то используем его (там множественное число). Если нет, то название документа
+						if title, ok := d.Vue.I18n["listTitle"]; ok {
+							p.Vue.Menu[i].LinkList[j].Text = title
+						} else {
+							p.Vue.Menu[i].LinkList[j].Text = utils.UpperCaseFirst(d.NameRu)
+						}
 					}
 					if len(v1.Roles) == 0 {
 						p.Vue.Menu[i].LinkList[j].Roles = d.Vue.Roles

@@ -5,6 +5,8 @@ funcList = [
     "triger_created_updated",
     "triger_notify_event",
     "trigger_user_fullname_update",
+    "trigger_task_update_table_name",
+    "trigger_task_type_change",
     #----- util --------
     "small_funcs",
     "build_query_part_for_list",

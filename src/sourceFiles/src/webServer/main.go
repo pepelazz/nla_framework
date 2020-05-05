@@ -6,6 +6,7 @@ import (
 	"github.com/pepelazz/projectGenerator/src/types"
 	"github.com/pepelazz/projectGenerator/src/utils"
 	"github.com/pepelazz/projectGenerator/src/webServer/auth"
+	"github.com/pepelazz/projectGenerator/src/sse"
 	"net/http"
 )
 
@@ -38,6 +39,15 @@ func StartWebServer(config types.Config) {
 		apiRoute.POST("/call_pg_func", apiCallPgFunc)
 		// отправка логов в graylog
 		apiRoute.POST("/log", logToGraylog)
+		// подключение по SSE
+		apiRoute.GET("/sse", sse.AddConn)
+		// операции с файлами
+		apiRoute.POST("/upload_file", uploadFile)
+		apiRoute.GET("/file/:fileToken", downloadFile)
+		apiRoute.POST("/remove_file/:fileToken", deleteFile)
+		// загрузка фото
+		apiRoute.POST("/upload_image", uploadImage)
+		apiRoute.POST("/upload_profile_image", uploadProfileImage)
 	}
 
 	// на ненайденный url отправляем статический файл для запуска vuejs приложения

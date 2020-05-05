@@ -1,0 +1,31 @@
+docType = "File"
+tableComment = "Таблица с файлами"
+
+tableName ="file"
+
+fields = [
+    {name="id",                     type="serial" },
+    {name="filename",			    type="char", size=100,          comment="название"},
+    {name="ext",			        type="char", size=10,           comment="расширение"},
+    {name="table_name",			    type="char", size=50,           comment="название таблицы, к которой прикреплен файл"},
+    {name="table_id",			    type="int",                     comment="id из таблицы"},
+    {name="size",			        type="int",                     comment="размер файла"},
+    {name="token",			        type="char", size=50,           comment="уникальный токен для ссылка на файл"},
+    {name="options",                type="jsonb",                   comment="Разные дополнительные параметры"},
+    {name="created_at",             type="timestamp",   ext="with time zone"},
+    {name="updated_at",             type="timestamp",   ext="with time zone"},
+    {name="deleted",                type="bool",        ext="not null default false"},
+]
+
+fkConstraints = [
+    {name="file_already_exist", ext="UNIQUE (token)"},
+]
+
+triggers = [
+    {name="file_created", when="before insert or update", ref="for each row", funcName="builtin_fld_update"},
+]
+
+methods = [
+    "file_update",
+    "file_get_by_token",
+]

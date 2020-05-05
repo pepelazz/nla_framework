@@ -3,7 +3,7 @@
     <div>
       <div class="row justify-center" style="margin-top: 20px; margin-bottom: 10px">
         <img
-          src="https://c.radikal.ru/c19/2001/d3/4563ca8eda40.jpg"
+          src="[[appLogoSrc]]"
           alt="" style="width: auto; max-height: 100px">
       </div>
       <!--Кнопки авторизации-->

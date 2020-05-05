@@ -33,10 +33,10 @@ BEGIN
 
   SELECT *
   FROM user_auth_create(
-      jsonb_build_object('auth_provider', 'email', 'auth_provider_id', temp_var.email, 'auth_token',
-                         temp_var.auth_token, 'last_name', temp_var.last_name, 'first_name', temp_var.first_name,
-                         'username', temp_var.email, 'email', temp_var.email,
-                         'password', temp_var.password))
+               jsonb_build_object('auth_provider', 'email', 'auth_provider_id', temp_var.email, 'auth_token',
+                                  temp_var.auth_token, 'last_name', temp_var.last_name, 'first_name', temp_var.first_name,
+                                  'username', temp_var.email, 'email', temp_var.email, 'options', jsonb_build_object('state', 'waiting_auth'),
+                                  'password', temp_var.password))
   INTO result;
 
   -- стираем запись из временной таблицы

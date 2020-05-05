@@ -1,15 +1,23 @@
 <template>
   <div>
     <q-breadcrumbs gutter="sm">
-      <q-breadcrumbs-el label="4PL" to="/"/>
-      <q-breadcrumbs-el v-for='item in list' :key="item.label" :label="item.label" :to="item.to"/>
+      <q-breadcrumbs-el :label="$config.uiAppName" to="/"/>
+      <!-- делаем плоский массив, потому что в нем может быть вложенный массив     -->
+      <q-breadcrumbs-el v-for='item in [].concat(...list)' :key="item.label" :label="item.label" :to="item.to" :icon="icon(item.docType)"/>
     </q-breadcrumbs>
     <q-separator class="q-mt-sm"/>
   </div>
 </template>
 
 <script>
-  export default {
-    props: ['list']
-  }
+    export default {
+        props: ['list'],
+        computed: {
+            icon() {
+                return function(docType) {
+                    return this.$config.breadcrumbIcons[docType] || 'label'
+                }
+            }
+        }
+    }
 </script>

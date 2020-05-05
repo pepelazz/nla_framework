@@ -10,10 +10,15 @@ import compFldUserMultipleSearch from './list/compFldUserMultipleSearch'
 import compFldRefSearch from './list/compFldRefSearch'
 import compFldSelectCity from './list/compFldSelectCity'
 import compFldContact from './list/compFldContact'
+import compFldFiles from './list/compFldFiles'
+import compFldImg from './list/compFldImg'
+import compFldImgList from './list/compFldImgList'
 import compDadataSuggestion from './list/compDadataSuggestion'
 import compDadataAddress from './list/compDadataAddress'
+import compDadataAddressDialog from './list/compDadataAddressDialog'
 import compSearchRefInListWidget from './list/compSearchRefInListWidget'
 import compLinkListWidget from './list/compLinkListWidget'
+import statImgSrc from './utils/statImgSrc'
 
 export default (Vue) => {
   Vue.component('comp-doc-list', compDocList)
@@ -28,8 +33,13 @@ export default (Vue) => {
   Vue.component('comp-fld-ref-search', compFldRefSearch)
   Vue.component('comp-fld-select-city', compFldSelectCity)
   Vue.component('comp-fld-contact', compFldContact)
+  Vue.component('comp-fld-files', compFldFiles)
+  Vue.component('comp-fld-img', compFldImg)
+  Vue.component('comp-fld-img-list', compFldImgList)
   Vue.component('comp-dadata-suggestion', compDadataSuggestion)
   Vue.component('comp-dadata-address', compDadataAddress)
+  Vue.component('comp-dadata-address-dialog', compDadataAddressDialog)
   Vue.component('comp-search-ref-in-list-widget', compSearchRefInListWidget)
   Vue.component('comp-link-list-widget', compLinkListWidget)
+  Vue.component('comp-stat-img-src', statImgSrc)
 }
