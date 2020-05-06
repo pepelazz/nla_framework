@@ -72,7 +72,12 @@ func (p *ProjectType) FillDocTemplatesFields() {
 		for tName, t := range d.Templates {
 			// прописываем полный путь к файлу шаблона
 			if len(t.Source) == 0 {
-				t.Source = fmt.Sprintf("%s/tmpl/%s", snaker.SnakeToCamel(d.Name), tName)
+				// учитывааем что возможен префикс, если папка с документом вложена в другую папку
+				pathPrefix := ""
+				if len(d.PathPrefix) > 0 {
+					pathPrefix = d.PathPrefix + "/"
+				}
+				t.Source = fmt.Sprintf("%s%s/tmpl/%s", pathPrefix, snaker.SnakeToCamelLower(d.Name), tName)
 			}
 			distPath, distFilename := utils.ParseDocTemplateFilename(d.Name, tName, p.DistPath, i)
 			t.DistFilename = distFilename

@@ -1,6 +1,7 @@
 package types
 
 import (
+	"github.com/pepelazz/projectGenerator/src/utils"
 	"github.com/serenize/snaker"
 	"text/template"
 )
@@ -19,6 +20,7 @@ type (
 		Sql             DocSql
 		Templates       map[string]*DocTemplate
 		IsBaseTemapltes DocIsBaseTemapltes // флаг что генерируем стандартные шаблоны для документа
+		PathPrefix string // префикс,если папка, в которой лежит папка с описанием документа находится не на одном уровне с main.go. Например 'docs', если docs/client/...
 	}
 
 	DocVue struct {
@@ -89,4 +91,25 @@ func (d DocType) PgName() string {
 
 func (d DocType) NameCamelCase() string {
 	return snaker.SnakeToCamel(d.Name)
+}
+
+// sugar для добавление компоненты во vue
+// имя шаблона. Например, docItem
+func (d *DocType) AddVueComposition(tmpName, compName string)  {
+	importName := "comp" + utils.UpperCaseFirst(compName)
+	importAddress := "./comp/" + compName + ".vue"
+	dTemplateName := "webClient_comp_" + compName + ".vue"
+ 	// добавляем в список компонент
+	if d.Vue.Components == nil {
+		d.Vue.Components = map[string]map[string]string{}
+	}
+	if d.Vue.Components[tmpName] == nil {
+		d.Vue.Components[tmpName] = map[string]string{}
+	}
+	d.Vue.Components[tmpName][importName] = importAddress
+	// добавляем в список шаблонов для загрузки
+	if d.Templates == nil {
+		d.Templates = map[string]*DocTemplate{}
+	}
+	d.Templates[dTemplateName] = &DocTemplate{}
 }

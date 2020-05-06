@@ -7,6 +7,9 @@
       filled
       debounce="300"
     >
+      <template v-slot:prepend v-if="isFirstSelected">
+        <q-icon name="add" @click="add" />
+      </template>
       <template v-slot:append>
         <q-icon name="search" />
       </template>
@@ -17,7 +20,7 @@
       <q-item v-for="(item) in resultList" :key="item.data.hid" clickable v-ripple>
         <q-item-section @click="selectAddress(item)">
           <q-item-label>{{item.value}}</q-item-label>
-<!--          <q-item-label caption>{{item.data.inn}} {{item.data.address.value}}</q-item-label>-->
+          <!--          <q-item-label caption>{{item.data.inn}} {{item.data.address.value}}</q-item-label>-->
         </q-item-section>
       </q-item>
     </q-list>
@@ -43,6 +46,7 @@
                 resultList: [],
                 selectedItem: null,
                 notFound: false,
+                isFirstSelected: false, // флаг для выделения, что как минимум один выборо из списка уже сделан
             }
         },
         watch: {
@@ -57,30 +61,42 @@
                         if (!res) res = []
                         this.resultList = res
                         this.notFound = (res.length === 0)
+                        if (res.length === 0) this.isFirstSelected = false
                     }
                 })
             },
             selectAddress(item) {
                 this.search = item.value
+                this.isFirstSelected = true
                 this.$nextTick(() => {
-                  if (this.resultList.length === 1) this.resultList = []
+                    if (this.resultList.length === 1) this.resultList = []
                 })
-                this.$emit('update', item)
+            },
+            // специальный запрос чтобы получить геокоординаты
+            add() {
+                postRequest({query: this.search, count: 1}).subscribe(res => {
+                    if (res) {
+                        this.resultList = []
+                        this.search = ''
+                        this.$emit('update', res)
+                    }
+                })
             }
         },
     }
-    const postRequest = ({query}) => ajax({
-            url: `https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address`,
-            method: 'POST',
-            headers: getHttpHeaders(),
-            body: {
-                query,
-            }
-        }).pipe(
-            take(1),
-            map(processResponse()),
-            catchError(processError())
-        )
+    const postRequest = ({query, count = 10}) => ajax({
+        url: `https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address`,
+        method: 'POST',
+        headers: getHttpHeaders(),
+        body: {
+            query,
+            count
+        }
+    }).pipe(
+        take(1),
+        map(processResponse()),
+        catchError(processError())
+    )
 
     const getHttpHeaders = () => {
         let headers = {
