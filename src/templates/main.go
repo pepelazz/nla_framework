@@ -45,7 +45,7 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 
 	// webClient
 	path = "../../projectGenerator/src/templates/webClient/doc/"
-	readFiles("webClient_", "[[", "]]", path + "index.vue", path + "item.vue")
+	readFiles("webClient_", "[[", "]]", path + "index.vue", path + "item.vue", path + "itemWithTabs.vue", path + "tabInfo.vue")
 	// sql
 	path = "../../projectGenerator/src/templates/sql/"
 	readFiles("sql_", "{{", "}}", path + "main.toml")
@@ -68,6 +68,17 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 		if d.IsBaseTemapltes.Sql {
 			baseTmplNames = append(baseTmplNames, "sql_main.toml", "sql_function_get_by_id.sql", "sql_function_list.sql", "sql_function_update.sql", "sql_function_trigger_before.sql", "sql_function_trigger_after.sql")
 		}
+		// в случае если указаны табы, то подбираем соответствующие шаблоны
+		for _, tab := range d.Vue.Tabs {
+			if t, ok := res["webClient_" + tab.TmplName]; !ok {
+				log.Fatalf("ParseTemplates: Template not found for tab %s %s", d.Name, tab.TmplName)
+			} else {
+				tName := "webClient_tabs_" + tab.Title
+				distPath := fmt.Sprintf("%s/webClient/src/app/components/%s/tabs/%s", p.DistPath, d.Name, tab.Title)
+				d.Templates[tName]= &types.DocTemplate{Tmpl: t, DistPath: distPath, DistFilename: "index.vue"}
+			}
+		}
+
 		for _, tName := range baseTmplNames{
 			// если шаблона с таким именем нет, то добавляем стандартный
 			if _, ok := d.Templates[tName]; !ok {
@@ -78,7 +89,19 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 					continue
 				}
 				distPath, distFilename := utils.ParseDocTemplateFilename(d.Name, tName, p.DistPath, i)
-				d.Templates[tName]= &types.DocTemplate{Tmpl: res[tName], DistPath: distPath, DistFilename: distFilename}
+				tmpl := res[tName]
+				// возможность переопределить шаблон
+				// если указаны табы, то подменяем шаблон item.vue на itemWithTabs.vue
+				if len(d.Vue.Tabs) > 0 {
+					if strings.HasPrefix(distPath, "../src/webClient/src/app/components") && distFilename == "item.vue" {
+						tmpl = res["webClient_itemWithTabs.vue"]
+					}
+				}
+				// игнорируем шаблоны для табов, их добавляем по специальным путям, которые указаны в d.Vue.Tabs (см раздел выше)
+				if strings.HasPrefix(tName, "webClient_tab") {
+					continue
+				}
+				d.Templates[tName]= &types.DocTemplate{Tmpl: tmpl, DistPath: distPath, DistFilename: distFilename}
 			}
 		}
 	}

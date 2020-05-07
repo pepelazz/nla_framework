@@ -35,6 +35,12 @@ type (
 		Methods    map[string]map[string]string // название файла - название метода - текст функции
 		TmplFuncs  map[string]func(DocType) string
 		I18n       map[string]string
+		Tabs 	   []VueTab
+	}
+
+	VueTab struct {
+		Title string
+		TmplName string
 	}
 
 	// специальное представление для сетки
