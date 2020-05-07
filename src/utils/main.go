@@ -14,7 +14,7 @@ func CheckErr(err error, msg string) {
 }
 
 func UpperCaseFirst(str string) string {
-	return strings.Title(strings.ToLower(str))
+	return strings.Title(str)
 }
 
 func ParseDocTemplateFilename(docName, filename, globalDistPath string, docIndex int) (distPath, distFilename string) {

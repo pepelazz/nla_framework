@@ -66,6 +66,9 @@
             }
         },
         methods: {
+            clear() {
+                this.localItem = {label: null, value: null}
+            },
             filterFn(val, update, abort) {
                 update(() => {
                     this.$utils.postCallPgMethod({
@@ -79,6 +82,7 @@
                                     label: v[this.itemTitleFldName],
                                     value: v[this.itemTitleFldName],
                                     id: v.id,
+                                    item: v,
                                 }
                             })
                         }

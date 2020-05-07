@@ -112,6 +112,10 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	if len(nameRu) == 0 {
 		nameRu = fld.NameRu
 	}
+	readonly := fld.Vue.Readonly
+	if len(readonly) == 0 {
+		readonly="false"
+	}
 	fldType := fld.Vue.Type
 	if len(fldType) == 0 {
 		fldType = fld.Type
@@ -126,15 +130,15 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	}
  	switch fldType {
 	case types.FldTypeString, types.FldTypeText:
-		return fmt.Sprintf(`<q-input outlined type='text' v-model="item.%s" label="%s" autogrow/>`, name, nameRu)
+		return fmt.Sprintf(`<q-input outlined type='text' v-model="item.%s" label="%s" autogrow :readonly='%s'/>`, name, nameRu, readonly)
 	case types.FldTypeInt, types.FldTypeDouble:
-		return fmt.Sprintf(`<q-input outlined type='number' v-model="item.%s" label="%s"/>`, name, nameRu)
+		return fmt.Sprintf(`<q-input outlined type='number' v-model="item.%s" label="%s" :readonly='%s'/>`, name, nameRu, readonly)
 	// дата
 	case types.FldTypeDate:
-		return fmt.Sprintf(`<comp-fld-date label="%s" :date-string="$utils.formatPgDate(item.%s)" @update="v=> item.%s = v"/>`, nameRu, name, name)
+		return fmt.Sprintf(`<comp-fld-date label="%s" :date-string="$utils.formatPgDate(item.%s)" @update="v=> item.%s = v" :readonly='%s'/>`, nameRu, name, name, readonly)
 	// дата с временем
 	case types.FldTypeDatetime:
-		return fmt.Sprintf(`<comp-fld-date-time label="%s" :date-string="$utils.formatPgDateTime(item.%s)" @update="v=> item.%s = v"/>`, nameRu, name, name)
+		return fmt.Sprintf(`<comp-fld-date-time label="%s" :date-string="$utils.formatPgDateTime(item.%s)" @update="v=> item.%s = v" :readonly='%s'/>`, nameRu, name, name, readonly)
 	// вариант ссылки на другую таблицу
 	case "ref":
 		// если map Ext не инициализирован, то создаем его, чтобы не было ошибки при json.Marshal
@@ -154,7 +158,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		if m, ok := fld.Vue.Ext["pgMethod"]; ok {
 			pgMethod = m
 		}
-		return fmt.Sprintf(`<comp-fld-ref-search pgMethod="%s" label="%s" :item='item.%s' :ext='%s' @update="v=> item.%s = v.id" />`, pgMethod, nameRu, ajaxSelectTitle, extJsonStr, name)
+		return fmt.Sprintf(`<comp-fld-ref-search pgMethod="%s" label="%s" :item='item.%s' :ext='%s' @update="v=> item.%s = v.id" :readonly='%s'/>`, pgMethod, nameRu, ajaxSelectTitle, extJsonStr, name, readonly)
 	case types.FldVueTypeSelect, types.FldVueTypeMultipleSelect:
 		options, err := json.Marshal(fld.Vue.Options)
 		utils.CheckErr(err, fmt.Sprintf("'%s' json.Marshal(fld.Vue.Options)", fld.Name))
@@ -162,7 +166,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		if fldType == types.FldVueTypeMultipleSelect {
 			multiple = "multiple"
 		}
-		return fmt.Sprintf(`<q-select outlined label="%s" v-model='item.%s' :options='%s' %s/>`, nameRu, name, options, multiple)
+		return fmt.Sprintf(`<q-select outlined label="%s" v-model='item.%s' :options='%s' %s :readonly='%s'/>`, nameRu, name, options, multiple, readonly)
 	case types.FldTypeVueComposition:
 		if fld.Vue.Composition == nil {
 			log.Fatal(fmt.Sprintf("fld have type '%s', but fld.Vue.Composition function is nil", types.FldTypeVueComposition))

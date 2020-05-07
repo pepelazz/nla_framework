@@ -36,6 +36,8 @@ BEGIN
         END IF;
         {{end -}}
 
+        {{.Sql.Hooks.Print "update" "beforeInsert"}}
+
         {{.PrintSqlFuncInsertNew}}
 
     else

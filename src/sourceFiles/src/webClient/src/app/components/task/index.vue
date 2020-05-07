@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <!-- TODO: поменять иконку-->
-    <comp-breadcrumb :list="[{label:'Задача', docType: 'task'}]"/>
+    <comp-breadcrumb :list="[{label:'Задача', docType: 'task', icon: 'fas fa-tasks'}]"/>
 
     <comp-doc-list ref="docList" doc-name="task" pg-method="task_list"
                    :list-sort-data="listSortData" :list-filter-data="listFilterData"

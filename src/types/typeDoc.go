@@ -21,6 +21,7 @@ type (
 		Templates       map[string]*DocTemplate
 		IsBaseTemapltes DocIsBaseTemapltes // флаг что генерируем стандартные шаблоны для документа
 		PathPrefix string // префикс,если папка, в которой лежит папка с описанием документа находится не на одном уровне с main.go. Например 'docs', если docs/client/...
+		IsTaskAllowed bool // признак, что к таблице можно прикреплять задачи
 	}
 
 	DocVue struct {
@@ -74,6 +75,7 @@ type (
 	DocSqlHooks struct {
 		DeclareVars map[string]string
 		BeforeInsertUpdate []string
+		BeforeInsert []string
 	}
 )
 

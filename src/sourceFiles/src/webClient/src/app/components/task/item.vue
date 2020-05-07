@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
 
-    <comp-breadcrumb :list="[{label:'Задача', to:'/task', docType: 'task'},
+    <comp-breadcrumb :list="[{label:'Задача', to:'/task', docType: 'task', icon: 'fas fa-tasks'},
     {label: item && item.title ? `${item.title}` : '',  docType: 'edit'}]"/>
 
     <div v-if="item" class="q-mt-sm">

@@ -1,6 +1,7 @@
 package projectGenerator
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/pepelazz/projectGenerator/src/templates"
 	"github.com/pepelazz/projectGenerator/src/types"
@@ -153,6 +154,16 @@ func printApiCallPgFuncMethods() (res string)  {
 }
 
 func configJsModify(p types.ProjectType, file []byte) (res []byte)  {
+	jsTablesForTask := func() string  {
+		res := map[string]string{}
+		for _, d := range project.Docs {
+		if d.IsTaskAllowed {
+		res[d.Name] = d.NameRu
+	}
+	}
+		jsonStr, _ := json.Marshal(res)
+		return string(jsonStr)
+	}
 	breadcrumbIcons := []string{}
 	for _, d := range p.Docs {
 		if len(d.Vue.BreadcrumbIcon)>0 {
@@ -166,6 +177,8 @@ func configJsModify(p types.ProjectType, file []byte) (res []byte)  {
 	fileStr = strings.Replace(fileStr, "[[url]]",  strings.TrimPrefix(p.Config.WebServer.Url, "https://"), -1)
 	fileStr = strings.Replace(fileStr, "[[logoSrc]]",  p.Config.Logo, -1)
 	fileStr = strings.Replace(fileStr, "[[breadcrumbIcons]]", strings.Join(breadcrumbIcons, ",\n"), -1)
+	// проставляем список таблиц, к которым можно прикреплять задачи
+	fileStr = strings.Replace(fileStr, "[[codoGeneratedTablesForTask]]",  jsTablesForTask(), -1)
 	return []byte(fileStr)
 }
 
@@ -206,9 +219,8 @@ func sidemenuJsModify() string  {
 			if m.Roles != nil && len(m.Roles)>0 {
 				roles = fmt.Sprintf(`'%s'`, strings.Join(m.Roles, `', '`))
 			}
-			res = fmt.Sprintf("%s{isFolder: true, icon: '%s', text: '%s', roles: [%s], linkList: %s}", res, m.Icon, m.Text, roles, linkList)
+			res = fmt.Sprintf("%s{isFolder: true, icon: '%s', text: '%s', roles: [%s], linkList: %s},\n", res, m.Icon, m.Text, roles, linkList)
 		}
 	}
 	return res
 }
-

@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
 
-    <comp-breadcrumb :list="[{label:'Тип задачи', to:'/taskType', docType: 'taskType'},
+    <comp-breadcrumb :list="[{label:'Типы задач', to:'/taskType', docType: 'taskType', icon: 'bookmark'},
     {label: item && item.title ? `${item.title}` : '',  docType: 'edit'}]"/>
 
     <div v-if="item" class="q-mt-sm">
@@ -34,11 +34,13 @@
         props: ['id'],
         computed: {
             docUrl: () => '/taskType',
-            // локализация статусов
+            // список таблиц, к которым могут прикрепляться задачи
             selectOptions: function () {
-                return ['client', 'deal'].map(v => {
-                    return {value: v, label: this.$t(`taskType.table_name_${v}`)}
+                let arr = []
+                Object.entries(this.$config.tablesForTask).forEach(([key, value]) => {
+                    arr.push({label: value, value: key})
                 })
+                return arr
             }
         },
         data() {
@@ -56,7 +58,10 @@
         },
         methods: {
             resultModify(res) {
-                if (res.table_name) res.table_name = {value: res.table_name, label: this.$t(`taskType.table_name_${res.table_name}`)}
+                if (res.table_name) {
+                    const opt = this.selectOptions.find(v => v.value = res.table_name)
+                    if (opt) res.table_name = {value: res.table_name, label: opt.label}
+                }
                 return res
             },
             save() {

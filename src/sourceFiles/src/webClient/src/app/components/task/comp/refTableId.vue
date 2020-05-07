@@ -5,8 +5,8 @@
         <comp-fld-ref-search label="Тип задачи" :item="task_type_title" pgMethod="task_type_list"
                              @update="updateTaskType" :readonly="id>0"/>
       </div>
-      <div v-if="tableName == 'client'" class="col-xs-12 col-sm-6 col-md-4">
-        <comp-fld-ref-search ref="tableIdSearch" label="Клиент" :item="table_id_title" pgMethod="client_list"
+      <div v-if="tableName" class="col-xs-12 col-sm-6 col-md-4">
+        <comp-fld-ref-search ref="tableIdSearch" :label="$config.tablesForTask[tableName]" :item="table_id_title" :pgMethod="tableName + '_list'"
                              @update="updateTableId" :readonly="id>0"/>
       </div>
     </div>

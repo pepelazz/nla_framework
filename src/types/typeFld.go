@@ -36,6 +36,7 @@ type (
 		RowCol      [][]int
 		Class       []string
 		IsRequred   bool
+		Readonly 	string
 		Ext         map[string]string
 		Options     []FldVueOptionsItem
 		Composition func(ProjectType, DocType) string
@@ -116,5 +117,14 @@ func (fld *FldType) PgUpdateType() string {
 
 func (fld FldType) SetIsRequired() FldType {
 	fld.Sql.IsRequired = true
+	return fld
+}
+
+func (fld FldType) SetIsOptionFld() FldType {
+	fld.Sql.IsOptionFld = true
+	return fld
+}
+func (fld FldType) SetIsSearch() FldType {
+	fld.Sql.IsSearch = true
 	return fld
 }

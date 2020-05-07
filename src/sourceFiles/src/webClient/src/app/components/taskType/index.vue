@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <comp-breadcrumb :list="[{label:'Тип задачи', docType: 'taskType'}]"/>
+    <comp-breadcrumb :list="[{label:'Типы задач', docType: 'taskType', icon: 'bookmark'}]"/>
 
     <comp-doc-list ref="docList" doc-name="taskType" pg-method="task_type_list"
                    :list-sort-data="listSortData" :list-filter-data="listFilterData"
@@ -15,7 +15,7 @@
         </q-item-section>
         <q-item-section>
           <q-item-label lines="1">{{item.title}}</q-item-label>
-          <q-item-label v-if="item.table_name" caption>{{$t(`taskType.table_name_${item.table_name}`)}}</q-item-label>
+          <q-item-label v-if="item.table_name" caption>{{$config.tablesForTask[item.table_name]}}</q-item-label>
 
         </q-item-section>
         <q-item-section top side>

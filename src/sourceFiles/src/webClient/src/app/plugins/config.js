@@ -12,5 +12,6 @@ export default {
   // yandexMetrikaId: 54433825,
   breadcrumbIcons: {
     [[breadcrumbIcons]]
-  }
+  },
+  tablesForTask: [[codoGeneratedTablesForTask]],
 }

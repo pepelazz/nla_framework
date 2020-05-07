@@ -1,5 +1,10 @@
 package types
 
+import (
+	"fmt"
+	"strings"
+)
+
 // создание простого поля Double
 func GetFldTitle(params ...string) (fld FldType) {
 	classStr := "col-4"
@@ -22,10 +27,17 @@ func GetFldDouble(name, nameRu string, rowCol [][]int, params ...string) (fld Fl
 // создание простого поля String
 func GetFldString(name, nameRu string, size int, rowCol [][]int, params ...string) (fld FldType) {
 	classStr := "col-4"
-	if len(params)>0 {
-		classStr= params[0]
+	readonly := "false"
+	for i, v := range params {
+		if i == 0 {
+			classStr = v
+		} else {
+			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
+				readonly="true"
+			}
+		}
 	}
-	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}}}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Readonly:readonly}}
 	if size > 0 {
 		fld.Sql.Size = size
 	}
@@ -63,9 +75,9 @@ func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) 
 }
 
 // поле с кастомной композицией
-func GetFldJsonbComposition(name, nameRu string, rowCol [][]int, classStr, htmlStr string) (fld FldType) {
+func GetFldJsonbComposition(name, nameRu string, rowCol [][]int, classStr, compName string, params ...string) (fld FldType) {
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
-		return htmlStr
+		return fmt.Sprintf("<%[1]s :fld='item.%[2]s' @update='item.%[2]s = $event' label='%[3]s' %[4]s/>", compName, name, nameRu, strings.Join(params, " "))
 	}}}
 	return
 }
@@ -75,6 +87,26 @@ func GetFldSimpleHtml(rowCol [][]int, classStr, htmlStr string) (fld FldType) {
 	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
 		return htmlStr
 	}}}
+	return
+}
+
+// создание простого поля Select с типом string
+func GetFldSelectString(name, nameRu string, size int, rowCol [][]int, options []FldVueOptionsItem, params ...string) (fld FldType) {
+	classStr := "col-4"
+	readonly := "false"
+	for i, v := range params {
+		if i == 0 {
+			classStr = v
+		} else {
+			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
+				readonly="true"
+			}
+		}
+	}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeSelect, Class: []string{classStr}, Readonly:readonly, Options:options}}
+	if size > 0 {
+		fld.Sql.Size = size
+	}
 	return
 }
 

@@ -18,7 +18,8 @@
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
     "quasar": "^1.0.0",
-    "vue-i18n": "^8.14.0"
+    "vue-i18n": "^8.14.0",
+    "vuedraggable": "^2.23.2"
   },
   "devDependencies": {
     "@quasar/app": "^1.0.0",

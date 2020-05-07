@@ -75,6 +75,7 @@ module.exports = function (ctx) {
         'QSpace',
         'QSpinnerDots',
         'QSelect',
+        'QSlider',
         'QTable',
         'QTabs',
         'QTab',

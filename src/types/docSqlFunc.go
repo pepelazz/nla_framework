@@ -258,15 +258,17 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 	arr1 := []string{}
 	arr2 := []string{}
 	arr3 := []string{}
-	for i, f := range d.Flds {
+	cnt := 0 // счетчик для номеров полей, чтобы корретно выставить номера $1, $2... C учетом того что некоторые поля пропускаются и не вставляются
+	for _, f := range d.Flds {
 		if len(f.Name) == 0 {
 			continue
 		}
 		if f.Sql.IsOptionFld || utils.CheckContainsSliceStr(f.Name, "id", "created_at", "updated_at", "deleted") {
 			continue
 		}
+		cnt++
 		arr1 = append(arr1, f.Name)
-		arr2 = append(arr2, fmt.Sprintf("$%v", i+1))
+		arr2 = append(arr2, fmt.Sprintf("$%v", cnt))
 		arrow := "->>"
 		if utils.CheckContainsSliceStr(f.Type, "jsonb", FldTypeTextArray)  {
 			arrow = "->"
@@ -279,7 +281,7 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 		}
 		arr3 = append(arr3, paramStr)
 		// options добавляем последним, поэтому optionsFldIndex увеличиваем на единицу с каждым новым полем, которое будем добавлять
-		optionsFldIndex = i+2
+		optionsFldIndex = cnt+1
 	}
 	// отдельно добавляем options
 	arr1 = append(arr1, "options")
@@ -441,6 +443,10 @@ func (d DocSqlHooks) Print(tmplName, hookName string) string {
 	case "beforeInsertUpdate":
 		if d.BeforeInsertUpdate != nil {
 			return strings.Join(d.BeforeInsertUpdate, "\n\n")
+		}
+	case "beforeInsert":
+		if d.BeforeInsert != nil {
+			return strings.Join(d.BeforeInsert, "\n\n")
 		}
 	default:
 		return fmt.Sprintf("DocSqlHooks.Print not found code for hook '%s'", hookName)

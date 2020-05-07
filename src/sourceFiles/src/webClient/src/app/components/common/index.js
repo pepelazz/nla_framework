@@ -16,6 +16,7 @@ import compFldImgList from './list/compFldImgList'
 import compDadataSuggestion from './list/compDadataSuggestion'
 import compDadataAddress from './list/compDadataAddress'
 import compDadataAddressDialog from './list/compDadataAddressDialog'
+import compDadataCompany from './list/compDadataCompany'
 import compSearchRefInListWidget from './list/compSearchRefInListWidget'
 import compLinkListWidget from './list/compLinkListWidget'
 import statImgSrc from './utils/statImgSrc'
@@ -39,6 +40,7 @@ export default (Vue) => {
   Vue.component('comp-dadata-suggestion', compDadataSuggestion)
   Vue.component('comp-dadata-address', compDadataAddress)
   Vue.component('comp-dadata-address-dialog', compDadataAddressDialog)
+  Vue.component('comp-dadata-company', compDadataCompany)
   Vue.component('comp-search-ref-in-list-widget', compSearchRefInListWidget)
   Vue.component('comp-link-list-widget', compLinkListWidget)
   Vue.component('comp-stat-img-src', statImgSrc)
