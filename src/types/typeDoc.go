@@ -40,7 +40,11 @@ type (
 
 	VueTab struct {
 		Title string
+		TitleRu string
 		TmplName string
+		Icon string
+		HtmlParams string
+		HtmlInner string
 	}
 
 	// специальное представление для сетки
@@ -90,6 +94,16 @@ func (d *DocType) Init() {
 	d.Filli18n()
 	for i := range d.Flds {
 		d.Flds[i].Doc = d
+	}
+	// если есть табы и к документу можно присоединять задачи, то прописываем миксин
+	if d.IsTaskAllowed && len(d.Vue.Tabs)>0 {
+		if d.Vue.Mixins == nil {
+			d.Vue.Mixins = map[string][]string{}
+		}
+		if d.Vue.Mixins["docItemWithTabs"] == nil {
+			d.Vue.Mixins["docItemWithTabs"] = []string{}
+		}
+		d.Vue.Mixins["docItemWithTabs"] = append(d.Vue.Mixins["docItemWithTabs"], "taskList")
 	}
 }
 

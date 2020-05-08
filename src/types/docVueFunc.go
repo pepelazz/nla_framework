@@ -55,7 +55,7 @@ func (d DocType) PrintVueImport(tmplName string) string  {
 	if d.Vue.Mixins != nil {
 		if arr, ok := d.Vue.Mixins[tmplName]; ok {
 			for _, s := range arr {
-				res = append(res, fmt.Sprintf("\timport %s from './mixins/%s'", s, s))
+				res = append(res, fmt.Sprintf("\timport %s from '../../mixins/%s'", s, s))
 			}
 		}
 	}
@@ -76,6 +76,12 @@ func (d DocType) PrintVueImport(tmplName string) string  {
 				isLodashAdded = true
 				break
 			}
+		}
+	}
+
+	if tmplName == "docItemWithTabs" {
+		for _, tab := range d.Vue.Tabs {
+			res = append(res, fmt.Sprintf("\timport %[1]sTab from './tabs/%[1]s'", tab.Title))
 		}
 	}
 
@@ -169,6 +175,12 @@ func (d DocVue) PrintComponents(tmplName string) string  {
 		}
 	}
 
+	if tmplName ==  "docItemWithTabs" {
+		for _, t := range d.Tabs {
+			res = append(res, t.Title + "Tab")
+		}
+	}
+
 	return strings.Join(res, ", ")
 }
 
@@ -196,4 +208,27 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 
 
 	return fmt.Sprintf("<comp-link-list-widget label='%s' :id='id' tableIdName='%s' tableDependName='%s' tableDependRoute='/%s' linkTableName='%s' avatarSrc='%s'/>", label, tableIdName, tableDependName, tableDependRoute, linkTableName, avatarSrc)
+}
+
+// заголовки табов
+func (d DocVue) PrintItemTabs()  string{
+	res := []string{}
+	sep := "\n\t\t\t\t\t\t\t\t"
+	for _, tab := range d.Tabs {
+		if len(tab.HtmlInner) == 0 {
+			res = append(res, fmt.Sprintf("<q-tab name='%s'  icon='%s' label='%s'/>", tab.Title, tab.Icon, tab.TitleRu))
+		} else {
+			res = append(res, fmt.Sprintf("<q-tab name='%s'  icon='%s' label='%s'>%[5]s\t%[4]s%[5]s</q-tab>", tab.Title, tab.Icon, tab.TitleRu, tab.HtmlInner, sep))
+		}
+	}
+	return strings.Join(res, sep)
+}
+
+// список компонентов для отображения содержимого табов
+func (d DocVue) PrintItemTabPanels()  string{
+	res := []string{}
+	for _, tab := range d.Tabs {
+		res = append(res, fmt.Sprintf("<!-- %s       -->\n\t\t\t\t\t\t\t\t<q-tab-panel name='%[2]s'><%[2]s-tab :id='id' %[3]s/></q-tab-panel>", tab.TitleRu, tab.Title, tab.HtmlParams))
+	}
+	return strings.Join(res, "\n\t\t\t\t\t\t\t\t")
 }

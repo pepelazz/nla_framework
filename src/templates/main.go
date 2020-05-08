@@ -45,7 +45,7 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 
 	// webClient
 	path = "../../projectGenerator/src/templates/webClient/doc/"
-	readFiles("webClient_", "[[", "]]", path + "index.vue", path + "item.vue", path + "itemWithTabs.vue", path + "tabInfo.vue")
+	readFiles("webClient_", "[[", "]]", path + "index.vue", path + "item.vue", path + "itemWithTabs.vue", path + "tabInfo.vue", path + "tabTasks.vue")
 	// sql
 	path = "../../projectGenerator/src/templates/sql/"
 	readFiles("sql_", "{{", "}}", path + "main.toml")

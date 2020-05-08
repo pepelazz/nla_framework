@@ -20,6 +20,8 @@ import compDadataCompany from './list/compDadataCompany'
 import compSearchRefInListWidget from './list/compSearchRefInListWidget'
 import compLinkListWidget from './list/compLinkListWidget'
 import statImgSrc from './utils/statImgSrc'
+import compDialogTaskAdd from './task/compDialogTaskAdd'
+import compDialogTaskDone from './task/compDialogTaskDone'
 
 export default (Vue) => {
   Vue.component('comp-doc-list', compDocList)
@@ -44,4 +46,6 @@ export default (Vue) => {
   Vue.component('comp-search-ref-in-list-widget', compSearchRefInListWidget)
   Vue.component('comp-link-list-widget', compLinkListWidget)
   Vue.component('comp-stat-img-src', statImgSrc)
+  Vue.component('comp-dialog-task-add', compDialogTaskAdd)
+  Vue.component('comp-dialog-task-done', compDialogTaskDone)
 }

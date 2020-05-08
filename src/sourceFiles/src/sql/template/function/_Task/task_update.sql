@@ -23,6 +23,7 @@ $function$
 
 DECLARE
     TaskRow     task%ROWTYPE;
+    TaskType    task_type%ROWTYPE;
     checkMsg    TEXT;
     result      JSONB;
     updateValue TEXT;
@@ -43,6 +44,12 @@ BEGIN
         THEN
             RETURN checkMsg;
         END IF;
+
+        -- если задача прикрепляется к документу, то проверка что есть table_id
+        select * into TaskType from task_type where id = (params->>'task_type_id')::int;
+        if TaskType.table_name notnull AND (params->>'table_id'):: int isnull then
+            return jsonb_build_object('ok', false, 'message', 'missed table_id');
+        end if;
 
         if params->>'manager_id' isnull then
             params = params || jsonb_build_object('manager_id', params->>'user_id');

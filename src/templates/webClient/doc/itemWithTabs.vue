@@ -1,71 +1,63 @@
 <template>
-  <q-page padding>
-    withTabs!!!!
-    <comp-breadcrumb :list="[{label:'[[index .Vue.I18n "listTitle"]]', to:'/[[.Vue.RouteName]]',  docType: '[[.Name]]'}, {label: item ? (item.title ? item.title : 'Редактирование') : '',  docType: 'edit'}]"/>
+    <q-page padding>
 
-    <div v-if="item" class="q-mt-sm">
-      <!--  поля формы    -->
-      [[ define "vueItemRow" ]]
-      <div class="[[.Class]]">
-        [[- if gt (len .Grid) 0]]
-            [[- range .Grid -]]
-                [[ template "vueItemRow" . ]]
-            [[- end]]
-        [[- else]]
-          [[PrintVueFldTemplate .Fld]]
-        [[- end]]
-      </div>
-      [[- end -]]
-      [[range .Vue.Grid]]
-        [[- template "vueItemRow" .]]
-      [[end]]
+        <comp-breadcrumb :list="[{label:'[[index .Vue.I18n "listTitle"]]', to:'/[[.Vue.RouteName]]',  docType: '[[.Name]]'}, {label: item ? (item.title ? item.title : 'Редактирование') : '',  docType: 'edit'}]"/>
 
-      <!--  кнопки   -->
-      <comp-item-btn-save @save="save" @cancel="$router.push(docUrl)"/>
+        <div v-if="item" class="q-mt-sm">
+            <q-tabs
+                    v-model="tab"
+                    dense
+                    class="text-grey"
+                    active-color="primary"
+                    indicator-color="primary"
+                    align="left"
+                    narrow-indicator
+            >
+                [[.Vue.PrintItemTabs]]
+            </q-tabs>
 
-    </div>
-  </q-page>
+            <q-separator />
+
+            <q-tab-panels v-model="tab" :keep-alive="true">
+                [[.Vue.PrintItemTabPanels]]
+            </q-tab-panels>
+
+        </div>
+    </q-page>
 </template>
 
 <script>
-[[ .PrintVueImport "docItem" ]]
+    [[ .PrintVueImport "docItemWithTabs" ]]
+    import queryString from 'query-string'
+
     export default {
         props: ['id'],
-        components: {[[- .Vue.PrintComponents "docItem" -]]},
-        mixins: [ [[- .Vue.PrintMixins "docItem" -]] ],
+        components: {[[- .Vue.PrintComponents "docItemWithTabs" -]]},
+        mixins: [ [[- .Vue.PrintMixins "docItemWithTabs" -]] ],
         computed: {
             docUrl: () => '/[[.Vue.RouteName]]',
         },
         data() {
             return {
+                tableName: '[[.Name]]',
+                tab: null,
                 item: null,
-                flds: [
-                    [[- range .Flds]]
-                        {name: '[[.Name]]', label: '[[.Vue.NameRu]]'[[if .Vue.IsRequred -]],  required: true[[- end]]},
-                    [[- end]]
-                ],
-                optionsFlds: [ [[- .PrintVueItemOptionsFld -]] ],
             }
         },
-        methods: {
-          [[ .PrintVueMethods "docItem" ]]
-            resultModify(res) {
-                [[.PrintVueItemResultModify]]
-                return res
-            },
-            save() {
-                this.$utils.saveItem.call(this, {
-                    method: '[[.PgName]]_update',
-                    itemForSaveMod: {[[.PrintVueItemForSave]]},
-                    resultModify: this.resultModify,
-                })
-            },
+        watch: {
+            // смена название таба в url при переключении
+            tab(v) {
+                this.$utils.updateUrlQuery({tab: v})
+            }
         },
         mounted() {
             let cb = (v) => {
-                this.item = this.resultModify(v)
+                this.item = v
             }
             this.$utils.getDocItemById.call(this, {method: '[[.PgName]]_get_by_id', cb})
-        }
+            // извлекаем название таба
+            const parsedQuery = queryString.parse(location.search)
+            this.tab = parsedQuery.tab || 'info'
+        },
     }
 </script>
