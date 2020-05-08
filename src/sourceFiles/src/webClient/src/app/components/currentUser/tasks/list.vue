@@ -17,20 +17,20 @@
           <q-item-section>
             <q-item-label>{{item.task_type_title}}</q-item-label>
             <q-item-label caption>{{formatDate(item.deadline)}}</q-item-label>
+            <q-item-label v-if="item.table_name && item.table_options" caption @click="$router.push(`/${item.table_name}/${item.table_id}`)"><q-icon :name="icon(item.table_name)"/> {{item.table_options.title}}</q-item-label>
 <!--            <q-item-label v-if="item.table_name === 'client'" caption @click="$router.push(`/client/${item.table_id}`)"><q-icon name="far fa-building"/> {{item.table_options.title}}</q-item-label>-->
 <!--            <q-item-label v-if="item.table_name === 'deal'" caption @click="$router.push(`/client/${item.table_options.client_id}/deal/${item.table_id}`)"><q-icon name="opacity"/> {{item.table_options.client_title}} {{item.table_options.deal_title}}</q-item-label>-->
           </q-item-section>
           <q-item-section side>
             <div class="text-grey-8">
-              <q-btn size="12px" flat dense round icon="done"/>
-<!--              <q-btn size="12px" flat dense round icon="done" @click="$refs.doneTaskDialog.open(item)"/>-->
+              <q-btn size="12px" flat dense round icon="done" @click="$refs.doneTaskDialog.open(item)"/>
             </div>
           </q-item-section>
         </q-item>
       </q-list>
       <q-separator/>
     </q-drawer>
-<!--    <done-task-dialog ref="doneTaskDialog"></done-task-dialog>-->
+    <comp-dialog-task-done ref="doneTaskDialog"/>
 
   </div>
 </template>
@@ -41,6 +41,11 @@
         computed: {
             listForRender: function () {
                 return this.list.filter(v => v.state === 'in_process')
+            },
+            icon() {
+                return function(tableName) {
+                    return this.$config.breadcrumbIcons[tableName] || 'label'
+                }
             }
         },
         data() {
