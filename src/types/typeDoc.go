@@ -26,6 +26,8 @@ type (
 
 	DocVue struct {
 		RouteName      string
+		Routes 		   [][]string // можно указать роуты, тогда они не формируются автоматически
+		Path 		   string // путь к папке с компонентами, если отличается от стандартного. Например client/deal... Используется для вложенных путей
 		MenuIcon       string
 		BreadcrumbIcon string
 		Roles          []string

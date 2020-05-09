@@ -74,7 +74,11 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 				log.Fatalf("ParseTemplates: Template not found for tab %s %s", d.Name, tab.TmplName)
 			} else {
 				tName := "webClient_tabs_" + tab.Title
-				distPath := fmt.Sprintf("%s/webClient/src/app/components/%s/tabs/%s", p.DistPath, d.Name, tab.Title)
+				compPath := d.Name
+				if len(d.Vue.Path) > 0 {
+					compPath = d.Vue.Path // в случае если указан специальный путь к компоненте
+				}
+				distPath := fmt.Sprintf("%s/webClient/src/app/components/%s/tabs/%s", p.DistPath, compPath, tab.Title)
 				d.Templates[tName]= &types.DocTemplate{Tmpl: t, DistPath: distPath, DistFilename: "index.vue"}
 			}
 		}
@@ -108,6 +112,8 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 
 	return res
 }
+
+
 
 func ExecuteToFile(t *template.Template, d interface{}, path, filename string) error {
 	if t == nil {

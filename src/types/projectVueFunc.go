@@ -11,6 +11,13 @@ func (p *ProjectType) FillVueBaseRoutes() {
 		if len(d.Vue.RouteName) == 0 {
 			continue
 		}
+		// если указаны роуты, то не формируем автоматически, а только добавляем те которые указаны
+		if len(d.Vue.Routes) > 0 {
+			for _, r := range d.Vue.Routes {
+				p.Vue.Routes = append(p.Vue.Routes, r)
+			}
+			continue
+		}
 		// индексы для возможных дублей роутов. Если найдутся такие же, то перезаписываем
 		indexRouteIndex := 0
 		itemRouteIndex := 0

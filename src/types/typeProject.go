@@ -79,9 +79,15 @@ func (p *ProjectType) FillDocTemplatesFields() {
 				}
 				t.Source = fmt.Sprintf("%s%s/tmpl/%s", pathPrefix, snaker.SnakeToCamelLower(d.Name), tName)
 			}
-			distPath, distFilename := utils.ParseDocTemplateFilename(d.Name, tName, p.DistPath, i)
-			t.DistFilename = distFilename
-			t.DistPath = distPath
+			// если не указан конечный путь, то формируем его исходя из ключа шаблона (например webClient_comp_...)
+			if len(t.DistPath) == 0 {
+				distPath, distFilename := utils.ParseDocTemplateFilename(d.Name, tName, p.DistPath, i)
+				t.DistFilename = distFilename
+				t.DistPath = distPath
+			}
+			if d.Name == "deal" {
+				fmt.Printf("%s -> %s\n", t.Source, t.DistPath)
+			}
 		}
 		p.Docs[i] = d
 	}
