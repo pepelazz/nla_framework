@@ -5,7 +5,7 @@
         <div class="text-h6">Создать задачу</div>
         <div class="row q-col-gutter-md q-mb-sm">
           <div class="col-12">
-            <comp-fld-ref-search label="Тип задачи" item="" pgMethod="task_type_list" @update="updateTaskType"/>
+            <comp-fld-ref-search label="Тип задачи" item="" pgMethod="task_type_list" @update="updateTaskType" :ext="{table_name: table_name}"/>
           </div>
         </div>
         <div class="row q-col-gutter-md q-mb-sm">
@@ -34,7 +34,7 @@
 
 <script>
     export default {
-        props: ['table_id'],
+        props: ['table_id', 'table_name'],
         data() {
             return {
                 isShowDialog: false,

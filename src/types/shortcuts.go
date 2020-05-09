@@ -110,6 +110,14 @@ func GetFldSelectString(name, nameRu string, size int, rowCol [][]int, options [
 	return
 }
 
+// создание поля-виджета со связями многие-к-многим
+func GetFldLinkListWidget(linkTable string, rowCol [][]int, classStr string, opts map[string]interface{}) (fld FldType) {
+	return FldType{Type: FldTypeVueComposition,  Vue: FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
+		return GetVueCompLinkListWidget(p, d, linkTable, opts)
+	}}}
+}
+
+
 // функция конвертации списка имен файлов с шаблонами в  map[string]*DocTemplate
 func GetCustomTemplates(p ...string) map[string]*DocTemplate  {
 	res := map[string]*DocTemplate{}

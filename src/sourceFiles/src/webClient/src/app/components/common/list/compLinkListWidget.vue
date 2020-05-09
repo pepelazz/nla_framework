@@ -12,11 +12,11 @@
       <q-item v-for="item in list" :key="item.id">
         <q-item-section avatar @click="$router.push(`${tableDependRoute}/${item[tableDependName+'_id']}`)">
           <q-avatar rounded>
-            <img :src="avatarSrc">
+            <comp-stat-img-src :src="avatar(item)"/>
           </q-avatar>
         </q-item-section>
         <q-item-section>
-          <q-item-label>{{item.options.title[tableDependName+'_title']}}</q-item-label>
+          <q-item-label>{{item.options.title[tableDependFldTitle]}}</q-item-label>
         </q-item-section>
         <q-item-section side>
           <q-btn flat round icon="delete" size="sm" @click="showDeleteDialog(item.id)">
@@ -65,7 +65,18 @@
 
 <script>
     export default {
-        props: ['id', 'tableIdName', 'tableDependName', 'tableDependRoute', 'linkTableName', 'label', 'avatarSrc'],
+        props: ['id', 'tableIdName', 'tableIdFldName', 'tableDependName', 'tableDependFldName', 'tableDependRoute', 'linkTableName', 'label', 'avatarSrc'],
+        computed: {
+            tableDependFldTitle() {
+                return this.tableDependFldName.split('_id')[0] + '_title'
+            },
+            avatar() {
+                return function(item) {
+                    let fldName = this.tableDependFldName.split('_id')[0]
+                    return item.options.title[fldName + '_avatar'] || this.avatarSrc || 'https://www.svgrepo.com/show/95333/avatar.svg'
+                }
+            },
+        },
         data() {
             return {
                 isShowList: true,
@@ -83,8 +94,8 @@
             },
             add() {
                 let params = {id: -1}
-                params[`${this.tableIdName}_id`] = +this.id
-                params[`${this.tableDependName}_id`] = this.selectedForAdd.id
+                params[this.tableIdFldName] = +this.id
+                params[this.tableDependFldName] = this.selectedForAdd.id
                 this.$utils.postCallPgMethod({method: `${this.linkTableName}_update`, params}).subscribe(res => {
                     if (res.ok) this.reload()
                 })

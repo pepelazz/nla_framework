@@ -336,6 +336,10 @@ func (d DocType) GetSearchTextJson() string  {
 				fldName := strings.TrimSuffix(fld.Name, "_id")
 				// переменная %sTitle заполняется внутри pg функции. Это title из таблицы, на которую ссылаются
 				arr = append(arr, fmt.Sprintf("'%s_title', %sTitle", fldName, snaker.SnakeToCamelLower(fldName)))
+				// в случае ссылки на user еще добавляем avatar, чтобы потом использовать это на ui
+				if fld.Sql.Ref == "user" {
+					arr = append(arr,  fmt.Sprintf("'%[1]s_avatar', %[1]sAvatar", fldName))
+				}
 			}
 		}
 	}
@@ -350,7 +354,11 @@ func (d DocType) GetBeforeTriggerDeclareVars() string  {
 	res := ""
 	for _, fld := range d.Flds {
 		if fld.Sql.IsSearch && len(fld.Sql.Ref) > 0 {
-			res = fmt.Sprintf("%s\n	%sTitle TEXT;", res, snaker.SnakeToCamelLower(strings.TrimSuffix(fld.Name, "_id")))
+			varPrefix := snaker.SnakeToCamelLower(strings.TrimSuffix(fld.Name, "_id"))
+			res = fmt.Sprintf("%s\n	%sTitle TEXT;", res, varPrefix)
+			if fld.Sql.Ref == "user" {
+				res = fmt.Sprintf("%s\n	%sAvatar TEXT;", res, varPrefix)
+			}
 		}
 	}
 	return res
@@ -363,10 +371,14 @@ func (d DocType) GetBeforeTriggerFillRefVars() string {
 	for _, fld := range d.Flds {
 		if fld.Sql.IsSearch && len(fld.Sql.Ref) > 0 {
 			refName := fld.Sql.Ref
+			varPrefix := snaker.SnakeToCamelLower(strings.TrimSuffix(fld.Name, "_id"))
 			if refName == "user" {
 				refName = `"user"`
+				// в случае user добавляем еще поле avatar
+				res = fmt.Sprintf("%s\n		select title, avatar into %[2]sTitle, %[2]sAvatar from %s where id = new.%s;", res, varPrefix, refName, fld.Name)
+			} else {
+				res = fmt.Sprintf("%s\n		select title into %sTitle from %s where id = new.%s;", res, varPrefix, refName, fld.Name)
 			}
-			res = fmt.Sprintf("%s\n		select title into %sTitle from %s where id = new.%s;", res, snaker.SnakeToCamelLower(strings.TrimSuffix(fld.Name, "_id")), refName, fld.Name)
 		}
 	}
 	if len(res) > 0 {
@@ -424,8 +436,9 @@ func (d DocType) PrintAfterTriggerUpdateLinkedRecords() string {
 		}
 		res1:= "IF (TG_OP = 'UPDATE') THEN\n-- при смене названия обновляем все ссылающиеся записи, чтобы там переписалось новое название\nif new.title != old.title then\n"
 		for _, arr := range linkedDocs {
-			res1 = fmt.Sprintf("%s for r in select * from %s where %s = new.id loop\n update %s set updated_at=now() where id = r.id;\n end loop;\n end if;\n end if;", res1, arr[0], arr[1], arr[0])
+			res1 = fmt.Sprintf("%s for r in select * from %s where %s = new.id loop\n update %s set updated_at=now() where id = r.id;\n end loop;\n", res1, arr[0], arr[1], arr[0])
 		}
+		res1 = fmt.Sprintf("%s\n end if;\n end if;", res1)
 		res = fmt.Sprintf("%s\n%s", res, res1)
 	}
 	return res

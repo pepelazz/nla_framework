@@ -33,7 +33,7 @@
             </div>
         </div>
         <comp-dialog-task-done ref="doneTaskDialog" @taskFinished="v=>$emit('taskFinished', v)"/>
-        <comp-dialog-task-add ref="addTaskDialog" :table_id="id"/>
+        <comp-dialog-task-add ref="addTaskDialog" :table_id="id" table_name="[[.Name]]"/>
     </div>
 </template>
 

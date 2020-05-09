@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/pepelazz/projectGenerator/src/utils"
+	"github.com/spf13/cast"
 	"log"
 	"strings"
 )
@@ -185,7 +186,7 @@ func (d DocVue) PrintComponents(tmplName string) string  {
 }
 
 func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts map[string]interface{}) string {
-	var tableDependName, tableDependRoute, label, avatarSrc string
+	var tableIdFldName, tableDependName, tableDependFldName, tableDependRoute, label, avatarSrc string
 	tableIdName := d.Name
 	linkTableName := tableName
 	// находим документы, на которые идет ссылка
@@ -193,21 +194,35 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 		if doc.Name == tableName {
 			for _, f := range doc.Flds {
 				if len(f.Sql.Ref) > 0 && f.Sql.Ref != d.Name {
-					depDoc := p.GetDocByName(f.Sql.Ref)
-					if depDoc == nil {
-						log.Fatalf(fmt.Sprintf("GetVueCompLinkListWidget not found '%s'", f.Sql.Ref))
+					tableDependFldName = f.Name
+					// ссылку на таблицу user рассматриваем отдельно, потому что ее нет в списке p.Docs
+					if f.Sql.Ref == "user" {
+						tableDependName = "user"
+						tableDependRoute = "users"
+						label = "сотрудники"
+						if opts != nil {
+							if v, ok := opts["listTitle"]; ok {
+								label = cast.ToString(v)
+							}
+						}
+					} else {
+						depDoc := p.GetDocByName(f.Sql.Ref)
+						if depDoc == nil {
+							log.Fatalf(fmt.Sprintf("GetVueCompLinkListWidget not found '%s'", f.Sql.Ref))
+						}
+						tableDependName = depDoc.Name
+						tableDependRoute = depDoc.Vue.RouteName
+						avatarSrc = depDoc.Vue.MenuIcon
+						label = depDoc.Vue.I18n["listTitle"]
 					}
-					tableDependName = depDoc.Name
-					tableDependRoute = depDoc.Vue.RouteName
-					avatarSrc = depDoc.Vue.MenuIcon
-					label = depDoc.Vue.I18n["listTitle"]
+				} else {
+					tableIdFldName = f.Name
 				}
 			}
 		}
 	}
 
-
-	return fmt.Sprintf("<comp-link-list-widget label='%s' :id='id' tableIdName='%s' tableDependName='%s' tableDependRoute='/%s' linkTableName='%s' avatarSrc='%s'/>", label, tableIdName, tableDependName, tableDependRoute, linkTableName, avatarSrc)
+	return fmt.Sprintf("<comp-link-list-widget label='%s' :id='id' tableIdName='%s' tableIdFldName='%s' tableDependName='%s' tableDependFldName='%s' tableDependRoute='/%s' linkTableName='%s' avatarSrc='%s'/>", label, tableIdName, tableIdFldName, tableDependName, tableDependFldName, tableDependRoute, linkTableName, avatarSrc)
 }
 
 // заголовки табов
