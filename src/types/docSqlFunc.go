@@ -102,10 +102,11 @@ func (d DocType) PrintSqlModelIndexes() string {
 
 // main.toml печать methods
 func (d DocType) PrintSqlModelMethods() (res string) {
-	arr := []string{
-		fmt.Sprintf("\t\"%s_update\"", d.Name),
-		fmt.Sprintf("\t\"%s_list\"", d.Name),
-		fmt.Sprintf("\t\"%s_get_by_id\"", d.Name),
+	arr := []string{}
+	if d.Sql.Methods != nil {
+		for mName := range d.Sql.Methods {
+			arr = append(arr, fmt.Sprintf("\t\"%s\"", mName))
+		}
 	}
 	if d.Sql.IsBeforeTrigger {
 		arr = append(arr, fmt.Sprintf("\t\"%s_trigger_before\"", d.Name))

@@ -128,3 +128,7 @@ func (fld FldType) SetIsSearch() FldType {
 	fld.Sql.IsSearch = true
 	return fld
 }
+func (fld FldType) SetDefault(s string) FldType {
+	fld.Sql.Default = s
+	return fld
+}

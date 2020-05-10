@@ -85,9 +85,6 @@ func (p *ProjectType) FillDocTemplatesFields() {
 				t.DistFilename = distFilename
 				t.DistPath = distPath
 			}
-			if d.Name == "deal" {
-				fmt.Printf("%s -> %s\n", t.Source, t.DistPath)
-			}
 		}
 		p.Docs[i] = d
 	}

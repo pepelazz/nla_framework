@@ -55,7 +55,16 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 	// парсинг шаблонов для конкретного документа
 	for i, d := range p.Docs {
 		for tName, dt := range d.Templates {
-			t, err := template.New(tName).Funcs(funcMap).Delims("[[", "]]").ParseFiles(dt.Source)
+			// возможность расширить функции для шаблона.
+			// Если в документе определена FuncMap, то расширяем ее стандартными функциями FuncMap и передаем в шаблон
+			fMap := funcMap
+			if dt.FuncMap != nil {
+				fMap = dt.FuncMap
+				for k, v := range funcMap {
+					fMap[k] = v
+				}
+			}
+			t, err := template.New(tName).Funcs(fMap).Delims("[[", "]]").ParseFiles(dt.Source)
 			utils.CheckErr(err, fmt.Sprintf("doc: %s tmpl: %s parse template error: %s", d.Name, tName, err))
 			// сохраняем template в поле структуры
 			dt.Tmpl = t

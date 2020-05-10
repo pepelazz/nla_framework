@@ -38,5 +38,20 @@ BEGIN
 END
 $function$;
 
+-- функция для модификации options - используется в функции first_raw_transition_order_update
+DROP FUNCTION IF EXISTS options_add_fld(userId int, options JSONB, fldName text, jsonObj jsonb);
+CREATE OR REPLACE FUNCTION options_add_fld(userId int, options JSONB, fldName text, jsonObj jsonb)
+    RETURNS JSON
+    LANGUAGE plpgsql
+AS
+$function$
+
+DECLARE
+BEGIN
+    return jsonb_set(options, string_to_array(fldName, ''), coalesce(options -> fldName, '[]'::jsonb) ||
+                                                            (jsonObj || jsonb_build_object('user_id', userId, 'date', now())));
+END
+$function$;
+
 
 

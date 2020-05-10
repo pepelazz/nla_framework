@@ -3,6 +3,7 @@ package types
 import (
 	"github.com/pepelazz/projectGenerator/src/utils"
 	"github.com/serenize/snaker"
+	"log"
 	"text/template"
 )
 
@@ -22,12 +23,13 @@ type (
 		IsBaseTemapltes DocIsBaseTemapltes // флаг что генерируем стандартные шаблоны для документа
 		PathPrefix      string             // префикс,если папка, в которой лежит папка с описанием документа находится не на одном уровне с main.go. Например 'docs', если docs/client/...
 		IsTaskAllowed   bool               // признак, что к таблице можно прикреплять задачи
+		StateMachine    *DocSm
 	}
 
 	DocVue struct {
 		RouteName      string
-		Routes 		   [][]string // можно указать роуты, тогда они не формируются автоматически
-		Path 		   string // путь к папке с компонентами, если отличается от стандартного. Например client/deal... Используется для вложенных путей
+		Routes         [][]string // можно указать роуты, тогда они не формируются автоматически
+		Path           string     // путь к папке с компонентами, если отличается от стандартного. Например client/deal... Используется для вложенных путей
 		MenuIcon       string
 		BreadcrumbIcon string
 		Roles          []string
@@ -61,6 +63,7 @@ type (
 		DistPath     string
 		DistFilename string
 		Tmpl         *template.Template
+		FuncMap      template.FuncMap // возможность добавлять для конкретного шаблона свои функции, которые затем можно использовать внутри шаблона вместе со стандартными функциями
 	}
 
 	DocSql struct {
@@ -90,6 +93,16 @@ type (
 		BeforeInsert       []string
 	}
 )
+
+func (d DocType) Fld(fldName string) *FldType {
+	for _, f := range d.Flds {
+		if f.Name == fldName {
+			return &f
+		}
+	}
+	log.Fatalf("d.Fld: doc '%s' fld '%s' not found", d.Name, fldName)
+	return nil
+}
 
 // место вызова разных доп функций для инициализации документа, после того как основные поля заполнены
 func (d *DocType) Init() {
@@ -148,6 +161,7 @@ func (d *DocType) AddVueTaskAndTabs() {
 	// указываем признак, что к документу можно прикреплять задачи
 	d.IsTaskAllowed = true
 }
+
 // sugar для добавления таба
 func (d *DocType) AddVueTab() {
 	// в шаблон vue добавляем табы
