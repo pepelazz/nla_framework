@@ -161,14 +161,3 @@ func (d *DocType) AddVueTaskAndTabs() {
 	// указываем признак, что к документу можно прикреплять задачи
 	d.IsTaskAllowed = true
 }
-
-// sugar для добавления таба
-func (d *DocType) AddVueTab() {
-	// в шаблон vue добавляем табы
-	d.Vue.Tabs = []VueTab{
-		{"info", "инфо", "tabInfo.vue", "assignment", "", ""},
-		{"tasks", "задачи", "tabTasks.vue", "alarm", ":list='taskListForRender'", "<q-badge v-if='taskListForRender.length>0' color='red' floating>{{taskListForRender.length}}</q-badge>"},
-	}
-	// укказываем признак, что к документу можно прикреплять задачи
-	d.IsTaskAllowed = true
-}

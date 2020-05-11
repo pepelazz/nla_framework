@@ -16,6 +16,7 @@ type (
 	DocSmAction struct {
 		From              string
 		To                string
+		Label             string
 		UpdateFlds        []FldType // поля, которые заполняются при смене стейта
 		CopyToHistoryFlds []FldType // поля, значения которых копируются в историю изменений при смене статуса
 	}

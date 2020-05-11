@@ -16,16 +16,15 @@ import (
 
 var project *types.ProjectType
 
-func SetProject(p *types.ProjectType)  {
+func SetProject(p *types.ProjectType) {
 	project = p
 }
 
-
 var funcMap = template.FuncMap{
-	"ToUpper":        strings.ToUpper,
-	"ToLower":        strings.ToLower,
-	"UpperCaseFirst": utils.UpperCaseFirst,
-	"ToLowerCamel": strcase.ToLowerCamel,
+	"ToUpper":             strings.ToUpper,
+	"ToLower":             strings.ToLower,
+	"UpperCaseFirst":      utils.UpperCaseFirst,
+	"ToLowerCamel":        strcase.ToLowerCamel,
 	"PrintVueFldTemplate": PrintVueFldTemplate,
 }
 
@@ -36,7 +35,7 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 		tmpls, err := template.New("").Funcs(funcMap).Delims(delimLeft, delimRight).ParseFiles(path...)
 		utils.CheckErr(err, "ParseFiles")
 		for _, t := range tmpls.Templates() {
-			res[prefix + t.Name()] = t
+			res[prefix+t.Name()] = t
 		}
 	}
 	// project
@@ -45,12 +44,12 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 
 	// webClient
 	path = "../../projectGenerator/src/templates/webClient/doc/"
-	readFiles("webClient_", "[[", "]]", path + "index.vue", path + "item.vue", path + "itemWithTabs.vue", path + "tabInfo.vue", path + "tabTasks.vue")
+	readFiles("webClient_", "[[", "]]", path+"index.vue", path+"item.vue", path+"itemWithTabs.vue", path+"tabInfo.vue", path+"tabTasks.vue")
 	// sql
 	path = "../../projectGenerator/src/templates/sql/"
-	readFiles("sql_", "{{", "}}", path + "main.toml")
+	readFiles("sql_", "{{", "}}", path+"main.toml")
 	path = "../../projectGenerator/src/templates/sql/function/"
-	readFiles("sql_function_", "{{", "}}", path + "get_by_id.sql", path + "list.sql", path + "update.sql", path + "trigger_before.sql", path + "trigger_after.sql")
+	readFiles("sql_function_", "{{", "}}", path+"get_by_id.sql", path+"list.sql", path+"update.sql", path+"trigger_before.sql", path+"trigger_after.sql")
 
 	// парсинг шаблонов для конкретного документа
 	for i, d := range p.Docs {
@@ -64,7 +63,10 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 					fMap[k] = v
 				}
 			}
-			t, err := template.New(tName).Funcs(fMap).Delims("[[", "]]").ParseFiles(dt.Source)
+			// извлекаем имя файла шаблона, чтобы использовать его в качестве имени шабона. Иначе могут быть ошибки
+			path := strings.Split(dt.Source, "/")
+			fName := path[len(path)-1]
+			t, err := template.New(fName).Funcs(fMap).Delims("[[", "]]").ParseFiles(dt.Source)
 			utils.CheckErr(err, fmt.Sprintf("doc: %s tmpl: %s parse template error: %s", d.Name, tName, err))
 			// сохраняем template в поле структуры
 			dt.Tmpl = t
@@ -79,20 +81,30 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 		}
 		// в случае если указаны табы, то подбираем соответствующие шаблоны
 		for _, tab := range d.Vue.Tabs {
-			if t, ok := res["webClient_" + tab.TmplName]; !ok {
-				log.Fatalf("ParseTemplates: Template not found for tab %s %s", d.Name, tab.TmplName)
-			} else {
-				tName := "webClient_tabs_" + tab.Title
-				compPath := d.Name
-				if len(d.Vue.Path) > 0 {
-					compPath = d.Vue.Path // в случае если указан специальный путь к компоненте
-				}
-				distPath := fmt.Sprintf("%s/webClient/src/app/components/%s/tabs/%s", p.DistPath, compPath, tab.Title)
-				d.Templates[tName]= &types.DocTemplate{Tmpl: t, DistPath: distPath, DistFilename: "index.vue"}
+			var t *template.Template
+			// ищем в списке общих шаблонов
+			if t1, ok := res["webClient_"+tab.TmplName]; ok {
+				t = t1
 			}
+			// потом ищем в шаблонах конкретного документа
+			if t1, ok := d.Templates["webClient_"+tab.TmplName]; ok {
+				t = t1.Tmpl
+			}
+			if t == nil {
+				log.Fatalf("ParseTemplates: Template not found for tab %s webClient_%s", d.Name, tab.TmplName)
+			}
+
+			tName := "webClient_tabs_" + tab.Title
+			compPath := d.Name
+			if len(d.Vue.Path) > 0 {
+				compPath = d.Vue.Path // в случае если указан специальный путь к компоненте
+			}
+			distPath := fmt.Sprintf("%s/webClient/src/app/components/%s/tabs/%s", p.DistPath, compPath, tab.Title)
+			d.Templates[tName] = &types.DocTemplate{Tmpl: t, DistPath: distPath, DistFilename: "index.vue"}
+
 		}
 
-		for _, tName := range baseTmplNames{
+		for _, tName := range baseTmplNames {
 			// если шаблона с таким именем нет, то добавляем стандартный
 			if _, ok := d.Templates[tName]; !ok {
 				if tName == "sql_function_trigger_before.sql" && !d.Sql.IsBeforeTrigger {
@@ -114,15 +126,13 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 				if strings.HasPrefix(tName, "webClient_tab") {
 					continue
 				}
-				d.Templates[tName]= &types.DocTemplate{Tmpl: tmpl, DistPath: distPath, DistFilename: distFilename}
+				d.Templates[tName] = &types.DocTemplate{Tmpl: tmpl, DistPath: distPath, DistFilename: distFilename}
 			}
 		}
 	}
 
 	return res
 }
-
-
 
 func ExecuteToFile(t *template.Template, d interface{}, path, filename string) error {
 	if t == nil {
@@ -137,7 +147,7 @@ func ExecuteToFile(t *template.Template, d interface{}, path, filename string) e
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(path +"/" + filename, []byte(tpl.String()), 0644)
+	return ioutil.WriteFile(path+"/"+filename, []byte(tpl.String()), 0644)
 }
 
 // печать vue темплейтов для
@@ -152,7 +162,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	}
 	readonly := fld.Vue.Readonly
 	if len(readonly) == 0 {
-		readonly="false"
+		readonly = "false"
 	}
 	fldType := fld.Vue.Type
 	if len(fldType) == 0 {
@@ -166,7 +176,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	if fld.Vue.Composition != nil {
 		fldType = types.FldTypeVueComposition
 	}
- 	switch fldType {
+	switch fldType {
 	case types.FldTypeString, types.FldTypeText:
 		return fmt.Sprintf(`<q-input outlined type='text' v-model="item.%s" label="%s" autogrow :readonly='%s'/>`, name, nameRu, readonly)
 	case types.FldTypeInt, types.FldTypeDouble:
@@ -180,7 +190,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	// вариант ссылки на другую таблицу
 	case "ref":
 		// если map Ext не инициализирован, то создаем его, чтобы не было ошибки при json.Marshal
-		if fld.Vue.Ext == nil  {
+		if fld.Vue.Ext == nil {
 			fld.Vue.Ext = map[string]string{}
 		}
 		// если специально не определено поле для ajaxSelectTitle, то формируем стандартное [ref_table_name]_title
