@@ -100,7 +100,7 @@ func (p *ProjectType) FillVueFlds()  {
 			}
 			// заполняем IsRequired
 			if fld.Sql.IsRequired {
-				p.Docs[i].Flds[j].Vue.IsRequred = fld.Sql.IsRequired
+				p.Docs[i].Flds[j].Vue.IsRequired = fld.Sql.IsRequired
 			}
 		}
 	}

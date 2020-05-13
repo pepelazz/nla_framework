@@ -11,6 +11,7 @@ type (
 		TitleRu    string
 		Actions    []DocSmAction
 		UpdateFlds []FldType // поля, которые можно редактировать в этом стейте
+		IconSrc    string
 	}
 
 	DocSmAction struct {

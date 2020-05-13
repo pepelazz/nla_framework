@@ -7,6 +7,7 @@ import (
 	"github.com/iancoleman/strcase"
 	"github.com/pepelazz/projectGenerator/src/types"
 	"github.com/pepelazz/projectGenerator/src/utils"
+	"github.com/serenize/snaker"
 	"io/ioutil"
 	"log"
 	"os"
@@ -101,7 +102,25 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 			}
 			distPath := fmt.Sprintf("%s/webClient/src/app/components/%s/tabs/%s", p.DistPath, compPath, tab.Title)
 			d.Templates[tName] = &types.DocTemplate{Tmpl: t, DistPath: distPath, DistFilename: "index.vue"}
+		}
 
+		for _, fld := range d.Flds {
+			// если в документе есть поле с типо тэг, то создаем sql метод для запроса списка тэгов.
+			// При формировании шаблона передаем в него функцию GetFld для получения названия поля, для которого создана функция
+			if fld.Vue.Type == types.FldVueTypeTags {
+				methodName := d.Name + "_" + fld.Name +"_list"
+				funcMap := map[string]interface{}{"GetFld": func() string {return fld.Name}}
+				t, err := template.New("tag_list.sql").Funcs(funcMap).ParseFiles("../../projectGenerator/src/templates/sql/function/tag_list.sql")
+				utils.CheckErr(err, "tag_list.sql")
+				distPath := fmt.Sprintf("%s/sql/template/function/_%s", p.DistPath, snaker.SnakeToCamel(d.Name))
+				d.Templates["sql_function_" + fld.Name +"_tag_list.sql"] = &types.DocTemplate{Tmpl: t, DistPath: distPath, DistFilename: methodName + ".sql"}
+				// добавляем в список sql методов
+				if d.Sql.Methods == nil {
+					d.Sql.Methods = map[string]*types.DocSqlMethod{}
+				}
+				d.Sql.Methods[methodName] = &types.DocSqlMethod{Name: methodName}
+				d.AddVueMethod("docItem", "sFilterOptions()", "dd")
+			}
 		}
 
 		for _, tName := range baseTmplNames {
@@ -130,6 +149,8 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 			}
 		}
 	}
+
+	p.Docs[i] = d
 
 	return res
 }
@@ -176,17 +197,24 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	if fld.Vue.Composition != nil {
 		fldType = types.FldTypeVueComposition
 	}
+	if fld.Vue.Type == types.FldVueTypeTags {
+		fldType = types.FldVueTypeTags
+	}
+	classStr := ""
+	if len(fld.Vue.Class) > 0 {
+		classStr = fmt.Sprintf("class='%s'", fld.Vue.ClassPrint())
+	}
 	switch fldType {
 	case types.FldTypeString, types.FldTypeText:
-		return fmt.Sprintf(`<q-input outlined type='text' v-model="item.%s" label="%s" autogrow :readonly='%s'/>`, name, nameRu, readonly)
+		return fmt.Sprintf(`<q-input outlined type='text' v-model="item.%s" label="%s" autogrow :readonly='%s' %s/>`, name, nameRu, readonly, classStr)
 	case types.FldTypeInt, types.FldTypeDouble:
-		return fmt.Sprintf(`<q-input outlined type='number' v-model="item.%s" label="%s" :readonly='%s'/>`, name, nameRu, readonly)
+		return fmt.Sprintf(`<q-input outlined type='number' v-model="item.%s" label="%s" :readonly='%s' %s/>`, name, nameRu, readonly, classStr)
 	// дата
 	case types.FldTypeDate:
-		return fmt.Sprintf(`<comp-fld-date label="%s" :date-string="$utils.formatPgDate(item.%s)" @update="v=> item.%s = v" :readonly='%s'/>`, nameRu, name, name, readonly)
+		return fmt.Sprintf(`<comp-fld-date label="%s" :date-string="$utils.formatPgDate(item.%s)" @update="v=> item.%s = v" :readonly='%s' %s/>`, nameRu, name, name, readonly, classStr)
 	// дата с временем
 	case types.FldTypeDatetime:
-		return fmt.Sprintf(`<comp-fld-date-time label="%s" :date-string="$utils.formatPgDateTime(item.%s)" @update="v=> item.%s = v" :readonly='%s'/>`, nameRu, name, name, readonly)
+		return fmt.Sprintf(`<comp-fld-date-time label="%s" :date-string="$utils.formatPgDateTime(item.%s)" @update="v=> item.%s = v" :readonly='%s' %s/>`, nameRu, name, name, readonly, classStr)
 	// вариант ссылки на другую таблицу
 	case "ref":
 		// если map Ext не инициализирован, то создаем его, чтобы не было ошибки при json.Marshal
@@ -206,7 +234,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		if m, ok := fld.Vue.Ext["pgMethod"]; ok {
 			pgMethod = m
 		}
-		return fmt.Sprintf(`<comp-fld-ref-search pgMethod="%s" label="%s" :item='item.%s' :ext='%s' @update="v=> item.%s = v.id" :readonly='%s'/>`, pgMethod, nameRu, ajaxSelectTitle, extJsonStr, name, readonly)
+		return fmt.Sprintf(`<comp-fld-ref-search pgMethod="%s" label="%s" :item='item.%s' :ext='%s' @update="v=> item.%s = v.id" :readonly='%s' %s/>`, pgMethod, nameRu, ajaxSelectTitle, extJsonStr, name, readonly, classStr)
 	case types.FldVueTypeSelect, types.FldVueTypeMultipleSelect:
 		options, err := json.Marshal(fld.Vue.Options)
 		utils.CheckErr(err, fmt.Sprintf("'%s' json.Marshal(fld.Vue.Options)", fld.Name))
@@ -214,12 +242,15 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		if fldType == types.FldVueTypeMultipleSelect {
 			multiple = "multiple"
 		}
-		return fmt.Sprintf(`<q-select outlined label="%s" v-model='item.%s' :options='%s' %s :readonly='%s'/>`, nameRu, name, options, multiple, readonly)
+		return fmt.Sprintf(`<q-select outlined label="%s" v-model='item.%s' :options='%s' %s :readonly='%s' %s/>`, nameRu, name, options, multiple, readonly, classStr)
 	case types.FldTypeVueComposition:
 		if fld.Vue.Composition == nil {
 			log.Fatal(fmt.Sprintf("fld have type '%s', but fld.Vue.Composition function is nil", types.FldTypeVueComposition))
 		}
 		return fld.Vue.Composition(*project, *fld.Doc)
+	case types.FldVueTypeTags:
+		return fmt.Sprintf("<q-select outlined label='%s' v-model='item.%s' use-input use-chips multiple input-debounce='0' @new-value='%[2]sCreateValue' @filter='%[2]sFilterFn' :options='%[2]sFilterOptions'/>", nameRu, name)
+
 	default:
 		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fldType)
 	}

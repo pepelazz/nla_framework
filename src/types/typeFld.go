@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 	"github.com/pepelazz/projectGenerator/src/utils"
+	"strings"
 )
 
 const (
@@ -17,6 +18,7 @@ const (
 	FldTypeTextArray         = "text[]"
 	FldVueTypeSelect         = "select"
 	FldVueTypeMultipleSelect = "multipleSelect"
+	FldVueTypeTags         	 = "tags"
 )
 
 type (
@@ -35,8 +37,8 @@ type (
 		Type        string
 		RowCol      [][]int
 		Class       []string
-		IsRequred   bool
-		Readonly 	string
+		IsRequired  bool
+		Readonly    string
 		Ext         map[string]string
 		Options     []FldVueOptionsItem
 		Composition func(ProjectType, DocType) string
@@ -117,6 +119,7 @@ func (fld *FldType) PgUpdateType() string {
 
 func (fld FldType) SetIsRequired() FldType {
 	fld.Sql.IsRequired = true
+	fld.Vue.IsRequired = true
 	return fld
 }
 
@@ -131,4 +134,38 @@ func (fld FldType) SetIsSearch() FldType {
 func (fld FldType) SetDefault(s string) FldType {
 	fld.Sql.Default = s
 	return fld
+}
+
+func (fld FldType) AddClass(s string) FldType {
+	if fld.Vue.Class == nil {
+		fld.Vue.Class = []string{}
+	}
+	fld.Vue.Class = append(fld.Vue.Class, s)
+	return fld
+}
+
+// передается либо true/false, либо функция вида ()=> item !== 'a'
+func (fld FldType) SetReadonly(s string) FldType {
+	fld.Vue.Readonly = s
+	return fld
+}
+
+func (fld FldVue) ClassPrint() string {
+	if fld.Class != nil {
+		return strings.Join(fld.Class, " ")
+	}
+	return ""
+}
+
+func (fld FldVue) ClassPrintOnlyCol() string {
+	if fld.Class != nil {
+		arr := []string{}
+		for _, cName := range fld.Class {
+			if strings.HasPrefix(cName, "col-") {
+				arr = append(arr, cName)
+			}
+		}
+		return strings.Join(arr, " ")
+	}
+	return ""
 }

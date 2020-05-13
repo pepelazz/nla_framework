@@ -110,6 +110,16 @@ func GetFldSelectString(name, nameRu string, size int, rowCol [][]int, options [
 	return
 }
 
+// создание простого поля Int
+func GetFldTag(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
+	classStr := "col-4"
+	if len(params)>0 {
+		classStr= params[0]
+	}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeTextArray, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeTags,  Class: []string{classStr}}}
+	return
+}
+
 // создание поля-виджета со связями многие-к-многим
 func GetFldLinkListWidget(linkTable string, rowCol [][]int, classStr string, opts map[string]interface{}) (fld FldType) {
 	return FldType{Type: FldTypeVueComposition,  Vue: FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {

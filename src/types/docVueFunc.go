@@ -24,6 +24,16 @@ func (d DocType) PrintListRowLabel() string  {
 	return res
 }
 
+func (d *DocType) AddVueMethod(tmplName, methodName, method string)  {
+	if d.Vue.Methods == nil {
+		d.Vue.Methods = map[string]map[string]string{}
+	}
+	if _, ok := d.Vue.Methods[tmplName]; !ok {
+		d.Vue.Methods[tmplName] = map[string]string{}
+	}
+	d.Vue.Methods[tmplName][methodName] = method
+}
+
 func (d *DocType) Filli18n() {
 	if d.Vue.I18n == nil {
 		d.Vue.I18n = map[string]string{}

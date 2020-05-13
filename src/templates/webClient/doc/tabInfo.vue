@@ -39,7 +39,7 @@
             item: null,
             flds: [
                 [[- range .Flds]]
-                {name: '[[.Name]]', label: '[[.Vue.NameRu]]'[[if .Vue.IsRequred -]],  required: true[[- end]]},
+                {name: '[[.Name]]', label: '[[.Vue.NameRu]]'[[if .Vue.IsRequired -]],  required: true[[- end]]},
         [[- end]]
     ],
         optionsFlds: [ [[- .PrintVueItemOptionsFld -]] ],

@@ -56,6 +56,8 @@ module.exports = {
     'import/no-unresolved': 'off',
     'import/no-extraneous-dependencies': 'off',
     'prefer-promise-reject-errors': 'off',
+    'object-curly-spacing': 'off',
+    'standard/object-curly-even-spacing': 'off',
 
     // allow console.log during development only
     'no-console': process.env.NODE_ENV === 'production' ? 'off' : 'off',
@@ -63,7 +65,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'off' : 'off',
     'no-trailing-spaces': 'off',
     'brace-style': 'off',
-    'object-curly-spacing': [2, "never"],
+    // 'object-curly-spacing': [2, "never"],
     'space-before-function-paren': 'off',
     'semi': 'off',
     "comma-dangle": 'off',
