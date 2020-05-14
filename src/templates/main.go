@@ -117,7 +117,11 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 				if tName == "sql_function_trigger_after.sql" && !d.Sql.IsAfterTrigger {
 					continue
 				}
-				distPath, distFilename := utils.ParseDocTemplateFilename(d.Name, tName, p.DistPath, i)
+				params := map[string]string{}
+				if len(d.Vue.Path)> 0 {
+					params["doc.Vue.Path"] = d.Vue.Path
+				}
+				distPath, distFilename := utils.ParseDocTemplateFilename(d.Name, tName, p.DistPath, i, params)
 				tmpl := res[tName]
 				// возможность переопределить шаблон
 				// если указаны табы, то подменяем шаблон item.vue на itemWithTabs.vue
@@ -233,7 +237,14 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		if fld.Vue.Composition == nil {
 			log.Fatal(fmt.Sprintf("fld have type '%s', but fld.Vue.Composition function is nil", types.FldTypeVueComposition))
 		}
-		return fld.Vue.Composition(*project, *fld.Doc)
+		// возможен вариант что функция рендеринга поля шаблона вызываается до того как сам документ был инициализирован и соответственно была заполнена ссылка на него в поле fld.Doc
+		// в таком случае в функуию передаем пустой документ. Если функция не использует ссылку на документ, то все ок. Но если в функции идет обращение к инфе о документе, то функция отработает некорректно.
+		// возможное решение, чтобы вызов функции в шаблоне происходил уже после инициализации документа
+		linkOnDoc := types.DocType{}
+		if fld.Doc != nil {
+			linkOnDoc = *fld.Doc
+		}
+		return fld.Vue.Composition(*project, linkOnDoc)
 	case types.FldVueTypeTags:
 		return fmt.Sprintf("<q-select outlined label='%s' v-model='item.%s' use-input use-chips multiple input-debounce='0' @new-value='%[2]sCreateValue' @filter='%[2]sFilterFn' :options='%[2]sFilterOptions' :readonly='%s'/>", nameRu, name, readonly, classStr)
 

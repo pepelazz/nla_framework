@@ -17,7 +17,7 @@ func UpperCaseFirst(str string) string {
 	return strings.Title(str)
 }
 
-func ParseDocTemplateFilename(docName, filename, globalDistPath string, docIndex int) (distPath, distFilename string) {
+func ParseDocTemplateFilename(docName, filename, globalDistPath string, docIndex int, params map[string]string) (distPath, distFilename string) {
 	// разбираем имя шаблона на части
 	arr := strings.Split(filename, "_")
 	if len(arr) < 2 {
@@ -27,8 +27,14 @@ func ParseDocTemplateFilename(docName, filename, globalDistPath string, docIndex
 	distFilename = arr[len(arr)-1]
 	// шаблоны для webClient
 	if arr[0] == "webClient" {
-		// собираем путь для генерации файла
 		path := fmt.Sprintf("%s/webClient/src/app/components/%s", globalDistPath, docName)
+		// если в параметрах передан webClientPath, то значит перезаписываем стандартный вариант. Обычно это для сулчаев вложенности. Например, cleint/deal
+		if params != nil {
+			if p, ok := params["doc.Vue.Path"]; ok {
+				path = fmt.Sprintf("%s/webClient/src/app/components/%s", globalDistPath, p)
+			}
+		}
+		// собираем путь для генерации файла
 		if arr[1] == "comp" {
 			path = path + "/comp"
 		}

@@ -13,14 +13,14 @@ type (
 		Docs     []DocType
 		DistPath string
 		Config   ProjectConfig
-		Vue ProjectVue
+		Vue      ProjectVue
 	}
 	ProjectConfig struct {
-		Logo string
+		Logo             string
 		LocalProjectPath string
-		Postgres  PostrgesConfig
-		WebServer WebServerConfig
-		Email     EmailConfig
+		Postgres         PostrgesConfig
+		WebServer        WebServerConfig
+		Email            EmailConfig
 	}
 	PostrgesConfig struct {
 		DbName   string
@@ -30,27 +30,27 @@ type (
 	}
 	WebServerConfig struct {
 		Port     int64
-		Url   	string
-		Path   	string
-		Ip   	string
-		Username   	string // root или ...
+		Url      string
+		Path     string
+		Ip       string
+		Username string // root или ...
 	}
 	EmailConfig struct {
-		SenderName     string
+		SenderName string
 	}
 	ProjectVue struct {
 		UiAppName string
-		Routes [][]string
-		Menu []VueMenu
+		Routes    [][]string
+		Menu      []VueMenu
 	}
 	VueMenu struct {
-		DocName string // если указано docName, то url и иконка копируются из описания документа
-		Icon string
-		Text string
-		Url string
+		DocName  string // если указано docName, то url и иконка копируются из описания документа
+		Icon     string
+		Text     string
+		Url      string
 		IsFolder bool
 		LinkList []VueMenu
-		Roles []string
+		Roles    []string
 	}
 )
 
@@ -81,7 +81,11 @@ func (p *ProjectType) FillDocTemplatesFields() {
 			}
 			// если не указан конечный путь, то формируем его исходя из ключа шаблона (например webClient_comp_...)
 			if len(t.DistPath) == 0 {
-				distPath, distFilename := utils.ParseDocTemplateFilename(d.Name, tName, p.DistPath, i)
+				params := map[string]string{}
+				if len(d.Vue.Path) > 0 {
+					params["doc.Vue.Path"] = d.Vue.Path
+				}
+				distPath, distFilename := utils.ParseDocTemplateFilename(d.Name, tName, p.DistPath, i, params)
 				t.DistFilename = distFilename
 				t.DistPath = distPath
 			}
@@ -91,7 +95,7 @@ func (p *ProjectType) FillDocTemplatesFields() {
 }
 
 // заполняем незаполненные поля для Vue
-func (p *ProjectType) FillVueFlds()  {
+func (p *ProjectType) FillVueFlds() {
 	for i, d := range p.Docs {
 		for j, fld := range d.Flds {
 			// если NameRu не заполнено, то копируем из fld
@@ -108,7 +112,7 @@ func (p *ProjectType) FillVueFlds()  {
 
 // заполняем боковое меню для Vue
 func (p *ProjectType) FillSideMenu() {
-	if (p.Vue.Menu ==  nil) {
+	if (p.Vue.Menu == nil) {
 		log.Fatalf("ProjectType.FillSideMenu p.Vue.Menu == nil")
 	}
 	for i, v := range p.Vue.Menu {
