@@ -13,17 +13,23 @@ const (
 
 type (
 	DocType struct {
-		Name            string
-		NameRu          string
-		Type            string
-		Flds            []FldType
-		Vue             DocVue
-		Sql             DocSql
-		Templates       map[string]*DocTemplate
-		IsBaseTemapltes DocIsBaseTemapltes // флаг что генерируем стандартные шаблоны для документа
-		PathPrefix      string             // префикс,если папка, в которой лежит папка с описанием документа находится не на одном уровне с main.go. Например 'docs', если docs/client/...
-		IsTaskAllowed   bool               // признак, что к таблице можно прикреплять задачи
-		StateMachine    *DocSm
+		Name                 string
+		NameRu               string
+		Type                 string
+		Flds                 []FldType
+		Vue                  DocVue
+		Sql                  DocSql
+		Templates            map[string]*DocTemplate
+		TemplatePathOverride map[string]TmplPathOverride  // map для переопределения источника шаблона по его названию
+		IsBaseTemapltes      DocIsBaseTemapltes // флаг что генерируем стандартные шаблоны для документа
+		PathPrefix           string             // префикс,если папка, в которой лежит папка с описанием документа находится не на одном уровне с main.go. Например 'docs', если docs/client/...
+		IsTaskAllowed        bool               // признак, что к таблице можно прикреплять задачи
+		StateMachine         *DocSm
+	}
+
+	TmplPathOverride struct {
+		Source string
+		Dist string
 	}
 
 	DocVue struct {
@@ -34,7 +40,7 @@ type (
 		BreadcrumbIcon string
 		Roles          []string
 		Grid           []VueGridDiv
-		Mixins         map[string][]string          // название файла - название миксина. Для прописывания импорта
+		Mixins         map[string][]VueMixin          // название файла - название миксина. Для прописывания импорта
 		Components     map[string]map[string]string // название файла - название миксина: путь для импорта. Для прописывания импорта
 		Methods        map[string]map[string]string // название файла - название метода - текст функции
 		TmplFuncs      map[string]func(DocType) string
@@ -49,6 +55,11 @@ type (
 		Icon       string
 		HtmlParams string
 		HtmlInner  string
+	}
+
+	VueMixin struct {
+		Title string
+		Import string
 	}
 
 	// специальное представление для сетки
@@ -113,12 +124,12 @@ func (d *DocType) Init() {
 	// если есть табы и к документу можно присоединять задачи, то прописываем миксин
 	if d.IsTaskAllowed && len(d.Vue.Tabs) > 0 {
 		if d.Vue.Mixins == nil {
-			d.Vue.Mixins = map[string][]string{}
+			d.Vue.Mixins = map[string][]VueMixin{}
 		}
 		if d.Vue.Mixins["docItemWithTabs"] == nil {
-			d.Vue.Mixins["docItemWithTabs"] = []string{}
+			d.Vue.Mixins["docItemWithTabs"] = []VueMixin{}
 		}
-		d.Vue.Mixins["docItemWithTabs"] = append(d.Vue.Mixins["docItemWithTabs"], "taskList")
+		d.Vue.Mixins["docItemWithTabs"] = append(d.Vue.Mixins["docItemWithTabs"], VueMixin{Title: "taskList", Import: "../../mixins/taskList"})
 	}
 }
 

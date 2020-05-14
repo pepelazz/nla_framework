@@ -7,7 +7,6 @@ import (
 	"github.com/iancoleman/strcase"
 	"github.com/pepelazz/projectGenerator/src/types"
 	"github.com/pepelazz/projectGenerator/src/utils"
-	"github.com/serenize/snaker"
 	"io/ioutil"
 	"log"
 	"os"
@@ -106,21 +105,7 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 
 		for _, fld := range d.Flds {
 			// если в документе есть поле с типо тэг, то создаем sql метод для запроса списка тэгов.
-			// При формировании шаблона передаем в него функцию GetFld для получения названия поля, для которого создана функция
-			if fld.Vue.Type == types.FldVueTypeTags {
-				methodName := d.Name + "_" + fld.Name +"_list"
-				funcMap := map[string]interface{}{"GetFld": func() string {return fld.Name}}
-				t, err := template.New("tag_list.sql").Funcs(funcMap).ParseFiles("../../projectGenerator/src/templates/sql/function/tag_list.sql")
-				utils.CheckErr(err, "tag_list.sql")
-				distPath := fmt.Sprintf("%s/sql/template/function/_%s", p.DistPath, snaker.SnakeToCamel(d.Name))
-				d.Templates["sql_function_" + fld.Name +"_tag_list.sql"] = &types.DocTemplate{Tmpl: t, DistPath: distPath, DistFilename: methodName + ".sql"}
-				// добавляем в список sql методов
-				if d.Sql.Methods == nil {
-					d.Sql.Methods = map[string]*types.DocSqlMethod{}
-				}
-				d.Sql.Methods[methodName] = &types.DocSqlMethod{Name: methodName}
-				d.AddVueMethod("docItem", "sFilterOptions()", "dd")
-			}
+			fldTagProccess(p, &d, &fld)
 		}
 
 		for _, tName := range baseTmplNames {
@@ -148,9 +133,10 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 				d.Templates[tName] = &types.DocTemplate{Tmpl: tmpl, DistPath: distPath, DistFilename: distFilename}
 			}
 		}
+
+		p.Docs[i] = d
 	}
 
-	p.Docs[i] = d
 
 	return res
 }
@@ -249,7 +235,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		}
 		return fld.Vue.Composition(*project, *fld.Doc)
 	case types.FldVueTypeTags:
-		return fmt.Sprintf("<q-select outlined label='%s' v-model='item.%s' use-input use-chips multiple input-debounce='0' @new-value='%[2]sCreateValue' @filter='%[2]sFilterFn' :options='%[2]sFilterOptions'/>", nameRu, name)
+		return fmt.Sprintf("<q-select outlined label='%s' v-model='item.%s' use-input use-chips multiple input-debounce='0' @new-value='%[2]sCreateValue' @filter='%[2]sFilterFn' :options='%[2]sFilterOptions' :readonly='%s'/>", nameRu, name, readonly, classStr)
 
 	default:
 		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fldType)

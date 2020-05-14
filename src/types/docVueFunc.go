@@ -65,8 +65,8 @@ func (d DocType) PrintVueImport(tmplName string) string  {
 	// ссылки на миксины
 	if d.Vue.Mixins != nil {
 		if arr, ok := d.Vue.Mixins[tmplName]; ok {
-			for _, s := range arr {
-				res = append(res, fmt.Sprintf("\timport %s from '../../mixins/%s'", s, s))
+			for _, m := range arr {
+				res = append(res, fmt.Sprintf("\timport %s from '%s'", m.Title, m.Import))
 			}
 		}
 	}
@@ -168,7 +168,7 @@ func (d DocVue) PrintMixins(tmplName string) string  {
 	if d.Mixins != nil {
 		if arr, ok := d.Mixins[tmplName]; ok {
 			for _, s := range arr {
-				res = append(res, fmt.Sprintf("%s", s))
+				res = append(res, fmt.Sprintf("%s", s.Title))
 			}
 		}
 	}
