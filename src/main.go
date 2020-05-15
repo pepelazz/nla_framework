@@ -141,13 +141,23 @@ func removeOldFiles(distPath string)  {
 
 func printApiCallPgFuncMethods() (res string)  {
 	res = "// for codeGenerate ##pgFuncList_slot1"
+	printPgMethod := func(m types.DocSqlMethod) {
+		var roles string
+		if len(m.Roles) > 0{
+			roles = fmt.Sprintf(`"%s"`, strings.Join(m.Roles, `", "`))
+		}
+		res = fmt.Sprintf("%s\n\t\tPgMethod{\"%s\", []string{%s}, nil, BeforeHookAddUserId},", res, m.Name, roles)
+	}
+	if project.Sql.Methods != nil {
+		for _, v := range project.Sql.Methods {
+			for _, m := range v {
+				printPgMethod(m)
+			}
+		}
+	}
 	for _, d := range project.Docs {
 		for _, m := range d.Sql.Methods {
-			var roles string
-			if len(m.Roles) > 0{
-				roles = fmt.Sprintf(`"%s"`, strings.Join(m.Roles, `", "`))
-			}
-			res = fmt.Sprintf("%s\n\t\tPgMethod{\"%s\", []string{%s}, nil, BeforeHookAddUserId},", res, m.Name, roles)
+			printPgMethod(*m)
 		}
 	}
 	return

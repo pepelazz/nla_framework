@@ -14,6 +14,7 @@ type (
 		DistPath string
 		Config   ProjectConfig
 		Vue      ProjectVue
+		Sql 	 ProjectSql
 	}
 	ProjectConfig struct {
 		Logo             string
@@ -51,6 +52,10 @@ type (
 		IsFolder bool
 		LinkList []VueMenu
 		Roles    []string
+	}
+
+	ProjectSql struct {
+		Methods map[string][]DocSqlMethod // имя документа и список методов. Например "task": []{"task_by_deal"}
 	}
 )
 
