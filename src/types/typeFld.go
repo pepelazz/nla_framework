@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 	"github.com/pepelazz/projectGenerator/src/utils"
+	"log"
 	"strings"
 )
 
@@ -12,6 +13,7 @@ const (
 	FldTypeInt               = "int"
 	FldTypeDouble            = "double"
 	FldTypeDate              = "date"
+	FldTypeBool              = "bool"
 	FldTypeJsonb             = "jsonb"
 	FldTypeVueComposition    = "vueComposition"
 	FldTypeDatetime          = "datetime"
@@ -19,6 +21,8 @@ const (
 	FldVueTypeSelect         = "select"
 	FldVueTypeMultipleSelect = "multipleSelect"
 	FldVueTypeTags         	 = "tags"
+	FldVueTypeCheckbox       = "checkbox"
+	FldVueTypeRadio       	 = "radio"
 )
 
 type (
@@ -117,6 +121,31 @@ func (fld *FldType) PgUpdateType() string {
 	}
 }
 
+// переписываем значение колонки и строки. Третье число - ширина колонки
+func (fld FldType) SetRowCol(n ...int) FldType {
+	if len(n) < 2 {
+		docName := ""
+		if fld.Doc != nil {
+			docName = fld.Doc.Name
+		}
+		log.Fatalf("Doc: '%s' Fld: '%s' SetRowCol params must be more tan two numbers. Get %v", docName, fld.Name, n)
+	}
+	fld.Vue.RowCol = [][]int{{n[0], n[1]}}
+	// если указано третье число, то заменяем класс, описыающий ширину колонки
+	if len(n) > 2 {
+		// копируем значения в новый массив, инчае возможны спецэффекты
+		arr := []string{}
+		for _, s := range fld.Vue.Class {
+			if strings.HasPrefix(s, "col-") {
+				s = fmt.Sprintf("col-%v", n[2])
+			}
+			arr = append(arr, s)
+		}
+		fld.Vue.Class = arr
+	}
+	return fld
+}
+
 func (fld FldType) SetIsRequired() FldType {
 	fld.Sql.IsRequired = true
 	fld.Vue.IsRequired = true
@@ -156,6 +185,7 @@ func (fld FldVue) ClassPrint() string {
 	}
 	return ""
 }
+
 
 func (fld FldVue) ClassPrintOnlyCol() string {
 	if fld.Class != nil {

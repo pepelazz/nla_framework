@@ -171,7 +171,10 @@ func (d DocType) PrintSqlFuncGetById() (res string) {
 			if refTable == "user" {
 				refTable = `"user"`
 			}
-			arr = append(arr, fmt.Sprintf("\t\tt%v as (select t%[2]v.*, c.title as %[3]s_title from t%[2]v left join %[4]s c on c.id = t%[2]v.%[5]s)", cnt, cnt-1, f.Sql.Ref, refTable, f.Name))
+			// формируем имя для title. Нужно для тех случаев когда имя столба отличается от имени таблицы, на которую идет ссылка.
+			// например, from_location_id как ссылка на таблицу location. Тогда формируем поле from_location_title
+			fldNameWithTitle := strings.TrimSuffix(f.Name,"_id") + "_title"
+			arr = append(arr, fmt.Sprintf("\t\tt%v as (select t%[2]v.*, c.title as %[6]s from t%[2]v left join %[4]s c on c.id = t%[2]v.%[5]s)", cnt, cnt-1, f.Sql.Ref, refTable, f.Name, fldNameWithTitle))
 		}
 	}
 	res = fmt.Sprintf("%s\n \tselect row_to_json(t%v.*)::jsonb into result from t%v;", strings.Join(arr, ",\n"), cnt, cnt)

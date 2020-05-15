@@ -64,6 +64,41 @@ func GetFldInt(name, nameRu string, rowCol [][]int, params ...string) (fld FldTy
 	return
 }
 
+// создание простого поля Checkbox
+func GetFldCheckbox(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
+	classStr := "col-4"
+	readonly := "false"
+	for i, v := range params {
+		if i == 0 {
+			classStr = v
+		} else {
+			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
+				readonly="true"
+			}
+		}
+	}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeBool, Vue:FldVue{RowCol: rowCol, Type:FldVueTypeCheckbox, Class: []string{classStr}, Readonly:readonly}}
+	return
+}
+
+// создание простого поля Radio
+func GetFldRadioString(name, nameRu string, rowCol [][]int, options []FldVueOptionsItem, params ...string) (fld FldType) {
+	classStr := "col-4"
+	readonly := "false"
+	for i, v := range params {
+		if i == 0 {
+			classStr = v
+		} else {
+			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
+				readonly="true"
+			}
+		}
+	}
+
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Sql:FldSql{Size:50}, Vue:FldVue{RowCol: rowCol, Type:FldVueTypeRadio, Options: options, Class: []string{classStr}, Readonly:readonly}}
+	return
+}
+
 // создание простого поля Ref
 func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) (fld FldType) {
 	classStr := "col-4"

@@ -212,7 +212,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 			fld.Vue.Ext = map[string]string{}
 		}
 		// если специально не определено поле для ajaxSelectTitle, то формируем стандартное [ref_table_name]_title
-		ajaxSelectTitle := fld.Sql.Ref + "_title"
+		ajaxSelectTitle := strings.TrimSuffix(fld.Name, "_id") + "_title"
 		if v, ok := fld.Vue.Ext["ajaxSelectTitle"]; ok {
 			ajaxSelectTitle = v
 		}
@@ -247,6 +247,20 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		return fld.Vue.Composition(*project, linkOnDoc)
 	case types.FldVueTypeTags:
 		return fmt.Sprintf("<q-select outlined label='%s' v-model='item.%s' use-input use-chips multiple input-debounce='0' @new-value='%[2]sCreateValue' @filter='%[2]sFilterFn' :options='%[2]sFilterOptions' :readonly='%s'/>", nameRu, name, readonly, classStr)
+	case types.FldVueTypeCheckbox:
+		return fmt.Sprintf("<q-checkbox label='%s' v-model='item.%s' :disabled='%s' %s/>", nameRu, name, readonly, classStr)
+	case types.FldVueTypeRadio:
+		options := ""
+		for _, v := range fld.Vue.Options {
+			options = fmt.Sprintf("%s <q-radio size='xs' dense v-model='item.%s' val='%s' label='%s' :disable ='%s'/>\n", options, name, v.Value, v.Label, readonly)
+		}
+		return fmt.Sprintf(`<div class="row q-col-gutter-md q-pb-xs">
+	<div class="col-4">%s</div>
+	<div class="col-8 q-gutter-sm ">
+	%s
+	</div>
+	</div>
+`, nameRu, options)
 
 	default:
 		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fldType)
