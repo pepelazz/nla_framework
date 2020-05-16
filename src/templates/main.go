@@ -141,7 +141,6 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 		p.Docs[i] = d
 	}
 
-
 	return res
 }
 

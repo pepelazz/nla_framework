@@ -2,6 +2,7 @@ package templates
 
 import (
 	"fmt"
+	"github.com/pepelazz/projectGenerator/src/templates/tmplGenerateStep2"
 	"github.com/pepelazz/projectGenerator/src/types"
 	"github.com/pepelazz/projectGenerator/src/utils"
 	"strings"
@@ -21,3 +22,8 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 		}
 	}
 }
+
+func OtherTemplatesGenerate(p types.ProjectType)  {
+	tmplGenerateStep2.TasksTmpl(p)
+}
+

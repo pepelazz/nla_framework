@@ -1,6 +1,5 @@
 <template>
   <q-page padding>
-    <!-- TODO: поменять иконку-->
     <comp-breadcrumb :list="[{label:'Задача', docType: 'task', icon: 'fas fa-tasks'}]"/>
 
     <comp-doc-list ref="docList" doc-name="task" pg-method="task_list"
@@ -18,7 +17,7 @@
         <q-item-section>
           <q-item-label lines="1">{{item.task_type_title}}</q-item-label>
           <q-item-label v-if="item.executor_fullname" caption><q-icon name="person"/> {{item.executor_fullname}}</q-item-label>
-          <q-item-label v-if="item.table_name == 'client'" caption @click="$router.push(`/client/${item.table_id}`)"><q-icon name="far fa-building"/> {{item.table_options.title}}</q-item-label>
+<!--          <q-item-label v-if="item.table_name == 'client'" caption @click="$router.push(`/client/${item.table_id}`)"><q-icon name="far fa-building"/> {{item.table_options.title}}</q-item-label>-->
         </q-item-section>
 
         <q-item-section top side>

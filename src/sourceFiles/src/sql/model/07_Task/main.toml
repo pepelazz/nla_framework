@@ -43,4 +43,5 @@ methods = [
     "task_get_by_id",
     "task_action_to_finished",
     "task_list_for_user",
+# for codeGenerate task_methods_slot
 ]

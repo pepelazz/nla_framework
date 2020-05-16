@@ -96,6 +96,7 @@ type (
 	DocSqlMethod struct {
 		Name  string
 		Roles []string
+		Params map[string]string
 	}
 
 	DocSqlHooks struct {

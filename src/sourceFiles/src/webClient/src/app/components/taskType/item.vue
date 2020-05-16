@@ -59,7 +59,7 @@
         methods: {
             resultModify(res) {
                 if (res.table_name) {
-                    const opt = this.selectOptions.find(v => v.value = res.table_name)
+                    const opt = this.selectOptions.find(v => v.value === res.table_name)
                     if (opt) res.table_name = {value: res.table_name, label: opt.label}
                 }
                 return res

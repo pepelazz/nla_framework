@@ -38,6 +38,10 @@ func ParseDocTemplateFilename(docName, filename, globalDistPath string, docIndex
 		if arr[1] == "comp" {
 			path = path + "/comp"
 		}
+		// если шаблон вида webClient_taskTmpl_ то это шабон для отображения задачи в списке. Копируем его в папку components/currentUser/tasks/taskTemplates
+		if arr[1] == "taskTmpl" {
+			path = fmt.Sprintf("%s/webClient/src/app/components/currentUser/tasks/taskTemplates", globalDistPath)
+		}
 		distPath = path
 	}
 	// шаблоны для sql

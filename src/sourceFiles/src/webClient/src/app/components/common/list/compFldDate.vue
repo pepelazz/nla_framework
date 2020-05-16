@@ -1,12 +1,12 @@
 <template>
-  <q-input :dense='dense' outlined :label="label" v-model="date">
+  <q-input :dense='dense' outlined :label="label" v-model="date" :readonly="readonly">
     <template v-slot:append v-if="is_remove">
       <q-btn round flat size="sm" icon="clear" @click="clear"/>
     </template>
-    <template v-slot:prepend>
+    <template v-slot:prepend v-if="!readonly">
       <q-icon name="event" class="cursor-pointer">
         <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-          <q-date v-model="date" @input="() => $refs.qDateProxy.hide()" mask="DD-MM-YYYY"/>
+          <q-date v-model="date" @input="() => $refs.qDateProxy.hide()" mask="DD-MM-YYYY" :readonly="readonly"/>
         </q-popup-proxy>
       </q-icon>
     </template>
@@ -17,7 +17,7 @@
     import {date as qDate} from 'quasar'
     // import moment from 'moment'
     export default {
-        props: ['dateString', 'label', 'dense', 'is_remove'],
+        props: ['dateString', 'label', 'dense', 'is_remove', 'readonly'],
         data() {
             return {
                 // date: this.dateString || qDate.formatDate(new Date(), 'DD-MM-YYYY'),

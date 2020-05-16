@@ -1,13 +1,13 @@
 <template>
-  <q-input outlined :label="label" v-model="date">
-    <template v-slot:prepend>
+  <q-input outlined :label="label" v-model="date" :readonly="readonly">
+    <template v-slot:prepend  v-if="!readonly">
       <q-icon name="event" class="cursor-pointer">
         <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
           <q-date v-model="date" @input="() => $refs.qDateProxy.hide()" mask="DD-MM-YYYY HH:mm"/>
         </q-popup-proxy>
       </q-icon>
     </template>
-    <template v-slot:append>
+    <template v-slot:append v-if="!readonly">
       <q-icon name="access_time" class="cursor-pointer">
         <q-popup-proxy transition-show="scale" transition-hide="scale">
           <q-time v-model="date" @input="() => $refs.qDateProxy.hide()" mask="DD-MM-YYYY HH:mm" format24h />
@@ -21,7 +21,7 @@
     // import {date as qDate} from 'quasar'
     import {date as qDate} from 'quasar'
     export default {
-        props: ['dateString', 'label'],
+        props: ['dateString', 'label', 'readonly'],
         data() {
             return {
                 date: null,

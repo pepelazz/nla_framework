@@ -65,6 +65,8 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc)  {
 	// копируем файлы проекта (которые не шаблоны)
 	err := copyFiles(p,"../../projectGenerator/src/sourceFiles", "../", modifyFunc)
 	utils.CheckErr(err, "Copy sourceFiles")
+
+	templates.OtherTemplatesGenerate(project)
 }
 
 // функция для копирования файлов с возможностью модификаации содержимого файлов
@@ -106,6 +108,20 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 				if strings.HasSuffix(path, "src"+string(os.PathSeparator)+"router"+string(os.PathSeparator)+"routes.js") {
 					file = []byte(strings.Replace(string(file), "// for codeGenerate ##routes_slot1", routesJsModify(), -1))
 				}
+				// изменение _Task/main.toml - дописываем дополнительные методы
+				if strings.HasSuffix(path, "_Task"+string(os.PathSeparator)+"main.toml") {
+					insertText := "# for codeGenerate task_methods_slot"
+					if project.Sql.Methods != nil {
+						isMethodsExist := false
+						for _, v := range project.Sql.Methods["task"] {
+							isMethodsExist = true
+							insertText = fmt.Sprintf("%s\n\t\"%s\",", insertText, v.Name)
+						}
+						if isMethodsExist {
+							file = []byte(strings.Replace(string(file), "# for codeGenerate task_methods_slot", insertText, -1))
+						}
+					}
+				}
 				// изменение index.template.html
 				if strings.HasSuffix(path, "src"+string(os.PathSeparator)+"index.template.html") {
 					file = []byte(strings.Replace(string(file), "[[appName]]", p.Name, -1))
@@ -117,6 +133,22 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 				// проставляем Config.Postgres.TimeZone в sql файлах
 				if strings.HasSuffix(path, ".sql") {
 					file = []byte(strings.Replace(string(file), "[[Config.Postgres.TimeZone]]", p.Config.Postgres.TimeZone, -1))
+				}
+				// добавляем в триггер для задач дополнительные блоки
+				if strings.HasSuffix(path, "trigger_task_update_table_name.sql") {
+					insertText := "-- for codeGenerate #trigger_task_update_table_name_slot"
+					if project.Sql.Methods != nil {
+						isMethodsExist := false
+						for _, v := range project.Sql.Methods["task"] {
+							isMethodsExist = true
+							if txt, ok := v.Params["trigger_task_update_table_name.sql"]; ok {
+								insertText = fmt.Sprintf("%s\n%s", insertText, txt)
+							}
+						}
+						if isMethodsExist {
+							file = []byte(strings.Replace(string(file), "-- for codeGenerate #trigger_task_update_table_name_slot", insertText, -1))
+						}
+					}
 				}
 				// применяем модификатор для текста файла
 				if modifyFunc != nil {
