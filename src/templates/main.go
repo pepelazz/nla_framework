@@ -245,7 +245,13 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		}
 		return fld.Vue.Composition(*project, linkOnDoc)
 	case types.FldVueTypeTags:
-		return fmt.Sprintf("<q-select outlined label='%s' v-model='item.%s' use-input use-chips multiple input-debounce='0' @new-value='%[2]sCreateValue' @filter='%[2]sFilterFn' :options='%[2]sFilterOptions' :readonly='%s'/>", nameRu, name, readonly, classStr)
+		if fld.Vue.Ext["onlyExistTags"] == "true" {
+			// вариант когда нельзя создавать новые тэги, только выбирать из существующих
+			return fmt.Sprintf("<q-select outlined label='%s' v-model='item.%s' use-chips multiple @filter='%[2]sFilterFn' :options='%[2]sFilterOptions' :readonly='%s'/>", nameRu, name, readonly, classStr)
+		} else {
+			// вариант когда можно создавать новые тэги
+			return fmt.Sprintf("<q-select outlined label='%s' v-model='item.%s' use-input use-chips multiple input-debounce='0' @new-value='%[2]sCreateValue' @filter='%[2]sFilterFn' :options='%[2]sFilterOptions' :readonly='%s'/>", nameRu, name, readonly, classStr)
+		}
 	case types.FldVueTypeCheckbox:
 		return fmt.Sprintf("<q-checkbox label='%s' v-model='item.%s' :disabled='%s' :false-value='null' indeterminate-value='some' %s/>", nameRu, name, readonly, classStr)
 	case types.FldVueTypeRadio:

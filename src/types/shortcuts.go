@@ -148,10 +148,17 @@ func GetFldSelectString(name, nameRu string, size int, rowCol [][]int, options [
 // создание простого поля Int
 func GetFldTag(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
 	classStr := "col-4"
-	if len(params)>0 {
-		classStr= params[0]
+	onlyExistTags := "false" // флаг для UI контрола, чтобы можно было только выбирать из существующих тэгов и нельзя было создавать новые
+	for i, v := range params {
+		if i == 0 {
+			classStr = v
+		} else {
+			if strings.HasPrefix(v, "only_exist_tags") {
+				onlyExistTags="true"
+			}
+		}
 	}
-	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeTextArray, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeTags,  Class: []string{classStr}}}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeTextArray, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeTags,  Class: []string{classStr}, Ext: map[string]string{"onlyExistTags": onlyExistTags}}}
 	return
 }
 

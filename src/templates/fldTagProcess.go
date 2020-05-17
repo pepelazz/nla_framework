@@ -41,6 +41,10 @@ func fldTagProccess(p types.ProjectType, d *types.DocType, fld *types.FldType)  
 		t, err = template.New("mixinTag.js").Funcs(funcMap).Delims("[[", "]]").ParseFiles("../../projectGenerator/src/templates/webClient/doc/mixinTag.js")
 		utils.CheckErr(err, "mixinTag.js")
 		distPath = fmt.Sprintf("%s/webClient/src/app/components/%s/mixins", p.DistPath, d.Name)
+		// в случае табов изменяем path
+		if len(d.Vue.Tabs) > 0{
+			distPath = fmt.Sprintf("%s/webClient/src/app/components/%s/tabs/info/mixins", p.DistPath, d.Name)
+		}
 		// проверяем возможность того, что путь для шаблону был переопределен внутри документа
 		if d.TemplatePathOverride != nil {
 			if tmpl, ok := d.TemplatePathOverride["tag_list.js"]; ok {

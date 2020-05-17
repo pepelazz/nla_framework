@@ -97,6 +97,13 @@ type (
 		Name  string
 		Roles []string
 		Params map[string]string
+		Tmpl DocSqlMethodTmpl
+	}
+
+	DocSqlMethodTmpl struct {
+		Source string
+		Dist string
+		FuncMap      template.FuncMap
 	}
 
 	DocSqlHooks struct {

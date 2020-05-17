@@ -72,3 +72,10 @@ func CheckContainsSliceStr(str string, arr ...string) bool {
 	}
 	return false
 }
+
+func PathExtractFilename(p string) (path, filename string) {
+	arr:= strings.Split(p, "/")
+	filename = arr[len(arr)-1]
+	path = strings.TrimSuffix(p, "/"+filename)
+	return
+}
