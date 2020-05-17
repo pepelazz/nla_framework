@@ -1,0 +1,182 @@
+package types
+
+import (
+	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/serenize/snaker"
+	"log"
+	"text/template"
+)
+
+const (
+	DocTypeLinkTable = "linkTable"
+)
+
+type (
+	DocType struct {
+		Name                 string
+		NameRu               string
+		Type                 string
+		Flds                 []FldType
+		Vue                  DocVue
+		Sql                  DocSql
+		Templates            map[string]*DocTemplate
+		TemplatePathOverride map[string]TmplPathOverride  // map для переопределения источника шаблона по его названию
+		IsBaseTemapltes      DocIsBaseTemapltes // флаг что генерируем стандартные шаблоны для документа
+		PathPrefix           string             // префикс,если папка, в которой лежит папка с описанием документа находится не на одном уровне с main.go. Например 'docs', если docs/client/...
+		IsTaskAllowed        bool               // признак, что к таблице можно прикреплять задачи
+		StateMachine         *DocSm
+	}
+
+	TmplPathOverride struct {
+		Source string
+		Dist string
+	}
+
+	DocVue struct {
+		RouteName      string
+		Routes         [][]string // можно указать роуты, тогда они не формируются автоматически
+		Path           string     // путь к папке с компонентами, если отличается от стандартного. Например client/deal... Используется для вложенных путей
+		MenuIcon       string
+		BreadcrumbIcon string
+		Roles          []string
+		Grid           []VueGridDiv
+		Mixins         map[string][]VueMixin          // название файла - название миксина. Для прописывания импорта
+		Components     map[string]map[string]string // название файла - название миксина: путь для импорта. Для прописывания импорта
+		Methods        map[string]map[string]string // название файла - название метода - текст функции
+		TmplFuncs      map[string]func(DocType) string
+		I18n           map[string]string
+		Tabs           []VueTab
+	}
+
+	VueTab struct {
+		Title      string
+		TitleRu    string
+		TmplName   string
+		Icon       string
+		HtmlParams string
+		HtmlInner  string
+	}
+
+	VueMixin struct {
+		Title string
+		Import string
+	}
+
+	// специальное представление для сетки
+	VueGridDiv struct {
+		Class string
+		Grid  []VueGridDiv
+		Fld   FldType
+	}
+
+	DocTemplate struct {
+		Source       string
+		DistPath     string
+		DistFilename string
+		Tmpl         *template.Template
+		FuncMap      template.FuncMap // возможность добавлять для конкретного шаблона свои функции, которые затем можно использовать внутри шаблона вместе со стандартными функциями
+	}
+
+	DocSql struct {
+		Methods         map[string]*DocSqlMethod
+		IsUniqLink      bool        // флаг, что таблица является связью двух таблиц и связь между ними уникальная
+		IsBeforeTrigger bool        // флаг что добавляем before триггер
+		IsAfterTrigger  bool        // флаг что добавляем after триггер
+		IsSearchText    bool        // флаг что добавляем поле search_text
+		ComputedTitle   string      // в случае если колонка title вычислимая, то прописываем формулу по которой заполняется
+		Indexes         []string    // индексы
+		Hooks           DocSqlHooks // куски sql кода
+	}
+
+	DocIsBaseTemapltes struct {
+		Vue bool
+		Sql bool
+	}
+
+	DocSqlMethod struct {
+		Name  string
+		Roles []string
+		Params map[string]string
+		Tmpl DocSqlMethodTmpl
+	}
+
+	DocSqlMethodTmpl struct {
+		Source string
+		Dist string
+		FuncMap      template.FuncMap
+	}
+
+	DocSqlHooks struct {
+		DeclareVars        map[string]string
+		BeforeInsertUpdate []string
+		BeforeInsert       []string
+	}
+)
+
+func (d DocType) Fld(fldName string) *FldType {
+	for _, f := range d.Flds {
+		if f.Name == fldName {
+			return &f
+		}
+	}
+	log.Fatalf("d.Fld: doc '%s' fld '%s' not found", d.Name, fldName)
+	return nil
+}
+
+// место вызова разных доп функций для инициализации документа, после того как основные поля заполнены
+func (d *DocType) Init() {
+	d.Filli18n()
+	for i := range d.Flds {
+		d.Flds[i].Doc = d
+	}
+	// если есть табы и к документу можно присоединять задачи, то прописываем миксин
+	if d.IsTaskAllowed && len(d.Vue.Tabs) > 0 {
+		if d.Vue.Mixins == nil {
+			d.Vue.Mixins = map[string][]VueMixin{}
+		}
+		if d.Vue.Mixins["docItemWithTabs"] == nil {
+			d.Vue.Mixins["docItemWithTabs"] = []VueMixin{}
+		}
+		d.Vue.Mixins["docItemWithTabs"] = append(d.Vue.Mixins["docItemWithTabs"], VueMixin{Title: "taskList", Import: "../../mixins/taskList"})
+	}
+}
+
+func (d DocType) PgName() string {
+	return snaker.CamelToSnake(d.Name)
+}
+
+func (d DocType) NameCamelCase() string {
+	return snaker.SnakeToCamel(d.Name)
+}
+
+// sugar для добавление компоненты во vue
+// имя шаблона. Например, docItem
+func (d *DocType) AddVueComposition(tmpName, compName string) {
+	importName := "comp" + utils.UpperCaseFirst(compName)
+	importAddress := "./comp/" + compName + ".vue"
+	dTemplateName := "webClient_comp_" + compName + ".vue"
+	// добавляем в список компонент
+	if d.Vue.Components == nil {
+		d.Vue.Components = map[string]map[string]string{}
+	}
+	if d.Vue.Components[tmpName] == nil {
+		d.Vue.Components[tmpName] = map[string]string{}
+	}
+	d.Vue.Components[tmpName][importName] = importAddress
+	// добавляем в список шаблонов для загрузки
+	if d.Templates == nil {
+		d.Templates = map[string]*DocTemplate{}
+	}
+	d.Templates[dTemplateName] = &DocTemplate{}
+}
+
+// sugar для добавления табов и задач к документу
+func (d *DocType) AddVueTaskAndTabs() {
+	// в шаблон vue добавляем табы
+	d.Vue.Tabs = []VueTab{
+		{"info", "инфо", "tabInfo.vue", "assignment", "", ""},
+		{"tasks", "задачи", "tabTasks.vue", "alarm", ":list='taskListForRender'", "<q-badge v-if='taskListForRender.length>0' color='red' floating>{{taskListForRender.length}}</q-badge>"},
+	}
+	// указываем признак, что к документу можно прикреплять задачи
+	d.IsTaskAllowed = true
+}
