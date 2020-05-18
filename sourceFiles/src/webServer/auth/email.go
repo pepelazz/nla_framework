@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/matcornic/hermes"
 	"github.com/pepelazz/projectGenerator/pg"
 	"github.com/pepelazz/projectGenerator/types"
 	"github.com/pepelazz/projectGenerator/utils"
@@ -75,30 +74,11 @@ func EmailAuth(c *gin.Context) {
 			utils.HttpError(c, http.StatusOK, "pg call user_temp_email_auth_create err:"+fmt.Sprintf("%s", err))
 			return
 		}
-		// формируем письмо для отправки
-		emailSubject := "Завершение процесса регистрации"
-		hermesEmail := hermes.Email{
-			Body: hermes.Body{
-				Title: "Для завершения регистрации кликните по кнопке ниже:",
-				//Intros: []string{
-				//	"Для завершения регистрации кликните по кнопке ниже:",
-				//},
-				Actions: []hermes.Action{
-					{
-						Button: hermes.Button{
-							Color: "#22BC66", // Optional action button color
-							Text:  "Подтвердить регистрацию",
-							Link:  fmt.Sprintf("%s/check_user_email?t=%v", webServerConfig.Url, userRegData.Token),
-						},
-					},
-				},
-				Signature: "С уважением",
-			},
-		}
 		// отправляем письмо
-		err = utils.EmailSendMessage([]string{userRegData.Email}, emailSubject, "", &hermesEmail)
+		href := fmt.Sprintf("%s/check_user_email?t=%v", webServerConfig.Url, userRegData.Token)
+		err = utils.EmailSendRegistrationConfirm(userRegData.Email, href)
 		if err != nil {
-			fmt.Printf("utils.EmailSendMessage: %s", err)
+			fmt.Printf("utils.EmailSendRegistrationConfirm: %s", err)
 		}
 		// в независимости от результатов отправки письма отправляем, что данный этап регистрации успешно пройден
 		utils.HttpSuccess(c, nil)
@@ -193,28 +173,8 @@ func EmailAuthStartRecoverPassword(c *gin.Context) {
 	}
 
 	//отправляем письмо со ссылкой для восставноления пароля
-	// формируем пиьсмо для отправки
-	emailSubject := "Смена пароля"
-	hermesEmail := hermes.Email{
-		Body: hermes.Body{
-			Title: "Для смены пароля кликните по кнопке ниже::",
-			//Intros: []string{
-			//	"Для завершения регистрации кликните по кнопке ниже:",
-			//},
-			Actions: []hermes.Action{
-				{
-					Button: hermes.Button{
-						Color: "#22BC66", // Optional action button color
-						Text:  "Смена пароля",
-						Link:  fmt.Sprintf("%s/email_auth_recover_password?t=%v", webServerConfig.Url, token),
-					},
-				},
-			},
-			Signature: "С уважением",
-		},
-	}
-	// отправляем письмо
-	err = utils.EmailSendMessage([]string{queryData.Params.Email}, emailSubject, "", &hermesEmail)
+	href := fmt.Sprintf("%s/email_auth_recover_password?t=%v", webServerConfig.Url, token)
+	err = utils.EmailSendChangePassword(queryData.Params.Email, href)
 	if err != nil {
 		utils.HttpError(c, http.StatusOK, fmt.Sprintf("EmailSendMessage: %s", err))
 		return

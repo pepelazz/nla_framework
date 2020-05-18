@@ -41,6 +41,10 @@ type (
 		IsDocker bool
 	}
 	EmailConfig struct {
+		Sender string
+		Password string
+		Host string
+		Port int64
 		SenderName string
 	}
 	ProjectVue struct {

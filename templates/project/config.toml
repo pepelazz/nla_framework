@@ -19,10 +19,8 @@ host = "85.143.214.161"
 port = 12201
 
 [email]
-sender = "info@nl-a.ru"
-password = "mark12345"
-host = "smtp.mail.ru"
-port = 465
-#port = 25
+sender = "{{.Config.Email.Sender}}"
+password = "{{.Config.Email.Password}}"
+host = "{{.Config.Email.Host}}"
+port = {{.Config.Email.Port}}
 senderName = "{{.Config.Email.SenderName}}"
-senderLogo = ""
