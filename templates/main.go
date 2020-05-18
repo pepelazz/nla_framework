@@ -39,16 +39,16 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 		}
 	}
 	// project
-	path := "../../projectGenerator/templates/project/"
-	readFiles("project_", "{{", "}}", path+"config.toml", path+"docker-compose.yml", path+"docker-compose.dev.yml", path+"restoreDump.sh", path+"deploy.ps1")
+	path := "../../../pepelazz/projectGenerator/templates/project/"
+	readFiles("project_", "{{", "}}", path+"config.toml", path+"main.go", path+"docker-compose.yml", path+"docker-compose.dev.yml", path+"restoreDump.sh", path+"deploy.ps1")
 
 	// webClient
-	path = "../../projectGenerator/templates/webClient/doc/"
+	path = "../../../pepelazz/projectGenerator/templates/webClient/doc/"
 	readFiles("webClient_", "[[", "]]", path+"index.vue", path+"item.vue", path+"itemWithTabs.vue", path+"tabInfo.vue", path+"tabTasks.vue")
 	// sql
-	path = "../../projectGenerator/templates/sql/"
+	path = "../../../pepelazz/projectGenerator/templates/sql/"
 	readFiles("sql_", "{{", "}}", path+"main.toml")
-	path = "../../projectGenerator/templates/sql/function/"
+	path = "../../../pepelazz/projectGenerator/templates/sql/function/"
 	readFiles("sql_function_", "{{", "}}", path+"get_by_id.sql", path+"list.sql", path+"update.sql", path+"trigger_before.sql", path+"trigger_after.sql")
 
 	// парсинг шаблонов для конкретного документа

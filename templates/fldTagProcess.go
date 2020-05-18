@@ -19,7 +19,7 @@ func fldTagProccess(p types.ProjectType, d *types.DocType, fld *types.FldType)  
 			"GetDoc": func() string {return docName},
 			"GetFld": func() string {return fldName},
 		}
-		sourcePath := "../../projectGenerator/templates/sql/function/tag_list.sql"
+		sourcePath := "../../../pepelazz/projectGenerator/templates/sql/function/tag_list.sql"
 		// проверяем возможность того, что путь к шаблону был переопределен внутри документа
 		if d.TemplatePathOverride != nil {
 			if tmpl, ok := d.TemplatePathOverride["tag_list.sql"]; ok {
@@ -38,7 +38,7 @@ func fldTagProccess(p types.ProjectType, d *types.DocType, fld *types.FldType)  
 		}
 		d.Sql.Methods[methodName] = &types.DocSqlMethod{Name: methodName}
 		// читаем шаблон и генерим файл с mixin
-		t, err = template.New("mixinTag.js").Funcs(funcMap).Delims("[[", "]]").ParseFiles("../../projectGenerator/templates/webClient/doc/mixinTag.js")
+		t, err = template.New("mixinTag.js").Funcs(funcMap).Delims("[[", "]]").ParseFiles("../../../pepelazz/projectGenerator/templates/webClient/doc/mixinTag.js")
 		utils.CheckErr(err, "mixinTag.js")
 		distPath = fmt.Sprintf("%s/webClient/src/app/components/%s/mixins", p.DistPath, d.Name)
 		// в случае табов изменяем path

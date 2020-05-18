@@ -63,7 +63,7 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc)  {
 	}
 
 	// копируем файлы проекта (которые не шаблоны)
-	err := copyFiles(p,"../../projectGenerator/sourceFiles", "../", modifyFunc)
+	err := copyFiles(p,"../../../pepelazz/projectGenerator/sourceFiles", "../", modifyFunc)
 	utils.CheckErr(err, "Copy sourceFiles")
 
 	templates.OtherTemplatesGenerate(project)

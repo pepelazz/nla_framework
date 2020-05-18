@@ -3,13 +3,13 @@ package main
 import (
 	"encoding/gob"
 	"flag"
-	"github.com/pepelazz/projectGenerator/graylog"
-	"github.com/pepelazz/projectGenerator/jobs"
-	"github.com/pepelazz/projectGenerator/pg"
-	"github.com/pepelazz/projectGenerator/types"
-	"github.com/pepelazz/projectGenerator/utils"
-	"github.com/pepelazz/projectGenerator/webServer"
-	"github.com/pepelazz/projectGenerator/sse"
+	"{{.Config.LocalProjectPath}}/graylog"
+	"{{.Config.LocalProjectPath}}/jobs"
+	"{{.Config.LocalProjectPath}}/pg"
+	"{{.Config.LocalProjectPath}}/types"
+	"{{.Config.LocalProjectPath}}/utils"
+	"{{.Config.LocalProjectPath}}/webServer"
+	"{{.Config.LocalProjectPath}}/sse"
 	"math/rand"
 	"os"
 	"time"
@@ -27,7 +27,7 @@ func main() {
 	flag.Parse()
 
 	if *isDev {
-		_ = os.Setenv("PG_PORT", "5438")
+		{{if .Config.DevMode.IsDocker -}}_ = os.Setenv("PG_PORT", "5438") {{end}}
 		_ = os.Setenv("PG_HOST", "localhost")
 		_ = os.Setenv("IS_DEVELOPMENT", "true")
 	}

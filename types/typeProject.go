@@ -22,6 +22,7 @@ type (
 		Postgres         PostrgesConfig
 		WebServer        WebServerConfig
 		Email            EmailConfig
+		DevMode DevModeConfig
 	}
 	PostrgesConfig struct {
 		DbName   string
@@ -35,6 +36,9 @@ type (
 		Path     string
 		Ip       string
 		Username string // root или ...
+	}
+	DevModeConfig struct {
+		IsDocker bool
 	}
 	EmailConfig struct {
 		SenderName string
