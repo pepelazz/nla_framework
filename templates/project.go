@@ -40,5 +40,7 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 
 func OtherTemplatesGenerate(p types.ProjectType)  {
 	tmplGenerateStep2.TasksTmpl(p)
+	// добавляем функции в plugin/utils.js
+	tmplGenerateStep2.PluginUtilsJs(p)
 }
 

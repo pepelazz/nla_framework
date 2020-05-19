@@ -133,6 +133,8 @@ const formatPgDate = (d) => {
   return d ? moment(d, 'YYYY-MM-DDTHH:mm:ss').format('DD-MM-YYYY') : null
 }
 
+[[FunctionsList]]
+
 export default {
   postApiRequest,
   postCallPgMethod,
@@ -142,6 +144,7 @@ export default {
   updateUrlQuery,
   formatPgDateTime,
   formatPgDate,
+  [[ExportDefaultList]]
 }
 
 const getHttpHeaders = () => {
