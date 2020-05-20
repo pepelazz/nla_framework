@@ -145,6 +145,24 @@ func GetFldSelectString(name, nameRu string, size int, rowCol [][]int, options [
 	return
 }
 
+// создание простого поля MultipleSelect с типом string
+func GetFldSelectMultilple(name, nameRu string, rowCol [][]int, options []FldVueOptionsItem, params ...string) (fld FldType) {
+	classStr := "col-4"
+	readonly := "false"
+	for i, v := range params {
+		if i == 0 {
+			classStr = v
+		} else {
+			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
+				readonly="true"
+			}
+		}
+	}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeTextArray, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeMultipleSelect, Class: []string{classStr}, Readonly:readonly, Options:options}}
+
+	return
+}
+
 // создание простого поля Int
 func GetFldTag(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
 	classStr := "col-4"
