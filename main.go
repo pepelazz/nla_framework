@@ -27,6 +27,8 @@ var (
 
 func readData(p types.ProjectType)  {
 	project = p
+	// проставляем localpath если он не заполнен
+	project.FillLocalPath()
 	// передаем project в папку types, чтобы иметь доступ из функций шаблонов к проекту
 	templates.SetProject(&project)
 	project.DistPath = "../src"

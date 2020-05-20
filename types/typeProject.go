@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"github.com/pepelazz/projectGenerator/utils"
 	"github.com/serenize/snaker"
+	"go/build"
 	"log"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 type (
@@ -14,7 +18,7 @@ type (
 		DistPath string
 		Config   ProjectConfig
 		Vue      ProjectVue
-		Sql 	 ProjectSql
+		Sql      ProjectSql
 	}
 	ProjectConfig struct {
 		Logo             string
@@ -22,7 +26,7 @@ type (
 		Postgres         PostrgesConfig
 		WebServer        WebServerConfig
 		Email            EmailConfig
-		DevMode DevModeConfig
+		DevMode          DevModeConfig
 	}
 	PostrgesConfig struct {
 		DbName   string
@@ -41,10 +45,10 @@ type (
 		IsDocker bool
 	}
 	EmailConfig struct {
-		Sender string
-		Password string
-		Host string
-		Port int64
+		Sender     string
+		Password   string
+		Host       string
+		Port       int64
 		SenderName string
 	}
 	ProjectVue struct {
@@ -187,5 +191,27 @@ func (p *ProjectType) GenerateGrid() {
 	for i, d := range p.Docs {
 		d.Vue.Grid = makeGrid(d)
 		p.Docs[i] = d
+	}
+}
+
+// если не указан путь к локальному проекту, то вычисляем его автоматически
+func (p *ProjectType) FillLocalPath() {
+	if len(p.Config.LocalProjectPath) == 0 {
+		// путь к локальной директории
+		path, _ := filepath.Abs("./")
+		// находим gopath
+		gopath := os.Getenv("GOPATH")
+		if gopath == "" {
+			gopath = build.Default.GOPATH
+		}
+		// убираем из начала пути gopath
+		path = strings.TrimPrefix(path, gopath)
+		// приводим разделитель пути к unix стилю
+		path = strings.Replace(path, string(os.PathSeparator), "/", -1)
+		// убираем из начала еще src
+		path = strings.TrimPrefix(path, "/src/")
+		// убираем из конца projectTemplate и добавляем src
+		path = strings.TrimSuffix(path, "/projectTemplate") + "/src"
+		p.Config.LocalProjectPath = path
 	}
 }
