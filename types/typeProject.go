@@ -195,7 +195,7 @@ func (p *ProjectType) GenerateGrid() {
 }
 
 // если не указан путь к локальному проекту, то вычисляем его автоматически
-func (p *ProjectType) FillLocalPath() {
+func (p *ProjectType) FillLocalPath() string {
 	if len(p.Config.LocalProjectPath) == 0 {
 		// путь к локальной директории
 		path, _ := filepath.Abs("./")
@@ -214,4 +214,5 @@ func (p *ProjectType) FillLocalPath() {
 		path = strings.TrimSuffix(path, "/projectTemplate") + "/src"
 		p.Config.LocalProjectPath = path
 	}
+	return p.Config.LocalProjectPath
 }

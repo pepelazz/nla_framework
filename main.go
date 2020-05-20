@@ -28,7 +28,7 @@ var (
 func readData(p types.ProjectType)  {
 	project = p
 	// проставляем localpath если он не заполнен
-	project.FillLocalPath()
+	project.Config.LocalProjectPath = project.FillLocalPath()
 	// передаем project в папку types, чтобы иметь доступ из функций шаблонов к проекту
 	templates.SetProject(&project)
 	project.DistPath = "../src"
@@ -54,7 +54,7 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc)  {
 	removeOldFiles(project.DistPath)
 	
 	// генерим файлы для проекты
-	templates.WriteProjectFiles(p, tmplMap)
+	templates.WriteProjectFiles(project, tmplMap)
 
 	// генерим файлы для документов
 	for _, d := range p.Docs {
@@ -65,7 +65,7 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc)  {
 	}
 
 	// копируем файлы проекта (которые не шаблоны)
-	err := copyFiles(p,"../../../pepelazz/projectGenerator/sourceFiles", "../", modifyFunc)
+	err := copyFiles(project,"../../../pepelazz/projectGenerator/sourceFiles", "../", modifyFunc)
 	utils.CheckErr(err, "Copy sourceFiles")
 
 	templates.OtherTemplatesGenerate(project)
