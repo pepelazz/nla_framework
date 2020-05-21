@@ -32,7 +32,7 @@
 
     export default {
         props: ['id'],
-        components: {[[- .Vue.PrintComponents "docItemWithTabs" -]]},
+        components: {[[- .PrintComponents "docItemWithTabs" -]]},
         mixins: [ [[- .Vue.PrintMixins "docItemWithTabs" -]] ],
         computed: {
             docUrl: () => '/[[.Vue.RouteName]]',

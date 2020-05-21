@@ -88,7 +88,7 @@
     import _ from 'lodash'
 
     export default {
-        props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocUrl', 'urlQueryParams'],
+        props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocUrl', 'urlQueryParams', 'ext'],
         computed: {
             computedListTitle() {
                 return !this.listParams.deleted ? this.listTitle : this.listDeletedTitle
@@ -128,7 +128,7 @@
                 this.listParams.page++
                 // обновляем параметры в query параметрах списка
                 this.$utils.updateUrlQuery(_.omit(params, ['per_page', 'page']))
-                this.$utils.postCallPgMethod({method: this.pgMethod, params}).subscribe(res => {
+                this.$utils.postCallPgMethod({method: this.pgMethod, params: Object.assign(params, this.ext ? this.ext : {})}).subscribe(res => {
                     if (res.ok) {
                         if (res.result && res.result.length > 0) {
                             res.result.map(v => list.push(v))

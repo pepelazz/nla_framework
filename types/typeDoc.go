@@ -25,6 +25,7 @@ type (
 		PathPrefix           string             // префикс,если папка, в которой лежит папка с описанием документа находится не на одном уровне с main.go. Например 'docs', если docs/client/...
 		IsTaskAllowed        bool               // признак, что к таблице можно прикреплять задачи
 		StateMachine         *DocSm
+		IsRecursion 		  bool // признак, что документ имеет рекурсию. Есть parent_id - ссылка на самого себя
 	}
 
 	TmplPathOverride struct {

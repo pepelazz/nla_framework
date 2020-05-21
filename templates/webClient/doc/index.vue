@@ -5,6 +5,7 @@
     <comp-doc-list ref="docList" listTitle='[[index .Vue.I18n "listTitle"]]' listDeletedTitle='[[index .Vue.I18n "listDeletedTitle"]]' pg-method="[[.PgName]]_list"
                    :list-sort-data="listSortData" :list-filter-data="listFilterData"
                    :newDocUrl="currentUrl + 'new'"
+                   [[- if .IsRecursion]] :ext="{parent_id: 'null'}" [[end]]
                    search-fld-name="search_text">
 
       <template #listItem="{item}">

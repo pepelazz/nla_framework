@@ -3,6 +3,7 @@ import compItemDropDownBtn from './list/itemDropDownBtn'
 import compFld from './list/compFld'
 import compFldUserSearch from './list/compFldUserSearch'
 import compBreadcrumb from './list/compBreadcrumb'
+import compDeleteBtnInList from './list/compDeleteBtnInList'
 import compFldDate from './list/compFldDate'
 import compFldDateTime from './list/compFldDateTime'
 import compItemBtnSave from './list/compItemBtnSave'
@@ -30,6 +31,7 @@ export default (Vue) => {
   Vue.component('comp-fld-user-search', compFldUserSearch)
   Vue.component('comp-fld-user-multiple-search', compFldUserMultipleSearch)
   Vue.component('comp-breadcrumb', compBreadcrumb)
+  Vue.component('comp-delete-btn-in-list', compDeleteBtnInList)
   Vue.component('comp-fld-date', compFldDate)
   Vue.component('comp-fld-date-time', compFldDateTime)
   Vue.component('comp-item-btn-save', compItemBtnSave)

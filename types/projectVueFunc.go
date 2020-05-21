@@ -43,6 +43,10 @@ func (p *ProjectType) FillVueBaseRoutes() {
 			p.Vue.Routes[itemRouteIndex] = []string{d.Vue.RouteName + "/:id", d.Name + "/item.vue"}
 		} else {
 			p.Vue.Routes = append(p.Vue.Routes, []string{d.Vue.RouteName + "/:id", d.Name + "/item.vue"})
+			// в случае рекурсии добавлем еще один route
+			if d.IsRecursion {
+				p.Vue.Routes = append(p.Vue.Routes, []string{d.Vue.RouteName + "/:parent_id/:id", d.Name + "/item.vue"})
+			}
 		}
 	}
 }

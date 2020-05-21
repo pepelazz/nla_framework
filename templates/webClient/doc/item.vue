@@ -1,12 +1,12 @@
 <template>
   <q-page padding>
 
-    <comp-breadcrumb :list="[{label:'[[index .Vue.I18n "listTitle"]]', to:'/[[.Vue.RouteName]]',  docType: '[[.Name]]'}, {label: item ? (item.title ? item.title : 'Редактирование') : '',  docType: 'edit'}]"/>
+    <comp-breadcrumb :list="[{label:'[[index .Vue.I18n "listTitle"]]', to:'/[[.Vue.RouteName]]',  docType: '[[.Name]]'}, [[if .IsRecursion]] parentProductBreadcrumb, [[end]] {label: item ? (item.title ? item.title : 'Редактирование') : '',  docType: 'edit'}]"/>
 
     <div v-if="item" class="q-mt-sm">
       <!--  поля формы    -->
       [[ define "vueItemRow" ]]
-      <div class="[[.Class]]">
+      <div class="[[.Class]]" [[- if .Fld.Vue.Vif]] v-if="[[.Fld.Vue.Vif]]" [[- end -]]>
         [[- if gt (len .Grid) 0]]
             [[- range .Grid -]]
                 [[ template "vueItemRow" . ]]
@@ -20,6 +20,14 @@
         [[- template "vueItemRow" .]]
       [[end]]
 
+      [[- if .IsRecursion -]]
+      <div class="row q-col-gutter-md q-mb-sm q-mt-sm">
+        <div class="col-8" v-if="id !== 'new'">
+          <comp-recursive-child-list :id='id' @update='save'/>
+        </div>
+      </div>
+      [[end]]
+
       <!--  кнопки   -->
       <comp-item-btn-save @save="save" @cancel="$router.push(docUrl)"/>
 
@@ -30,11 +38,13 @@
 <script>
 [[ .PrintVueImport "docItem" ]]
     export default {
-        props: ['id'],
-        components: {[[- .Vue.PrintComponents "docItem" -]]},
+        props: ['id' [[- if .IsRecursion -]], 'parent_id'[[- end -]] ],
+        components: {[[- .PrintComponents "docItem" -]]},
         mixins: [ [[- .Vue.PrintMixins "docItem" -]] ],
         computed: {
-            docUrl: () => '/[[.Vue.RouteName]]',
+            docUrl: function() {
+              return [[if not .IsRecursion -]]'/[[.Vue.RouteName]]'[[else -]] this.parent_id ? `/[[.Vue.RouteName]]/${this.parent_id}` : ' /[[.Vue.RouteName]]' [[- end]]
+            },
         },
         data() {
             return {
@@ -47,6 +57,7 @@
                     [[- end]]
                 ],
                 optionsFlds: [ [[- .PrintVueItemOptionsFld -]] ],
+                [[if .IsRecursion -]]parentProductBreadcrumb: [], [[ end -]]
             }
         },
         methods: {

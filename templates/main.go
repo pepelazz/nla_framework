@@ -79,6 +79,10 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 		if d.IsBaseTemapltes.Sql {
 			baseTmplNames = append(baseTmplNames, "sql_main.toml", "sql_function_get_by_id.sql", "sql_function_list.sql", "sql_function_update.sql", "sql_function_trigger_before.sql", "sql_function_trigger_after.sql")
 		}
+		// если документ отмечен свойством рекурсии, то дополнительные шаблоны
+		if d.IsRecursion {
+			docIsRecursionProccess(p, &d)
+		}
 		// в случае если указаны табы, то подбираем соответствующие шаблоны
 		for _, tab := range d.Vue.Tabs {
 			var t *template.Template

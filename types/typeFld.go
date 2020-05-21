@@ -46,6 +46,7 @@ type (
 		Ext         map[string]string
 		Options     []FldVueOptionsItem
 		Composition func(ProjectType, DocType) string
+		Vif 		string
 	}
 
 	FldSql struct {
@@ -176,6 +177,11 @@ func (fld FldType) AddClass(s string) FldType {
 // передается либо true/false, либо функция вида ()=> item !== 'a'
 func (fld FldType) SetReadonly(s string) FldType {
 	fld.Vue.Readonly = s
+	return fld
+}
+
+func (fld FldType) SetVif(s string) FldType {
+	fld.Vue.Vif = s
 	return fld
 }
 

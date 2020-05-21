@@ -3,11 +3,11 @@
 
         <div v-if="item" class="q-mt-sm">
             <!--  поля формы    -->
-            [[ define "vueItemRow" ]]
+            [[ define "vueItemRow1" ]]
             <div class="[[.Class]]">
                 [[- if gt (len .Grid) 0]]
                 [[- range .Grid -]]
-                [[ template "vueItemRow" . ]]
+                [[ template "vueItemRow1" . ]]
                 [[- end]]
                 [[- else]]
                 [[PrintVueFldTemplate .Fld]]
@@ -15,7 +15,7 @@
             </div>
             [[- end -]]
             [[range .Vue.Grid]]
-            [[- template "vueItemRow" .]]
+            [[- template "vueItemRow1" .]]
             [[end]]
 
             <!--  кнопки   -->
@@ -29,7 +29,7 @@
     [[ .PrintVueImport "docItem" ]]
     export default {
         props: ['id'],
-        components: {[[- .Vue.PrintComponents "docItem" -]]},
+        components: {[[- .PrintComponents "docItem" -]]},
     mixins: [ [[- .Vue.PrintMixins "docItem" -]] ],
     computed: {
         docUrl: () => '/[[.Vue.RouteName]]',

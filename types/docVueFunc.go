@@ -88,6 +88,9 @@ func (d DocType) PrintVueImport(tmplName string) string  {
 				break
 			}
 		}
+		if d.IsRecursion {
+			res = append(res, "\timport compRecursiveChildList from './comp/recursiveChildList'")
+		}
 	}
 
 	if tmplName == "docItemWithTabs" {
@@ -122,11 +125,14 @@ func (d DocType) PrintVueItemForSave() string {
 	res := ""
 	for _, fld := range d.Flds {
 		if fld.Vue.Type == FldVueTypeSelect {
-			res = fmt.Sprintf("%s%[2]s: this.item.%[2]s ? this.item.%[2]s.value : undefined,\n", res, fld.Name)
+			res = fmt.Sprintf("%s%[2]s: this.item.%[2]s ? this.item.%[2]s.value : null,\n", res, fld.Name)
 		}
 		if fld.Vue.Type == FldVueTypeMultipleSelect {
 			res = fmt.Sprintf("%s%[2]s: this.item.%[2]s ? this.item.%[2]s.map(({value}) => value).filter(v => v)  : [],\n", res, fld.Name)
 		}
+	}
+	if d.IsRecursion {
+		res = fmt.Sprintf("%sparent_id: this.parent_id ? +this.parent_id : null,", res)
 	}
 	return res
 }
@@ -160,6 +166,11 @@ func (d DocType) PrintVueItemResultModify() string {
 			res = fmt.Sprintf("%s%s", res, funcStr)
 		}
 	}
+	// в случае рекурсии добавляем вычисление форматирование parentProductBreadcrumb
+	if d.IsRecursion {
+		str := fmt.Sprintf("if (res.parent_title) this.parentProductBreadcrumb = [{label: res.parent_title, to: `/%s/${res.parent_id}`, docType: '%s'}]", d.Vue.RouteName, d.Name)
+		res = fmt.Sprintf("%s\n%s", res, str)
+	}
 	return res
 }
 
@@ -176,10 +187,10 @@ func (d DocVue) PrintMixins(tmplName string) string  {
 	return strings.Join(res, ", ")
 }
 
-func (d DocVue) PrintComponents(tmplName string) string  {
+func (d DocType) PrintComponents(tmplName string) string  {
 	res := []string{}
-	if d.Components != nil {
-		if m, ok := d.Components[tmplName]; ok {
+	if d.Vue.Components != nil {
+		if m, ok := d.Vue.Components[tmplName]; ok {
 			for name := range m {
 				res = append(res, name)
 			}
@@ -187,9 +198,13 @@ func (d DocVue) PrintComponents(tmplName string) string  {
 	}
 
 	if tmplName ==  "docItemWithTabs" {
-		for _, t := range d.Tabs {
+		for _, t := range d.Vue.Tabs {
 			res = append(res, t.Title + "Tab")
 		}
+	}
+
+	if d.IsRecursion {
+		res = append(res, "compRecursiveChildList")
 	}
 
 	return strings.Join(res, ", ")
