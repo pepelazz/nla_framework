@@ -9,11 +9,7 @@
                    search-fld-name="search_text">
 
       <template #listItem="{item}">
-        <q-item-section avatar @click="$router.push(`${currentUrl}${item.id}`)">
-          <q-avatar rounded>
-            <img src="[[.Vue.MenuIcon]]" alt="">
-          </q-avatar>
-        </q-item-section>
+        [[.PrintListRowAvatar]]
         [[.PrintListRowLabel]]
         <q-item-section top side>
           <comp-item-dropdown-btn :item="item" itemProp="title" :is-edit="true" :is-delete="true" fkProp=""

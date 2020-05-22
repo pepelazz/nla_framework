@@ -9,6 +9,23 @@ import (
 	"strings"
 )
 
+func (d DocType) PrintListRowAvatar() string  {
+	res := fmt.Sprintf(`
+        <q-item-section avatar @click="$router.push(currentUrl + item.id)">
+          <q-avatar rounded>
+            <img src="%s" alt="">
+          </q-avatar>
+        </q-item-section>
+	`, d.Vue.MenuIcon)
+	// проверяем есть ли переопределение шаблона
+	if d.Vue.TmplFuncs != nil {
+		if f, ok := d.Vue.TmplFuncs["PrintListRowAvatar"]; ok {
+			res = f(d)
+		}
+	}
+	return res
+}
+
 func (d DocType) PrintListRowLabel() string  {
 	res := `
         <q-item-section>

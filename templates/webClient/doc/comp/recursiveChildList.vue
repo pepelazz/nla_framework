@@ -10,11 +10,7 @@
 
     <q-list bordered separator>
       <q-item v-for="item in list" :key="item.id">
-        <q-item-section avatar @click="$router.push(`/[[.Vue.RouteName]]/${id}/${item.id}`)">
-          <q-avatar rounded>
-            <img src="[[.Vue.MenuIcon]]" alt="">
-          </q-avatar>
-        </q-item-section>
+          [[.PrintListRowAvatar]]
           [[.PrintListRowLabel]]
         <comp-delete-btn-in-list update-method="[[.Name]]_update" :item="item" @success="onChangeList"/>
       </q-item>
@@ -25,6 +21,11 @@
 <script>
     export default {
         props: ['id'],
+        computed: {
+          currentUrl: function () {
+            return `/[[.Vue.RouteName]]/${this.id}/`
+          },
+        },
         data() {
             return {
                 list: [],
