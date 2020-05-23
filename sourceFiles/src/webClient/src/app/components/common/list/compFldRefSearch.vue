@@ -110,9 +110,9 @@
                         }
                     })
                     // если результат в списке 1, то сразу ставим его как выбранный
-                    if (this.options.length === 1) {
-                        this.localItem = this.options[0]
-                    }
+                    // if (this.options.length === 1) {
+                    //     this.localItem = this.options[0]
+                    // }
                 }
             })
         }

@@ -14,6 +14,11 @@ func CheckErr(err error, msg string) {
 }
 
 func UpperCaseFirst(str string) string {
+	arr := strings.Split(str, " ")
+	if len(arr) > 1 {
+		arr[0] = strings.Title(arr[0])
+		return strings.Join(arr, " ")
+	}
 	return strings.Title(str)
 }
 
