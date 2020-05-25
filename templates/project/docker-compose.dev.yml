@@ -10,6 +10,7 @@ services:
 
   postgres:
     image: postgres:12
+#    command: ["postgres", "-c", "log_statement=all", "-c", "log_destination=stderr"]
     volumes:
       - postgres_data_{{.Name}}_12:/var/lib/postgresql/data
     ports:

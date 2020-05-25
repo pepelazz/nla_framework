@@ -111,6 +111,7 @@ type (
 		DeclareVars        map[string]string
 		BeforeInsertUpdate []string
 		BeforeInsert       []string
+		BeforeTriggerBefore  []string
 	}
 )
 
@@ -154,7 +155,11 @@ func (d DocType) NameCamelCase() string {
 // имя шаблона. Например, docItem
 func (d *DocType) AddVueComposition(tmpName, compName string) {
 	importName := "comp" + utils.UpperCaseFirst(compName)
-	importAddress := "./comp/" + compName + ".vue"
+	parentPath := "./comp/"
+	if len(d.Vue.Tabs) > 0 {
+		parentPath = "../../comp/"
+	}
+	importAddress := parentPath + compName + ".vue"
 	dTemplateName := "webClient_comp_" + compName + ".vue"
 	// добавляем в список компонент
 	if d.Vue.Components == nil {

@@ -18,6 +18,14 @@
             [[- template "vueItemRow1" .]]
             [[end]]
 
+            [[- if .IsRecursion -]]
+            <div class="row q-col-gutter-md q-mb-sm q-mt-sm">
+                <div class="col-8" v-if="id !== 'new'">
+                    <comp-recursive-child-list :id='id' @update='save'/>
+                </div>
+            </div>
+            [[end]]
+
             <!--  кнопки   -->
             <comp-item-btn-save @save="save" @cancel="$router.push(docUrl)"/>
 
@@ -28,11 +36,13 @@
 <script>
     [[ .PrintVueImport "docItem" ]]
     export default {
-        props: ['id'],
+        props: ['id' [[- if .IsRecursion -]], 'parent_id'[[- end -]]],
         components: {[[- .PrintComponents "docItem" -]]},
     mixins: [ [[- .Vue.PrintMixins "docItem" -]] ],
     computed: {
-        docUrl: () => '/[[.Vue.RouteName]]',
+        docUrl: function() {
+            return [[if not .IsRecursion -]]'/[[.Vue.RouteName]]'[[else -]] this.parent_id ? `/[[.Vue.RouteName]]/${this.parent_id}` : '/[[.Vue.RouteName]]' [[- end]]
+        },
     },
     data() {
         return {

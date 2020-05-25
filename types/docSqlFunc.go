@@ -304,7 +304,7 @@ func (d DocType) PrintSqlFuncUpdateFlds() (res string) {
 		if len(f.Name) == 0 {
 			continue
 		}
-		if f.Sql.IsOptionFld || utils.CheckContainsSliceStr(f.Name, "id", "created_at", "updated_at", "deleted") {
+		if f.Sql.IsOptionFld || f.Sql.IsNotUpdatable || utils.CheckContainsSliceStr(f.Name, "id", "created_at", "updated_at", "deleted") {
 			continue
 		}
 		arr = append(arr, fmt.Sprintf("\t\t\t['%[1]s', '%[1]s', '%[2]s'],", f.Name, f.PgUpdateType()))
@@ -464,6 +464,10 @@ func (d DocSqlHooks) Print(tmplName, hookName string) string {
 	case "beforeInsert":
 		if d.BeforeInsert != nil {
 			return strings.Join(d.BeforeInsert, "\n\n")
+		}
+	case "BeforeTriggerBefore":
+		if d.BeforeTriggerBefore != nil {
+			return strings.Join(d.BeforeTriggerBefore, "\n\n")
 		}
 	default:
 		return fmt.Sprintf("DocSqlHooks.Print not found code for hook '%s'", hookName)

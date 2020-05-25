@@ -6,6 +6,8 @@ $$
 DECLARE
        {{- .GetBeforeTriggerDeclareVars}}
 BEGIN
+        {{.Sql.Hooks.Print "triggerBefore" "BeforeTriggerBefore"}}
+
         {{if .Sql.IsSearchText}}
         {{- /* заполнение ref полей */ -}}
         {{.GetBeforeTriggerFillRefVars}}

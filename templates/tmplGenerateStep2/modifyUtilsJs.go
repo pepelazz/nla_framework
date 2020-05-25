@@ -33,7 +33,7 @@ func PluginUtilsJs(p types.ProjectType)  {
 func getI18nForSelectFlds(p types.ProjectType) (funcNames, funcBodyes string) {
 	for _, d := range p.Docs {
 		for _, fld := range d.Flds {
-			if fld.Vue.Type == types.FldVueTypeSelect || fld.Vue.Type == types.FldVueTypeMultipleSelect {
+			if fld.Vue.Type == types.FldVueTypeSelect || fld.Vue.Type == types.FldVueTypeMultipleSelect  || fld.Vue.Type == types.FldVueTypeRadio {
 				fNname := fmt.Sprintf("i18n_%s_%s", d.Name, fld.Name)
 				// название функции
 				funcNames = fmt.Sprintf("%s%s,\n\t", funcNames, fNname)

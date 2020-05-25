@@ -106,13 +106,18 @@ func (d DocType) PrintVueImport(tmplName string) string  {
 			}
 		}
 		if d.IsRecursion {
-			res = append(res, "\timport compRecursiveChildList from './comp/recursiveChildList'")
+			parentPath := "."
+			// в случае табов папка с компонентами на уровень выше
+			if len(d.Vue.Tabs) > 0 {
+				parentPath = "../.."
+			}
+			res = append(res, fmt.Sprintf("\timport compRecursiveChildList from '%s/comp/recursiveChildList'", parentPath))
 		}
 	}
 
 	if tmplName == "docItemWithTabs" {
 		for _, tab := range d.Vue.Tabs {
-			res = append(res, fmt.Sprintf("\timport %[1]sTab from './tabs/%[1]s'", tab.Title))
+			res = append(res, fmt.Sprintf("\timport %[1]sTab from './tabs/%[1]s/index'", tab.Title))
 		}
 	}
 
@@ -220,7 +225,7 @@ func (d DocType) PrintComponents(tmplName string) string  {
 		}
 	}
 
-	if d.IsRecursion {
+	if d.IsRecursion && tmplName != "docItemWithTabs" {
 		res = append(res, "compRecursiveChildList")
 	}
 
@@ -268,10 +273,10 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 }
 
 // заголовки табов
-func (d DocVue) PrintItemTabs()  string{
+func (d DocType) PrintVueItemTabs()  string{
 	res := []string{}
 	sep := "\n\t\t\t\t\t\t\t\t"
-	for _, tab := range d.Tabs {
+	for _, tab := range d.Vue.Tabs {
 		if len(tab.HtmlInner) == 0 {
 			res = append(res, fmt.Sprintf("<q-tab name='%s'  icon='%s' label='%s'/>", tab.Title, tab.Icon, tab.TitleRu))
 		} else {
@@ -282,10 +287,14 @@ func (d DocVue) PrintItemTabs()  string{
 }
 
 // список компонентов для отображения содержимого табов
-func (d DocVue) PrintItemTabPanels()  string{
+func (d DocType) PrintVueItemTabPanels()  string{
 	res := []string{}
-	for _, tab := range d.Tabs {
-		res = append(res, fmt.Sprintf("<!-- %s       -->\n\t\t\t\t\t\t\t\t<q-tab-panel name='%[2]s'><%[2]s-tab :id='id' %[3]s/></q-tab-panel>", tab.TitleRu, tab.Title, tab.HtmlParams))
+	params := ":id='id'"
+	if d.IsRecursion {
+		params = ":id='id' :parent_id='parent_id'"
+	}
+	for _, tab := range d.Vue.Tabs {
+		res = append(res, fmt.Sprintf("<!-- %s       -->\n\t\t\t\t\t\t\t\t<q-tab-panel name='%[2]s'><%[2]s-tab %[3]s %[4]s/></q-tab-panel>", tab.TitleRu, tab.Title, params, tab.HtmlParams))
 	}
 	return strings.Join(res, "\n\t\t\t\t\t\t\t\t")
 }

@@ -57,6 +57,7 @@ type (
 		Size        int
 		IsOptionFld bool // признак что поле пишется не в отдельную колонку таблицы, а в json поле options
 		Default 	string
+		IsNotUpdatable bool // признак, что поле не обновляется вручную. Либо заполняется только при создании, либо обновляется триггером
 	}
 
 	FldVueOptionsItem struct {
@@ -163,6 +164,11 @@ func (fld FldType) SetIsSearch() FldType {
 }
 func (fld FldType) SetDefault(s string) FldType {
 	fld.Sql.Default = s
+	return fld
+}
+
+func (fld FldType) SetIsNotUpdatable() FldType {
+	fld.Sql.IsNotUpdatable = true
 	return fld
 }
 
