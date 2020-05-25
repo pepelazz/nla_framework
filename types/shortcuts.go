@@ -106,6 +106,13 @@ func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) 
 		classStr= params[0]
 	}
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeInt,  Sql: FldSql{Ref: refTable, IsSearch:true}, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}}}
+	for _, v := range params {
+		// добавляем аватарку с ссылкой на выбранный документ
+		if v == "isShowLink" {
+			// проставляем значение pathUrl и avatar на последнем шаге, после инициализации всех документов  в методе FillVueFlds
+			fld.Vue.Ext = map[string]string{"pathUrl": "", "avatar": ""}
+		}
+	}
 	return
 }
 
@@ -196,3 +203,14 @@ func GetCustomTemplates(p ...string) map[string]*DocTemplate  {
 	}
 	return res
 }
+
+// создание поля адрес с возможностью поиска через dadata
+func GetFldDadataAddress(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
+	classStr := "col-4"
+	if len(params)>0 {
+		classStr= params[0]
+	}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeDadataAddress, Class: []string{classStr}}}
+	return
+}
+

@@ -27,6 +27,7 @@ type (
 		WebServer        WebServerConfig
 		Email            EmailConfig
 		DevMode          DevModeConfig
+		Vue              VueConfig
 	}
 	PostrgesConfig struct {
 		DbName   string
@@ -64,6 +65,10 @@ type (
 		IsFolder bool
 		LinkList []VueMenu
 		Roles    []string
+	}
+
+	VueConfig struct {
+		DadataToken string
 	}
 
 	ProjectSql struct {
@@ -122,6 +127,18 @@ func (p *ProjectType) FillVueFlds() {
 			// заполняем IsRequired
 			if fld.Sql.IsRequired {
 				p.Docs[i].Flds[j].Vue.IsRequired = fld.Sql.IsRequired
+			}
+			// заполняем незаполненные поля в extension
+			for k, _ := range fld.Vue.Ext {
+				// если в параметрах есть pathUrl и поле является Ref, это значит надо заполнить route к доккументу, на который идет ссылка + ссылка на аватарку
+				if k == "pathUrl" && len(fld.Sql.Ref)>0 {
+					for _, dRef := range p.Docs {
+						if dRef.Name == fld.Sql.Ref {
+							fld.Vue.Ext["pathUrl"] = "/" + dRef.Vue.RouteName
+							fld.Vue.Ext["avatar"] = dRef.Vue.MenuIcon
+						}
+					}
+				}
 			}
 		}
 	}

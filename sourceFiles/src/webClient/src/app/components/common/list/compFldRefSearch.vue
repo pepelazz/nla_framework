@@ -11,6 +11,15 @@
     @filter="filterFn"
     :readonly="readonly"
   >
+
+    <!-- аватарка со ссылкой   -->
+    <template v-slot:before v-if="ext && ext.pathUrl">
+      <q-avatar v-if="(localItem && localItem.id) || itemId" @click="$router.push(ext.pathUrl + '/' + ((localItem && localItem.id) || itemId))">
+        <img :src="ext.avatar">
+      </q-avatar>
+      <q-avatar v-else style="opacity: 0.7"><img :src="ext.avatar"></q-avatar>
+    </template>
+
     <!-- кнопка добавления   -->
     <template v-slot:append v-if="ext && ext.addNewUrl">
       <q-btn round dense flat icon="add" @click="openNewTab"/>
@@ -29,6 +38,9 @@
 <script>
     export default {
         props: {
+            itemId: {
+                type: Number
+            },
             item: {
                 type: String
             },

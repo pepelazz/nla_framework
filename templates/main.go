@@ -227,7 +227,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		if m, ok := fld.Vue.Ext["pgMethod"]; ok {
 			pgMethod = m
 		}
-		return fmt.Sprintf(`<comp-fld-ref-search pgMethod="%s" label="%s" :item='item.%s' :ext='%s' @update="v=> item.%s = v.id" :readonly='%s' %s/>`, pgMethod, nameRu, ajaxSelectTitle, extJsonStr, name, readonly, classStr)
+		return fmt.Sprintf(`<comp-fld-ref-search pgMethod="%s" label="%s" :item='item.%s' :itemId='item.%s' :ext='%s' @update="v=> item.%s = v.id" :readonly='%s' %s/>`, pgMethod, nameRu, ajaxSelectTitle, name, extJsonStr, name, readonly, classStr)
 	case types.FldVueTypeSelect, types.FldVueTypeMultipleSelect:
 		options, err := json.Marshal(fld.Vue.Options)
 		utils.CheckErr(err, fmt.Sprintf("'%s' json.Marshal(fld.Vue.Options)", fld.Name))
@@ -270,6 +270,8 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	</div>
 	</div>
 `, nameRu, options)
+	case types.FldVueTypeDadataAddress:
+		return fmt.Sprintf(`<comp-fld-address label="%s" :fld='item.%s' @update="v=> item.%s = v" :readonly='%s' %s/>`, nameRu, name, name, readonly, classStr)
 
 	default:
 		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fldType)

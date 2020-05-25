@@ -20,9 +20,10 @@ const (
 	FldTypeTextArray         = "text[]"
 	FldVueTypeSelect         = "select"
 	FldVueTypeMultipleSelect = "multipleSelect"
-	FldVueTypeTags         	 = "tags"
+	FldVueTypeTags           = "tags"
 	FldVueTypeCheckbox       = "checkbox"
-	FldVueTypeRadio       	 = "radio"
+	FldVueTypeRadio          = "radio"
+	FldVueTypeDadataAddress  = "dadataAddress"
 )
 
 type (
@@ -46,17 +47,17 @@ type (
 		Ext         map[string]string
 		Options     []FldVueOptionsItem
 		Composition func(ProjectType, DocType) string
-		Vif 		string
+		Vif         string
 	}
 
 	FldSql struct {
-		IsSearch    bool
-		IsRequired  bool
-		Ref         string
-		IsUniq      bool
-		Size        int
-		IsOptionFld bool // признак что поле пишется не в отдельную колонку таблицы, а в json поле options
-		Default 	string
+		IsSearch       bool
+		IsRequired     bool
+		Ref            string
+		IsUniq         bool
+		Size           int
+		IsOptionFld    bool // признак что поле пишется не в отдельную колонку таблицы, а в json поле options
+		Default        string
 		IsNotUpdatable bool // признак, что поле не обновляется вручную. Либо заполняется только при создании, либо обновляется триггером
 	}
 
@@ -197,7 +198,6 @@ func (fld FldVue) ClassPrint() string {
 	}
 	return ""
 }
-
 
 func (fld FldVue) ClassPrintOnlyCol() string {
 	if fld.Class != nil {

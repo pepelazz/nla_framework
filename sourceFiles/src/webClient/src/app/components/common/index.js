@@ -14,6 +14,7 @@ import compFldContact from './list/compFldContact'
 import compFldFiles from './list/compFldFiles'
 import compFldImg from './list/compFldImg'
 import compFldImgList from './list/compFldImgList'
+import compFldAddress from './list/compFldAddress'
 import compDadataSuggestion from './list/compDadataSuggestion'
 import compDadataAddress from './list/compDadataAddress'
 import compDadataAddressDialog from './list/compDadataAddressDialog'
@@ -40,6 +41,7 @@ export default (Vue) => {
   Vue.component('comp-fld-contact', compFldContact)
   Vue.component('comp-fld-files', compFldFiles)
   Vue.component('comp-fld-img', compFldImg)
+  Vue.component('comp-fld-address', compFldAddress)
   Vue.component('comp-fld-img-list', compFldImgList)
   Vue.component('comp-dadata-suggestion', compDadataSuggestion)
   Vue.component('comp-dadata-address', compDadataAddress)

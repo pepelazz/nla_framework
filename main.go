@@ -29,6 +29,10 @@ func readData(p types.ProjectType)  {
 	project = p
 	// проставляем localpath если он не заполнен
 	project.Config.LocalProjectPath = project.FillLocalPath()
+	// дефолтный токен для сервиса https://dadata.ru/
+	if len(project.Config.Vue.DadataToken) == 0 {
+		project.Config.Vue.DadataToken = "1cf3a086e3dbe1306ed142d2b5fbc1b324b8eb60"
+	}
 	// передаем project в папку types, чтобы иметь доступ из функций шаблонов к проекту
 	templates.SetProject(&project)
 	project.DistPath = "../src"
@@ -220,6 +224,7 @@ func configJsModify(p types.ProjectType, file []byte) (res []byte)  {
 	fileStr = strings.Replace(fileStr, "[[webPort]]", fmt.Sprintf("%v", p.Config.WebServer.Port), -1)
 	fileStr = strings.Replace(fileStr, "[[url]]",  strings.TrimPrefix(p.Config.WebServer.Url, "https://"), -1)
 	fileStr = strings.Replace(fileStr, "[[logoSrc]]",  p.Config.Logo, -1)
+	fileStr = strings.Replace(fileStr, "[[dadataToken]]",  p.Config.Vue.DadataToken, -1)
 	fileStr = strings.Replace(fileStr, "[[breadcrumbIcons]]", strings.Join(breadcrumbIcons, ",\n"), -1)
 	// проставляем список таблиц, к которым можно прикреплять задачи
 	fileStr = strings.Replace(fileStr, "[[codoGeneratedTablesForTask]]",  jsTablesForTask(), -1)
