@@ -25,6 +25,7 @@ const (
 	FldVueTypeRadio          = "radio"
 	FldVueTypeDadataAddress  = "dadataAddress"
 	FldVueTypeJsonList  	 = "jsonList"
+	FldVueTypeFiles  	 = "files"
 )
 
 type (
@@ -72,6 +73,11 @@ type (
 	FldVueJsonList struct {
 		Flds []FldType
 		Icon string
+	}
+
+	FldVueFilesParams struct {
+		Accept string
+		MaxFileSize int64
 	}
 )
 

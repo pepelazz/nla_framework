@@ -281,6 +281,12 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		return fmt.Sprintf(`<comp-fld-address %s label="%s" :fld='item.%s' @update="v=> item.%s = v" :readonly='%s' %s/>`, borderStyle, nameRu, name, name, readonly, classStr)
 	case types.FldVueTypeJsonList:
 		return fmt.Sprintf("<comp-fld-json-list-%s label='%s' :item='item' :fld='item.%s' @update='item.%s = $event' :readonly='%s' %s/>", name, nameRu, name, name, readonly, classStr)
+	case types.FldVueTypeFiles:
+		extStr := ""
+		for k, v := range fld.Vue.Ext {
+			extStr = extStr + fmt.Sprintf(", %s: \"%s\"", k, v)
+		}
+		return fmt.Sprintf("<comp-fld-files label='%s' :fld='item.%s' :ext = '{tableName: \"%s\", tableId: this.id%s}' :readonly='%s' %s/>", nameRu, name, fld.Doc.Name, extStr, readonly, classStr)
 	default:
 		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fldType)
 	}

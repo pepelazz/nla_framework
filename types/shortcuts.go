@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -221,6 +222,25 @@ func GetFldJsonList(name, nameRu string, rowCol [][]int, listParams FldVueJsonLi
 		classStr= params[0]
 	}
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeJsonList, JsonList: listParams, Class: []string{classStr}}}
+	return
+}
+
+// создание поля json c редактируемым массивом элементов
+func GetFldFiles(name, nameRu string, rowCol [][]int, fileParams FldVueFilesParams, params ...string) (fld FldType) {
+	classStr := "col-4"
+	if len(params)>0 {
+		classStr= params[0]
+	}
+	// заполняем параметры для ограничений по загрузке файлов
+	ext := map[string]string{}
+	if len(fileParams.Accept)>0{
+		ext["accept"] = fileParams.Accept
+	}
+	if fileParams.MaxFileSize>0{
+		ext["maxFileSize"] = strconv.FormatInt(fileParams.MaxFileSize, 10)
+	}
+
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeFiles, Ext: ext, Class: []string{classStr}}}
 	return
 }
 

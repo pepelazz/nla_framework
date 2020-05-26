@@ -35,6 +35,8 @@
         auto-upload
         :url="uploadUrl"
         :headers='headers'
+        :accept="(ext && ext.accept) ? ext.accept : ''"
+        :max-file-size="(ext && ext.maxFileSize) ? ext.maxFileSize : 10000000"
         @uploaded='uploaded'
         @failed='failed'
         :form-fields="[{name: 'tableName', value: ext.tableName}, {name: 'tableId', value: ext.tableId},]"
