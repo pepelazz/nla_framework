@@ -52,7 +52,7 @@
           <q-item v-if="isShowSearchfld && searchFldName">
             <q-item-section top>
               <div class="text-grey-8 q-gutter-xs">
-                <q-input dense filled v-model="searchTxt" input-class="text-right" class="q-ml-md">
+                <q-input ref="searchInput" dense filled v-model="searchTxt" class="q-ml-md">
                   <template v-slot:append>
                     <q-icon v-if="searchTxt === ''" name="search"/>
                     <q-icon v-else name="clear" class="cursor-pointer" @click="searchTxt = ''"/>
@@ -107,6 +107,11 @@
             toggleSearchFld() {
                 this.isShowSearchfld = !this.isShowSearchfld
                 if (!this.isShowSearchfld) this.listParams[this.searchFldName] = ''
+                if (this.isShowSearchfld) {
+                    this.$nextTick(() => {
+                        this.$refs.searchInput.focus()
+                    })
+                }
             },
             itemListLoad(index, done) {
                 // при первоначальной загрузке обрабатываем query из url

@@ -49,7 +49,7 @@
     <q-dialog v-model="isShowDeleteDialog" persistent>
       <q-card>
         <q-card-section class="row items-center">
-          <q-avatar icon="warning" color="warning" text-color="white"/>
+          <q-avatar rounded icon="warning" color="warning" text-color="white"/>
           <span class="q-ml-sm">Удалить?</span>
         </q-card-section>
 

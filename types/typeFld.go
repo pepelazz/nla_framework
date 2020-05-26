@@ -24,6 +24,7 @@ const (
 	FldVueTypeCheckbox       = "checkbox"
 	FldVueTypeRadio          = "radio"
 	FldVueTypeDadataAddress  = "dadataAddress"
+	FldVueTypeJsonList  	 = "jsonList"
 )
 
 type (
@@ -42,12 +43,14 @@ type (
 		Type        string
 		RowCol      [][]int
 		Class       []string
-		IsRequired  bool
+		IsRequired   bool
+		IsBorderless bool
 		Readonly    string
 		Ext         map[string]string
 		Options     []FldVueOptionsItem
 		Composition func(ProjectType, DocType) string
 		Vif         string
+		JsonList    FldVueJsonList
 	}
 
 	FldSql struct {
@@ -64,6 +67,11 @@ type (
 	FldVueOptionsItem struct {
 		Label string      `json:"label"`
 		Value interface{} `json:"value"`
+	}
+
+	FldVueJsonList struct {
+		Flds []FldType
+		Icon string
 	}
 )
 
@@ -170,6 +178,11 @@ func (fld FldType) SetDefault(s string) FldType {
 
 func (fld FldType) SetIsNotUpdatable() FldType {
 	fld.Sql.IsNotUpdatable = true
+	return fld
+}
+
+func (fld FldType) SetIsBorderless() FldType {
+	fld.Vue.IsBorderless = true
 	return fld
 }
 

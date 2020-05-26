@@ -19,7 +19,7 @@
               <q-expansion-item v-else header-class="text-grey" closed>
                  <template v-slot:header>
                   <q-item-section avatar>
-                    <q-avatar>
+                    <q-avatar rounded>
                       <img :src="link.icon">
                     </q-avatar>
                   </q-item-section>

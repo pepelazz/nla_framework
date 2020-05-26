@@ -214,3 +214,13 @@ func GetFldDadataAddress(name, nameRu string, rowCol [][]int, params ...string) 
 	return
 }
 
+// создание поля json c редактируемым массивом элементов
+func GetFldJsonList(name, nameRu string, rowCol [][]int, listParams FldVueJsonList, params ...string) (fld FldType) {
+	classStr := "col-4"
+	if len(params)>0 {
+		classStr= params[0]
+	}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeJsonList, JsonList: listParams, Class: []string{classStr}}}
+	return
+}
+
