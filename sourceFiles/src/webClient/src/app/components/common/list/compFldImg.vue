@@ -1,29 +1,50 @@
 <template>
-    <div>
-      <div class="q-gutter-md row items-start" style="position: relative">
-        <comp-stat-img-src :src="localSrc">
-          <div v-if="label" class="absolute-top-left text-subtitle2">
-            {{label}}
-          </div>
-        </comp-stat-img-src>
-        <q-btn flat round icon="add" color="white" @click="isShowDialog = true" class="absolute-top-right">
-          <q-tooltip>Загрузить фото</q-tooltip>
-        </q-btn>
-      </div>
-      <!-- диалог добавления   -->
-      <q-dialog v-model="isShowDialog">
-        <q-uploader
-          ref="uploader"
-          label="Выберите файл для загрузки"
-          auto-upload
-          :url="uploadUrl"
-          :headers='headers'
-          @uploaded='uploaded'
-          @failed='failed'
-          :form-fields="[{name: 'tableName', value: ext.tableName}, {name: 'tableId', value: ext.tableId},]"
-        />
-      </q-dialog>
+  <div>
+    <div class="q-gutter-md row items-start" style="position: relative">
+      <comp-stat-img-src :src="localSrc">
+        <div v-if="label" class="absolute-top-left text-subtitle2">
+          {{label}}
+        </div>
+      </comp-stat-img-src>
+      <q-btn flat round icon="add" color="white" @click="isShowDialog = true" class="absolute-top-right">
+        <q-tooltip>Загрузить фото</q-tooltip>
+      </q-btn>
+      <q-btn flat round size="sm" icon="delete" color="white" @click="isShowDeleteDialog=true"
+             class="absolute-bottom-right">
+        <q-tooltip>Удалить фото</q-tooltip>
+      </q-btn>
     </div>
+    <!-- диалог добавления   -->
+    <q-dialog v-model="isShowDialog">
+      <q-uploader
+        ref="uploader"
+        label="Выберите файл для загрузки"
+        auto-upload
+        :url="uploadUrl"
+        :headers='headers'
+        :accept="(ext && ext.accept) ? ext.accept : ''"
+        :max-file-size="(ext && ext.maxFileSize) ? ext.maxFileSize : 10000000"
+        @rejected="rejected"
+        @uploaded='uploaded'
+        @failed='failed'
+        :form-fields="[{name: 'tableName', value: ext.tableName}, {name: 'tableId', value: ext.tableId},]"
+      />
+    </q-dialog>
+    <!-- диалог подтверждения удаления   -->
+    <q-dialog v-model="isShowDeleteDialog" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar rounded icon="warning" color="warning" text-color="white"/>
+          <span class="q-ml-sm">Удалить?</span>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Отмена" v-close-popup/>
+          <q-btn flat label="Удалить" v-close-popup @click="remove"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+  </div>
 </template>
 
 <script>
@@ -39,7 +60,7 @@
             ext: {},
         },
         computed: {
-            uploadUrl: function() {
+            uploadUrl: function () {
                 return `${this.$config.apiUrl()}/api/${this.ext.uploadUrl || 'upload_image'}`
             },
             headers: function () {
@@ -50,6 +71,7 @@
         data() {
             return {
                 isShowDialog: false,
+                isShowDeleteDialog: false,
                 localSrc: null,
             }
         },
@@ -85,6 +107,39 @@
                     color: 'negative',
                     position: 'bottom',
                     message: msgText,
+                })
+            },
+            rejected(msg) {
+                const niceBytes = (x) => {
+                    const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+                    let l = 0, n = parseInt(x, 10) || 0
+                    while (n >= 1024 && ++l) {
+                        n = n / 1024
+                    }
+                    return (n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l])
+                }
+                let msgText = 'данный файл не соответствует ограничениям'
+                if (msg.length > 0 && msg[0].failedPropValidation === 'accept') {
+                    msgText = `Допустимы только файлы с раширением: ${this.ext.accept} `
+                }
+                if (msg.length > 0 && msg[0].failedPropValidation === 'max-file-size') {
+                    let size = niceBytes(this.ext.maxFileSize || 10000000)
+                    msgText = `Допустимы только файлы не больше: ${size}`
+                }
+                this.$q.notify({
+                    color: 'negative',
+                    position: 'bottom',
+                    message: msgText,
+                })
+            },
+            remove() {
+                // обновляем запись
+                this.$utils.postCallPgMethod({
+                    method: `${this.ext.methodUpdate || this.ext.tableName + '_update'}`,
+                    params: {id: this.ext.tableId, [this.ext.fldName]: null}
+                }).subscribe(res => {
+                    this.localSrc = null
+                    this.$emit('update', null)
                 })
             },
         },

@@ -27,6 +27,7 @@ const (
 	FldVueTypeJsonList       = "jsonList"
 	FldVueTypeFiles          = "files"
 	FldVueTypeImgList        = "imgList"
+	FldVueTypeImg            = "img"
 )
 
 type (

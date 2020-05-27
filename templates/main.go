@@ -287,6 +287,12 @@ func PrintVueFldTemplate(fld types.FldType) string {
 			extStr = extStr + fmt.Sprintf(", %s: \"%s\"", k, v)
 		}
 		return fmt.Sprintf("<comp-fld-files label='%s' :fld='item.%s' :ext = '{tableName: \"%s\", tableId: this.id%s}' :readonly='%s' %s/>", nameRu, name, fld.Doc.Name, extStr, readonly, classStr)
+	case types.FldVueTypeImg:
+		extStr := ""
+		for k, v := range fld.Vue.Ext {
+			extStr = extStr + fmt.Sprintf(", %s: \"%s\"", k, v)
+		}
+		return fmt.Sprintf("<comp-fld-img label='%s' :fld='item.%s' :ext = '{tableName: \"%s\", tableId: this.id, fldName: \"%s\"%s}' :readonly='%s' %s/>", nameRu, name, fld.Doc.Name, name, extStr, readonly, classStr)
 	case types.FldVueTypeImgList:
 		extStr := ""
 		for k, v := range fld.Vue.Ext {
