@@ -107,12 +107,18 @@ func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) 
 	if len(params)>0 {
 		classStr= params[0]
 	}
-	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeInt,  Sql: FldSql{Ref: refTable, IsSearch:true}, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}}}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeInt,  Sql: FldSql{Ref: refTable, IsSearch:true}, Vue:FldVue{RowCol: rowCol, Ext: map[string]string{}, Class: []string{classStr}}}
 	for _, v := range params {
 		// добавляем аватарку с ссылкой на выбранный документ
 		if v == "isShowLink" {
 			// проставляем значение pathUrl и avatar на последнем шаге, после инициализации всех документов  в методе FillVueFlds
-			fld.Vue.Ext = map[string]string{"pathUrl": "", "avatar": ""}
+			fld.Vue.Ext["pathUrl"] = ""
+			fld.Vue.Ext["avatar"] = ""
+		}
+		for _, v := range params {
+			if v == "isClearable" {
+				fld.Vue.Ext["isClearable"] = "true"
+			}
 		}
 	}
 	return
@@ -138,16 +144,19 @@ func GetFldSimpleHtml(rowCol [][]int, classStr, htmlStr string) (fld FldType) {
 func GetFldSelectString(name, nameRu string, size int, rowCol [][]int, options []FldVueOptionsItem, params ...string) (fld FldType) {
 	classStr := "col-4"
 	readonly := "false"
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeSelect, Ext: map[string]string{}, Class: []string{classStr}, Readonly:readonly, Options:options}}
 	for i, v := range params {
 		if i == 0 {
 			classStr = v
 		} else {
 			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
-				readonly="true"
+				fld.Vue.Readonly = "true"
+			}
+			if v == "isClearable" {
+				fld.Vue.Ext["isClearable"] = "true"
 			}
 		}
 	}
-	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeSelect, Class: []string{classStr}, Readonly:readonly, Options:options}}
 	if size > 0 {
 		fld.Sql.Size = size
 	}
@@ -158,16 +167,19 @@ func GetFldSelectString(name, nameRu string, size int, rowCol [][]int, options [
 func GetFldSelectMultilple(name, nameRu string, rowCol [][]int, options []FldVueOptionsItem, params ...string) (fld FldType) {
 	classStr := "col-4"
 	readonly := "false"
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeTextArray, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeMultipleSelect, Ext: map[string]string{}, Class: []string{classStr}, Readonly:readonly, Options:options}}
 	for i, v := range params {
 		if i == 0 {
 			classStr = v
 		} else {
 			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
-				readonly="true"
+				fld.Vue.Readonly = "true"
+			}
+			if v == "isClearable" {
+				fld.Vue.Ext["isClearable"] = "true"
 			}
 		}
 	}
-	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeTextArray, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeMultipleSelect, Class: []string{classStr}, Readonly:readonly, Options:options}}
 
 	return
 }

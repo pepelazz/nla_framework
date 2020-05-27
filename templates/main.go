@@ -234,7 +234,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		if m, ok := fld.Vue.Ext["pgMethod"]; ok {
 			pgMethod = m
 		}
-		return fmt.Sprintf(`<comp-fld-ref-search %s pgMethod="%s" label="%s" :item='item.%s' :itemId='item.%s' :ext='%s' @update="v=> item.%s = v.id" :readonly='%s' %s/>`, borderStyle, pgMethod, nameRu, ajaxSelectTitle, name, extJsonStr, name, readonly, classStr)
+		return fmt.Sprintf(`<comp-fld-ref-search %s pgMethod="%s" label="%s" :item='item.%s' :itemId='item.%s' :ext='%s' @update="v=> item.%s = v.id" @clear="item.%s = null" :readonly='%s' %s/>`, borderStyle, pgMethod, nameRu, ajaxSelectTitle, name, extJsonStr, name, name, readonly, classStr)
 	case types.FldVueTypeSelect, types.FldVueTypeMultipleSelect:
 		options, err := json.Marshal(fld.Vue.Options)
 		utils.CheckErr(err, fmt.Sprintf("'%s' json.Marshal(fld.Vue.Options)", fld.Name))
@@ -242,7 +242,13 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		if fldType == types.FldVueTypeMultipleSelect {
 			multiple = "multiple"
 		}
-		return fmt.Sprintf(`<q-select %s label="%s" v-model='item.%s' :options='%s' %s :readonly='%s' %s/>`, borderStyle, nameRu, name, options, multiple, readonly, classStr)
+		isClearable := ""
+		for key, _ := range fld.Vue.Ext {
+			if key == "isClearable" {
+				isClearable = "clearable"
+			}
+		}
+		return fmt.Sprintf(`<q-select %s label="%s" v-model='item.%s' :options='%s' %s %s :readonly='%s' %s/>`, borderStyle, nameRu, name, options, multiple, isClearable, readonly, classStr)
 	case types.FldTypeVueComposition:
 		if fld.Vue.Composition == nil {
 			log.Fatal(fmt.Sprintf("fld have type '%s', but fld.Vue.Composition function is nil", types.FldTypeVueComposition))

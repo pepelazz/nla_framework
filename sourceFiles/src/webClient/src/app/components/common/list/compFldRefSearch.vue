@@ -25,6 +25,10 @@
       <q-btn round dense flat icon="add" @click="openNewTab"/>
     </template>
 
+    <template v-slot:append  v-if="ext && ext.isClearable && localItem.label">
+      <q-icon name="close" @click.stop="clear" class="cursor-pointer" />
+    </template>
+
     <template v-slot:no-option>
       <q-item>
         <q-item-section class="text-grey">
@@ -80,6 +84,7 @@
         methods: {
             clear() {
                 this.localItem = {label: null, value: null}
+                this.$emit('clear')
             },
             filterFn(val, update, abort) {
                 update(() => {
