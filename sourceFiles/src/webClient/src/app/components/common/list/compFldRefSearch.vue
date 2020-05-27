@@ -25,8 +25,9 @@
       <q-btn round dense flat icon="add" @click="openNewTab"/>
     </template>
 
+    <!-- кнопка удаления   -->
     <template v-slot:append  v-if="ext && ext.isClearable && localItem.label">
-      <q-icon name="close" @click.stop="clear" class="cursor-pointer" />
+      <q-icon name="cancel" @click.stop="clear" class="cursor-pointer" />
     </template>
 
     <template v-slot:no-option>
