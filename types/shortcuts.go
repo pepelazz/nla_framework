@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -225,7 +226,7 @@ func GetFldJsonList(name, nameRu string, rowCol [][]int, listParams FldVueJsonLi
 	return
 }
 
-// создание поля json c редактируемым массивом элементов
+// создание поля для загрузки файлов
 func GetFldFiles(name, nameRu string, rowCol [][]int, fileParams FldVueFilesParams, params ...string) (fld FldType) {
 	classStr := "col-4"
 	if len(params)>0 {
@@ -241,6 +242,45 @@ func GetFldFiles(name, nameRu string, rowCol [][]int, fileParams FldVueFilesPara
 	}
 
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeFiles, Ext: ext, Class: []string{classStr}}}
+	return
+}
+
+// создание поля для загрузки списка изображений
+func GetFldImgList(name, nameRu string, rowCol [][]int, fileParams FldVueImgParams, params ...string) (fld FldType) {
+	classStr := "col-4"
+	if len(params)>0 {
+		classStr= params[0]
+	}
+	// заполняем параметры для ограничений
+	ext := map[string]string{}
+	if len(fileParams.Accept) > 0{
+		ext["accept"] = fileParams.Accept
+	}
+	if fileParams.MaxFileSize > 0{
+		ext["maxFileSize"] = strconv.FormatInt(fileParams.MaxFileSize, 10)
+	}
+	if fileParams.CanAddUrls {
+		ext["canAddUrls"] = "true"
+	}
+	if len(fileParams.Crop) > 0 {
+		// проверка что crop имеет формат 300x400
+		arr := strings.Split(fileParams.Crop, "x")
+		if len(arr) != 2 {
+			log.Fatalf("GetFldImgList error fld: '%s' in FldVueImgParams.Crop must be such format '300x400'. You write this: %s", name, fileParams.Crop)
+		}
+		if _, err := strconv.Atoi(arr[0]); err != nil {
+			log.Fatalf("GetFldImgList error fld: '%s' in FldVueImgParams.Crop must be such format '300x400'. %s not number", name, arr[0])
+		}
+		if _, err := strconv.Atoi(arr[1]); err != nil {
+			log.Fatalf("GetFldImgList error fld: '%s' in FldVueImgParams.Crop must be such format '300x400'. %s not number", name, arr[1])
+		}
+		ext["crop"] = fileParams.Crop
+	}
+	if fileParams.Width > 0 {
+		ext["width"] = strconv.Itoa(fileParams.Width)
+	}
+
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeImgList, Ext: ext, Class: []string{classStr}}}
 	return
 }
 

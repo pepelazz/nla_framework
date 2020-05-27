@@ -24,8 +24,9 @@ const (
 	FldVueTypeCheckbox       = "checkbox"
 	FldVueTypeRadio          = "radio"
 	FldVueTypeDadataAddress  = "dadataAddress"
-	FldVueTypeJsonList  	 = "jsonList"
-	FldVueTypeFiles  	 = "files"
+	FldVueTypeJsonList       = "jsonList"
+	FldVueTypeFiles          = "files"
+	FldVueTypeImgList        = "imgList"
 )
 
 type (
@@ -39,19 +40,19 @@ type (
 	}
 
 	FldVue struct {
-		Name        string
-		NameRu      string
-		Type        string
-		RowCol      [][]int
-		Class       []string
+		Name         string
+		NameRu       string
+		Type         string
+		RowCol       [][]int
+		Class        []string
 		IsRequired   bool
 		IsBorderless bool
-		Readonly    string
-		Ext         map[string]string
-		Options     []FldVueOptionsItem
-		Composition func(ProjectType, DocType) string
-		Vif         string
-		JsonList    FldVueJsonList
+		Readonly     string
+		Ext          map[string]string
+		Options      []FldVueOptionsItem
+		Composition  func(ProjectType, DocType) string
+		Vif          string
+		JsonList     FldVueJsonList
 	}
 
 	FldSql struct {
@@ -76,8 +77,16 @@ type (
 	}
 
 	FldVueFilesParams struct {
-		Accept string
+		Accept      string
 		MaxFileSize int64
+	}
+
+	FldVueImgParams struct {
+		Accept      string
+		MaxFileSize int64
+		Crop        string // например, 300x400. Обрезает под данное соотношение и размер
+		Width       int // обрезает максимальная ширина фото
+		CanAddUrls  bool // возможность добавлять ссылки на фото, а не только загружать
 	}
 )
 
