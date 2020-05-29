@@ -67,7 +67,7 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 			path := strings.Split(dt.Source, "/")
 			fName := path[len(path)-1]
 			t, err := template.New(fName).Funcs(fMap).Delims("[[", "]]").ParseFiles(dt.Source)
-			utils.CheckErr(err, fmt.Sprintf("doc: %s tmpl: %s parse template error: %s", d.Name, tName, err))
+			utils.CheckErr(err, fmt.Sprintf("ParseTemplates doc: %s tmpl: %s parse template error: %s", d.Name, tName, err))
 			// сохраняем template в поле структуры
 			dt.Tmpl = t
 		}

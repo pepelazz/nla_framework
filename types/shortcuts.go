@@ -2,9 +2,11 @@ package types
 
 import (
 	"fmt"
+	"github.com/pepelazz/projectGenerator/utils"
 	"log"
 	"strconv"
 	"strings"
+	"text/template"
 )
 
 // создание простого поля Double
@@ -333,5 +335,40 @@ func GetFldImg(name, nameRu string, rowCol [][]int, fileParams FldVueImgParams, 
 
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Sql:FldSql{Size:500}, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeImg, Ext: ext, Class: []string{classStr}}}
 	return
+}
+
+// добавление для таба функциональности счетчика
+// добавляется миксин, чтобы в основном табе при открытии загружался список, длина которого и является счетчиком
+func (vt VueTab) AddCounter(d *DocType, tabName, pgMethod, pgParams string)  VueTab {
+	tabName = utils.UpperCaseFirst(tabName)
+	if d.Vue.Mixins == nil {
+		d.Vue.Mixins = map[string][]VueMixin{}
+	}
+	if d.Vue.Mixins["docItemWithTabs"] == nil {
+		d.Vue.Mixins["docItemWithTabs"] = []VueMixin{}
+	}
+	d.Vue.Mixins["docItemWithTabs"] = append(d.Vue.Mixins["docItemWithTabs"], VueMixin{"tabCounter"+tabName, "./mixins/tabCounter"+tabName+".js"})
+	sourcePath := "../../../pepelazz/projectGenerator/templates/webClient/doc/mixins/tabCounter.js"
+	funcMap := template.FuncMap{
+		"VarName": func() string {return "tabCounter"+tabName},
+		"PgMethod": func() string {return pgMethod},
+		"PgParams": func() string {return pgParams},
+	}
+
+	docRouteName := d.Name
+	if len(d.Vue.Path) > 0 {
+		docRouteName = d.Vue.Path
+	}
+	distPath := fmt.Sprintf("../src/webClient/src/app/components/%s/mixins", docRouteName)
+	d.Templates["webClient_mixin_tabCounter"+tabName+".js"] = &DocTemplate{
+		Source: sourcePath,
+		DistPath: distPath,
+		FuncMap: funcMap,
+		DistFilename: "tabCounter"+tabName+".js",
+	}
+	// добавляем параметры в html разметку таба
+	vt.HtmlParams = vt.HtmlParams + " @updateCount='v => tabCounterStage = v'"
+	vt.HtmlInner = vt.HtmlInner + " <q-badge v-if='tabCounterStage>0' color='red' floating>{{tabCounterStage}}</q-badge>"
+	return vt
 }
 

@@ -10,6 +10,12 @@
             </q-item-section>
             <q-item-section top side>
               <div class="text-grey-8 q-gutter-xs">
+                <!-- кнопка создания нового документа   -->
+                <template v-if="newDocUrl || newDocEventOnly">
+                  <q-btn v-if="!newDocEventOnly" size="12px" flat dense round icon="add" @click="$router.push(newDocUrl)"/>
+                  <q-btn size="12px" flat dense round icon="add" @click="$emit('clickAddBtn')"/>
+                </template>
+                <!-- кнопка поиска  -->
                 <q-btn size="12px" v-if="searchFldName" flat dense round icon="search" @click="toggleSearchFld"/>
                 <!--  СОРТИРОВКА ПО ВОЗРАСТАНИЮ  -->
                 <q-btn size="12px" flat dense round icon="expand_less">
@@ -77,8 +83,9 @@
       </q-infinite-scroll>
     </div>
     <!-- кнопка создания нового документа   -->
-    <q-page-sticky v-if="newDocUrl" position="bottom-right" :offset="[18, 18]">
-      <q-btn fab icon="add" color="accent" @click="$router.push(newDocUrl)"/>
+    <q-page-sticky v-if="newDocUrl || newDocEventOnly" position="bottom-right" :offset="[18, 18]">
+      <q-btn v-if="!newDocEventOnly" fab icon="add" color="accent" @click="$router.push(newDocUrl)"/>
+      <q-btn fab icon="add" color="accent" @click="$emit('clickAddBtn')"/>
     </q-page-sticky>
   </div>
 </template>
@@ -88,7 +95,7 @@
     import _ from 'lodash'
 
     export default {
-        props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocUrl', 'urlQueryParams', 'ext'],
+        props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocEventOnly', 'newDocUrl', 'urlQueryParams', 'ext'],
         computed: {
             computedListTitle() {
                 return !this.listParams.deleted ? this.listTitle : this.listDeletedTitle
@@ -137,6 +144,7 @@
                     if (res.ok) {
                         if (res.result && res.result.length > 0) {
                             res.result.map(v => list.push(v))
+                            this.$emit('updateCount', list.length)
                             if (done) done()
                         } else {
                             if (done) done(true)
