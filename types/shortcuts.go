@@ -367,8 +367,8 @@ func (vt VueTab) AddCounter(d *DocType, tabName, pgMethod, pgParams string)  Vue
 		DistFilename: "tabCounter"+tabName+".js",
 	}
 	// добавляем параметры в html разметку таба
-	vt.HtmlParams = vt.HtmlParams + " @updateCount='v => tabCounterStage = v'"
-	vt.HtmlInner = vt.HtmlInner + " <q-badge v-if='tabCounterStage>0' color='red' floating>{{tabCounterStage}}</q-badge>"
+	vt.HtmlParams = vt.HtmlParams + " @updateCount='v => tabCounter"+tabName+" = v'"
+	vt.HtmlInner = vt.HtmlInner + " <q-badge v-if='tabCounter"+tabName+">0' color='red' floating>{{tabCounter"+tabName+"}}</q-badge>"
 	return vt
 }
 

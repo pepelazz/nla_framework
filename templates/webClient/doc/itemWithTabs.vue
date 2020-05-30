@@ -1,7 +1,7 @@
 <template>
     <q-page padding>
 
-        <comp-breadcrumb :list="[{label:'[[index .Vue.I18n "listTitle"]]', to:'/[[.Vue.RouteName]]',  docType: '[[.Name]]'}, [[if .IsRecursion]] parentProductBreadcrumb, [[end]] {label: item ? (item.title ? item.title : 'Редактирование') : '',  docType: 'edit'}]"/>
+        <comp-breadcrumb v-if="!isOpenInDialog" :list="[{label:'[[index .Vue.I18n "listTitle"]]', to:'/[[.Vue.RouteName]]',  docType: '[[.Name]]'}, [[if .IsRecursion]] parentProductBreadcrumb, [[end]] {label: item ? (item.title ? item.title : 'Редактирование') : '',  docType: 'edit'}]"/>
 
         <div v-if="item" class="q-mt-sm">
             <q-tabs
@@ -31,7 +31,7 @@
     import queryString from 'query-string'
 
     export default {
-        props: ['id' [[- if .IsRecursion -]], 'parent_id'[[- end -]]],
+        props: ['id', 'isOpenInDialog' [[- if .IsRecursion -]], 'parent_id'[[- end -]]],
         components: {[[- .PrintComponents "docItemWithTabs" -]]},
         mixins: [ [[- .Vue.PrintMixins "docItemWithTabs" -]] ],
         computed: {
@@ -50,7 +50,8 @@
         watch: {
             // смена название таба в url при переключении
             tab(v) {
-                this.$utils.updateUrlQuery({tab: v})
+                // если открыли в даилоге, то название табов в url не меняем
+                if (!this.isOpenInDialog) this.$utils.updateUrlQuery({tab: v})
             }
         },
         methods: {
@@ -64,9 +65,13 @@
                 this.item = this.resultModify(v)
             }
             this.$utils.getDocItemById.call(this, {method: '[[.PgName]]_get_by_id', cb})
-            // извлекаем название таба
-            const parsedQuery = queryString.parse(location.search)
-            this.tab = parsedQuery.tab || 'info'
+            // извлекаем название таба только в случае открытия не в диалоге
+            if (!this.isOpenInDialog) {
+                const parsedQuery = queryString.parse(location.search)
+                this.tab = parsedQuery.tab || 'info'
+            } else {
+                this.tab = 'info'
+            }
         },
     }
 </script>

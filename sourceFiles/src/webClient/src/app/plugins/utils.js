@@ -98,6 +98,7 @@ const saveItem = function ({method, itemForSaveMod = {}, resultModify}) {
       }
       resultModify = resultModify || (v => v)
       this.item = fp.compose(resultModify, extractOptionsFlds(this))(v.result)
+      this.$emit('updated', this.item)
     }
   })
 }

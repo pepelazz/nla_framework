@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
 
-    <comp-breadcrumb :list="[{label:'[[index .Vue.I18n "listTitle"]]', to:'/[[.Vue.RouteName]]',  docType: '[[.Name]]'}, [[if .IsRecursion]] parentProductBreadcrumb, [[end]] {label: item ? (item.title ? item.title : 'Редактирование') : '',  docType: 'edit'}]"/>
+    <comp-breadcrumb v-if="!isOpenInDialog" :list="[{label:'[[index .Vue.I18n "listTitle"]]', to:'/[[.Vue.RouteName]]',  docType: '[[.Name]]'}, [[if .IsRecursion]] parentProductBreadcrumb, [[end]] {label: item ? (item.title ? item.title : 'Редактирование') : '',  docType: 'edit'}]"/>
 
     <div v-if="item" class="q-mt-sm">
       <!--  поля формы    -->
@@ -29,7 +29,9 @@
       [[end]]
 
       <!--  кнопки   -->
-      <comp-item-btn-save @save="save" @cancel="$router.push(docUrl)"/>
+      <comp-item-btn-save v-if="!isOpenInDialog" @save="save" @cancel="$router.push(docUrl)"/>
+      <!--  при открытии в диалоге кнопку Отмена не показываем   -->
+      <q-btn v-else color="secondary" label="сохранить" class="q-mr-sm" @click="save"/>
 
     </div>
   </q-page>
@@ -38,7 +40,7 @@
 <script>
 [[ .PrintVueImport "docItem" ]]
     export default {
-        props: ['id' [[- if .IsRecursion -]], 'parent_id'[[- end -]] ],
+        props: ['id', 'isOpenInDialog' [[- if .IsRecursion -]], 'parent_id'[[- end -]] ],
         components: {[[- .PrintComponents "docItem" -]]},
         mixins: [ [[- .Vue.PrintMixins "docItem" -]] ],
         computed: {

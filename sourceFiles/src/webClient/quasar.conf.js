@@ -71,6 +71,7 @@ module.exports = function (ctx) {
         'QPageSticky',
         'QPopupProxy',
         'QRadio',
+        'QRouteTab',
         'QScrollArea',
         'QSeparator',
         'QSpace',

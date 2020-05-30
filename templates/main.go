@@ -200,21 +200,24 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	if fld.Vue.Type == types.FldVueTypeTags {
 		fldType = types.FldVueTypeTags
 	}
-	classStr := ""
+	params := ""
 	if len(fld.Vue.Class) > 0 {
-		classStr = fmt.Sprintf("class='%s'", fld.Vue.ClassPrint())
+		params = params + fmt.Sprintf(" class='%s' ", fld.Vue.ClassPrint())
+	}
+	if len(fld.Vue.Vif)>0 {
+		params = params + fmt.Sprintf(" v-if='%s' ", fld.Vue.Vif)
 	}
 	switch fldType {
 	case types.FldTypeString, types.FldTypeText:
-		return fmt.Sprintf(`<q-input %s type='text' v-model="item.%s" label="%s" autogrow :readonly='%s' %s/>`, borderStyle, name, nameRu, readonly, classStr)
+		return fmt.Sprintf(`<q-input %s type='text' v-model="item.%s" label="%s" autogrow :readonly='%s' %s/>`, borderStyle, name, nameRu, readonly, params)
 	case types.FldTypeInt, types.FldTypeDouble:
-		return fmt.Sprintf(`<q-input %s type='number' v-model="item.%s" label="%s" :readonly='%s' %s/>`, borderStyle, name, nameRu, readonly, classStr)
+		return fmt.Sprintf(`<q-input %s type='number' v-model="item.%s" label="%s" :readonly='%s' %s/>`, borderStyle, name, nameRu, readonly, params)
 	// дата
 	case types.FldTypeDate:
-		return fmt.Sprintf(`<comp-fld-date %s label="%s" :date-string="$utils.formatPgDate(item.%s)" @update="v=> item.%s = v" :readonly='%s' %s/>`, borderStyle, nameRu, name, name, readonly, classStr)
+		return fmt.Sprintf(`<comp-fld-date %s label="%s" :date-string="$utils.formatPgDate(item.%s)" @update="v=> item.%s = v" :readonly='%s' %s/>`, borderStyle, nameRu, name, name, readonly, params)
 	// дата с временем
 	case types.FldTypeDatetime:
-		return fmt.Sprintf(`<comp-fld-date-time %s label="%s" :date-string="$utils.formatPgDateTime(item.%s)" @update="v=> item.%s = v" :readonly='%s' %s/>`, borderStyle, nameRu, name, name, readonly, classStr)
+		return fmt.Sprintf(`<comp-fld-date-time %s label="%s" :date-string="$utils.formatPgDateTime(item.%s)" @update="v=> item.%s = v" :readonly='%s' %s/>`, borderStyle, nameRu, name, name, readonly, params)
 	// вариант ссылки на другую таблицу
 	case "ref":
 		// если map Ext не инициализирован, то создаем его, чтобы не было ошибки при json.Marshal
@@ -234,7 +237,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		if m, ok := fld.Vue.Ext["pgMethod"]; ok {
 			pgMethod = m
 		}
-		return fmt.Sprintf(`<comp-fld-ref-search %s pgMethod="%s" label="%s" :item='item.%s' :itemId='item.%s' :ext='%s' @update="v=> item.%s = v.id" @clear="item.%s = null" :readonly='%s' %s/>`, borderStyle, pgMethod, nameRu, ajaxSelectTitle, name, extJsonStr, name, name, readonly, classStr)
+		return fmt.Sprintf(`<comp-fld-ref-search %s pgMethod="%s" label="%s" :item='item.%s' :itemId='item.%s' :ext='%s' @update="v=> item.%s = v.id" @clear="item.%s = null" :readonly='%s' %s/>`, borderStyle, pgMethod, nameRu, ajaxSelectTitle, name, extJsonStr, name, name, readonly, params)
 	case types.FldVueTypeSelect, types.FldVueTypeMultipleSelect:
 		options, err := json.Marshal(fld.Vue.Options)
 		utils.CheckErr(err, fmt.Sprintf("'%s' json.Marshal(fld.Vue.Options)", fld.Name))
@@ -248,7 +251,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 				isClearable = "clearable"
 			}
 		}
-		return fmt.Sprintf(`<q-select %s label="%s" v-model='item.%s' :options='%s' %s %s :readonly='%s' %s/>`, borderStyle, nameRu, name, options, multiple, isClearable, readonly, classStr)
+		return fmt.Sprintf(`<q-select %s label="%s" v-model='item.%s' :options='%s' %s %s :readonly='%s' %s/>`, borderStyle, nameRu, name, options, multiple, isClearable, readonly, params)
 	case types.FldTypeVueComposition:
 		if fld.Vue.Composition == nil {
 			log.Fatal(fmt.Sprintf("fld have type '%s', but fld.Vue.Composition function is nil", types.FldTypeVueComposition))
@@ -264,13 +267,13 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	case types.FldVueTypeTags:
 		if fld.Vue.Ext["onlyExistTags"] == "true" {
 			// вариант когда нельзя создавать новые тэги, только выбирать из существующих
-			return fmt.Sprintf("<q-select %s label='%s' v-model='item.%s' use-chips multiple @filter='%[2]sFilterFn' :options='%[2]sFilterOptions' :readonly='%s'/>", borderStyle, nameRu, name, readonly, classStr)
+			return fmt.Sprintf("<q-select %s label='%s' v-model='item.%s' use-chips multiple @filter='%[2]sFilterFn' :options='%[2]sFilterOptions' :readonly='%s'/>", borderStyle, nameRu, name, readonly, params)
 		} else {
 			// вариант когда можно создавать новые тэги
-			return fmt.Sprintf("<q-select %s label='%s' v-model='item.%s' use-input use-chips multiple input-debounce='0' @new-value='%[2]sCreateValue' @filter='%[2]sFilterFn' :options='%[2]sFilterOptions' :readonly='%s'/>", borderStyle, nameRu, name, readonly, classStr)
+			return fmt.Sprintf("<q-select %s label='%s' v-model='item.%s' use-input use-chips multiple input-debounce='0' @new-value='%[2]sCreateValue' @filter='%[2]sFilterFn' :options='%[2]sFilterOptions' :readonly='%s'/>", borderStyle, nameRu, name, readonly, params)
 		}
 	case types.FldVueTypeCheckbox:
-		return fmt.Sprintf("<q-checkbox label='%s' v-model='item.%s' :disabled='%s' :false-value='null' indeterminate-value='some' %s/>", nameRu, name, readonly, classStr)
+		return fmt.Sprintf("<q-checkbox label='%s' v-model='item.%s' :disabled='%s' :false-value='null' indeterminate-value='some' %s/>", nameRu, name, readonly, params)
 	case types.FldVueTypeRadio:
 		options := ""
 		for _, v := range fld.Vue.Options {
@@ -284,27 +287,27 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	</div>
 `, nameRu, options)
 	case types.FldVueTypeDadataAddress:
-		return fmt.Sprintf(`<comp-fld-address %s label="%s" :fld='item.%s' @update="v=> item.%s = v" :readonly='%s' %s/>`, borderStyle, nameRu, name, name, readonly, classStr)
+		return fmt.Sprintf(`<comp-fld-address %s label="%s" :fld='item.%s' @update="v=> item.%s = v" :readonly='%s' %s/>`, borderStyle, nameRu, name, name, readonly, params)
 	case types.FldVueTypeJsonList:
-		return fmt.Sprintf("<comp-fld-json-list-%s label='%s' :item='item' :fld='item.%s' @update='item.%s = $event' :readonly='%s' %s/>", name, nameRu, name, name, readonly, classStr)
+		return fmt.Sprintf("<comp-fld-json-list-%s label='%s' :item='item' :fld='item.%s' @update='item.%s = $event' :readonly='%s' %s/>", name, nameRu, name, name, readonly, params)
 	case types.FldVueTypeFiles:
 		extStr := ""
 		for k, v := range fld.Vue.Ext {
 			extStr = extStr + fmt.Sprintf(", %s: \"%s\"", k, v)
 		}
-		return fmt.Sprintf("<comp-fld-files label='%s' :fld='item.%s' :ext = '{tableName: \"%s\", tableId: this.id%s}' :readonly='%s' %s/>", nameRu, name, fld.Doc.Name, extStr, readonly, classStr)
+		return fmt.Sprintf("<comp-fld-files label='%s' :fld='item.%s' :ext = '{tableName: \"%s\", tableId: this.id%s}' :readonly='%s' %s/>", nameRu, name, fld.Doc.Name, extStr, readonly, params)
 	case types.FldVueTypeImg:
 		extStr := ""
 		for k, v := range fld.Vue.Ext {
 			extStr = extStr + fmt.Sprintf(", %s: \"%s\"", k, v)
 		}
-		return fmt.Sprintf("<comp-fld-img label='%s' :fld='item.%s' :ext = '{tableName: \"%s\", tableId: this.id, fldName: \"%s\"%s}' :readonly='%s' %s/>", nameRu, name, fld.Doc.Name, name, extStr, readonly, classStr)
+		return fmt.Sprintf("<comp-fld-img label='%s' :fld='item.%s' :ext = '{tableName: \"%s\", tableId: this.id, fldName: \"%s\"%s}' :readonly='%s' %s/>", nameRu, name, fld.Doc.Name, name, extStr, readonly, params)
 	case types.FldVueTypeImgList:
 		extStr := ""
 		for k, v := range fld.Vue.Ext {
 			extStr = extStr + fmt.Sprintf(", %s: \"%s\"", k, v)
 		}
-		return fmt.Sprintf("<comp-fld-img-list label='%s' :fld='item.%s' :ext = '{tableName: \"%s\", tableId: this.id, fldName: \"%s\"%s}' :readonly='%s' %s/>", nameRu, name, fld.Doc.Name, name, extStr, readonly, classStr)
+		return fmt.Sprintf("<comp-fld-img-list label='%s' :fld='item.%s' :ext = '{tableName: \"%s\", tableId: this.id, fldName: \"%s\"%s}' :readonly='%s' %s/>", nameRu, name, fld.Doc.Name, name, extStr, readonly, params)
 	default:
 		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fldType)
 	}

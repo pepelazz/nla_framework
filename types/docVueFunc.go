@@ -289,9 +289,9 @@ func (d DocType) PrintVueItemTabs()  string{
 // список компонентов для отображения содержимого табов
 func (d DocType) PrintVueItemTabPanels()  string{
 	res := []string{}
-	params := ":id='id'"
+	params := ":id='id' :isOpenInDialog='isOpenInDialog' @updated='v=>$emit(`updated`, v)'"
 	if d.IsRecursion {
-		params = ":id='id' :parent_id='parent_id'"
+		params = ":id='id' :isOpenInDialog='isOpenInDialog' :parent_id='parent_id'"
 	}
 	for _, tab := range d.Vue.Tabs {
 		res = append(res, fmt.Sprintf("<!-- %s       -->\n\t\t\t\t\t\t\t\t<q-tab-panel name='%[2]s'><%[2]s-tab %[3]s %[4]s/></q-tab-panel>", tab.TitleRu, tab.Title, params, tab.HtmlParams))

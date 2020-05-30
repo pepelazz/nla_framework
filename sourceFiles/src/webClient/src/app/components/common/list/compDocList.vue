@@ -13,7 +13,7 @@
                 <!-- кнопка создания нового документа   -->
                 <template v-if="newDocUrl || newDocEventOnly">
                   <q-btn v-if="!newDocEventOnly" size="12px" flat dense round icon="add" @click="$router.push(newDocUrl)"/>
-                  <q-btn size="12px" flat dense round icon="add" @click="$emit('clickAddBtn')"/>
+                  <q-btn v-else size="12px" flat dense round icon="add" @click="$emit('clickAddBtn')"/>
                 </template>
                 <!-- кнопка поиска  -->
                 <q-btn size="12px" v-if="searchFldName" flat dense round icon="search" @click="toggleSearchFld"/>
@@ -85,7 +85,7 @@
     <!-- кнопка создания нового документа   -->
     <q-page-sticky v-if="newDocUrl || newDocEventOnly" position="bottom-right" :offset="[18, 18]">
       <q-btn v-if="!newDocEventOnly" fab icon="add" color="accent" @click="$router.push(newDocUrl)"/>
-      <q-btn fab icon="add" color="accent" @click="$emit('clickAddBtn')"/>
+      <q-btn v-else fab icon="add" color="accent" @click="$emit('clickAddBtn')"/>
     </q-page-sticky>
   </div>
 </template>
