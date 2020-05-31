@@ -20,17 +20,18 @@ type (
 		Vue                  DocVue
 		Sql                  DocSql
 		Templates            map[string]*DocTemplate
-		TemplatePathOverride map[string]TmplPathOverride  // map для переопределения источника шаблона по его названию
-		IsBaseTemapltes      DocIsBaseTemapltes // флаг что генерируем стандартные шаблоны для документа
-		PathPrefix           string             // префикс,если папка, в которой лежит папка с описанием документа находится не на одном уровне с main.go. Например 'docs', если docs/client/...
-		IsTaskAllowed        bool               // признак, что к таблице можно прикреплять задачи
+		TemplatePathOverride map[string]TmplPathOverride // map для переопределения источника шаблона по его названию
+		IsBaseTemapltes      DocIsBaseTemapltes          // флаг что генерируем стандартные шаблоны для документа
+		PathPrefix           string                      // префикс,если папка, в которой лежит папка с описанием документа находится не на одном уровне с main.go. Например 'docs', если docs/client/...
+		IsTaskAllowed        bool                        // признак, что к таблице можно прикреплять задачи
 		StateMachine         *DocSm
-		IsRecursion 		  bool // признак, что документ имеет рекурсию. Есть parent_id - ссылка на самого себя
+		IsRecursion          bool // признак, что документ имеет рекурсию. Есть parent_id - ссылка на самого себя
+		Integrations         DocIntegrations
 	}
 
 	TmplPathOverride struct {
 		Source string
-		Dist string
+		Dist   string
 	}
 
 	DocVue struct {
@@ -41,7 +42,7 @@ type (
 		BreadcrumbIcon string
 		Roles          []string
 		Grid           []VueGridDiv
-		Mixins         map[string][]VueMixin          // название файла - название миксина. Для прописывания импорта
+		Mixins         map[string][]VueMixin        // название файла - название миксина. Для прописывания импорта
 		Components     map[string]map[string]string // название файла - название миксина: путь для импорта. Для прописывания импорта
 		Methods        map[string]map[string]string // название файла - название метода - текст функции
 		TmplFuncs      map[string]func(DocType) string
@@ -59,7 +60,7 @@ type (
 	}
 
 	VueMixin struct {
-		Title string
+		Title  string
 		Import string
 	}
 
@@ -84,7 +85,6 @@ type (
 		IsBeforeTrigger bool        // флаг что добавляем before триггер
 		IsAfterTrigger  bool        // флаг что добавляем after триггер
 		IsSearchText    bool        // флаг что добавляем поле search_text
-		ComputedTitle   string      // в случае если колонка title вычислимая, то прописываем формулу по которой заполняется
 		Indexes         []string    // индексы
 		Hooks           DocSqlHooks // куски sql кода
 	}
@@ -95,23 +95,32 @@ type (
 	}
 
 	DocSqlMethod struct {
-		Name  string
-		Roles []string
+		Name   string
+		Roles  []string
 		Params map[string]string
-		Tmpl DocSqlMethodTmpl
+		Tmpl   DocSqlMethodTmpl
 	}
 
 	DocSqlMethodTmpl struct {
-		Source string
-		Dist string
-		FuncMap      template.FuncMap
+		Source  string
+		Dist    string
+		FuncMap template.FuncMap
 	}
 
 	DocSqlHooks struct {
-		DeclareVars        map[string]string
-		BeforeInsertUpdate []string
-		BeforeInsert       []string
-		BeforeTriggerBefore  []string
+		DeclareVars         map[string]string
+		BeforeInsertUpdate  []string
+		BeforeInsert        []string
+		BeforeTriggerBefore []string
+	}
+
+	DocIntegrations struct {
+		Bitrix DocIntegrationsBitrix
+	}
+
+	DocIntegrationsBitrix struct {
+		Name    string
+		UrlName string //часть имени запроса. Например crm.company.list.json
 	}
 )
 
@@ -127,6 +136,17 @@ func (d DocType) Fld(fldName string) *FldType {
 
 // место вызова разных доп функций для инициализации документа, после того как основные поля заполнены
 func (d *DocType) Init() {
+	// проверяем что есть поле title
+	//isExist := false
+	//for _, fld := range d.Flds {
+	//	if fld.Name == "title" {
+	//		isExist = true
+	//	}
+	//}
+	//if !isExist {
+	//	log.Fatalf("doc '%s' missed field 'title'", d.Name)
+	//}
+
 	d.Filli18n()
 	for i := range d.Flds {
 		d.Flds[i].Doc = d

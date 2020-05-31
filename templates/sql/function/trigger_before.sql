@@ -17,9 +17,11 @@ BEGIN
         NEW.search_text = concat({{.GetSearchTextString}});
         {{- end }}
 
-        {{if .Sql.ComputedTitle}}
-        NEW.title = {{.Sql.ComputedTitle}}
-        {{- end }}
+        {{- range .Flds}}
+        {{- if .Sql.FillValueInBeforeTrigger }}
+        NEW.{{.Name}} = {{.Sql.FillValueInBeforeTrigger}};
+        {{- end -}}
+        {{- end -}}
 
         {{if .IsRecursion}}
         if NEW.parent_id notnull then

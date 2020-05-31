@@ -28,6 +28,7 @@ type (
 		Email            EmailConfig
 		DevMode          DevModeConfig
 		Vue              VueConfig
+		Bitrix 			 BitrixConfig
 	}
 	PostrgesConfig struct {
 		DbName   string
@@ -69,6 +70,12 @@ type (
 
 	VueConfig struct {
 		DadataToken string
+	}
+
+	BitrixConfig struct {
+		ApiUrl       string
+		UserId       string
+		WebhookToken string
 	}
 
 	ProjectSql struct {

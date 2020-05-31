@@ -36,6 +36,17 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 			}
 		}
 	}
+
+	// в случае коннекта к Битрикс генерим файлы
+	if len(p.Config.Bitrix.ApiUrl) > 0 {
+		sourcePath := "../../../pepelazz/projectGenerator/templates/integrations/bitrix/bitrixMain.go"
+		t, err := template.New("bitrixMain.go").Funcs(funcMap).Delims("[[", "]]").ParseFiles(sourcePath)
+		utils.CheckErr(err, "bitrixMain.go")
+		distPath := fmt.Sprintf("%s/bitrix", p.DistPath)
+		err = ExecuteToFile(t, p, distPath, "main.go")
+		utils.CheckErr(err, fmt.Sprintf("'project' ExecuteToFile '%s'", "bitrix/main.go"))
+
+	}
 }
 
 func OtherTemplatesGenerate(p types.ProjectType)  {

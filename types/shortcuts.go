@@ -9,13 +9,19 @@ import (
 	"text/template"
 )
 
-// создание простого поля Double
+// создание поля title
 func GetFldTitle(params ...string) (fld FldType) {
 	classStr := "col-4"
 	if len(params)>0 {
 		classStr= params[0]
 	}
 	fld = FldType {Name: "title", NameRu: "название", Type: FldTypeString, Sql: FldSql{IsRequired: true, IsUniq: true, IsSearch:true, Size:150}, Vue: FldVue{RowCol: [][]int{{1, 1}}, Class: []string{classStr}}}
+	return
+}
+
+// создание поля title, которое заполняется тригером
+func GetFldTitleComputed(triggerSqlString string) (fld FldType) {
+	fld = FldType {Name: "title", NameRu: "название", Type: FldTypeString, Sql: FldSql{IsSearch:true, FillValueInBeforeTrigger: triggerSqlString}}
 	return
 }
 
@@ -65,6 +71,16 @@ func GetFldInt(name, nameRu string, rowCol [][]int, params ...string) (fld FldTy
 		classStr= params[0]
 	}
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeInt, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}}}
+	return
+}
+
+// создание простого поля Int64
+func GetFldInt64(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
+	classStr := "col-4"
+	if len(params)>0 {
+		classStr= params[0]
+	}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeInt64, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}}}
 	return
 }
 

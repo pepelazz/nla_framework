@@ -25,6 +25,7 @@ var funcMap = template.FuncMap{
 	"ToLower":             strings.ToLower,
 	"UpperCaseFirst":      utils.UpperCaseFirst,
 	"ToLowerCamel":        strcase.ToLowerCamel,
+	"ToCamel":        	   strcase.ToCamel,
 	"PrintVueFldTemplate": PrintVueFldTemplate,
 }
 
@@ -83,6 +84,9 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 		if d.IsRecursion {
 			docIsRecursionProccess(p, &d)
 		}
+		// если есть интеграции, то создаем дополнительные шаблоны
+		docIsIntegrationProccess(p, &d)
+
 		// в случае если указаны табы, то подбираем соответствующие шаблоны
 		for _, tab := range d.Vue.Tabs {
 			var t *template.Template

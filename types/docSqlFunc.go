@@ -274,7 +274,7 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 		arr1 = append(arr1, f.Name)
 		arr2 = append(arr2, fmt.Sprintf("$%v", cnt))
 		arrow := "->>"
-		if utils.CheckContainsSliceStr(f.Type, "jsonb", FldTypeTextArray)  {
+		if utils.CheckContainsSliceStr(f.Type, "jsonb", FldTypeTextArray, FldTypeIntArray)  {
 			arrow = "->"
 		}
 		paramStr := fmt.Sprintf("\t\t\t(params %s '%s')::%s", arrow, f.Name, f.PgInsertType())
@@ -282,6 +282,10 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 		if f.Type == FldTypeTextArray {
 			paramStr = fmt.Sprintf("\t\t\ttext_array_from_json(params %s '%s')", arrow, f.Name)
 			//text_array_from_json(params -> 'role')
+		}
+		if f.Type == FldTypeIntArray{
+			paramStr = fmt.Sprintf("\t\t\tint_array_from_json(params %s '%s')", arrow, f.Name)
+			//int_array_from_json(params -> 'role')
 		}
 		arr3 = append(arr3, paramStr)
 		// options добавляем последним, поэтому optionsFldIndex увеличиваем на единицу с каждым новым полем, которое будем добавлять

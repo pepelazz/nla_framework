@@ -11,6 +11,7 @@ const (
 	FldTypeString            = "string"
 	FldTypeText              = "text"
 	FldTypeInt               = "int"
+	FldTypeInt64             = "int64"
 	FldTypeDouble            = "double"
 	FldTypeDate              = "date"
 	FldTypeBool              = "bool"
@@ -18,6 +19,7 @@ const (
 	FldTypeVueComposition    = "vueComposition"
 	FldTypeDatetime          = "datetime"
 	FldTypeTextArray         = "text[]"
+	FldTypeIntArray          = "int[]"
 	FldVueTypeSelect         = "select"
 	FldVueTypeMultipleSelect = "multipleSelect"
 	FldVueTypeTags           = "tags"
@@ -38,6 +40,7 @@ type (
 		Vue    FldVue
 		Sql    FldSql
 		Doc    *DocType // ссылка на сам документ, к которому принадлежит поле
+		IntegrationData map[string]interface{} // информация по интеграции с разными системами
 	}
 
 	FldVue struct {
@@ -57,14 +60,15 @@ type (
 	}
 
 	FldSql struct {
-		IsSearch       bool
-		IsRequired     bool
-		Ref            string
-		IsUniq         bool
-		Size           int
-		IsOptionFld    bool // признак что поле пишется не в отдельную колонку таблицы, а в json поле options
-		Default        string
-		IsNotUpdatable bool // признак, что поле не обновляется вручную. Либо заполняется только при создании, либо обновляется триггером
+		IsSearch                 bool
+		IsRequired               bool
+		Ref                      string
+		IsUniq                   bool
+		Size                     int
+		IsOptionFld              bool // признак что поле пишется не в отдельную колонку таблицы, а в json поле options
+		Default                  string
+		IsNotUpdatable           bool   // признак, что поле не обновляется вручную. Либо заполняется только при создании, либо обновляется триггером
+		FillValueInBeforeTrigger string // строка, которая выполняется в trigger и результат, которой присваивается полю. Например new.fullname
 	}
 
 	FldVueOptionsItem struct {
@@ -89,6 +93,7 @@ type (
 		Width       int // обрезает максимальная ширина фото
 		CanAddUrls  bool // возможность добавлять ссылки на фото, а не только загружать
 	}
+
 )
 
 func (fld *FldType) PrintPgModel() string {
@@ -120,6 +125,21 @@ func (fld *FldType) PrintPgModel() string {
 	return res
 }
 
+func (fld *FldType) GoType() string {
+	switch fld.Type {
+	case FldTypeDouble:
+		return "float64"
+	case FldTypeIntArray:
+		return "[]int"
+	case FldTypeTextArray:
+		return "[]string"
+	case FldTypeDate, FldTypeDatetime:
+		return "string"
+	default:
+		return fld.Type
+	}
+}
+
 func (fld *FldType) PgInsertType() string {
 	switch fld.Type {
 	case FldTypeDouble:
@@ -143,6 +163,8 @@ func (fld *FldType) PgUpdateType() string {
 		return "timestamp"
 	case FldTypeTextArray:
 		return "jsonArrayText"
+	case FldTypeIntArray:
+		return "jsonArrayInt"
 	default:
 		return fld.Type
 	}
@@ -218,6 +240,14 @@ func (fld FldType) SetReadonly(s string) FldType {
 
 func (fld FldType) SetVif(s string) FldType {
 	fld.Vue.Vif = s
+	return fld
+}
+
+func (fld FldType) SetBitrixInfo(b BitrixFld) FldType {
+	if fld.IntegrationData == nil {
+		fld.IntegrationData = map[string]interface{}{}
+	}
+	fld.IntegrationData["bitrix"] = b
 	return fld
 }
 

@@ -5,6 +5,7 @@ import (
 	"encoding/gob"
 	"github.com/gin-gonic/gin"
 	"github.com/pepelazz/projectGenerator/types"
+	"io/ioutil"
 	"net/http"
 	"fmt"
 	"strconv"
@@ -197,3 +198,22 @@ func RandToken(size int) string {
 	rand.Read(b)
 	return fmt.Sprintf("%x", b)
 }
+
+func GetJsonByUrl(url string, res interface{}) error {
+
+	httpRes, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+
+	body, err := ioutil.ReadAll(httpRes.Body)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(body, &res)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
