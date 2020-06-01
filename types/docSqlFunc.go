@@ -132,6 +132,9 @@ func (d DocType) PrintSqlModelAlterScripts() (res string) {
 				return "text"
 			}
 		}
+		if fld.Type == FldTypeInt64 {
+			return "int"
+		}
 		if fld.Type == FldTypeDouble {
 			return "double precision"
 		}
@@ -235,6 +238,48 @@ func (d DocType) SearchTxt() string {
 	} else {
 		return fmt.Sprintf("doc.%s", arr[0])
 	}
+}
+
+func (d DocType) PrintSqlFuncUpdateCheckParams() string {
+	str := `
+    -- проверика наличия id
+    checkMsg = check_required_params(params, ARRAY ['id']);
+    IF checkMsg IS NOT NULL
+    THEN
+        RETURN checkMsg;
+    END IF;
+	`
+	if d.IsBitrixIntegration() {
+		str = fmt.Sprintf(`  
+	  checkMsg = check_required_params(params, ARRAY ['btx_id']);
+	  IF checkMsg IS NOT NULL
+	  THEN
+		RETURN checkMsg;
+	  END IF;
+      -- ищем запись по btx_id, если не находим, значит это новая запись
+	  SELECT *
+	  INTO %[1]sRow
+	  FROM %[1]s
+	  WHERE btx_id = (params ->> 'btx_id')::int;
+		`, d.Name)
+	}
+return str
+}
+
+func (d DocType) PrintSqlFuncUpdateCheckIsNew() string {
+	str := `if (params ->> 'id')::int = -1 then`
+	if (d.IsBitrixIntegration()) {
+		str = fmt.Sprintf(`IF %sRow.id ISNULL THEN`, d.Name)
+	}
+	return str
+}
+
+func (d DocType) PrintSqlFuncUpdateQueryStr() string {
+	str := fmt.Sprintf(`concat('UPDATE %s SET ', updateValue, ' WHERE id=', params ->> 'id', ' RETURNING *;')`, d.Name)
+	if (d.IsBitrixIntegration()) {
+		str = fmt.Sprintf(`concat('UPDATE %[1]s SET ', updateValue, ' WHERE btx_id=', quote_literal(%[1]sRow.btx_id), ' RETURNING *')`, d.Name)
+	}
+	return str
 }
 
 // update функиця по добавлению execute insert

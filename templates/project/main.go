@@ -10,6 +10,9 @@ import (
 	"{{.Config.LocalProjectPath}}/utils"
 	"{{.Config.LocalProjectPath}}/webServer"
 	"{{.Config.LocalProjectPath}}/sse"
+	{{if .IsBitrixIntegration -}}
+	"{{.Config.LocalProjectPath}}/bitrix"
+	{{- end}}
 	"math/rand"
 	"os"
 	"time"
@@ -54,6 +57,9 @@ func main() {
 	// передаем часть конфига в utils
 	utils.SetWebServerConfig(config.WebServer)
 	utils.SetEmailConfig(config.Email)
+	{{if .IsBitrixIntegration -}}
+	bitrix.SetBitrixConfig(config.Bitrix)
+	{{- end}}
 
 	//go pg.GenerateFakeUsers(100)
 

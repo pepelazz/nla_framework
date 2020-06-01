@@ -3,10 +3,13 @@ package webServer
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/pepelazz/projectGenerator/types"
-	"github.com/pepelazz/projectGenerator/utils"
-	"github.com/pepelazz/projectGenerator/webServer/auth"
-	"github.com/pepelazz/projectGenerator/sse"
+	"[[.Config.LocalProjectPath]]/types"
+	"[[.Config.LocalProjectPath]]/utils"
+	"[[.Config.LocalProjectPath]]/webServer/auth"
+	"[[.Config.LocalProjectPath]]/sse"
+	[[if .IsBitrixIntegration -]]
+	"[[.Config.LocalProjectPath]]/bitrix"
+	[[- end]]
 	"net/http"
 )
 
@@ -48,7 +51,27 @@ func StartWebServer(config types.Config) {
 		// загрузка фото
 		apiRoute.POST("/upload_image", uploadImage)
 		apiRoute.POST("/upload_profile_image", uploadProfileImage)
+
+		[[if .IsBitrixIntegration -]]
+		// импорт данных из Битрикс
+		btxRoute := apiRoute.Group("/bitrix")
+		[[- range .Docs -]]
+			[[- if .IsBitrixIntegration]]
+		btxRoute.POST("/import_[[.Name]]", bitrix.Get[[ToCamel .Name]]History)
+			[[- end ]]
+		[[- end ]]
+		[[- end ]]
 	}
+
+	[[if .IsBitrixIntegration -]]
+	// отладочные методы для импорта данных из Битрикс
+	[[- range .Docs -]]
+	[[- if .IsBitrixIntegrationDebugMode]]
+	r.GET("/bitrix/import_[[.Name]]", bitrix.Get[[ToCamel .Name]]HistoryDebug)
+	[[- end ]]
+	[[- end ]]
+	[[- end ]]
+
 
 	// на ненайденный url отправляем статический файл для запуска vuejs приложения
 	r.NoRoute(func(c *gin.Context) {

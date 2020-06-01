@@ -5,6 +5,7 @@ import (
 	"github.com/tidwall/gjson"
 	"encoding/json"
 	"errors"
+	"strings"
 )
 
 func CallPgSelectToJson(queryStr string, res interface{}) (err error) {
@@ -30,7 +31,8 @@ func CallPgFunc(funcName string, jsonStr []byte, res interface{}, metaInfo inter
 	var queryStr string
 
 	if len(jsonStr) > 0 {
-		queryStr = fmt.Sprintf("select * from %s('%s')", funcName, jsonStr)
+		jsonStrMod := strings.Replace(string(jsonStr), "'", "''", -1)
+		queryStr = fmt.Sprintf("select * from %s('%s')", funcName, jsonStrMod)
 	} else {
 		queryStr = fmt.Sprintf("select * from %s()", funcName)
 	}

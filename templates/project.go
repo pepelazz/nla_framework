@@ -37,15 +37,20 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 		}
 	}
 
-	// в случае коннекта к Битрикс генерим файлы
-	if len(p.Config.Bitrix.ApiUrl) > 0 {
-		sourcePath := "../../../pepelazz/projectGenerator/templates/integrations/bitrix/bitrixMain.go"
-		t, err := template.New("bitrixMain.go").Funcs(funcMap).Delims("[[", "]]").ParseFiles(sourcePath)
-		utils.CheckErr(err, "bitrixMain.go")
-		distPath := fmt.Sprintf("%s/bitrix", p.DistPath)
-		err = ExecuteToFile(t, p, distPath, "main.go")
-		utils.CheckErr(err, fmt.Sprintf("'project' ExecuteToFile '%s'", "bitrix/main.go"))
+	projectTmplPath := "../../../pepelazz/projectGenerator/templates/project"
+	readTmplAndPrint(p, projectTmplPath + "/types/main.go", "/types",  "main.go")
+	readTmplAndPrint(p, projectTmplPath + "/types/config.go", "/types",  "config.go")
+	readTmplAndPrint(p, projectTmplPath + "/webServer/main.go", "/webServer",  "main.go")
 
+	// в случае коннекта к Битрикс генерим файлы
+	if p.IsBitrixIntegration() {
+		readTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/bitrix/bitrixMain.go", "/bitrix", "main.go")
+		//sourcePath := "../../../pepelazz/projectGenerator/templates/integrations/bitrix/bitrixMain.go"
+		//t, err := template.New("bitrixMain.go").Funcs(funcMap).Delims("[[", "]]").ParseFiles(sourcePath)
+		//utils.CheckErr(err, "bitrixMain.go")
+		//distPath := fmt.Sprintf("%s/bitrix", p.DistPath)
+		//err = ExecuteToFile(t, p, distPath, "main.go")
+		//utils.CheckErr(err, fmt.Sprintf("'project' ExecuteToFile '%s'", "bitrix/main.go"))
 	}
 }
 
@@ -53,5 +58,13 @@ func OtherTemplatesGenerate(p types.ProjectType)  {
 	tmplGenerateStep2.TasksTmpl(p)
 	// добавляем функции в plugin/utils.js
 	tmplGenerateStep2.PluginUtilsJs(p)
+}
+
+func readTmplAndPrint(p types.ProjectType, sourcePath, distPath, filename string) {
+	_, sourceFilename := utils.PathExtractFilename(sourcePath)
+	t, err := template.New(sourceFilename).Funcs(funcMap).Delims("[[", "]]").ParseFiles(sourcePath)
+	utils.CheckErr(err, "readFileWithDist")
+	err = ExecuteToFile(t, p, p.DistPath + distPath, filename)
+	utils.CheckErr(err, fmt.Sprintf("readTmplAndPrint ExecuteToFile '%s/%s'", distPath, filename))
 }
 

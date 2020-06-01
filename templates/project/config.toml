@@ -24,3 +24,12 @@ password = "{{.Config.Email.Password}}"
 host = "{{.Config.Email.Host}}"
 port = {{.Config.Email.Port}}
 senderName = "{{.Config.Email.SenderName}}"
+
+{{if .IsBitrixIntegration -}}
+[bitrix]
+apiUrl = "{{.Config.Bitrix.ApiUrl}}"
+userId = "{{.Config.Bitrix.UserId}}"
+webhookToken = "{{.Config.Bitrix.WebhookToken}}"
+{{- end}}
+
+

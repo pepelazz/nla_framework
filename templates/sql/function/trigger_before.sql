@@ -14,7 +14,11 @@ BEGIN
         -- заполняем options.title
         NEW.options = coalesce(OLD.options, '{}'::jsonb) || NEW.options || jsonb_build_object('title', jsonb_build_object({{.GetSearchTextJson}}));
         -- заполняем search_text
+        {{if .GetSearchTextString}}
         NEW.search_text = concat({{.GetSearchTextString}});
+        {{- else}}
+        NEW.search_text = '';
+        {{- end}}
         {{- end }}
 
         {{- range .Flds}}

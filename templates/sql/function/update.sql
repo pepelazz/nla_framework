@@ -17,16 +17,11 @@ DECLARE
     {{.Sql.Hooks.Print "update" "declareVars"}}
 BEGIN
 
-    -- проверика наличия id
-    checkMsg = check_required_params(params, ARRAY ['id']);
-    IF checkMsg IS NOT NULL
-    THEN
-        RETURN checkMsg;
-    END IF;
+    {{.PrintSqlFuncUpdateCheckParams}}
 
     {{.Sql.Hooks.Print "update" "beforeInsertUpdate"}}
 
-    if (params ->> 'id')::int = -1 then
+    {{.PrintSqlFuncUpdateCheckIsNew}}
         {{if .RequiredFldsString -}}
         -- проверика наличия обязательных параметров
         checkMsg = check_required_params(params, ARRAY [{{.RequiredFldsString}}]);
@@ -47,7 +42,7 @@ BEGIN
             ['deleted', 'deleted', 'bool']
             ]);
 
-        queryStr = concat('UPDATE {{.PgName}} SET ', updateValue, ' WHERE id=', params ->> 'id', ' RETURNING *;');
+        queryStr = {{.PrintSqlFuncUpdateQueryStr}};
 
         EXECUTE (queryStr)
             INTO {{.Name}}Row;

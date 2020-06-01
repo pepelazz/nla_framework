@@ -39,6 +39,7 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 			res[prefix+t.Name()] = t
 		}
 	}
+
 	// project
 	path := "../../../pepelazz/projectGenerator/templates/project/"
 	readFiles("project_", "{{", "}}", path+"config.toml", path+"main.go", path+"docker-compose.yml", path+"docker-compose.dev.yml", path+"restoreDump.sh", path+"deploy.ps1")
@@ -214,7 +215,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	switch fldType {
 	case types.FldTypeString, types.FldTypeText:
 		return fmt.Sprintf(`<q-input %s type='text' v-model="item.%s" label="%s" autogrow :readonly='%s' %s/>`, borderStyle, name, nameRu, readonly, params)
-	case types.FldTypeInt, types.FldTypeDouble:
+	case types.FldTypeInt, types.FldTypeInt64, types.FldTypeDouble:
 		return fmt.Sprintf(`<q-input %s type='number' v-model="item.%s" label="%s" :readonly='%s' %s/>`, borderStyle, name, nameRu, readonly, params)
 	// дата
 	case types.FldTypeDate:

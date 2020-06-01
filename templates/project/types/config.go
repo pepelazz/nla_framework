@@ -14,6 +14,10 @@ type Config struct {
 	Graylog GraylogConfig
 
 	Email EmailConfig
+
+	[[if .IsBitrixIntegration -]]
+	Bitrix BitrixConfig
+	[[- end]]
 }
 
 func ReadConfigFile(path string) (c *Config, err error) {
@@ -87,6 +91,19 @@ func ReadConfigFile(path string) (c *Config, err error) {
 			c.Email.SenderLogo = tree.Get("email.senderLogo").(string)
 		}
 	}
+	[[if .IsBitrixIntegration -]]
+	if tree.Has("bitrix") {
+		if tree.Has("bitrix.apiUrl") {
+			c.Bitrix.ApiUrl = tree.Get("bitrix.apiUrl").(string)
+		}
+		if tree.Has("bitrix.userId") {
+			c.Bitrix.UserId = tree.Get("bitrix.userId").(string)
+		}
+		if tree.Has("bitrix.webhookToken") {
+			c.Bitrix.WebhookToken = tree.Get("bitrix.webhookToken").(string)
+		}
+	}
+	[[- end]]
 
 	return
 }

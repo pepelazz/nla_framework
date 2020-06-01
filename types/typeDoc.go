@@ -120,7 +120,8 @@ type (
 
 	DocIntegrationsBitrix struct {
 		Name    string
-		UrlName string //часть имени запроса. Например crm.company.list.json
+		UrlName string // часть имени запроса. Например crm.company.list.json
+		IsDebugMode bool // показываем открытый get метод для тестирования импорта
 	}
 )
 
@@ -169,6 +170,14 @@ func (d DocType) PgName() string {
 
 func (d DocType) NameCamelCase() string {
 	return snaker.SnakeToCamel(d.Name)
+}
+
+func (d DocType) IsBitrixIntegration() bool {
+	return len(d.Integrations.Bitrix.UrlName) > 0
+}
+
+func (d DocType) IsBitrixIntegrationDebugMode() bool {
+	return d.Integrations.Bitrix.IsDebugMode
 }
 
 // sugar для добавление компоненты во vue

@@ -218,6 +218,11 @@ func (p *ProjectType) GenerateGrid() {
 	}
 }
 
+// признак что есть интеграция с Битрикс
+func (p ProjectType) IsBitrixIntegration() bool {
+	return len(p.Config.Bitrix.ApiUrl) > 0
+}
+
 // если не указан путь к локальному проекту, то вычисляем его автоматически
 func (p *ProjectType) FillLocalPath() string {
 	if len(p.Config.LocalProjectPath) == 0 {

@@ -26,3 +26,11 @@ type EmailConfig struct {
 	SenderName string //название отправителя
 	SenderLogo string
 }
+
+[[if .IsBitrixIntegration -]]
+type BitrixConfig struct {
+	ApiUrl       string
+	UserId       string
+	WebhookToken string
+}
+[[- end]]

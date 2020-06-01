@@ -106,6 +106,9 @@ func (fld *FldType) PrintPgModel() string {
 			typeStr = `type="text"`
 		}
 	}
+	if fld.Type == FldTypeInt64 {
+		typeStr = `type="int"`
+	}
 	if utils.CheckContainsSliceStr(fld.Type, FldTypeDate, FldTypeDatetime) {
 		typeStr = `type="timestamp"`
 	}
@@ -148,6 +151,8 @@ func (fld *FldType) PgInsertType() string {
 		return "text"
 	case FldTypeDate, FldTypeDatetime:
 		return "timestamp"
+	case FldTypeInt64:
+		return "int"
 	default:
 		return fld.Type
 	}
@@ -155,7 +160,7 @@ func (fld *FldType) PgInsertType() string {
 
 func (fld *FldType) PgUpdateType() string {
 	switch fld.Type {
-	case FldTypeInt, FldTypeDouble:
+	case FldTypeInt, FldTypeInt64, FldTypeDouble:
 		return "number"
 	case FldTypeString:
 		return "text"

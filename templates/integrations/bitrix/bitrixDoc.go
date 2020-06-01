@@ -1,17 +1,18 @@
 package bitrix
 
 import (
+	"[[LocalProjectPath]]/pg"
+	"[[LocalProjectPath]]/utils"
+	"encoding/json"
 	"errors"
 	"fmt"
-	"[[LocalProjectPath]]/utils"
 	"github.com/spf13/cast"
 	"time"
-	"encoding/json"
+	"github.com/gin-gonic/gin"
 )
 
 type (
 	[[DocNameCamel]]FromBtx struct {
-		ID                interface{}                             `json:"ID"`
 	[[- range .Flds]]
 	[[- if IsBtxFld .]]
 		[[ToCamel .Name]] 		[[GetBtxFldType .]]  		`json:"[[GetBtxFldName .]]"`
@@ -97,7 +98,7 @@ func getAll[[DocNameCamel]]HistoryAndSave(startId int) (nextId, lastId int, err 
 			fmt.Printf("ConvertFromBitrix err %s %s\n", err, v)
 			continue
 		}
-		lastId = cast.ToInt(v.ID)
+		lastId = cast.ToInt(v.BtxId)
 		if lastId == 0 {
 			fmt.Printf("cast.ToInt err %s %s\n", err, v)
 			continue
@@ -125,4 +126,36 @@ func (btxDoc *[[DocNameCamel]]FromBtx) ConvertFromBitrix() (res *[[DocNameCamel]
 	[[- end]]
 
 	return res, nil
+}
+
+func Get[[DocNameCamel]]HistoryDebug(c *gin.Context) {
+	utils.HttpSuccess(c, "ok")
+
+	var err error
+
+	go func() {
+		nextId := 0
+		lastProcessedId := 0
+		for {
+			lastId := 0
+			fmt.Printf("getAll[[DocNameCamel]]HistoryAndSave nextId: %v\n", nextId)
+			nextId, lastId, err = getAll[[DocNameCamel]]HistoryAndSave(nextId)
+			if err != nil {
+				fmt.Printf("getAll[[DocNameCamel]]HistoryAndSave err %s\n", err)
+				return
+			}
+
+			if nextId > 100 {
+				break
+			}
+
+			// прерываем процесс когда id'шники пошли на второй круг. Определяем это по тому что новый lastId меньше последнего обработанного id'шника
+			if lastProcessedId > 0 && lastId < lastProcessedId {
+				fmt.Printf("getAll[[DocNameCamel]]HistoryAndSave finished")
+				return
+			}
+			lastProcessedId = lastId
+			time.Sleep(100 * time.Millisecond)
+		}
+	}()
 }
