@@ -21,6 +21,12 @@ type (
 		UpdateFlds        []FldType              // поля, которые заполняются при смене стейта
 		CopyToHistoryFlds []FldType              // поля, значения которых копируются в историю изменений при смене статуса
 		Conditions        []DocSmActionCondition // условия выполнения экшена
+		Hooks DocSmActionlHooks
+	}
+
+	DocSmActionlHooks struct {
+		DeclareVars         []string
+		Before  			[]string
 	}
 
 	DocSmActionCondition struct {

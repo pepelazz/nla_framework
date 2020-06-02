@@ -80,6 +80,7 @@ type (
 
 	ProjectSql struct {
 		Methods map[string][]DocSqlMethod // имя документа и список методов. Например "task": []{"task_by_deal"}
+		InitialData []string // данные при первоначальной загрузке
 	}
 )
 

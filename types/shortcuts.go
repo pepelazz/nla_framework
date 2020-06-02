@@ -54,13 +54,23 @@ func GetFldString(name, nameRu string, size int, rowCol [][]int, params ...strin
 	return
 }
 
-// создание простого поля String
+// создание простого Date
 func GetFldDate(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
 	classStr := "col-4"
 	if len(params)>0 {
 		classStr= params[0]
 	}
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeDate, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}}}
+	return
+}
+
+// создание простого DateTime
+func GetFldDateTime(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
+	classStr := "col-4"
+	if len(params)>0 {
+		classStr= params[0]
+	}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeDatetime, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}}}
 	return
 }
 

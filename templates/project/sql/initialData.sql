@@ -1,0 +1,3 @@
+[[range .Sql.InitialData]]
+[[.]]
+[[end]]

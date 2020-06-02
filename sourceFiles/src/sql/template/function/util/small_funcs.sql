@@ -49,9 +49,31 @@ $function$
 DECLARE
 BEGIN
     return jsonb_set(options, string_to_array(fldName, ''), coalesce(options -> fldName, '[]'::jsonb) ||
-                                                            (jsonObj || jsonb_build_object('user_id', userId, 'date', now())));
+                                                            (jsonObj || jsonb_build_object('user_id', userId, 'date', now() at time zone '[[Config.Postgres.TimeZone]]')));
 END
 $function$;
+
+-- количество дней, которое надо прибавить чтобы получить следующий рабочий день
+DROP FUNCTION IF EXISTS next_business_day(timestamp);
+CREATE OR REPLACE FUNCTION next_business_day(timestamp)
+    RETURNS interval
+    LANGUAGE plpgsql
+AS
+$function$
+DECLARE
+    weekday integer;
+BEGIN
+    weekday := extract(dow from $1);
+    IF weekday = 0 THEN
+        return format('%s days', 2);
+    ELSIF weekday = 6 THEN
+        return format('%s days', 3);
+    ELSE
+        return format('%s days', 1);
+    END IF;
+END;
+$function$;
+
 
 
 

@@ -272,10 +272,10 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	case types.FldVueTypeTags:
 		if fld.Vue.Ext["onlyExistTags"] == "true" {
 			// вариант когда нельзя создавать новые тэги, только выбирать из существующих
-			return fmt.Sprintf("<q-select %s label='%s' v-model='item.%s' use-chips multiple @filter='%[2]sFilterFn' :options='%[2]sFilterOptions' :readonly='%s'/>", borderStyle, nameRu, name, readonly, params)
+			return fmt.Sprintf("<q-select %s label='%s' v-model='item.%s' use-chips multiple @filter='%[3]sFilterFn' :options='%[3]sFilterOptions' :readonly='%s'/>", borderStyle, nameRu, name, readonly, params)
 		} else {
 			// вариант когда можно создавать новые тэги
-			return fmt.Sprintf("<q-select %s label='%s' v-model='item.%s' use-input use-chips multiple input-debounce='0' @new-value='%[2]sCreateValue' @filter='%[2]sFilterFn' :options='%[2]sFilterOptions' :readonly='%s'/>", borderStyle, nameRu, name, readonly, params)
+			return fmt.Sprintf("<q-select %s label='%s' v-model='item.%s' use-input use-chips multiple input-debounce='0' @new-value='%[3]sCreateValue' @filter='%[3]sFilterFn' :options='%[3]sFilterOptions' :readonly='%s'/>", borderStyle, nameRu, name, readonly, params)
 		}
 	case types.FldVueTypeCheckbox:
 		return fmt.Sprintf("<q-checkbox label='%s' v-model='item.%s' :disabled='%s' :false-value='null' indeterminate-value='some' %s/>", nameRu, name, readonly, params)
