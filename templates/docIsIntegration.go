@@ -56,6 +56,8 @@ func docIsIntegrationBitrixProccess(p types.ProjectType, d *types.DocType) {
 				return fmt.Sprintf("res.%[1]s = cast.ToInt(btxDoc.%[1]s)", fName)
 			case types.FldTypeInt64:
 				return fmt.Sprintf("res.%[1]s = cast.ToInt64(btxDoc.%[1]s)", fName)
+			case types.FldTypeDouble:
+				return fmt.Sprintf("res.%[1]s = ToFloat64(btxDoc.%[1]s)", fName)
 			case types.FldTypeIntArray:
 				return fmt.Sprintf(`res.%[1]s = []int{}
 				intSlice%[1]s, err := cast.ToIntSliceE(btxDoc.%[1]s)
