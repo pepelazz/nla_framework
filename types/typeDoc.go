@@ -47,6 +47,7 @@ type (
 		Methods        map[string]map[string]string // название файла - название метода - текст функции
 		TmplFuncs      map[string]func(DocType) string
 		I18n           map[string]string
+		GloablI18n     map[string]map[string]string // для вынесение справочника в utils.js, чтобы потом можно было вызывать $util.i18n_<название функции>
 		Tabs           []VueTab
 	}
 

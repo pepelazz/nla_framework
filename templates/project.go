@@ -42,6 +42,7 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	readTmplAndPrint(p, projectTmplPath + "/types/config.go", "/types",  "config.go")
 	readTmplAndPrint(p, projectTmplPath + "/webServer/main.go", "/webServer",  "main.go")
 	readTmplAndPrint(p, projectTmplPath + "/sql/initialData.sql", "/sql/template/function/",  "initialData.sql")
+	readTmplAndPrint(p, projectTmplPath + "/jobs/main.go", "/jobs",  "main.go")
 
 	// в случае коннекта к Битрикс генерим файлы
 	if p.IsBitrixIntegration() {

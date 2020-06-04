@@ -9,9 +9,10 @@
 
       <template #listItem="{item}">
         <q-item-section avatar @click="$router.push(`${currentUrl}${item.id}`)">
-            <q-avatar rounded>
-              <img src="https://image.flaticon.com/icons/svg/1030/1030881.svg">
-            </q-avatar>
+          <q-avatar rounded>
+            <img v-if="item.options && item.options.iconUrl" :src="item.options.iconUrl">
+            <img v-else src="https://image.flaticon.com/icons/svg/1030/1030881.svg">
+          </q-avatar>
         </q-item-section>
         <q-item-section>
           <q-item-label lines="1">{{item.title}}</q-item-label>

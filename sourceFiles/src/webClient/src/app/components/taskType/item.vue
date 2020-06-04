@@ -20,6 +20,14 @@
                                 :readonly="fld.readonly ? fld.readonly() : false"
                     />
        </template>
+        <template v-if="fldRow.name == 'iconUrl'">
+          <div class="col-6">
+            <q-input outlined v-model="item.iconUrl" label="url иконки"/>
+          </div>
+          <div class="col-2">
+            <q-img :src="item.iconUrl" style="border: lightgrey 1px solid"/>
+          </div>
+        </template>
       </div>
 
       <!--  кнопки   -->
@@ -51,9 +59,10 @@
                         {name: 'title', type: 'string', label: 'Название'},
                         {name: 'table_name', type: 'select', selectOptions: () => this.selectOptions, label: 'К чему относится', readonly: () => this.item.id > 0},
                     ],
+                    {name: 'iconUrl', type: 'string', label: 'Иконка'},
                 ],
                 // список полей для редактирования из options
-                optionsFlds: [],
+                optionsFlds: ['iconUrl'],
             }
         },
         methods: {

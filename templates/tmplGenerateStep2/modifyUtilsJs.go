@@ -22,7 +22,7 @@ func PluginUtilsJs(p types.ProjectType)  {
 			return funcBodyes
 		},
 	}
-	path := "../../../pepelazz/projectGenerator/sourceFiles/src/webClient/src/app/plugins/utils.js"
+	path := "../../../pepelazz/projectGenerator/templates/project/webClient/app/plugins/utils.js"
 	t, err := template.New("utils.js").Funcs(funcMap).Delims("[[", "]]").ParseFiles(path)
 	utils.CheckErr(err, "OverriteCopiedFiles ParseFiles")
 
@@ -50,6 +50,23 @@ const %s = (v) => {
 }
 				`, funcBodyes, fNname, strings.Join(arr, ",\n\t\t"))
 			}
+		}
+		// в документе может быть прописан дополнительный глобальный справочник
+		for fNname, m := range d.Vue.GloablI18n {
+			// название функции
+			funcNames = fmt.Sprintf("%s%s,\n\t", funcNames, fNname)
+			arr := []string{}
+			for val, label := range m {
+				arr = append(arr, fmt.Sprintf("%s: '%s'", val, label))
+			}
+			funcBodyes = fmt.Sprintf(`%s
+const %s = (v) => {
+	const d = {
+		%s
+	}
+	return Array.isArray(v) ? v.map(v1 => d[v1]) : d[v]
+}
+				`, funcBodyes, fNname, strings.Join(arr, ",\n\t\t"))
 		}
 	}
 	return

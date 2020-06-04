@@ -19,6 +19,7 @@ type (
 		Config   ProjectConfig
 		Vue      ProjectVue
 		Sql      ProjectSql
+		Go 		 ProjectGo
 	}
 	ProjectConfig struct {
 		Logo             string
@@ -81,6 +82,9 @@ type (
 	ProjectSql struct {
 		Methods map[string][]DocSqlMethod // имя документа и список методов. Например "task": []{"task_by_deal"}
 		InitialData []string // данные при первоначальной загрузке
+	}
+	ProjectGo struct {
+		JobList []string // список job'ов
 	}
 )
 
@@ -222,6 +226,15 @@ func (p *ProjectType) GenerateGrid() {
 // признак что есть интеграция с Битрикс
 func (p ProjectType) IsBitrixIntegration() bool {
 	return len(p.Config.Bitrix.ApiUrl) > 0
+}
+
+// печать списка go jobs
+func (p ProjectType) PrintGoJobList() string {
+	res := ""
+	if len(p.Go.JobList) > 0 {
+		return strings.Join(p.Go.JobList, "\n")
+	}
+	return res
 }
 
 // если не указан путь к локальному проекту, то вычисляем его автоматически

@@ -74,6 +74,7 @@
                     if (res.ok) {
                       this.isShowDialog = false
                       this.task = {}
+                      this.$emit('updated')
                     }
                 })
             }

@@ -31,8 +31,9 @@ BEGIN
 
     EXECUTE (
        'with t1 as (select * from task as doc ' || condQueryStr || '),
-        t2 as (select t1.*, u.fullname as executor_fullname from t1 left join "user" u on u.id = t1.executor_id)
-        select array_to_json(array_agg(t2)) from t2')
+        t2 as (select t1.*, u.fullname as executor_fullname from t1 left join "user" u on u.id = t1.executor_id),
+        t3 as (select t2.*, tt.options as task_type_options from t2 left join task_type tt on t2.task_type_id = tt.id)
+        select array_to_json(array_agg(t3)) from t3')
         INTO result;
 
     RETURN json_build_object('ok', TRUE, 'result', coalesce(result, '[]'));
