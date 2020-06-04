@@ -10,6 +10,7 @@ DECLARE
   authToken text;
   taskExecutorFullname text;
   taskManagerFullname text;
+  taskTypeOptions jsonb;
 BEGIN
 
   IF (TG_OP = 'DELETE')
@@ -51,7 +52,8 @@ BEGIN
   THEN
       select fullname into taskExecutorFullname from "user" where id = r.executor_id;
       select fullname into taskManagerFullname from "user" where id = r.manager_id;
-      result = jsonb_set(result, '{flds}', result->'flds' || row_to_json(r)::jsonb || jsonb_build_object('id', r.id, 'tg_op', TG_OP, 'sse_type', 'task', 'executor_fullname', taskExecutorFullname, 'manager_fullname', taskManagerFullname));
+      select options into taskTypeOptions from task_type where id = r.task_type_id;
+      result = jsonb_set(result, '{flds}', result->'flds' || row_to_json(r)::jsonb || jsonb_build_object('id', r.id, 'tg_op', TG_OP, 'sse_type', 'task', 'executor_fullname', taskExecutorFullname, 'manager_fullname', taskManagerFullname, 'task_type_options', taskTypeOptions));
   END IF;
 
   IF char_length(hString :: TEXT) > 0 -- отправляем notification только если есть изменения

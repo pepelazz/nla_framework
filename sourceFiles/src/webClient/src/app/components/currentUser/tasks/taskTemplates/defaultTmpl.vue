@@ -23,7 +23,7 @@
           <q-btn size="12px" flat dense round icon="done" @click="$refs.doneTaskDialog.open(item)"/>
         </div>
       </q-item-section>
-      <comp-dialog-task-done ref="doneTaskDialog"/>
+      <comp-dialog-task-done ref="doneTaskDialog" @taskFinished="v=>$emit('taskFinished', v)"/>
     </q-item>
 </template>
 

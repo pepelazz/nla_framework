@@ -154,8 +154,15 @@ func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) 
 
 // поле с кастомной композицией
 func GetFldJsonbComposition(name, nameRu string, rowCol [][]int, classStr, compName string, params ...string) (fld FldType) {
+	isOptionsFld := ""
+	for _, v := range params {
+		// IsOptionFld передаем отдельным параемтром, потому что SetIsOptionFld() срабатывает уже после того как строка с компонентой сформмирована
+		if v == "IsOptionFld" {
+			isOptionsFld = "options."
+		}
+	}
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
-		return fmt.Sprintf("<%[1]s :fld='item.%[2]s' :item='item' @update='item.%[2]s = $event' label='%[3]s' %[4]s/>", compName, name, nameRu, strings.Join(params, " "))
+		return fmt.Sprintf("<%[1]s :fld='item.%[5]s%[2]s' :item='item' @update='item.%[5]s%[2]s = $event' label='%[3]s' %[4]s/>", compName, name, nameRu, strings.Join(params, " "), isOptionsFld)
 	}}}
 	return
 }
