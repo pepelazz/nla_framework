@@ -123,6 +123,11 @@ type (
 		Name    string
 		UrlName string // часть имени запроса. Например crm.company.list.json
 		IsDebugMode bool // показываем открытый get метод для тестирования импорта
+		Result struct {
+			StructDesc string // описание вложенной структуры для маппинга json
+			PathStr string // путь до массива с данными. Например, Result.Tasks
+		}
+		UrlQuery string
 	}
 )
 

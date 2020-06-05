@@ -6,6 +6,13 @@ import (
 	"[[.Config.LocalProjectPath]]/types"
 )
 
+type (
+	errResult struct {
+		JsonParams interface{} `json:"json_params"`
+		Message string `json:"message"`
+	}
+)
+
 var (
 	bitrixConfig     types.BitrixConfig
 )

@@ -224,6 +224,11 @@ func (fld FldType) SetIsNotUpdatable() FldType {
 	return fld
 }
 
+func (fld FldType) SetIsNotUniq() FldType {
+	fld.Sql.IsUniq = false
+	return fld
+}
+
 func (fld FldType) SetIsBorderless() FldType {
 	fld.Vue.IsBorderless = true
 	return fld
