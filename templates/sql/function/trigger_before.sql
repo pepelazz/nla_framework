@@ -8,6 +8,12 @@ DECLARE
 BEGIN
         {{.Sql.Hooks.Print "triggerBefore" "BeforeTriggerBefore"}}
 
+        {{- range .Flds}}
+        {{- if .Sql.FillValueInBeforeTrigger }}
+        NEW.{{.Name}} = {{.Sql.FillValueInBeforeTrigger}};
+        {{- end -}}
+        {{- end -}}
+
         {{if .Sql.IsSearchText}}
         {{- /* заполнение ref полей */ -}}
         {{.GetBeforeTriggerFillRefVars}}
@@ -21,11 +27,6 @@ BEGIN
         {{- end}}
         {{- end }}
 
-        {{- range .Flds}}
-        {{- if .Sql.FillValueInBeforeTrigger }}
-        NEW.{{.Name}} = {{.Sql.FillValueInBeforeTrigger}};
-        {{- end -}}
-        {{- end -}}
 
         {{if .IsRecursion}}
         if NEW.parent_id notnull then

@@ -1,15 +1,15 @@
 package bitrix
 
 import (
-	"[[LocalProjectPath]]/pg"
 	"[[LocalProjectPath]]/utils"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/spf13/cast"
-	"time"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
+	"encoding/json"
+	"github.com/cheburatino/tian_trade/src/pg"
+	"github.com/spf13/cast"
 )
 
 type (
@@ -49,7 +49,12 @@ func Get[[DocNameCamel]]History(c *gin.Context) {
 				fmt.Printf("getAll[[DocNameCamel]]HistoryAndSave err %s\n", err)
 				return
 			}
-
+			[[if .Integrations.Bitrix.IsNoPagination]]
+			fmt.Printf("getAll[[DocNameCamel]]HistoryAndSave finished")
+			saveResultMsgToPg(userId, "[[DocNameCamel]] импортированы из Битрикс")
+			fmt.Printf("lastProcessedId: %v lastId: %v %v\n", lastProcessedId, lastId, time.Second)
+			return
+			[[else]]
 			// прерываем процесс когда id'шники пошли на второй круг. Определяем это по тому что новый lastId меньше последнего обработанного id'шника
 			if lastProcessedId > 0 && lastId < lastProcessedId {
 				fmt.Printf("getAll[[DocNameCamel]]HistoryAndSave finished")
@@ -58,6 +63,7 @@ func Get[[DocNameCamel]]History(c *gin.Context) {
 			}
 			lastProcessedId = lastId
 			time.Sleep(100 * time.Millisecond)
+			[[end]]
 		}
 	}()
 }
@@ -86,7 +92,7 @@ func getAll[[DocNameCamel]]HistoryAndSave(startId int, errResultArr *[]errResult
 	}
 
 	//fmt.Printf("result length: %v\n", len(res.Result))
-	if len(res.[[if .Integrations.Bitrix.Result.PathStr -]] [[.Integrations.Bitrix.Result.PathStr]] [[- else -]]Result[[end]]) == 0 {
+	if [[.Integrations.Bitrix.PrintCheckResultIsEmpty]] {
 		return 0, 0, nil
 	} else {
 		nextId = startId + 50
@@ -161,6 +167,11 @@ func Get[[DocNameCamel]]HistoryDebug(c *gin.Context) {
 			break
 		}
 
+		[[if .Integrations.Bitrix.IsNoPagination]]
+		fmt.Printf("getAll[[DocNameCamel]]HistoryAndSave finished")
+		fmt.Printf("lastProcessedId: %v lastId: %v %v\n", lastProcessedId, lastId, time.Second)
+		break
+		[[else]]
 		// прерываем процесс когда id'шники пошли на второй круг. Определяем это по тому что новый lastId меньше последнего обработанного id'шника
 		if lastProcessedId > 0 && lastId < lastProcessedId {
 			fmt.Printf("getAll[[DocNameCamel]]HistoryAndSave finished")
@@ -168,6 +179,7 @@ func Get[[DocNameCamel]]HistoryDebug(c *gin.Context) {
 		}
 		lastProcessedId = lastId
 		time.Sleep(100 * time.Millisecond)
+		[[end]]
 	}
 	if err != nil {
 		utils.HttpError(c, http.StatusBadRequest, err.Error())

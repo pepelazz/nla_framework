@@ -128,6 +128,7 @@ type (
 			PathStr string // путь до массива с данными. Например, Result.Tasks
 		}
 		UrlQuery string
+		IsNoPagination bool // признак, что все данные получаются за один запрос
 	}
 )
 

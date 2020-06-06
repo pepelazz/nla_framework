@@ -215,6 +215,13 @@ func (p *ProjectType) FillSideMenu() {
 	}
 }
 
+func (p *ProjectType) AddVueRoute(urlName, compPath string) {
+	if p.Vue.Routes == nil {
+		p.Vue.Routes = [][]string{}
+	}
+	p.Vue.Routes = append(p.Vue.Routes, []string{urlName, compPath})
+}
+
 // генерим сетку для Vue
 func (p *ProjectType) GenerateGrid() {
 	for i, d := range p.Docs {
