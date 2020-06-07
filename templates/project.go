@@ -38,15 +38,17 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	}
 
 	projectTmplPath := "../../../pepelazz/projectGenerator/templates/project"
-	readTmplAndPrint(p, projectTmplPath + "/types/main.go", "/types",  "main.go")
-	readTmplAndPrint(p, projectTmplPath + "/types/config.go", "/types",  "config.go")
-	readTmplAndPrint(p, projectTmplPath + "/webServer/main.go", "/webServer",  "main.go")
-	readTmplAndPrint(p, projectTmplPath + "/sql/initialData.sql", "/sql/template/function/",  "initialData.sql")
-	readTmplAndPrint(p, projectTmplPath + "/jobs/main.go", "/jobs",  "main.go")
+	readTmplAndPrint(p, projectTmplPath + "/types/main.go", "/types",  "main.go", nil)
+	readTmplAndPrint(p, projectTmplPath + "/types/config.go", "/types",  "config.go", nil)
+	readTmplAndPrint(p, projectTmplPath + "/webServer/main.go", "/webServer",  "main.go", nil)
+	readTmplAndPrint(p, projectTmplPath + "/sql/initialData.sql", "/sql/template/function/",  "initialData.sql", nil)
+	readTmplAndPrint(p, projectTmplPath + "/sql/user_trigger_after.sql", "/sql/template/function/_User/",  "user_trigger_after.sql", template.FuncMap{"PrintUserAfterTriggerUpdateLinkedRecords": types.PrintUserAfterTriggerUpdateLinkedRecords})
+	readTmplAndPrint(p, projectTmplPath + "/jobs/main.go", "/jobs",  "main.go", nil)
+	readTmplAndPrint(p, projectTmplPath + "/webClient/app/components/users/roles.js", "/webClient/src/app/components/users",  "roles.js", nil)
 
 	// в случае коннекта к Битрикс генерим файлы
 	if p.IsBitrixIntegration() {
-		readTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/bitrix/bitrixMain.go", "/bitrix", "main.go")
+		readTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/bitrix/bitrixMain.go", "/bitrix", "main.go", nil)
 		//sourcePath := "../../../pepelazz/projectGenerator/templates/integrations/bitrix/bitrixMain.go"
 		//t, err := template.New("bitrixMain.go").Funcs(funcMap).Delims("[[", "]]").ParseFiles(sourcePath)
 		//utils.CheckErr(err, "bitrixMain.go")
@@ -62,9 +64,16 @@ func OtherTemplatesGenerate(p types.ProjectType)  {
 	tmplGenerateStep2.PluginUtilsJs(p)
 }
 
-func readTmplAndPrint(p types.ProjectType, sourcePath, distPath, filename string) {
+func readTmplAndPrint(p types.ProjectType, sourcePath, distPath, filename string, addFuncMap template.FuncMap) {
+	fMap := template.FuncMap{}
+	for k, v := range funcMap {
+		fMap[k] = v
+	}
+	for k, v := range addFuncMap {
+		fMap[k] = v
+	}
 	_, sourceFilename := utils.PathExtractFilename(sourcePath)
-	t, err := template.New(sourceFilename).Funcs(funcMap).Delims("[[", "]]").ParseFiles(sourcePath)
+	t, err := template.New(sourceFilename).Funcs(fMap).Delims("[[", "]]").ParseFiles(sourcePath)
 	utils.CheckErr(err, "readFileWithDist")
 	err = ExecuteToFile(t, p, p.DistPath + distPath, filename)
 	utils.CheckErr(err, fmt.Sprintf("readTmplAndPrint ExecuteToFile '%s/%s'", distPath, filename))

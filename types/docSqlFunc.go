@@ -497,6 +497,28 @@ func (d DocType) PrintAfterTriggerUpdateLinkedRecords() string {
 	return res
 }
 
+func PrintUserAfterTriggerUpdateLinkedRecords() string {
+	res := ""
+	// ищем таблицы, которые ссылаются на user и если такие есть, то прописываем триггер, чтобы при обновлении записи, обновляем связанные записи чтобы обновились ссылки
+	linkedDocs := [][]string{}
+	for _, doc := range project.Docs {
+		for _, f := range doc.Flds {
+			if f.Sql.Ref == "user" {
+				linkedDocs = append(linkedDocs, []string{doc.Name, f.Name})
+			}
+		}
+	}
+	if len(linkedDocs) > 0 {
+		res1:= "IF (TG_OP = 'UPDATE') THEN\n-- при смене имени и аватарки обновляем все ссылающиеся записи, чтобы там переписалось новое название\nif new.fullname != old.fullname OR new.avatar != old.avatar then\n"
+		for _, arr := range linkedDocs {
+			res1 = fmt.Sprintf("%s for r in select * from %s where %s = new.id loop\n update %s set updated_at=now() where id = r.id;\n end loop;\n", res1, arr[0], arr[1], arr[0])
+		}
+		res1 = fmt.Sprintf("%s\n end if;\n end if;", res1)
+		res = fmt.Sprintf("%s\n%s", res, res1)
+	}
+	return res
+}
+
 // печать sql hook'ов
 func (d DocSqlHooks) Print(tmplName, hookName string) string {
 	switch hookName {

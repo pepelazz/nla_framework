@@ -1,5 +1,7 @@
 export default [
   {label: 'сотрудник', value: 'student'},
   {label: 'админ', value: 'admin'},
-  // for codeGenerate #roles_slot
+  [[- range .Roles]]
+  {label: '[[.NameRu]]', value: '[[.Name]]'},
+  [[- end]]
 ]

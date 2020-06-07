@@ -20,6 +20,7 @@ type (
 		Vue      ProjectVue
 		Sql      ProjectSql
 		Go 		 ProjectGo
+		Roles    []ProjectRole // список ролей в проекте
 	}
 	ProjectConfig struct {
 		Logo             string
@@ -85,6 +86,10 @@ type (
 	}
 	ProjectGo struct {
 		JobList []string // список job'ов
+	}
+	ProjectRole struct {
+		Name string
+		NameRu string
 	}
 )
 
