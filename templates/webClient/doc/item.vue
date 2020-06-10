@@ -45,7 +45,7 @@
         mixins: [ [[- .Vue.PrintMixins "docItem" -]] ],
         computed: {
             docUrl: function() {
-              return [[if not .IsRecursion -]]'/[[.Vue.RouteName]]'[[else -]] this.parent_id ? `/[[.Vue.RouteName]]/${this.parent_id}` : ' /[[.Vue.RouteName]]' [[- end]]
+              return [[if not .IsRecursion -]]'/[[.Vue.RouteName]]'[[else -]] this.parent_id ? `/[[.Vue.RouteName]]/${this.parent_id}` : '/[[.Vue.RouteName]]' [[- end]]
             },
         },
         data() {

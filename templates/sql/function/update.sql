@@ -55,9 +55,7 @@ BEGIN
 
     end if;
 
-    result = row_to_json({{.Name}}Row) :: JSONB;
-
-    RETURN json_build_object('ok', TRUE, 'result', result);
+    RETURN {{.PgName}}_get_by_id(jsonb_build_object('id', {{.Name}}Row.id));
 
 END
 

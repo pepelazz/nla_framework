@@ -236,6 +236,7 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 	var tableIdFldName, tableDependName, tableDependFldName, tableDependRoute, label, avatarSrc string
 	tableIdName := d.Name
 	linkTableName := tableName
+	hideCreateNew := false
 	// находим документы, на которые идет ссылка
 	for _, doc := range p.Docs {
 		if doc.Name == tableName {
@@ -268,8 +269,14 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 			}
 		}
 	}
+	if opts != nil {
+		// убираем кнопку 'создать'
+		if v, ok := opts["hideCreateNew"]; ok {
+			hideCreateNew = cast.ToBool(v)
+		}
+	}
 
-	return fmt.Sprintf("<comp-link-list-widget label='%s' :id='id' tableIdName='%s' tableIdFldName='%s' tableDependName='%s' tableDependFldName='%s' tableDependRoute='/%s' linkTableName='%s' avatarSrc='%s'/>", label, tableIdName, tableIdFldName, tableDependName, tableDependFldName, tableDependRoute, linkTableName, avatarSrc)
+	return fmt.Sprintf("<comp-link-list-widget label='%s' :id='id' tableIdName='%s' tableIdFldName='%s' tableDependName='%s' tableDependFldName='%s' tableDependRoute='/%s' linkTableName='%s' avatarSrc='%s' :hideCreateNew='%v'/>", label, tableIdName, tableIdFldName, tableDependName, tableDependFldName, tableDependRoute, linkTableName, avatarSrc, hideCreateNew)
 }
 
 // заголовки табов

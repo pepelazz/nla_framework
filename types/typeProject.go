@@ -249,6 +249,28 @@ func (p ProjectType) PrintGoJobList() string {
 	return res
 }
 
+// печать списка go jobs
+func (p ProjectType) PrintJsRoles() string {
+	res := "{label: 'админ', value: 'admin'},\n"
+	isOverrideStudent := false
+	for _, r := range p.Roles {
+		if r.Name == "student" {
+			isOverrideStudent = true
+			res = res + fmt.Sprintf("\t\t{label: '%s', value: '%s'},\n", r.NameRu, r.Name)
+		}
+	}
+	// отдельно рассматриваем возможность переопределения дефолтной роли student
+	if !isOverrideStudent {
+		res = res + fmt.Sprintf("\t\t{label: 'сотрудник', value: 'student'},\n")
+	}
+	for _, r := range p.Roles {
+		if r.Name != "student" {
+			res = res + fmt.Sprintf("\t\t{label: '%s', value: '%s'},\n", r.NameRu, r.Name)
+		}
+	}
+	return res
+}
+
 // если не указан путь к локальному проекту, то вычисляем его автоматически
 func (p *ProjectType) FillLocalPath() string {
 	if len(p.Config.LocalProjectPath) == 0 {

@@ -10,7 +10,7 @@
 
     <q-list bordered separator v-if="isShowList">
       <q-item v-for="item in list" :key="item.id">
-        <q-item-section avatar @click="$router.push(`${tableDependRoute}/${item[tableDependName+'_id']}`)">
+        <q-item-section avatar @click="$router.push(`${tableDependRoute}/${item[tableDependFldName]}`)">
           <q-avatar rounded>
             <comp-stat-img-src :src="avatar(item)"/>
           </q-avatar>
@@ -40,7 +40,7 @@
         <q-card-actions align="right">
           <q-btn flat label="Отмена" v-close-popup/>
           <q-btn flat label="Добавить" v-close-popup @click="add"/>
-          <q-btn flat label="Создать" v-close-popup @click="$router.push(`${tableDependRoute}/new`)" class="q-ml-md"/>
+          <q-btn v-if="!hideCreateNew" flat label="Создать" v-close-popup @click="$router.push(`${tableDependRoute}/new`)" class="q-ml-md"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -65,7 +65,7 @@
 
 <script>
     export default {
-        props: ['id', 'tableIdName', 'tableIdFldName', 'tableDependName', 'tableDependFldName', 'tableDependRoute', 'linkTableName', 'label', 'avatarSrc'],
+        props: ['id', 'tableIdName', 'tableIdFldName', 'tableDependName', 'tableDependFldName', 'tableDependRoute', 'linkTableName', 'label', 'avatarSrc', 'hideCreateNew'],
         computed: {
             tableDependFldTitle() {
                 return this.tableDependFldName.split('_id')[0] + '_title'

@@ -187,8 +187,14 @@ func (d DocType) PrintSqlFuncGetById() (res string) {
 func (d DocType) PrintSqlFuncListWhereCond() string  {
 	arr := []string{"['ilike', 'search_text', 'search_text']"}
 	for _, fld := range d.Flds {
+		if fld.Name == "title" {
+			continue
+		}
 		if len(fld.Sql.Ref)>0 {
 			arr = append(arr, fmt.Sprintf("\t\t['notQuoted', '%[1]s', 'doc.%[1]s']", fld.Name))
+		}
+		if fld.Sql.IsSearch {
+			arr = append(arr, fmt.Sprintf("\t\t['text', '%[1]s', 'doc.%[1]s']", fld.Name))
 		}
 	}
 	return strings.Join(arr, ",\n")
@@ -332,6 +338,10 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 			paramStr = fmt.Sprintf("\t\t\tint_array_from_json(params %s '%s')", arrow, f.Name)
 			//int_array_from_json(params -> 'role')
 		}
+		// в случае наличия дефолтного значения делаем конструкцию coalesce
+		if len(f.Sql.Default)>0 {
+			paramStr = fmt.Sprintf("\t\t\tcoalesce((params %s '%s')::%s, %s)::%s", arrow, f.Name, f.PgInsertType(), f.Sql.Default, f.PgInsertType())
+		}
 		arr3 = append(arr3, paramStr)
 		// options добавляем последним, поэтому optionsFldIndex увеличиваем на единицу с каждым новым полем, которое будем добавлять
 		optionsFldIndex = cnt+1
@@ -391,7 +401,7 @@ func (d DocType) GetSearchTextJson() string  {
 				arr = append(arr, fmt.Sprintf("'%s_title', %sTitle", fldName, snaker.SnakeToCamelLower(fldName)))
 				// в случае ссылки на user еще добавляем avatar, чтобы потом использовать это на ui
 				if fld.Sql.Ref == "user" {
-					arr = append(arr,  fmt.Sprintf("'%[1]s_avatar', %[1]sAvatar", fldName))
+					arr = append(arr,  fmt.Sprintf("'%[1]s_avatar', %[1]sAvatar", snaker.SnakeToCamelLower(fldName)))
 				}
 			}
 		}

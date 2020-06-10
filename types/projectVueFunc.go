@@ -1,6 +1,8 @@
 package types
 
-import "log"
+import (
+	"log"
+)
 
 // прописываем стандартные routes
 func (p *ProjectType) FillVueBaseRoutes() {
@@ -8,14 +10,14 @@ func (p *ProjectType) FillVueBaseRoutes() {
 		p.Vue.Routes = [][]string{}
 	}
 	for _, d := range p.Docs {
-		if len(d.Vue.RouteName) == 0 {
-			continue
-		}
 		// если указаны роуты, то не формируем автоматически, а только добавляем те которые указаны
 		if len(d.Vue.Routes) > 0 {
 			for _, r := range d.Vue.Routes {
 				p.Vue.Routes = append(p.Vue.Routes, r)
 			}
+			continue
+		}
+		if len(d.Vue.RouteName) == 0 {
 			continue
 		}
 		// индексы для возможных дублей роутов. Если найдутся такие же, то перезаписываем
