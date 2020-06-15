@@ -33,6 +33,10 @@
       <!--  при открытии в диалоге кнопку Отмена не показываем   -->
       <q-btn v-else color="secondary" label="сохранить" class="q-mr-sm" @click="save"/>
 
+        [[range .Vue.Hooks.ItemHtml]]
+            [[.]]
+        [[- end]]
+
     </div>
   </q-page>
 </template>
@@ -69,6 +73,7 @@
                 return res
             },
             save() {
+                [[.PrintVueItemHookBeforeSave]]
                 this.$utils.saveItem.call(this, {
                     method: '[[.PgName]]_update',
                     itemForSaveMod: {[[.PrintVueItemForSave]]},

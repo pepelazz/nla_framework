@@ -31,6 +31,10 @@
             <!--  при открытии в диалоге кнопку Отмена не показываем   -->
             <q-btn v-else color="secondary" label="сохранить" class="q-mr-sm" @click="save"/>
 
+            [[range .Vue.Hooks.ItemHtml]]
+            [[.]]
+            [[- end]]
+
         </div>
     </div>
 </template>

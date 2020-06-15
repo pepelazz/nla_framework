@@ -143,6 +143,14 @@ func (d DocType) PrintVueMethods(tmplName string) string  {
 	return res
 }
 
+func (d DocType) PrintVueItemHookBeforeSave() string  {
+	res := ""
+	for _, v := range d.Vue.Hooks.ItemBeforeSave {
+		res = res + fmt.Sprintf("%s\n", v)
+	}
+	return res
+}
+
 func (d DocType) PrintVueItemForSave() string {
 	res := ""
 	for _, fld := range d.Flds {
@@ -153,14 +161,20 @@ func (d DocType) PrintVueItemForSave() string {
 			res = fmt.Sprintf("%s%[2]s: this.item.%[2]s ? this.item.%[2]s.map(({value}) => value).filter(v => v)  : [],\n", res, fld.Name)
 		}
 	}
+	for _, v := range d.Vue.Hooks.ItemForSave {
+		res = fmt.Sprintf("%s%s,\n", res, v)
+	}
 	if d.IsRecursion {
-		res = fmt.Sprintf("%sparent_id: this.parent_id ? +this.parent_id : null,", res)
+		res = fmt.Sprintf("%sparent_id: this.parent_id ? +this.parent_id : null,\n", res)
 	}
 	return res
 }
 
 func (d DocType) PrintVueItemResultModify() string {
 	res := ""
+	for _, v := range d.Vue.Hooks.ItemModifyResult {
+		res = res + fmt.Sprintf("%s\n", v)
+	}
 	for _, fld := range d.Flds {
 		// single select - преобразуем v -> {label: label, value: v}
 		if fld.Vue.Type == FldVueTypeSelect {
@@ -190,7 +204,7 @@ func (d DocType) PrintVueItemResultModify() string {
 	}
 	// в случае рекурсии добавляем вычисление форматирование parentProductBreadcrumb
 	if d.IsRecursion {
-		str := fmt.Sprintf("if (res.parent_title) this.parentProductBreadcrumb = [{label: res.parent_title, to: `/%s/${res.parent_id}`, docType: '%s'}]", d.Vue.RouteName, d.Name)
+		str := fmt.Sprintf("if (res.parent_title) this.parentProductBreadcrumb = [{label: res.parent_title, to: `${res.parent_id}`, docType: '%s'}]", d.Name)
 		res = fmt.Sprintf("%s\n%s", res, str)
 	}
 	return res

@@ -2,15 +2,18 @@ package webServer
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
+	"[[.Config.LocalProjectPath]]/sse"
 	"[[.Config.LocalProjectPath]]/types"
 	"[[.Config.LocalProjectPath]]/utils"
 	"[[.Config.LocalProjectPath]]/webServer/auth"
-	"[[.Config.LocalProjectPath]]/sse"
-	[[if .IsBitrixIntegration -]]
+	"github.com/gin-gonic/gin"
+[[if .IsBitrixIntegration -]]
 	"[[.Config.LocalProjectPath]]/bitrix"
 	[[- end]]
 	"net/http"
+	[[- range .Go.Routes.Imports]]
+		"[[.]]"
+	[[- end]]
 )
 
 func StartWebServer(config types.Config) {
@@ -62,6 +65,10 @@ func StartWebServer(config types.Config) {
 		[[- end ]]
 		[[- end ]]
 	}
+
+	[[- range .Go.Routes.NotAuth]]
+	[[.]]
+	[[- end]]
 
 	[[if .IsBitrixIntegration -]]
 	// отладочные методы для импорта данных из Битрикс

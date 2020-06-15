@@ -2,7 +2,7 @@
     <q-item>
       <q-item-section avatar top @click="$router.push(`/task/${item.id}`)">
         <template v-if="item && item.task_type_options && item.task_type_options.iconUrl">
-          <q-avatar>
+          <q-avatar rounded>
             <q-img :src="item.task_type_options.iconUrl"/>
           </q-avatar>
         </template>

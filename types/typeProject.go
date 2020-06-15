@@ -86,10 +86,15 @@ type (
 	}
 	ProjectGo struct {
 		JobList []string // список job'ов
+		Routes ProjectGoRoutes
 	}
 	ProjectRole struct {
 		Name string
 		NameRu string
+	}
+	ProjectGoRoutes struct {
+		Imports []string
+		NotAuth []string // роуты вне блока, требующего авторизации
 	}
 )
 

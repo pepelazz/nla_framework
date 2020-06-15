@@ -1,36 +1,16 @@
 <template>
-    <div  v-if="id != 'new'">
-        <div class="row q-col-gutter-md q-mb-sm">
-            <div class="col">
-                <q-btn icon="add" round flat @click="$refs.addTaskDialog.open()">
-                    <q-tooltip>Добавить задачу</q-tooltip>
-                </q-btn>
-            </div>
-        </div>
-        <!--  поля формы    -->
-        <div class="row q-col-gutter-md q-mb-sm">
-            <div class="col-md-6">
-                <q-list bordered separator>
-                    <q-item v-for="item in list" :key="item.id">
-                        <q-item-section avatar top @click="$router.push(`/task/${item.id}`)">
-                            <q-avatar v-if="item.isDeadlinePass" rounded icon="warning" color="orange" text-color="white"/>
-                            <q-avatar v-else icon="error_outline" rounded color="info" text-color="white"/>
-                        </q-item-section>
-                        <q-item-section>
-                            <q-item-label>{{item.task_type_title}}</q-item-label>
-                            <q-item-label caption>Исполнитель: {{item.executor_fullname}}</q-item-label>
-                            <q-item-label caption>Deadline: <strong>{{$utils.formatPgDateTime(item.deadline)}}</strong></q-item-label>
-                        </q-item-section>
-                        <q-item-section side>
-                            <div class="text-grey-8 q-gutter-xs">
-                                <q-btn class="gt-xs" size="12px" flat outline round icon="check" @click="$refs.doneTaskDialog.open(item)"/>
-                                <!--                  <q-btn class="gt-xs" size="12px" flat dense round icon="edit" @click="$router.push(`/task/${item.id}`)"/>-->
-                            </div>
-                        </q-item-section>
-                    </q-item>
-                </q-list>
-                <!--          <pre>{{list}}</pre>-->
-            </div>
+    <div  v-if="id != 'new'" class="row q-col-gutter-md q-mb-sm">
+        <div class="col-6">
+            <q-bar class="bg-secondary text-white shadow-2">
+                <div>Задачи</div>
+                <q-space />
+                <q-btn dense flat round icon="fas fa-check-circle" v-if="selectedState === 'all'" @click="changeState('in_process')"/>
+                <q-btn dense flat round icon="far fa-check-circle" v-if="selectedState === 'in_process'" @click="changeState('all')"/>
+                <q-btn dense flat icon="add" @click="$refs.addTaskDialog.open()"/>
+            </q-bar>
+            <q-list separator bordered>
+                <component v-for="item in listForRender" :key="item.id" :is="item.template" :item="item" @taskFinished="reload"></component>
+            </q-list>
         </div>
         <comp-dialog-task-done ref="doneTaskDialog" @taskFinished="v=>$emit('taskFinished', v)"/>
         <comp-dialog-task-add ref="addTaskDialog" :table_id="id" table_name="[[.Name]]"/>
@@ -38,17 +18,49 @@
 </template>
 
 <script>
+    import defaultTmpl from '../../../currentUser/tasks/taskTemplates/defaultTmpl'
     export default {
-        props: ['id', 'list'],
+        props: ['id'],
+        components: {defaultTmpl},
         computed: {
             docUrl: () => '/[[.Vue.RouteName]]',
+            listForRender: function () {
+                return this.list.filter(v => this.selectedState === 'all' ? true : v.state === this.selectedState).map(v => {
+                    v.template = v.options && v.options.template ? v.options.template : 'defaultTmpl'
+                    return v
+                })
+            },
         },
         data() {
             return {
+                list: [],
                 tab: 'tasks',
+                selectedState: 'in_process',
+                tableName: '[[.Name]]',
             }
         },
         methods: {
+            changeState(state) {
+                this.selectedState = state
+            },
+            reload() {
+                this.$utils.postCallPgMethod({method: 'task_list_by_[[.Name]]', params: {[[.Name]]_id: this.id}}).subscribe(res => {
+                    if (res.ok) {
+                        this.list = res.result.map(v => {
+                            if (new Date(v.deadline) < new Date()) {
+                                v.isDeadlinePass = true
+                            }
+                            return v
+                        })
+                    }
+                })
+            },
+            formatDate(d) {
+                return this.$utils.formatPgDate(d)
+            },
         },
+        mounted() {
+            this.reload()
+        }
     }
 </script>

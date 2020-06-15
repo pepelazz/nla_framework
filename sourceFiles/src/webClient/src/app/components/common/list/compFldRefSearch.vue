@@ -10,6 +10,7 @@
     :options='options'
     @filter="filterFn"
     :readonly="readonly"
+    :dense="dense"
   >
 
     <!-- аватарка со ссылкой   -->
@@ -56,6 +57,10 @@
                 type: Object
             },
             readonly: {
+                type: Boolean,
+                default: false
+            },
+            dense: {
                 type: Boolean,
                 default: false
             },

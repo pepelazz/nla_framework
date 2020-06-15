@@ -49,6 +49,7 @@ type (
 		I18n           map[string]string
 		GloablI18n     map[string]map[string]string // для вынесение справочника в utils.js, чтобы потом можно было вызывать $util.i18n_<название функции>
 		Tabs           []VueTab
+		Hooks          DocVueHooks // куски vue кода
 	}
 
 	VueTab struct {
@@ -129,6 +130,13 @@ type (
 		}
 		UrlQuery string
 		IsNoPagination bool // признак, что все данные получаются за один запрос
+	}
+
+	DocVueHooks struct {
+		ItemModifyResult []string
+		ItemBeforeSave []string
+		ItemForSave []string
+		ItemHtml []string
 	}
 )
 
