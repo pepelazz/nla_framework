@@ -1,0 +1,29 @@
+docType = "ChatMessage"
+tableComment = "Сообщение чата"
+
+tableName ="chat_message"
+
+fields = [
+   {name="id",              type="serial" },
+   {name="chat_id",         type="int",    ext="not null", comment="чат"},
+   {name="user_id",         type="int",                 comment="отправитель"},
+   {name="title",           type="text",                comment="текст сообщения"},
+   {name="options",         type="jsonb",               comment="Разные дополнительные параметры" },
+   {name="created_at",      type="timestamp",           ext="with time zone" },
+   {name="updated_at",      type="timestamp",           ext="with time zone" },
+   {name="deleted",         type="bool",                ext="not null default false" },
+   
+]
+
+fkConstraints = [
+  {fld="chat_id", ref="chat", fk="id"},
+  {fld="user_id", ref="\"user\"", fk="id"},
+]
+
+triggers = [
+    {name="chat_message_created", when="before insert or update", ref="for each row", funcName="builtin_fld_update"},
+]
+
+methods = [
+    "chat_message_update",
+]

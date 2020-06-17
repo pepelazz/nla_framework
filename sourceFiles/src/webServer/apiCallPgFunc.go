@@ -50,6 +50,10 @@ var (
 		PgMethod{"task_action_to_finished", []string{}, nil, BeforeHookAddUserId},
 		PgMethod{"task_type_update", []string{"admin"}, nil, BeforeHookAddUserId},
 		PgMethod{"task_type_get_by_id", []string{}, nil, BeforeHookAddUserId},
+		PgMethod{"chat_update", []string{}, nil, BeforeHookAddUserId},
+		PgMethod{"chat_get_by_id", []string{}, nil, BeforeHookAddUserId},
+		PgMethod{"chat_for_table_id", []string{}, nil, BeforeHookAddUserId},
+		PgMethod{"chat_message_update", []string{}, nil, BeforeHookAddUserId},
 
 		// for codeGenerate ##pgFuncList_slot1
 	}

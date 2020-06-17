@@ -24,6 +24,7 @@ import compLinkListWidget from './list/compLinkListWidget'
 import statImgSrc from './utils/statImgSrc'
 import compDialogTaskAdd from './task/compDialogTaskAdd'
 import compDialogTaskDone from './task/compDialogTaskDone'
+import compChat from './chat/chat'
 
 export default (Vue) => {
   Vue.component('comp-doc-list', compDocList)
@@ -52,4 +53,5 @@ export default (Vue) => {
   Vue.component('comp-stat-img-src', statImgSrc)
   Vue.component('comp-dialog-task-add', compDialogTaskAdd)
   Vue.component('comp-dialog-task-done', compDialogTaskDone)
+  Vue.component('comp-chat', compChat)
 }
