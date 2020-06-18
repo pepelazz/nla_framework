@@ -34,12 +34,12 @@ const (
 
 type (
 	FldType struct {
-		Name   string
-		NameRu string
-		Type   string
-		Vue    FldVue
-		Sql    FldSql
-		Doc    *DocType // ссылка на сам документ, к которому принадлежит поле
+		Name            string
+		NameRu          string
+		Type            string
+		Vue             FldVue
+		Sql             FldSql
+		Doc             *DocType               // ссылка на сам документ, к которому принадлежит поле
 		IntegrationData map[string]interface{} // информация по интеграции с разными системами
 	}
 
@@ -63,6 +63,7 @@ type (
 		IsSearch                 bool
 		IsRequired               bool
 		Ref                      string
+		RefFldsForOptions        []string // дополнительные поля из ref таблицы, которые прописываются в options
 		IsUniq                   bool
 		Size                     int
 		IsOptionFld              bool // признак что поле пишется не в отдельную колонку таблицы, а в json поле options
@@ -90,10 +91,9 @@ type (
 		Accept      string
 		MaxFileSize int64
 		Crop        string // например, 300x400. Обрезает под данное соотношение и размер
-		Width       int // обрезает максимальная ширина фото
-		CanAddUrls  bool // возможность добавлять ссылки на фото, а не только загружать
+		Width       int    // обрезает максимальная ширина фото
+		CanAddUrls  bool   // возможность добавлять ссылки на фото, а не только загружать
 	}
-
 )
 
 func (fld *FldType) PrintPgModel() string {
@@ -203,6 +203,11 @@ func (fld FldType) SetRowCol(n ...int) FldType {
 func (fld FldType) SetIsRequired() FldType {
 	fld.Sql.IsRequired = true
 	fld.Vue.IsRequired = true
+	return fld
+}
+
+func (fld FldType) AddRefFldsForOptions(p ...string) FldType {
+	fld.Sql.RefFldsForOptions = p
 	return fld
 }
 

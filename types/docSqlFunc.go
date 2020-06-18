@@ -403,6 +403,9 @@ func (d DocType) GetSearchTextJson() string  {
 				if fld.Sql.Ref == "user" {
 					arr = append(arr,  fmt.Sprintf("'%[1]s_avatar', %[1]sAvatar", snaker.SnakeToCamelLower(fldName)))
 				}
+				for _, v := range fld.Sql.RefFldsForOptions {
+					arr = append(arr, fmt.Sprintf("'%s_%s', %s%s", fldName, v, snaker.SnakeToCamelLower(fldName), utils.UpperCaseFirst(v)))
+				}
 			}
 		}
 	}
@@ -422,6 +425,9 @@ func (d DocType) GetBeforeTriggerDeclareVars() string  {
 			if fld.Sql.Ref == "user" {
 				res = fmt.Sprintf("%s\n	%sAvatar TEXT;", res, varPrefix)
 			}
+			for _, v := range fld.Sql.RefFldsForOptions {
+				res = fmt.Sprintf("%s\n	%s%s TEXT;", res, varPrefix, utils.UpperCaseFirst(v))
+			}
 		}
 	}
 	return res
@@ -440,7 +446,15 @@ func (d DocType) GetBeforeTriggerFillRefVars() string {
 				// в случае user добавляем еще поле avatar
 				res = fmt.Sprintf("%s\n		select title, avatar into %[2]sTitle, %[2]sAvatar from %s where id = new.%s;", res, varPrefix, refName, fld.Name)
 			} else {
-				res = fmt.Sprintf("%s\n		select title into %sTitle from %s where id = new.%s;", res, varPrefix, refName, fld.Name)
+				fldsArr1 := []string{"title"}
+				fldsArr2 := []string{varPrefix + "Title"}
+				for _, v := range fld.Sql.RefFldsForOptions {
+					fldsArr1 = append(fldsArr1, v)
+					fldsArr2 = append(fldsArr2, varPrefix + utils.UpperCaseFirst(v))
+				}
+				str1 := strings.Join(fldsArr1, ", ")
+				str2 := strings.Join(fldsArr2, ", ")
+				res = fmt.Sprintf("%s\n		select %s into %s from %s where id = new.%s;", res, str1, str2, refName, fld.Name)
 			}
 		}
 	}
