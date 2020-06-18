@@ -15,20 +15,21 @@ type (
 	}
 
 	DocSmAction struct {
-		From              string
-		To                string
-		Label             string
-		UpdateFlds        []FldType              // поля, которые заполняются при смене стейта
-		Conditions        []DocSmActionCondition // условия выполнения экшена
-		Hooks DocSmActionlHooks
+		From       string
+		To         string
+		Label      string
+		UpdateFlds []FldType              // поля, которые заполняются при смене стейта
+		Conditions []DocSmActionCondition // условия выполнения экшена
+		Hooks      DocSmActionlHooks
 	}
 
 	DocSmActionlHooks struct {
-		DeclareVars         []string
-		Before  			[]string
+		DeclareVars []string
+		Before      []string
 	}
 
 	DocSmActionCondition struct {
 		SqlText string
+		VueIf   string
 	}
 )

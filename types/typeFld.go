@@ -229,6 +229,11 @@ func (fld FldType) SetIsNotUniq() FldType {
 	return fld
 }
 
+func (fld FldType) SetIsHide() FldType {
+	fld.Vue.Vif = "false"
+	return fld
+}
+
 func (fld FldType) SetIsBorderless() FldType {
 	fld.Vue.IsBorderless = true
 	return fld

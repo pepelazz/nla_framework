@@ -46,7 +46,7 @@
       <task-list ref="taskList" :rightSide="isShowTaskList" :currentUser="currentUser" @hide="isShowTaskList = false" @updateCounter="v => taskCounter = v"/>
 
       <q-page-container>
-        <router-view :key="$route.fullPath"/>
+        <router-view :key="$route.fullPath" :currentUser="currentUser"/>
       </q-page-container>
 
     </q-layout>
