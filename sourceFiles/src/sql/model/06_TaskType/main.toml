@@ -8,6 +8,7 @@ fields = [
    {name="id",          type="serial" },
    {name="title",       type="char",  size=100,   ext="not null",    comment="Название" },
    {name="table_name",  type="char",  size=100,                      comment="Название таблицы, к которой прикрепляется задача" },
+   {name="title_en",    type="char",  size=100,                      comment="неизменяемое название, для поиска типа задач. Заполняется программно и не изменяется через UI" },
    {name="options",     type="jsonb",       comment="Разные дополнительные параметры" },
    {name="created_at",  type="timestamp",   ext="with time zone" },
    {name="updated_at",  type="timestamp",   ext="with time zone" },
@@ -23,4 +24,9 @@ methods = [
     "task_type_update",
     "task_type_list",
     "task_type_get_by_id",
+]
+
+
+alterScripts = [
+	"alter table task_type add column if not exists title_en CHARACTER VARYING(100);",
 ]

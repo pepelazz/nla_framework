@@ -38,9 +38,9 @@ BEGIN
         RETURN checkMsg;
     END IF;
 
-    select id into taskTypeId from task_type where title = (params->>'task_type_title')::text;
+    select id into taskTypeId from task_type where title_en = (params->>'task_type_title')::text;
     if taskTypeId isnull then
-        return jsonb_build_object('ok', false, 'message', format('not found task_type with title "%s"', (params->>'task_type_title')));
+        return jsonb_build_object('ok', false, 'message', format('not found task_type with title_en "%s"', (params->>'task_type_title')));
     end if;
 
     -- если задача прикрепляется к документу, то проверка что есть table_id
