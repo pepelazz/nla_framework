@@ -18,6 +18,7 @@
                   :ext="fld.ext"
         />
       </div>
+      <telegram-login v-if="$config.telegram.botName" :isRegistered="currentUser.options.telegram_id"/>
       <!--  кнопки   -->
       <comp-item-btn-save @save="save" @cancel="$router.push(docUrl)"/>
     </div>
@@ -25,10 +26,11 @@
 </template>
 
 <script>
+    import telegramLogin from './telegram/index'
     import currentUserMixin from '../../../app/mixins/currentUser'
     export default {
         mixins: [currentUserMixin],
-        components: {},
+        components: {telegramLogin},
         computed: {
             docUrl: () => '/',
         },

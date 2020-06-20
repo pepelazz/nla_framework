@@ -13,5 +13,6 @@ export default {
   breadcrumbIcons: {
     [[breadcrumbIcons]]
   },
+  [[telegramConfig]]
   tablesForTask: [[codoGeneratedTablesForTask]],
 }

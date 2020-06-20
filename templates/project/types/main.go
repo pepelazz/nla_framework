@@ -27,6 +27,13 @@ type EmailConfig struct {
 	SenderLogo string
 }
 
+[[if .IsTelegramIntegration -]]
+type TelegramConfig struct {
+	BotName     string
+	Token       string
+}
+[[- end]]
+
 [[if .IsBitrixIntegration -]]
 type BitrixConfig struct {
 	ApiUrl       string
@@ -34,3 +41,4 @@ type BitrixConfig struct {
 	WebhookToken string
 }
 [[- end]]
+

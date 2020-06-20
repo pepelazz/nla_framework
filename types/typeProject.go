@@ -31,6 +31,7 @@ type (
 		DevMode          DevModeConfig
 		Vue              VueConfig
 		Bitrix 			 BitrixConfig
+		Telegram 		 TelegramConfig
 	}
 	PostrgesConfig struct {
 		DbName   string
@@ -78,6 +79,11 @@ type (
 		ApiUrl       string
 		UserId       string
 		WebhookToken string
+	}
+
+	TelegramConfig struct {
+		BotName     string
+		Token       string
 	}
 
 	ProjectSql struct {
@@ -243,6 +249,11 @@ func (p *ProjectType) GenerateGrid() {
 // признак что есть интеграция с Битрикс
 func (p ProjectType) IsBitrixIntegration() bool {
 	return len(p.Config.Bitrix.ApiUrl) > 0
+}
+
+// признак что есть интеграция с Telegram
+func (p ProjectType) IsTelegramIntegration() bool {
+	return len(p.Config.Telegram.Token) > 0
 }
 
 // печать списка go jobs

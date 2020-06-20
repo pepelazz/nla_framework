@@ -21,11 +21,11 @@ type (
 )
 
 var (
-	project        types.ProjectType
-	tmplMap        map[string]*template.Template
+	project types.ProjectType
+	tmplMap map[string]*template.Template
 )
 
-func readData(p types.ProjectType)  {
+func readData(p types.ProjectType) {
 	project = p
 	// проставляем localpath если он не заполнен
 	project.Config.LocalProjectPath = project.FillLocalPath()
@@ -48,7 +48,7 @@ func readData(p types.ProjectType)  {
 	types.SetProject(&project)
 }
 
-func Start(p types.ProjectType, modifyFunc copyFileModifyFunc)  {
+func Start(p types.ProjectType, modifyFunc copyFileModifyFunc) {
 	// читаем данные для проекта
 	readData(p)
 	// читаем темплейты
@@ -56,7 +56,7 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc)  {
 
 	// удаляем старые файлы
 	removeOldFiles(project.DistPath)
-	
+
 	// генерим файлы для проекты
 	templates.WriteProjectFiles(project, tmplMap)
 
@@ -69,14 +69,14 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc)  {
 	}
 
 	// копируем файлы проекта (которые не шаблоны)
-	err := copyFiles(project,"../../../pepelazz/projectGenerator/sourceFiles", "../", modifyFunc)
+	err := copyFiles(project, "../../../pepelazz/projectGenerator/sourceFiles", "../", modifyFunc)
 	utils.CheckErr(err, "Copy sourceFiles")
 
 	templates.OtherTemplatesGenerate(project)
 }
 
 // функция для копирования файлов с возможностью модификаации содержимого файлов
-func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModifyFunc) (err error)  {
+func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModifyFunc) (err error) {
 	err = filepath.Walk(source,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -90,7 +90,7 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 				// для windows заменяем слэши в пути на обратные
 				dirPath := strings.TrimSuffix(strings.TrimPrefix(strings.Replace(path, "\\", "/", -1), source), info.Name())
 				// создаем директории
-				err = os.MkdirAll(dist + dirPath, os.ModePerm)
+				err = os.MkdirAll(dist+dirPath, os.ModePerm)
 				if err != nil {
 					return err
 				}
@@ -158,10 +158,10 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 				}
 				// применяем модификатор для текста файла
 				if modifyFunc != nil {
-					file = modifyFunc(dirPath + info.Name(), file)
+					file = modifyFunc(dirPath+info.Name(), file)
 				}
 				// записываем файл по новому пути
-				err = ioutil.WriteFile(dist + dirPath + info.Name(), file, 0644)
+				err = ioutil.WriteFile(dist+dirPath+info.Name(), file, 0644)
 				if err != nil {
 					return err
 				}
@@ -171,17 +171,17 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 	return
 }
 
-func removeOldFiles(distPath string)  {
+func removeOldFiles(distPath string) {
 	// удаляем модели в sql, потому что могула изменится нумерация файлов и тогдда риск дублирования
 	err := os.RemoveAll(distPath + "/sql/model")
 	utils.CheckErr(err, "removeOldFiles")
 }
 
-func printApiCallPgFuncMethods() (res string)  {
+func printApiCallPgFuncMethods() (res string) {
 	res = "// for codeGenerate ##pgFuncList_slot1"
 	printPgMethod := func(m types.DocSqlMethod) {
 		var roles string
-		if len(m.Roles) > 0{
+		if len(m.Roles) > 0 {
 			roles = fmt.Sprintf(`"%s"`, strings.Join(m.Roles, `", "`))
 		}
 		res = fmt.Sprintf("%s\n\t\tPgMethod{\"%s\", []string{%s}, nil, BeforeHookAddUserId},", res, m.Name, roles)
@@ -201,20 +201,20 @@ func printApiCallPgFuncMethods() (res string)  {
 	return
 }
 
-func configJsModify(p types.ProjectType, file []byte) (res []byte)  {
-	jsTablesForTask := func() string  {
+func configJsModify(p types.ProjectType, file []byte) (res []byte) {
+	jsTablesForTask := func() string {
 		res := map[string]string{}
 		for _, d := range project.Docs {
-		if d.IsTaskAllowed {
-		res[d.Name] = d.NameRu
-	}
-	}
+			if d.IsTaskAllowed {
+				res[d.Name] = d.NameRu
+			}
+		}
 		jsonStr, _ := json.Marshal(res)
 		return string(jsonStr)
 	}
 	breadcrumbIcons := []string{}
 	for _, d := range p.Docs {
-		if len(d.Vue.BreadcrumbIcon)>0 {
+		if len(d.Vue.BreadcrumbIcon) > 0 {
 			breadcrumbIcons = append(breadcrumbIcons, fmt.Sprintf("%s: '%s'", d.Name, d.Vue.BreadcrumbIcon))
 		}
 	}
@@ -222,20 +222,26 @@ func configJsModify(p types.ProjectType, file []byte) (res []byte)  {
 	fileStr = strings.Replace(fileStr, "[[appName]]", p.Name, -1)
 	fileStr = strings.Replace(fileStr, "[[uiAppName]]", p.Vue.UiAppName, -1)
 	fileStr = strings.Replace(fileStr, "[[webPort]]", fmt.Sprintf("%v", p.Config.WebServer.Port), -1)
-	fileStr = strings.Replace(fileStr, "[[url]]",  strings.TrimPrefix(p.Config.WebServer.Url, "https://"), -1)
-	fileStr = strings.Replace(fileStr, "[[logoSrc]]",  p.Config.Logo, -1)
-	fileStr = strings.Replace(fileStr, "[[dadataToken]]",  p.Config.Vue.DadataToken, -1)
+	fileStr = strings.Replace(fileStr, "[[url]]", strings.TrimPrefix(p.Config.WebServer.Url, "https://"), -1)
+	fileStr = strings.Replace(fileStr, "[[logoSrc]]", p.Config.Logo, -1)
+	fileStr = strings.Replace(fileStr, "[[dadataToken]]", p.Config.Vue.DadataToken, -1)
 	fileStr = strings.Replace(fileStr, "[[breadcrumbIcons]]", strings.Join(breadcrumbIcons, ",\n"), -1)
 	// проставляем список таблиц, к которым можно прикреплять задачи
-	fileStr = strings.Replace(fileStr, "[[codoGeneratedTablesForTask]]",  jsTablesForTask(), -1)
+	fileStr = strings.Replace(fileStr, "[[codoGeneratedTablesForTask]]", jsTablesForTask(), -1)
+	fileStr = strings.Replace(fileStr, "[[telegramConfig]]", func() string {
+		if p.IsTelegramIntegration() {
+			return fmt.Sprintf("telegram: {botName: '%s', token: '%s'},", p.Config.Telegram.BotName, p.Config.Telegram.Token)
+		}
+		return ""
+	}(), -1)
 	return []byte(fileStr)
 }
 
 // функция по добавлению routes
-func routesJsModify() string  {
+func routesJsModify() string {
 	res := "// for codeGenerate ##routes_slot1"
 	for _, r := range project.Vue.Routes {
-		if len(r)<2 {
+		if len(r) < 2 {
 			log.Fatalf("routesJsModify project.Vue.Route route array %v length < 2", r)
 		}
 		res = fmt.Sprintf("%s\n\t{path: '/%s', component: () => import(`../app/components/%s`), props: true},", res, r[0], r[1])
@@ -245,11 +251,11 @@ func routesJsModify() string  {
 }
 
 // функция для построения бокового меню во Vue
-func sidemenuJsModify() string  {
+func sidemenuJsModify() string {
 	res := "// for codeGenerate ##sidemenu_slot1"
-	printMenuItem := func(m types.VueMenu) string{
+	printMenuItem := func(m types.VueMenu) string {
 		roles := ""
-		if m.Roles != nil && len(m.Roles)>0 {
+		if m.Roles != nil && len(m.Roles) > 0 {
 			roles = fmt.Sprintf(`'%s'`, strings.Join(m.Roles, `', '`))
 		}
 		return fmt.Sprintf("{icon: '%s', text: '%s', url: '/%s', roles: [%s]},\n", m.Icon, m.Text, m.Url, roles)
@@ -265,7 +271,7 @@ func sidemenuJsModify() string  {
 			}
 			linkList = linkList + "],"
 			roles := ""
-			if m.Roles != nil && len(m.Roles)>0 {
+			if m.Roles != nil && len(m.Roles) > 0 {
 				roles = fmt.Sprintf(`'%s'`, strings.Join(m.Roles, `', '`))
 			}
 			res = fmt.Sprintf("%s{isFolder: true, icon: '%s', text: '%s', roles: [%s], linkList: %s},\n", res, m.Icon, m.Text, roles, linkList)

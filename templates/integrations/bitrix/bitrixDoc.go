@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 	"encoding/json"
-	"github.com/cheburatino/tian_trade/src/pg"
+	"[[LocalProjectPath]]/pg"
 	"github.com/spf13/cast"
 )
 

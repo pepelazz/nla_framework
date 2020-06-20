@@ -18,6 +18,10 @@ type Config struct {
 	[[if .IsBitrixIntegration -]]
 	Bitrix BitrixConfig
 	[[- end]]
+
+	[[if .IsTelegramIntegration -]]
+	Telegram TelegramConfig
+	[[- end]]
 }
 
 func ReadConfigFile(path string) (c *Config, err error) {
@@ -101,6 +105,17 @@ func ReadConfigFile(path string) (c *Config, err error) {
 		}
 		if tree.Has("bitrix.webhookToken") {
 			c.Bitrix.WebhookToken = tree.Get("bitrix.webhookToken").(string)
+		}
+	}
+	[[- end]]
+
+	[[if .IsTelegramIntegration -]]
+	if tree.Has("telegram") {
+		if tree.Has("telegram.botName") {
+			c.Telegram.BotName = tree.Get("telegram.botName").(string)
+		}
+		if tree.Has("telegram.token") {
+			c.Telegram.Token = tree.Get("telegram.token").(string)
 		}
 	}
 	[[- end]]

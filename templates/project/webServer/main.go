@@ -1,7 +1,6 @@
 package webServer
 
 import (
-	"fmt"
 	"[[.Config.LocalProjectPath]]/sse"
 	"[[.Config.LocalProjectPath]]/types"
 	"[[.Config.LocalProjectPath]]/utils"
@@ -14,6 +13,7 @@ import (
 	[[- range .Go.Routes.Imports]]
 		"[[.]]"
 	[[- end]]
+	"fmt"
 )
 
 func StartWebServer(config types.Config) {
@@ -54,6 +54,9 @@ func StartWebServer(config types.Config) {
 		// загрузка фото
 		apiRoute.POST("/upload_image", uploadImage)
 		apiRoute.POST("/upload_profile_image", uploadProfileImage)
+		[[if .IsTelegramIntegration -]]
+		apiRoute.POST("/telegram_auth", telegramAuth(config.Telegram))
+		[[- end]]
 
 		[[if .IsBitrixIntegration -]]
 		// импорт данных из Битрикс
