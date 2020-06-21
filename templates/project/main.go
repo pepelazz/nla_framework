@@ -13,6 +13,9 @@ import (
 	{{if .IsBitrixIntegration -}}
 	"{{.Config.LocalProjectPath}}/bitrix"
 	{{- end}}
+	{{if .IsTelegramIntegration -}}
+	"{{.Config.LocalProjectPath}}/tgBot"
+	{{- end}}
 	"math/rand"
 	"os"
 	"time"
@@ -62,6 +65,9 @@ func main() {
 	{{- end}}
 
 	//go pg.GenerateFakeUsers(100)
+	{{if .IsTelegramIntegration -}}
+	go tgBot.Start(*config)
+	{{- end}}
 
 	// инициализируем брокера для обработки подключений по SSE
 	sse.Init()

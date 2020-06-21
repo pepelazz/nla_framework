@@ -8,6 +8,8 @@ DECLARE
   result  JSONB;
   r       RECORD;
   authToken text;
+  userFullname text;
+  userOptions jsonb;
   taskExecutorFullname text;
   taskManagerFullname text;
   taskTypeOptions jsonb;
@@ -44,7 +46,8 @@ BEGIN
   -- в случае изменения message добавляем поля id и TG_OP
   IF TG_TABLE_NAME = 'message'
   THEN
-      result = jsonb_set(result, '{flds}', result->'flds' || jsonb_build_object('id', r.id, 'tg_op', TG_OP, 'sse_type', 'message'));
+      select fullname, options into userFullname, userOptions from "user" where id = r.user_id;
+      result = jsonb_set(result, '{flds}', result->'flds' || jsonb_build_object('id', r.id, 'tg_op', TG_OP, 'sse_type', 'message', 'user_fullname', userFullname, 'user_options', userOptions));
   END IF;
 
   -- в случае изменения task добавляем fullname по исполнителю и менеджеру

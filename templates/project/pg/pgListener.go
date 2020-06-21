@@ -4,13 +4,16 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/lib/pq"
-	"github.com/pepelazz/projectGenerator/cacheUtil"
-	"github.com/pepelazz/projectGenerator/types"
-	"github.com/pepelazz/projectGenerator/utils"
-	"github.com/pepelazz/projectGenerator/sse"
+	"[[.Config.LocalProjectPath]]/cacheUtil"
+	"[[.Config.LocalProjectPath]]/types"
+	"[[.Config.LocalProjectPath]]/utils"
+	"[[.Config.LocalProjectPath]]/sse"
 	"github.com/tidwall/gjson"
 	"strconv"
 	"time"
+	[[if .IsTelegramIntegration -]]
+	"[[.Config.LocalProjectPath]]/tgBot"
+	[[- end]]
 )
 
 type (
@@ -87,6 +90,9 @@ func processPgEvent(event string) {
 		if (gjson.Get(event, "flds.tg_op").Str == "INSERT") {
 			userIdInt := gjson.Get(event, "flds.user_id").Int()
 			sse.SendJson(strconv.FormatInt(userIdInt, 10), gjson.Get(event, "flds").Value())
+			[[if .IsTelegramIntegration -]]
+			tgBot.SendMsg(gjson.Get(event, "flds.user_options.telegram_id").String(), gjson.Get(event, "flds.title").String())
+			[[- end]]
 		}
 	case "task":
 		userIdInt := gjson.Get(event, "flds.executor_id").Int()
