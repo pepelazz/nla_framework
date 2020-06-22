@@ -55,6 +55,8 @@ BEGIN
 
     end if;
 
+    {{.Sql.Hooks.Print "update" "afterInsertUpdate"}}
+
     RETURN {{.PgName}}_get_by_id(jsonb_build_object('id', {{.Name}}Row.id));
 
 END
