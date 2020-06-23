@@ -46,6 +46,9 @@
     <!-- datetime   -->
     <comp-fld-date-time  v-if="type=='datetime'" :label="label" :date-string="formatDateTimeForSelector(fld)" @update="v=>$emit('update', v)" :readonly="readonly"/>
 
+    <div class="q-gutter-sm" v-if="type=='checkbox'">
+      <q-checkbox v-model="localFld" :label="label" @input="v=>$emit('update', v)"/>
+    </div>
     <!-- вариант кастомной директивы   -->
     <div v-if="compName && vif">
       <component :is="compName" :label="label" :fld="fld"
@@ -93,6 +96,11 @@
             itemTitleFldName: null,
             href: null,
         },
+        data() {
+            return {
+                localFld: null
+            }
+        },
         methods: {
             formatDateForSelector(d) {
                 return d ? moment(d, 'YYYY-MM-DDTHH:mm:ss').format('DD-MM-YYYY') : null
@@ -100,6 +108,9 @@
             formatDateTimeForSelector(d) {
                 return d ? moment(d, 'YYYY-MM-DDTHH:mm:ss').format('DD-MM-YYYY HH:mm') : null
             },
+        },
+        mounted() {
+            this.localFld = this.fld
         }
     }
 </script>

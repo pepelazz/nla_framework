@@ -283,14 +283,22 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 			}
 		}
 	}
+	fldsProp := ""
+	slotOtherFlds := ""
 	if opts != nil {
 		// убираем кнопку 'создать'
 		if v, ok := opts["hideCreateNew"]; ok {
 			hideCreateNew = cast.ToBool(v)
 		}
+		if v, ok := opts["flds"]; ok {
+			fldsProp = fmt.Sprintf("\n\t\t\t\t\t\t:flds= \"%s\"", v)
+		}
+		if v, ok := opts["slotOtherFlds"]; ok {
+			slotOtherFlds = fmt.Sprintf("\n\t\t\t\t\t\t<template v-slot:otherFlds='slotProps'>\n\t\t\t\t\t\t\t%s\n\t\t\t\t\t\t\t</template>", v)
+		}
 	}
 
-	return fmt.Sprintf("<comp-link-list-widget label='%s' :id='id' tableIdName='%s' tableIdFldName='%s' tableDependName='%s' tableDependFldName='%s' tableDependRoute='/%s' linkTableName='%s' avatarSrc='%s' :hideCreateNew='%v'/>", label, tableIdName, tableIdFldName, tableDependName, tableDependFldName, tableDependRoute, linkTableName, avatarSrc, hideCreateNew)
+	return fmt.Sprintf("<comp-link-list-widget label='%s' :id='id' tableIdName='%s' tableIdFldName='%s' tableDependName='%s' tableDependFldName='%s' tableDependRoute='/%s' linkTableName='%s' avatarSrc='%s' :hideCreateNew='%v' %s>%s</comp-link-list-widget>", label, tableIdName, tableIdFldName, tableDependName, tableDependFldName, tableDependRoute, linkTableName, avatarSrc, hideCreateNew, fldsProp, slotOtherFlds)
 }
 
 // заголовки табов

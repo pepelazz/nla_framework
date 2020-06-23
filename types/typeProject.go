@@ -60,6 +60,7 @@ type (
 		UiAppName string
 		Routes    [][]string
 		Menu      []VueMenu
+		Hooks     ProjectVueHooks
 	}
 	VueMenu struct {
 		DocName  string // если указано docName, то url и иконка копируются из описания документа
@@ -101,6 +102,12 @@ type (
 	ProjectGoRoutes struct {
 		Imports []string
 		NotAuth []string // роуты вне блока, требующего авторизации
+	}
+	ProjectVueHooks struct {
+		Users  ProjectVueHooksUsers
+	}
+	ProjectVueHooksUsers struct {
+		ItemHtml []string
 	}
 )
 

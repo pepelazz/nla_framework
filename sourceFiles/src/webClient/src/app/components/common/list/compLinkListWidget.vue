@@ -17,6 +17,7 @@
         </q-item-section>
         <q-item-section>
           <q-item-label>{{item.options.title[tableDependFldTitle]}}</q-item-label>
+          <slot name="otherFlds" :item="item"></slot>
         </q-item-section>
         <q-item-section side>
           <q-btn flat round icon="delete" size="sm" @click="showDeleteDialog(item.id)">
@@ -35,6 +36,18 @@
 
         <q-card-section>
           <comp-search-ref-in-list-widget label="Поиск" :pg-method="tableDependName + '_list'" @update="v => selectedForAdd = v"/>
+          <template v-if="flds">
+            <div class="row q-col-gutter-md q-mt-sm" v-for="fldRow in flds">
+              <comp-fld v-for="fld in fldRow" :key='fld.name'
+                        :fld="localItem[fld.name]"
+                        :type="fld.type"
+                        @update="localItem[fld.name] = $event"
+                        :label="fld.label"
+                        :selectOptions="fld.selectOptions ? fld.selectOptions() : []"
+                        :columnClass="fld.columnClass"
+              />
+            </div>
+          </template>
         </q-card-section>
 
         <q-card-actions align="right">
@@ -64,8 +77,9 @@
 </template>
 
 <script>
+  import _ from 'lodash'
     export default {
-        props: ['id', 'tableIdName', 'tableIdFldName', 'tableDependName', 'tableDependFldName', 'tableDependRoute', 'linkTableName', 'label', 'avatarSrc', 'hideCreateNew'],
+        props: ['id', 'tableIdName', 'tableIdFldName', 'tableDependName', 'tableDependFldName', 'tableDependRoute', 'linkTableName', 'label', 'avatarSrc', 'hideCreateNew', 'flds'],
         computed: {
             tableDependFldTitle() {
                 return this.tableDependFldName.split('_id')[0] + '_title'
@@ -81,6 +95,7 @@
             return {
                 isShowList: true,
                 list: [],
+                localItem: {},
                 isShowAddDialog: false,
                 isShowDeleteDialog: false,
                 selectedForDeleteId: null,
@@ -96,7 +111,7 @@
                 let params = {id: -1}
                 params[this.tableIdFldName] = +this.id
                 params[this.tableDependFldName] = this.selectedForAdd.id
-                this.$utils.postCallPgMethod({method: `${this.linkTableName}_update`, params}).subscribe(res => {
+                this.$utils.postCallPgMethod({method: `${this.linkTableName}_update`, params: Object.assign(params, this.localItem)}).subscribe(res => {
                     if (res.ok) this.reload()
                 })
             },
@@ -119,6 +134,12 @@
         },
         mounted() {
             this.reload()
+            if (this.flds) {
+                _.flattenDeep(this.flds).map(v => {
+                    this.$set(this.localItem, v.name, v.type === 'checkbox' ? false : null)
+                })
+                console.log('this.localItem:', this.localItem)
+            }
         }
     }
 </script>

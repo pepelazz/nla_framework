@@ -21,6 +21,9 @@
           <comp-stat-img-src :src="item.avatar"/>
         </div>
       </div>
+      [[range .Vue.Hooks.Users.ItemHtml -]]
+      [[.]]
+      [[- end]]
       <!--  кнопки   -->
       <comp-item-btn-save @save="save" @cancel="$router.push(docUrl)"/>
 

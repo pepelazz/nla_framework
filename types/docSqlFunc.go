@@ -294,6 +294,7 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 
 	//  индекс поля options для printLinkOnConflict
 	optionsFldIndex := 1
+	onConflictFldUpdateStr := ""
 
 	// формирование строчки для update в случае если таблица является связью двух таблиц и эта связь уникальна
 	printLinkOnConflict := func() string {
@@ -305,7 +306,7 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 				}
 			}
 			if len(flds) > 1 {
-				return fmt.Sprintf(` ON CONFLICT (%s, %s) DO UPDATE SET options=$%v, deleted=false `, flds[0].Name, flds[1].Name, optionsFldIndex)
+				return fmt.Sprintf(` ON CONFLICT (%s, %s) DO UPDATE SET options=$%v, deleted=false%s`, flds[0].Name, flds[1].Name, optionsFldIndex, onConflictFldUpdateStr)
 			}
 		}
 		return ""
@@ -325,6 +326,10 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 		cnt++
 		arr1 = append(arr1, f.Name)
 		arr2 = append(arr2, fmt.Sprintf("$%v", cnt))
+		// если не ref поле то добавляем его в список обновлений при сценарии on conflict
+		if len(f.Sql.Ref) == 0 {
+			onConflictFldUpdateStr = fmt.Sprintf("%s, %s=$%v", onConflictFldUpdateStr, f.Name, cnt)
+		}
 		arrow := "->>"
 		if utils.CheckContainsSliceStr(f.Type, "jsonb", FldTypeTextArray, FldTypeIntArray)  {
 			arrow = "->"

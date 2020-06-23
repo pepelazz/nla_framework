@@ -18,7 +18,7 @@
                   :ext="fld.ext"
         />
       </div>
-      <telegram-login v-if="$config.telegram.botName" :isRegistered="currentUser.options.telegram_id"/>
+      <telegram-login v-if="$config.telegram && $config.telegram.botName" :isRegistered="currentUser.options.telegram_id"/>
       <!--  кнопки   -->
       <comp-item-btn-save @save="save" @cancel="$router.push(docUrl)"/>
     </div>
