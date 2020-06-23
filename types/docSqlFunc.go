@@ -192,6 +192,7 @@ func (d DocType) PrintSqlFuncListWhereCond() string  {
 		}
 		if len(fld.Sql.Ref)>0 {
 			arr = append(arr, fmt.Sprintf("\t\t['notQuoted', '%[1]s', 'doc.%[1]s']", fld.Name))
+			continue
 		}
 		if fld.Sql.IsSearch {
 			arr = append(arr, fmt.Sprintf("\t\t['text', '%[1]s', 'doc.%[1]s']", fld.Name))

@@ -231,3 +231,12 @@ func (d *DocType) AddVueTaskAndTabs() {
 	// указываем признак, что к документу можно прикреплять задачи
 	d.IsTaskAllowed = true
 }
+
+// добаление свойства рекурсии - добавляются поля и проставляется признак
+func (d *DocType) SetIsRecursion() {
+	d.IsRecursion = true
+	d.Flds = append(d.Flds,
+		FldType{Name: "parent_id", NameRu: "родитель", Type: FldTypeInt, Sql: FldSql{Ref: d.Name, IsSearch: true, IsNotUpdatable: true}},
+		FldType{Name: "is_folder", NameRu: "признак, что является группой", Type: FldTypeBool, Sql: FldSql{IsNotUpdatable: true}}, )
+}
+
