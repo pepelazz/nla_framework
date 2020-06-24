@@ -20,9 +20,14 @@
           <slot name="otherFlds" :item="item"></slot>
         </q-item-section>
         <q-item-section side>
-          <q-btn flat round icon="delete" size="sm" @click="showDeleteDialog(item.id)">
-            <q-tooltip>Удалить</q-tooltip>
-          </q-btn>
+          <div class="text-grey-8 q-gutter-xs">
+            <q-btn v-if="flds" flat round icon="edit" size="sm" @click="showEditDialog(item)">
+              <q-tooltip>Редактировать</q-tooltip>
+            </q-btn>
+            <q-btn flat round icon="delete" size="sm" @click="showDeleteDialog(item.id)">
+              <q-tooltip>Удалить</q-tooltip>
+            </q-btn>
+          </div>
         </q-item-section>
       </q-item>
     </q-list>
@@ -58,6 +63,30 @@
       </q-card>
     </q-dialog>
 
+    <q-dialog v-model="isShowEditDialog" persistent>
+      <q-card style="width: 700px; max-width: 80vw;">
+        <q-card-section>
+          <template v-if="flds && selectedForEdit">
+            <div class="row q-col-gutter-md q-mt-sm" v-for="fldRow in flds">
+              <comp-fld v-for="fld in fldRow" :key='fld.name'
+                        :fld="selectedForEdit[fld.name]"
+                        :type="fld.type"
+                        @update="selectedForEdit[fld.name] = $event"
+                        :label="fld.label"
+                        :selectOptions="fld.selectOptions ? fld.selectOptions() : []"
+                        :columnClass="fld.columnClass"
+              />
+            </div>
+          </template>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Отмена" v-close-popup/>
+          <q-btn flat label="Ok" v-close-popup @click="save"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
     <!-- диалог подтверждения удаления   -->
     <q-dialog v-model="isShowDeleteDialog" persistent>
       <q-card>
@@ -77,7 +106,7 @@
 </template>
 
 <script>
-  import _ from 'lodash'
+    import _ from 'lodash'
     export default {
         props: ['id', 'tableIdName', 'tableIdFldName', 'tableDependName', 'tableDependFldName', 'tableDependRoute', 'linkTableName', 'label', 'avatarSrc', 'hideCreateNew', 'flds'],
         computed: {
@@ -100,12 +129,18 @@
                 isShowDeleteDialog: false,
                 selectedForDeleteId: null,
                 selectedForAdd: null,
+                isShowEditDialog: false,
+                selectedForEdit: null,
             }
         },
         methods: {
             showDeleteDialog(id) {
                 this.selectedForDeleteId = id
                 this.isShowDeleteDialog = true
+            },
+            showEditDialog(v) {
+                this.isShowEditDialog = true
+                this.selectedForEdit = v
             },
             add() {
                 let params = {id: -1}
@@ -131,6 +166,14 @@
                     }
                 })
             },
+            save() {
+                this.$utils.postCallPgMethod({method: `${this.linkTableName}_update`, params: this.selectedForEdit}).subscribe(res => {
+                    if (res.ok) {
+                        this.isShowEditDialog = false
+                        this.selectedForEdit = null
+                    }
+                })
+            }
         },
         mounted() {
             this.reload()
@@ -138,7 +181,6 @@
                 _.flattenDeep(this.flds).map(v => {
                     this.$set(this.localItem, v.name, v.type === 'checkbox' ? false : null)
                 })
-                console.log('this.localItem:', this.localItem)
             }
         }
     }

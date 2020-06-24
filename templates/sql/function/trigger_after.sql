@@ -8,6 +8,16 @@ DECLARE
 BEGIN
         {{.PrintAfterTriggerUpdateLinkedRecords}}
 
+        {{if .IsRecursion}}
+        if NEW.parent_id notnull then
+            if exists(select true from {{.PgName}} where parent_id=NEW.parent_id and deleted=false) then
+                update {{.PgName}} set is_folder=true where id = NEW.parent_id;
+            else
+                update {{.PgName}} set is_folder=false where id = NEW.parent_id;
+            end if;
+        end if;
+        {{- end }}
+
     RETURN NEW;
 END;
 

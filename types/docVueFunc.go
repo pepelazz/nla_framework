@@ -27,11 +27,16 @@ func (d DocType) PrintListRowAvatar() string  {
 }
 
 func (d DocType) PrintListRowLabel() string  {
-	res := `
+	isFolder := "" // признак, что является parent, в случае если рекурсия
+	if d.IsRecursion {
+		isFolder = "<q-item-label caption><q-icon name='folder' v-if='item.is_folder'/></q-item-label>"
+	}
+	res := fmt.Sprintf(`
         <q-item-section>
           <q-item-label lines="1">{{item.title}}</q-item-label>
+          %s
         </q-item-section>
-	`
+	`, isFolder)
 	// проверяем есть ли переопределение шаблона
 	if d.Vue.TmplFuncs != nil {
 		if f, ok := d.Vue.TmplFuncs["PrintListRowLabel"]; ok {

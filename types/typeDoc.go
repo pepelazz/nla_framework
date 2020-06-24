@@ -233,10 +233,17 @@ func (d *DocType) AddVueTaskAndTabs() {
 }
 
 // добаление свойства рекурсии - добавляются поля и проставляется признак
-func (d *DocType) SetIsRecursion() {
+func (d *DocType) SetIsRecursion(title string) {
 	d.IsRecursion = true
 	d.Flds = append(d.Flds,
 		FldType{Name: "parent_id", NameRu: "родитель", Type: FldTypeInt, Sql: FldSql{Ref: d.Name, IsSearch: true, IsNotUpdatable: true}},
 		FldType{Name: "is_folder", NameRu: "признак, что является группой", Type: FldTypeBool, Sql: FldSql{IsNotUpdatable: true}}, )
+	d.Vue.I18nAdd("recursiveListTitle", title)
 }
 
+func (dv *DocVue) I18nAdd(titleEn, titleRu string)  {
+	if dv.I18n == nil {
+		dv.I18n = map[string]string{}
+	}
+	dv.I18n[titleEn] = titleRu
+}
