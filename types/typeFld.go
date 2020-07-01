@@ -16,6 +16,7 @@ const (
 	FldTypeDate              = "date"
 	FldTypeBool              = "bool"
 	FldTypeJsonb             = "jsonb"
+	FldTypeUuid              = "uuid"
 	FldTypeVueComposition    = "vueComposition"
 	FldTypeDatetime          = "datetime"
 	FldTypeTextArray         = "text[]"
@@ -136,7 +137,7 @@ func (fld *FldType) GoType() string {
 		return "[]int"
 	case FldTypeTextArray:
 		return "[]string"
-	case FldTypeDate, FldTypeDatetime:
+	case FldTypeDate, FldTypeDatetime, FldTypeUuid:
 		return "string"
 	default:
 		return fld.Type
@@ -162,7 +163,7 @@ func (fld *FldType) PgUpdateType() string {
 	switch fld.Type {
 	case FldTypeInt, FldTypeInt64, FldTypeDouble:
 		return "number"
-	case FldTypeString:
+	case FldTypeString, FldTypeUuid:
 		return "text"
 	case FldTypeDate, FldTypeDatetime:
 		return "timestamp"
@@ -268,6 +269,14 @@ func (fld FldType) SetBitrixInfo(b BitrixFld) FldType {
 		fld.IntegrationData = map[string]interface{}{}
 	}
 	fld.IntegrationData["bitrix"] = b
+	return fld
+}
+
+func (fld FldType) SetOdataInfo(b OdataFld) FldType {
+	if fld.IntegrationData == nil {
+		fld.IntegrationData = map[string]interface{}{}
+	}
+	fld.IntegrationData["odata"] = b
 	return fld
 }
 

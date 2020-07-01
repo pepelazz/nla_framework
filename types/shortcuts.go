@@ -94,6 +94,16 @@ func GetFldInt64(name, nameRu string, rowCol [][]int, params ...string) (fld Fld
 	return
 }
 
+// создание поля UUID
+func GetFldUuid(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
+	classStr := "col-4"
+	if len(params)>0 {
+		classStr= params[0]
+	}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeUuid, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}}}
+	return
+}
+
 // создание простого поля Checkbox
 func GetFldCheckbox(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
 	classStr := "col-4"

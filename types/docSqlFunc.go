@@ -126,7 +126,7 @@ func (d DocType) PrintSqlModelAlterScripts() (res string) {
 	// подбираем postgres тип для alter script
 	getType := func(fld FldType) string {
 		if fld.Type == "string" {
-			if fld.Sql.Size>0 {
+			if fld.Sql.Size > 0 {
 				return fmt.Sprintf("CHARACTER VARYING(%v)", fld.Sql.Size)
 			} else {
 				return "text"
@@ -146,7 +146,7 @@ func (d DocType) PrintSqlModelAlterScripts() (res string) {
 	arr := []string{}
 
 	for _, fld := range d.Flds {
-		if len(fld.Name) == 0 ||  fld.Sql.IsOptionFld || utils.CheckContainsSliceStr(fld.Name, "id", "created_at", "updated_at", "deleted") {
+		if len(fld.Name) == 0 || fld.Sql.IsOptionFld || utils.CheckContainsSliceStr(fld.Name, "id", "created_at", "updated_at", "deleted") {
 			continue
 		}
 		arr = append(arr, fmt.Sprintf("\t\"alter table %s add column if not exists %s %s;\"", d.PgName(), fld.Name, getType(fld)))
@@ -162,7 +162,6 @@ func (d DocType) PrintSqlModelAlterScripts() (res string) {
 	return
 }
 
-
 // get_by_id.sql функиця по добавлению join
 func (d DocType) PrintSqlFuncGetById() (res string) {
 	cnt := 1
@@ -176,7 +175,7 @@ func (d DocType) PrintSqlFuncGetById() (res string) {
 			}
 			// формируем имя для title. Нужно для тех случаев когда имя столба отличается от имени таблицы, на которую идет ссылка.
 			// например, from_location_id как ссылка на таблицу location. Тогда формируем поле from_location_title
-			fldNameWithTitle := strings.TrimSuffix(f.Name,"_id") + "_title"
+			fldNameWithTitle := strings.TrimSuffix(f.Name, "_id") + "_title"
 			arr = append(arr, fmt.Sprintf("\t\tt%v as (select t%[2]v.*, c.title as %[6]s from t%[2]v left join %[4]s c on c.id = t%[2]v.%[5]s)", cnt, cnt-1, f.Sql.Ref, refTable, f.Name, fldNameWithTitle))
 		}
 	}
@@ -184,18 +183,22 @@ func (d DocType) PrintSqlFuncGetById() (res string) {
 	return
 }
 
-func (d DocType) PrintSqlFuncListWhereCond() string  {
+func (d DocType) PrintSqlFuncListWhereCond() string {
 	arr := []string{"['ilike', 'search_text', 'search_text']"}
 	for _, fld := range d.Flds {
 		if fld.Name == "title" {
 			continue
 		}
-		if len(fld.Sql.Ref)>0 {
+		if len(fld.Sql.Ref) > 0 {
 			arr = append(arr, fmt.Sprintf("\t\t['notQuoted', '%[1]s', 'doc.%[1]s']", fld.Name))
 			continue
 		}
 		if fld.Sql.IsSearch {
-			arr = append(arr, fmt.Sprintf("\t\t['text', '%[1]s', 'doc.%[1]s']", fld.Name))
+			typeStr := "text"
+			if fld.Type == FldTypeBool {
+				typeStr = "notQuoted"
+			}
+			arr = append(arr, fmt.Sprintf("\t\t['%[1]s', '%[2]s', 'doc.%[2]s']", typeStr, fld.Name))
 		}
 	}
 	return strings.Join(arr, ",\n")
@@ -270,12 +273,26 @@ func (d DocType) PrintSqlFuncUpdateCheckParams() string {
 	  WHERE btx_id = (params ->> 'btx_id')::int;
 		`, d.Name)
 	}
-return str
+	if d.IsOdataIntegration() {
+		str = fmt.Sprintf(`  
+	  checkMsg = check_required_params(params, ARRAY ['uuid']);
+	  IF checkMsg IS NOT NULL
+	  THEN
+		RETURN checkMsg;
+	  END IF;
+      -- ищем запись по uuid, если не находим, значит это новая запись
+	  SELECT *
+	  INTO %[1]sRow
+	  FROM %[1]s
+	  WHERE uuid = (params ->> 'uuid')::uuid;
+		`, d.Name)
+	}
+	return str
 }
 
 func (d DocType) PrintSqlFuncUpdateCheckIsNew() string {
 	str := `if (params ->> 'id')::int = -1 then`
-	if (d.IsBitrixIntegration()) {
+	if (d.IsBitrixIntegration() || d.IsOdataIntegration()) {
 		str = fmt.Sprintf(`IF %sRow.id ISNULL THEN`, d.Name)
 	}
 	return str
@@ -285,6 +302,9 @@ func (d DocType) PrintSqlFuncUpdateQueryStr() string {
 	str := fmt.Sprintf(`concat('UPDATE %s SET ', updateValue, ' WHERE id=', params ->> 'id', ' RETURNING *;')`, d.Name)
 	if (d.IsBitrixIntegration()) {
 		str = fmt.Sprintf(`concat('UPDATE %[1]s SET ', updateValue, ' WHERE btx_id=', quote_literal(%[1]sRow.btx_id), ' RETURNING *')`, d.Name)
+	}
+	if (d.IsOdataIntegration()) {
+		str = fmt.Sprintf(`concat('UPDATE %[1]s SET ', updateValue, ' WHERE uuid=', quote_literal(%[1]sRow.uuid), ' RETURNING *')`, d.Name)
 	}
 	return str
 }
@@ -331,7 +351,7 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 			onConflictFldUpdateStr = fmt.Sprintf("%s, %s=$%v", onConflictFldUpdateStr, f.Name, cnt)
 		}
 		arrow := "->>"
-		if utils.CheckContainsSliceStr(f.Type, "jsonb", FldTypeTextArray, FldTypeIntArray)  {
+		if utils.CheckContainsSliceStr(f.Type, "jsonb", FldTypeTextArray, FldTypeIntArray) {
 			arrow = "->"
 		}
 		paramStr := fmt.Sprintf("\t\t\t(params %s '%s')::%s", arrow, f.Name, f.PgInsertType())
@@ -340,17 +360,17 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 			paramStr = fmt.Sprintf("\t\t\ttext_array_from_json(params %s '%s')", arrow, f.Name)
 			//text_array_from_json(params -> 'role')
 		}
-		if f.Type == FldTypeIntArray{
+		if f.Type == FldTypeIntArray {
 			paramStr = fmt.Sprintf("\t\t\tint_array_from_json(params %s '%s')", arrow, f.Name)
 			//int_array_from_json(params -> 'role')
 		}
 		// в случае наличия дефолтного значения делаем конструкцию coalesce
-		if len(f.Sql.Default)>0 {
+		if len(f.Sql.Default) > 0 {
 			paramStr = fmt.Sprintf("\t\t\tcoalesce((params %s '%s')::%s, %s)::%s", arrow, f.Name, f.PgInsertType(), f.Sql.Default, f.PgInsertType())
 		}
 		arr3 = append(arr3, paramStr)
 		// options добавляем последним, поэтому optionsFldIndex увеличиваем на единицу с каждым новым полем, которое будем добавлять
-		optionsFldIndex = cnt+1
+		optionsFldIndex = cnt + 1
 	}
 	// отдельно добавляем options
 	arr1 = append(arr1, "options")
@@ -380,14 +400,14 @@ func (d DocType) PrintSqlFuncUpdateFlds() (res string) {
 
 // для BEFORE TRIGGER
 // формирование строки из полей для search_txt
-func (d DocType) GetSearchTextString() string  {
+func (d DocType) GetSearchTextString() string {
 	arr := []string{}
 	for _, fld := range d.Flds {
 		if fld.Sql.IsSearch {
 			if (len(fld.Sql.Ref) == 0) {
-				arr = append(arr, "new." + fld.Name)
+				arr = append(arr, "new."+fld.Name)
 			} else {
-				arr = append(arr, snaker.SnakeToCamelLower(strings.TrimSuffix(fld.Name, "_id")) + "Title")
+				arr = append(arr, snaker.SnakeToCamelLower(strings.TrimSuffix(fld.Name, "_id"))+"Title")
 			}
 		}
 	}
@@ -395,7 +415,7 @@ func (d DocType) GetSearchTextString() string  {
 }
 
 // формирование json из полей для search_txt
-func (d DocType) GetSearchTextJson() string  {
+func (d DocType) GetSearchTextJson() string {
 	arr := []string{}
 	for _, fld := range d.Flds {
 		if fld.Sql.IsSearch {
@@ -407,7 +427,7 @@ func (d DocType) GetSearchTextJson() string  {
 				arr = append(arr, fmt.Sprintf("'%s_title', %sTitle", fldName, snaker.SnakeToCamelLower(fldName)))
 				// в случае ссылки на user еще добавляем avatar, чтобы потом использовать это на ui
 				if fld.Sql.Ref == "user" {
-					arr = append(arr,  fmt.Sprintf("'%[1]s_avatar', %[1]sAvatar", snaker.SnakeToCamelLower(fldName)))
+					arr = append(arr, fmt.Sprintf("'%[1]s_avatar', %[1]sAvatar", snaker.SnakeToCamelLower(fldName)))
 				}
 				for _, v := range fld.Sql.RefFldsForOptions {
 					arr = append(arr, fmt.Sprintf("'%s_%s', %s%s", fldName, v, snaker.SnakeToCamelLower(fldName), utils.UpperCaseFirst(v)))
@@ -419,7 +439,7 @@ func (d DocType) GetSearchTextJson() string  {
 }
 
 // формирование списка переменных для before триггера
-func (d DocType) GetBeforeTriggerDeclareVars() string  {
+func (d DocType) GetBeforeTriggerDeclareVars() string {
 	if !d.Sql.IsSearchText {
 		return ""
 	}
@@ -456,7 +476,7 @@ func (d DocType) GetBeforeTriggerFillRefVars() string {
 				fldsArr2 := []string{varPrefix + "Title"}
 				for _, v := range fld.Sql.RefFldsForOptions {
 					fldsArr1 = append(fldsArr1, v)
-					fldsArr2 = append(fldsArr2, varPrefix + utils.UpperCaseFirst(v))
+					fldsArr2 = append(fldsArr2, varPrefix+utils.UpperCaseFirst(v))
 				}
 				str1 := strings.Join(fldsArr1, ", ")
 				str2 := strings.Join(fldsArr2, ", ")
@@ -481,7 +501,7 @@ func (d DocType) RequiredFldsString() string {
 }
 
 // прописываем в модели документа список стандартных sql методов с указанными ролями
-func (ds *DocSql) FillBaseMethods(docName string, roles ...string)  {
+func (ds *DocSql) FillBaseMethods(docName string, roles ...string) {
 	if ds.Methods == nil {
 		ds.Methods = map[string]*DocSqlMethod{}
 	}
@@ -489,8 +509,8 @@ func (ds *DocSql) FillBaseMethods(docName string, roles ...string)  {
 		roles = []string{}
 	}
 	for _, name := range []string{"list", "update", "get_by_id"} {
-		name := docName+"_"+name
-		ds.Methods[name] = &DocSqlMethod{Name:name, Roles:roles}
+		name := docName + "_" + name
+		ds.Methods[name] = &DocSqlMethod{Name: name, Roles: roles}
 	}
 }
 
@@ -517,7 +537,7 @@ func (d DocType) PrintAfterTriggerUpdateLinkedRecords() string {
 		if !isFldTitleExist {
 			log.Fatal(fmt.Sprintf("PrintAfterTriggerUpdateLinkedRecords '%s' missed field 'title'", d.Name))
 		}
-		res1:= "IF (TG_OP = 'UPDATE') THEN\n-- при смене названия обновляем все ссылающиеся записи, чтобы там переписалось новое название\nif new.title != old.title then\n"
+		res1 := "IF (TG_OP = 'UPDATE') THEN\n-- при смене названия обновляем все ссылающиеся записи, чтобы там переписалось новое название\nif new.title != old.title then\n"
 		for _, arr := range linkedDocs {
 			res1 = fmt.Sprintf("%s for r in select * from %s where %s = new.id loop\n update %s set updated_at=now() where id = r.id;\n end loop;\n", res1, arr[0], arr[1], arr[0])
 		}
@@ -539,7 +559,7 @@ func PrintUserAfterTriggerUpdateLinkedRecords() string {
 		}
 	}
 	if len(linkedDocs) > 0 {
-		res1:= "IF (TG_OP = 'UPDATE') THEN\n-- при смене имени и аватарки обновляем все ссылающиеся записи, чтобы там переписалось новое название\nif new.fullname != old.fullname OR new.avatar != old.avatar then\n"
+		res1 := "IF (TG_OP = 'UPDATE') THEN\n-- при смене имени и аватарки обновляем все ссылающиеся записи, чтобы там переписалось новое название\nif new.fullname != old.fullname OR new.avatar != old.avatar then\n"
 		for _, arr := range linkedDocs {
 			res1 = fmt.Sprintf("%s for r in select * from %s where %s = new.id loop\n update %s set updated_at=now() where id = r.id;\n end loop;\n", res1, arr[0], arr[1], arr[0])
 		}

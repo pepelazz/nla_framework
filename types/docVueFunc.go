@@ -282,7 +282,7 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 						avatarSrc = depDoc.Vue.MenuIcon
 						label = depDoc.Vue.I18n["listTitle"]
 					}
-				} else {
+				} else if len(f.Sql.Ref) > 0 {
 					tableIdFldName = f.Name
 				}
 			}

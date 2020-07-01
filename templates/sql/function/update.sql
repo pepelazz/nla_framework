@@ -21,6 +21,14 @@ BEGIN
 
     {{.Sql.Hooks.Print "update" "beforeInsertUpdate"}}
 
+    {{- range .Flds}}
+    {{if eq .Type "uuid" -}}
+    if char_length((params->>'{{.Name}}')::text) = 0 then
+        params = params || jsonb_build_object('{{.Name}}', '00000000-0000-0000-0000-000000000000');
+    end if;
+    {{- end}}
+    {{- end}}
+
     {{.PrintSqlFuncUpdateCheckIsNew}}
         {{if .RequiredFldsString -}}
         -- проверика наличия обязательных параметров

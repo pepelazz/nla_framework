@@ -8,6 +8,11 @@ DECLARE
 BEGIN
         {{.Sql.Hooks.Print "triggerBefore" "BeforeTriggerBefore"}}
 
+        {{if .Sql.IsSearchText}}
+        {{- /* заполнение ref полей */ -}}
+        {{.GetBeforeTriggerFillRefVars}}
+        {{- end}}
+
         {{- range .Flds}}
         {{- if .Sql.FillValueInBeforeTrigger }}
         NEW.{{.Name}} = {{.Sql.FillValueInBeforeTrigger}};
@@ -15,8 +20,6 @@ BEGIN
         {{- end -}}
 
         {{if .Sql.IsSearchText}}
-        {{- /* заполнение ref полей */ -}}
-        {{.GetBeforeTriggerFillRefVars}}
         -- заполняем options.title
         NEW.options = coalesce(OLD.options, '{}'::jsonb) || NEW.options || jsonb_build_object('title', jsonb_build_object({{.GetSearchTextJson}}));
         -- заполняем search_text

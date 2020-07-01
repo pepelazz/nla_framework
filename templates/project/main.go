@@ -16,6 +16,9 @@ import (
 	{{if .IsTelegramIntegration -}}
 	"{{.Config.LocalProjectPath}}/tgBot"
 	{{- end}}
+	{{if .IsOdataIntegration -}}
+	"{{.Config.LocalProjectPath}}/odata"
+	{{- end}}
 	"math/rand"
 	"os"
 	"time"
@@ -62,6 +65,9 @@ func main() {
 	utils.SetEmailConfig(config.Email)
 	{{if .IsBitrixIntegration -}}
 	bitrix.SetBitrixConfig(config.Bitrix)
+	{{- end}}
+	{{if .IsOdataIntegration -}}
+	odata.SetOdataConfig(config.Odata)
 	{{- end}}
 
 	//go pg.GenerateFakeUsers(100)

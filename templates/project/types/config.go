@@ -14,13 +14,14 @@ type Config struct {
 	Graylog GraylogConfig
 
 	Email EmailConfig
-
 	[[if .IsBitrixIntegration -]]
 	Bitrix BitrixConfig
 	[[- end]]
-
 	[[if .IsTelegramIntegration -]]
 	Telegram TelegramConfig
+	[[- end]]
+	[[if .IsOdataIntegration -]]
+	Odata OdataConfig
 	[[- end]]
 }
 
@@ -116,6 +117,26 @@ func ReadConfigFile(path string) (c *Config, err error) {
 		}
 		if tree.Has("telegram.token") {
 			c.Telegram.Token = tree.Get("telegram.token").(string)
+		}
+	}
+	[[- end]]
+
+	[[if .IsOdataIntegration -]]
+	if tree.Has("odata") {
+		if tree.Has("odata.url") {
+			c.Odata.Url = tree.Get("odata.url").(string)
+		}
+		if tree.Has("odata.login") {
+			c.Odata.Login = tree.Get("odata.login").(string)
+		}
+		if tree.Has("odata.password") {
+			c.Odata.Password = tree.Get("odata.password").(string)
+		}
+		if tree.Has("odata.exchangePlanName") {
+			c.Odata.ExchangePlanName = tree.Get("odata.exchangePlanName").(string)
+		}
+		if tree.Has("odata.exchangePlanGuid") {
+			c.Odata.ExchangePlanGuid = tree.Get("odata.exchangePlanGuid").(string)
 		}
 	}
 	[[- end]]

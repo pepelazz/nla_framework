@@ -6,8 +6,11 @@ import (
 	"[[.Config.LocalProjectPath]]/utils"
 	"[[.Config.LocalProjectPath]]/webServer/auth"
 	"github.com/gin-gonic/gin"
-[[if .IsBitrixIntegration -]]
+	[[if .IsBitrixIntegration -]]
 	"[[.Config.LocalProjectPath]]/bitrix"
+	[[- end]]
+	[[if .IsOdataIntegration -]]
+	"[[.Config.LocalProjectPath]]/odata"
 	[[- end]]
 	"net/http"
 	[[- range .Go.Routes.Imports]]
@@ -67,6 +70,16 @@ func StartWebServer(config types.Config) {
 			[[- end ]]
 		[[- end ]]
 		[[- end ]]
+
+		[[if .IsOdataIntegration -]]
+		// импорт данных из 1С Odata
+		odataRoute := apiRoute.Group("/odata")
+		[[- range .Docs -]]
+			[[- if .IsOdataIntegration]]
+			odataRoute.POST("/import_[[.Name]]", odata.Start[[ToCamel .Name]]Sync)
+			[[- end ]]
+		[[- end ]]
+		[[- end ]]
 	}
 
 	[[- range .Go.Routes.NotAuth]]
@@ -78,6 +91,15 @@ func StartWebServer(config types.Config) {
 	[[- range .Docs -]]
 	[[- if .IsBitrixIntegrationDebugMode]]
 	r.GET("/bitrix/import_[[.Name]]", bitrix.Get[[ToCamel .Name]]HistoryDebug)
+	[[- end ]]
+	[[- end ]]
+	[[- end ]]
+
+	[[if .IsOdataIntegration -]]
+	// отладочные методы для импорта данных из Битрикс
+	[[- range .Docs -]]
+	[[- if .IsOdataIntegrationDebugMode]]
+	r.GET("/odata/import_[[.Name]]",  odata.Sync[[ToCamel .Name]]With1CDebug)
 	[[- end ]]
 	[[- end ]]
 	[[- end ]]

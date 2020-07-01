@@ -19,7 +19,7 @@ type (
 		Config   ProjectConfig
 		Vue      ProjectVue
 		Sql      ProjectSql
-		Go 		 ProjectGo
+		Go       ProjectGo
 		Roles    []ProjectRole // список ролей в проекте
 	}
 	ProjectConfig struct {
@@ -30,8 +30,9 @@ type (
 		Email            EmailConfig
 		DevMode          DevModeConfig
 		Vue              VueConfig
-		Bitrix 			 BitrixConfig
-		Telegram 		 TelegramConfig
+		Bitrix           BitrixConfig
+		Telegram         TelegramConfig
+		Odata            OdataConfig
 	}
 	PostrgesConfig struct {
 		DbName   string
@@ -83,20 +84,28 @@ type (
 	}
 
 	TelegramConfig struct {
-		BotName     string
-		Token       string
+		BotName string
+		Token   string
+	}
+
+	OdataConfig struct {
+		Url              string
+		Login            string
+		Password         string
+		ExchangePlanName string
+		ExchangePlanGuid string
 	}
 
 	ProjectSql struct {
-		Methods map[string][]DocSqlMethod // имя документа и список методов. Например "task": []{"task_by_deal"}
-		InitialData []string // данные при первоначальной загрузке
+		Methods     map[string][]DocSqlMethod // имя документа и список методов. Например "task": []{"task_by_deal"}
+		InitialData []string                  // данные при первоначальной загрузке
 	}
 	ProjectGo struct {
 		JobList []string // список job'ов
-		Routes ProjectGoRoutes
+		Routes  ProjectGoRoutes
 	}
 	ProjectRole struct {
-		Name string
+		Name   string
 		NameRu string
 	}
 	ProjectGoRoutes struct {
@@ -104,7 +113,7 @@ type (
 		NotAuth []string // роуты вне блока, требующего авторизации
 	}
 	ProjectVueHooks struct {
-		Users  ProjectVueHooksUsers
+		Users ProjectVueHooksUsers
 	}
 	ProjectVueHooksUsers struct {
 		ItemHtml []string
@@ -166,7 +175,7 @@ func (p *ProjectType) FillVueFlds() {
 			// заполняем незаполненные поля в extension
 			for k, _ := range fld.Vue.Ext {
 				// если в параметрах есть pathUrl и поле является Ref, это значит надо заполнить route к доккументу, на который идет ссылка + ссылка на аватарку
-				if k == "pathUrl" && len(fld.Sql.Ref)>0 {
+				if k == "pathUrl" && len(fld.Sql.Ref) > 0 {
 					for _, dRef := range p.Docs {
 						if dRef.Name == fld.Sql.Ref {
 							fld.Vue.Ext["pathUrl"] = "/" + dRef.Vue.RouteName
@@ -261,6 +270,11 @@ func (p ProjectType) IsBitrixIntegration() bool {
 // признак что есть интеграция с Telegram
 func (p ProjectType) IsTelegramIntegration() bool {
 	return len(p.Config.Telegram.Token) > 0
+}
+
+// признак что есть интеграция с Odata
+func (p ProjectType) IsOdataIntegration() bool {
+	return len(p.Config.Odata.Url) > 0
 }
 
 // печать списка go jobs

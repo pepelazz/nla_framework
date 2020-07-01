@@ -38,5 +38,13 @@ userId = "{{.Config.Bitrix.UserId}}"
 webhookToken = "{{.Config.Bitrix.WebhookToken}}"
 {{- end}}
 
+{{if .IsOdataIntegration -}}
+[odata]
+url = "{{.Config.Odata.Url}}"
+login = "{{.Config.Odata.Login}}"
+password = "{{.Config.Odata.Password}}"
+exchangePlanName = "{{.Config.Odata.ExchangePlanName}}"
+exchangePlanGuid = "{{.Config.Odata.ExchangePlanGuid}}"
+{{- end}}
 
 

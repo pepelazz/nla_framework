@@ -119,25 +119,37 @@ type (
 
 	DocIntegrations struct {
 		Bitrix DocIntegrationsBitrix
+		Odata  DocIntegrationsOdata
 	}
 
 	DocIntegrationsBitrix struct {
-		Name    string
-		UrlName string // часть имени запроса. Например crm.company.list.json
-		IsDebugMode bool // показываем открытый get метод для тестирования импорта
-		Result struct {
+		Name        string
+		UrlName     string // часть имени запроса. Например crm.company.list.json
+		IsDebugMode bool   // показываем открытый get метод для тестирования импорта
+		Result      struct {
 			StructDesc string // описание вложенной структуры для маппинга json
-			PathStr string // путь до массива с данными. Например, Result.Tasks
+			PathStr    string // путь до массива с данными. Например, Result.Tasks
 		}
-		UrlQuery string
+		UrlQuery       string
 		IsNoPagination bool // признак, что все данные получаются за один запрос
+	}
+
+	DocIntegrationsOdata struct {
+		Name        string
+		Url         string // часть имени запроса. Например crm.company.list.json
+		IsDebugMode bool   // показываем открытый get метод для тестирования импорта
+		//Result struct {
+		//	StructDesc string // описание вложенной структуры для маппинга json
+		//	PathStr string // путь до массива с данными. Например, Result.Tasks
+		//}
+		//UrlQuery string
 	}
 
 	DocVueHooks struct {
 		ItemModifyResult []string
-		ItemBeforeSave []string
-		ItemForSave []string
-		ItemHtml []string
+		ItemBeforeSave   []string
+		ItemForSave      []string
+		ItemHtml         []string
 	}
 )
 
@@ -196,6 +208,14 @@ func (d DocType) IsBitrixIntegrationDebugMode() bool {
 	return d.Integrations.Bitrix.IsDebugMode
 }
 
+func (d DocType) IsOdataIntegration() bool {
+	return len(d.Integrations.Odata.Name) > 0
+}
+
+func (d DocType) IsOdataIntegrationDebugMode() bool {
+	return d.Integrations.Odata.IsDebugMode
+}
+
 // sugar для добавление компоненты во vue
 // имя шаблона. Например, docItem
 func (d *DocType) AddVueComposition(tmpName, compName string) {
@@ -241,7 +261,7 @@ func (d *DocType) SetIsRecursion(title string) {
 	d.Vue.I18nAdd("recursiveListTitle", title)
 }
 
-func (dv *DocVue) I18nAdd(titleEn, titleRu string)  {
+func (dv *DocVue) I18nAdd(titleEn, titleRu string) {
 	if dv.I18n == nil {
 		dv.I18n = map[string]string{}
 	}

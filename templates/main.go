@@ -210,10 +210,10 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		params = params + fmt.Sprintf(" class='%s' ", fld.Vue.ClassPrint())
 	}
 	if len(fld.Vue.Vif)>0 {
-		params = params + fmt.Sprintf(" v-if='%s' ", fld.Vue.Vif)
+		params = params + fmt.Sprintf(" v-if=\"%s\" ", fld.Vue.Vif)
 	}
 	switch fldType {
-	case types.FldTypeString, types.FldTypeText:
+	case types.FldTypeString, types.FldTypeText, types.FldTypeUuid:
 		return fmt.Sprintf(`<q-input %s type='text' v-model="item.%s" label="%s" autogrow :readonly='%s' %s/>`, borderStyle, name, nameRu, readonly, params)
 	case types.FldTypeInt, types.FldTypeInt64, types.FldTypeDouble:
 		return fmt.Sprintf(`<q-input %s type='number' v-model="item.%s" label="%s" :readonly='%s' %s/>`, borderStyle, name, nameRu, readonly, params)

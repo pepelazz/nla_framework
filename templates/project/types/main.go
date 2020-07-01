@@ -42,3 +42,13 @@ type BitrixConfig struct {
 }
 [[- end]]
 
+[[if .IsOdataIntegration -]]
+type OdataConfig struct {
+	Url       			string
+	Login       		string
+	Password       		string
+	ExchangePlanName 	string
+	ExchangePlanGuid 	string
+}
+[[- end]]
+

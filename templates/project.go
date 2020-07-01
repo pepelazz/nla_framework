@@ -65,6 +65,12 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 		//err = ExecuteToFile(t, p, distPath, "main.go")
 		//utils.CheckErr(err, fmt.Sprintf("'project' ExecuteToFile '%s'", "bitrix/main.go"))
 	}
+
+	// в случае коннекта к 1 Odata генерим файлы
+	if p.IsOdataIntegration() {
+		readTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/odata/main.go", "/odata", "main.go", nil)
+		readTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/odata/odataQueryType.go", "/odata", "odataQueryType.go", nil)
+	}
 }
 
 func OtherTemplatesGenerate(p types.ProjectType)  {
