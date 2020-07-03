@@ -35,8 +35,8 @@ var (
 	pgFuncList  = []PgMethod{
 		PgMethod{"user_update", []string{"admin"}, nil, nil},
 		PgMethod{"user_list", []string{}, nil, nil},
-		PgMethod{"user_get_by_id", []string{"admin"}, nil, BeforeHookAddUserId},
-		PgMethod{"user_get_by_id_for_ui", []string{"admin"}, nil, BeforeHookAddUserId},
+		PgMethod{"user_get_by_id", []string{}, nil, BeforeHookAddUserId},
+		PgMethod{"user_get_by_id_for_ui", []string{}, nil, BeforeHookAddUserId},
 		PgMethod{"current_user_update", []string{}, nil, BeforeHookAddUserId},
 		PgMethod{"current_user_get_auth_providers", []string{}, nil, BeforeHookAddUserId},
 		PgMethod{"message_list", []string{}, nil, BeforeHookAddUserId},
