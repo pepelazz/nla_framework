@@ -35,6 +35,7 @@ func main() {
 	isDev := flag.Bool("dev", false, "a bool")
 	pgPort := flag.String("pg_port", "", "an string")
 	pgPassword := flag.String("pg_pass", "", "an string")
+	dbName := flag.String("dbname", "", "an string")
 	flag.Parse()
 
 	if *isDev {
@@ -46,6 +47,9 @@ func main() {
 			_ = os.Setenv("PG_PASSWORD", *pgPassword)
 		}
 		_ = os.Setenv("PG_HOST", "localhost")
+		if len(*dbName) > 0 {
+			_ = os.Setenv("PG_DBNAME", *dbName)
+		}
 		_ = os.Setenv("IS_DEVELOPMENT", "true")
 	}
 

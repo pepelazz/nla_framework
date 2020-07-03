@@ -18,7 +18,7 @@
                 <!-- кнопка поиска  -->
                 <q-btn size="12px" v-if="searchFldName" flat dense round icon="search" @click="toggleSearchFld"/>
                 <!--  СОРТИРОВКА ПО ВОЗРАСТАНИЮ  -->
-                <q-btn size="12px" flat dense round icon="expand_less">
+                <q-btn v-if="listSortData" size="12px" flat dense round icon="expand_less">
                   <q-menu auto-close>
                     <q-list dense style="min-width: 100px">
                       <q-item clickable v-for="item in listSortData" :key="item.value">
@@ -29,7 +29,7 @@
                   </q-menu>
                 </q-btn>
                 <!--  СОРТИРОВКА ПО УБЫВАНИЮ  -->
-                <q-btn size="12px" flat dense round icon="expand_more">
+                <q-btn v-if="listSortData" size="12px" flat dense round icon="expand_more">
                   <q-menu auto-close>
                     <q-list dense style="min-width: 100px">
                       <q-item clickable v-for="item in listSortData" :key="item.value">
@@ -40,7 +40,7 @@
                   </q-menu>
                 </q-btn>
                 <!--  ФИЛЬТР  -->
-                <q-btn size="12px" flat dense round icon="filter_list">
+                <q-btn v-if="listFilterData" size="12px" flat dense round icon="filter_list">
                   <q-menu auto-close>
                     <q-list dense style="min-width: 100px">
                       <q-item clickable v-for="item in listFilterData" :key="item.title">

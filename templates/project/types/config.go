@@ -42,6 +42,10 @@ func ReadConfigFile(path string) (c *Config, err error) {
 			c.Postgres.Password = os.Getenv("PG_PASSWORD")
 		}
 		c.Postgres.DbName = tree.Get("postgres.dbName").(string)
+		if len(os.Getenv("PG_DBNAME")) > 0 {
+			// перезаписываем пароль, если есть глобальная переменная
+			c.Postgres.DbName = os.Getenv("PG_DBNAME")
+		}
 		c.Postgres.Host = tree.Get("postgres.host").(string)
 		if len(os.Getenv("PG_HOST")) > 0 {
 			// перезаписываем имя хоста, если есть глобальная переменная (для docker-compose)

@@ -38,26 +38,27 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	}
 
 	projectTmplPath := "../../../pepelazz/projectGenerator/templates/project"
-	readTmplAndPrint(p, projectTmplPath + "/types/main.go", "/types",  "main.go", nil)
-	readTmplAndPrint(p, projectTmplPath + "/types/config.go", "/types",  "config.go", nil)
-	readTmplAndPrint(p, projectTmplPath + "/webServer/main.go", "/webServer",  "main.go", nil)
-	readTmplAndPrint(p, projectTmplPath + "/sql/initialData.sql", "/sql/template/function/",  "initialData.sql", nil)
-	readTmplAndPrint(p, projectTmplPath + "/sql/user_trigger_after.sql", "/sql/template/function/_User/",  "user_trigger_after.sql", template.FuncMap{"PrintUserAfterTriggerUpdateLinkedRecords": types.PrintUserAfterTriggerUpdateLinkedRecords})
-	readTmplAndPrint(p, projectTmplPath + "/sql/01_User/main.toml", "/sql/model/01_User",  "main.toml", nil)
-	readTmplAndPrint(p, projectTmplPath + "/jobs/main.go", "/jobs",  "main.go", nil)
-	readTmplAndPrint(p, projectTmplPath + "/pg/pgListener.go", "/pg",  "pgListener.go", nil)
-	readTmplAndPrint(p, projectTmplPath + "/webClient/app/components/users/roles.js", "/webClient/src/app/components/users",  "roles.js", nil)
-	readTmplAndPrint(p, projectTmplPath + "/webClient/app/components/users/item.vue", "/webClient/src/app/components/users",  "item.vue", nil)
+	ReadTmplAndPrint(p, projectTmplPath + "/types/main.go", "/types",  "main.go", nil)
+	ReadTmplAndPrint(p, projectTmplPath + "/types/config.go", "/types",  "config.go", nil)
+	ReadTmplAndPrint(p, projectTmplPath + "/webServer/main.go", "/webServer",  "main.go", nil)
+	ReadTmplAndPrint(p, projectTmplPath + "/sql/initialData.sql", "/sql/template/function/",  "initialData.sql", nil)
+	ReadTmplAndPrint(p, projectTmplPath + "/sql/user_trigger_after.sql", "/sql/template/function/_User/",  "user_trigger_after.sql", template.FuncMap{"PrintUserAfterTriggerUpdateLinkedRecords": types.PrintUserAfterTriggerUpdateLinkedRecords})
+	ReadTmplAndPrint(p, projectTmplPath + "/sql/01_User/main.toml", "/sql/model/01_User",  "main.toml", nil)
+	ReadTmplAndPrint(p, projectTmplPath + "/jobs/main.go", "/jobs",  "main.go", nil)
+	ReadTmplAndPrint(p, projectTmplPath + "/pg/pgListener.go", "/pg",  "pgListener.go", nil)
+	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/users/roles.js", "/webClient/src/app/components/users",  "roles.js", nil)
+	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/users/item.vue", "/webClient/src/app/components/users",  "item.vue", nil)
+	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/currentUser/profile.vue", "/webClient/src/app/components/currentUser",  "profile.vue", nil)
 
 	if p.IsTelegramIntegration() {
-		readTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/telegram/telegramAuth.go", "/webServer", "telegramAuth.go", nil)
-		readTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/telegram/user_telegram_auth.sql", "/sql/template/function/_User", "user_telegram_auth.sql", nil)
-		readTmplAndPrint(p, projectTmplPath + "/tgBot/main.go", "/tgBot", "main.go", nil)
+		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/telegram/telegramAuth.go", "/webServer", "telegramAuth.go", nil)
+		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/telegram/user_telegram_auth.sql", "/sql/template/function/_User", "user_telegram_auth.sql", nil)
+		ReadTmplAndPrint(p, projectTmplPath + "/tgBot/main.go", "/tgBot", "main.go", nil)
 	}
 
 	// в случае коннекта к Битрикс генерим файлы
 	if p.IsBitrixIntegration() {
-		readTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/bitrix/bitrixMain.go", "/bitrix", "main.go", nil)
+		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/bitrix/bitrixMain.go", "/bitrix", "main.go", nil)
 		//sourcePath := "../../../pepelazz/projectGenerator/templates/integrations/bitrix/bitrixMain.go"
 		//t, err := template.New("bitrixMain.go").Funcs(funcMap).Delims("[[", "]]").ParseFiles(sourcePath)
 		//utils.CheckErr(err, "bitrixMain.go")
@@ -68,8 +69,8 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 
 	// в случае коннекта к 1 Odata генерим файлы
 	if p.IsOdataIntegration() {
-		readTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/odata/main.go", "/odata", "main.go", nil)
-		readTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/odata/odataQueryType.go", "/odata", "odataQueryType.go", nil)
+		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/odata/main.go", "/odata", "main.go", nil)
+		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/odata/odataQueryType.go", "/odata", "odataQueryType.go", nil)
 	}
 }
 
@@ -79,7 +80,7 @@ func OtherTemplatesGenerate(p types.ProjectType)  {
 	tmplGenerateStep2.PluginUtilsJs(p)
 }
 
-func readTmplAndPrint(p types.ProjectType, sourcePath, distPath, filename string, addFuncMap template.FuncMap) {
+func ReadTmplAndPrint(p types.ProjectType, sourcePath, distPath, filename string, addFuncMap template.FuncMap) {
 	fMap := template.FuncMap{}
 	for k, v := range funcMap {
 		fMap[k] = v
@@ -91,6 +92,6 @@ func readTmplAndPrint(p types.ProjectType, sourcePath, distPath, filename string
 	t, err := template.New(sourceFilename).Funcs(fMap).Delims("[[", "]]").ParseFiles(sourcePath)
 	utils.CheckErr(err, "readFileWithDist")
 	err = ExecuteToFile(t, p, p.DistPath + distPath, filename)
-	utils.CheckErr(err, fmt.Sprintf("readTmplAndPrint ExecuteToFile '%s/%s'", distPath, filename))
+	utils.CheckErr(err, fmt.Sprintf("ReadTmplAndPrint ExecuteToFile '%s/%s'", distPath, filename))
 }
 

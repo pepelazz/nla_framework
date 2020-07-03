@@ -37,6 +37,9 @@
         data() {
             return {
                 item: null,
+               [[if .Vue.Hooks.Profile.Flds ]]
+                  [[.Vue.Hooks.Profile.Flds]]
+               [[- else]]
                 flds: [
                     [
                         {name: 'last_name', type: 'string', label: 'Фамилия', required: true},
@@ -46,6 +49,8 @@
                         {name: 'avatar', compName: 'comp-fld-img', label: 'Фото', ext: {fldName: 'avatar', uploadUrl: 'upload_profile_image', methodUpdate: 'current_user_update'}, columnClass: 'col-xs-6 col-sm-6 col-md-2'},
                     ],
                 ],
+                optionsFlds: [],
+               [[- end]]
             }
         },
         methods: {
@@ -58,6 +63,7 @@
                     resultModify: (res) => {
                         // для обновления currentUser выполняем операцию login
                         this.login()
+                        if (this.optionsFlds) this.optionsFlds.map(fldName => res[fldName] = res.options[fldName])
                         return res
                     }
                 })
@@ -65,6 +71,7 @@
         },
         mounted() {
             this.item = this.currentUser
+            if (this.optionsFlds) this.optionsFlds.map(fldName => this.$set(this.item, fldName, this.item.options[fldName]))
         }
     }
 </script>
