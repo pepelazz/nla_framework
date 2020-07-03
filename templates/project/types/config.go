@@ -37,6 +37,10 @@ func ReadConfigFile(path string) (c *Config, err error) {
 	if tree.Has("postgres") {
 		c.Postgres.User = tree.Get("postgres.user").(string)
 		c.Postgres.Password = tree.Get("postgres.password").(string)
+		if len(os.Getenv("PG_PASSWORD")) > 0 {
+			// перезаписываем пароль, если есть глобальная переменная
+			c.Postgres.Password = os.Getenv("PG_PASSWORD")
+		}
 		c.Postgres.DbName = tree.Get("postgres.dbName").(string)
 		c.Postgres.Host = tree.Get("postgres.host").(string)
 		if len(os.Getenv("PG_HOST")) > 0 {

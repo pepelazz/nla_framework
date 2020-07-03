@@ -33,10 +33,18 @@ func main() {
 
 	// считываем флаг dev. Если режим разработки, то меняем глобальные переменные
 	isDev := flag.Bool("dev", false, "a bool")
+	pgPort := flag.String("pg_port", "", "an string")
+	pgPassword := flag.String("pg_pass", "", "an string")
 	flag.Parse()
 
 	if *isDev {
-		{{if .Config.DevMode.IsDocker -}}_ = os.Setenv("PG_PORT", "5438") {{end}}
+		_ = os.Setenv("PG_PORT", "5438")
+		if len(*pgPort) > 0 {
+			_ = os.Setenv("PG_PORT", *pgPort)
+		}
+		if len(*pgPassword) > 0 {
+			_ = os.Setenv("PG_PASSWORD", *pgPassword)
+		}
 		_ = os.Setenv("PG_HOST", "localhost")
 		_ = os.Setenv("IS_DEVELOPMENT", "true")
 	}
