@@ -216,6 +216,13 @@ func (d DocType) IsOdataIntegrationDebugMode() bool {
 	return d.Integrations.Odata.IsDebugMode
 }
 
+func (d *DocType) AddFld(fld FldType)  {
+	if d.Flds == nil {
+		d.Flds = []FldType{}
+	}
+	d.Flds = append(d.Flds, fld)
+}
+
 // sugar для добавление компоненты во vue
 // имя шаблона. Например, docItem
 func (d *DocType) AddVueComposition(tmpName, compName string) {

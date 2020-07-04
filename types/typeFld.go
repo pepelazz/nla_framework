@@ -299,3 +299,12 @@ func (fld FldVue) ClassPrintOnlyCol() string {
 	}
 	return ""
 }
+
+func (fld FldType) SetFromConfigTable(d *DocType, fldName string) FldType {
+	if d.Sql.Hooks.BeforeInsertUpdate == nil {
+		d.Sql.Hooks.BeforeInsertUpdate = []string{}
+	}
+	triggerStr := fmt.Sprintf("params = params || jsonb_build_object('%s', (select %s from config limit 1));", fld.Name, fldName)
+	d.Sql.Hooks.BeforeInsertUpdate = append(d.Sql.Hooks.BeforeInsertUpdate, triggerStr)
+	return fld
+}
