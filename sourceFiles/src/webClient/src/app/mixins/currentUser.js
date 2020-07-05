@@ -15,6 +15,9 @@ export default {
     isFired() {
       return this.currentUser && this.currentUser.options && this.currentUser.options.state === 'fired'
     },
+    isAdmin() {
+      return this.currentUser?.role?.includes('admin')
+    }
   },
   data() {
     return {

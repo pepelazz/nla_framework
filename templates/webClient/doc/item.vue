@@ -23,7 +23,7 @@
       [[- if .IsRecursion -]]
       <div class="row q-col-gutter-md q-mb-sm q-mt-sm">
         <div class="col-8" v-if="id !== 'new'">
-          <comp-recursive-child-list :id='id' @update='save'/>
+          <comp-recursive-child-list :id='id' :readonly="[[if .Vue.Readonly -]][[.Vue.Readonly]][[else]]false[[- end]]" @update='save'/>
         </div>
       </div>
       [[end]]
@@ -43,10 +43,11 @@
 
 <script>
 [[ .PrintVueImport "docItem" ]]
+    import currentUserMixin from '../../../app/mixins/currentUser'
     export default {
         props: ['id', 'isOpenInDialog' [[- if .IsRecursion -]], 'parent_id'[[- end -]] ],
         components: {[[- .PrintComponents "docItem" -]]},
-        mixins: [ [[- .Vue.PrintMixins "docItem" -]] ],
+        mixins: [currentUserMixin, [[- .Vue.PrintMixins "docItem" -]] ],
         computed: {
             docUrl: function() {
               return [[if not .IsRecursion -]]'/[[.Vue.RouteName]]'[[else -]] this.parent_id ? `/[[.Vue.RouteName]]/${this.parent_id}` : '/[[.Vue.RouteName]]' [[- end]]

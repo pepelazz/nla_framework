@@ -113,11 +113,7 @@ type (
 		NotAuth []string // роуты вне блока, требующего авторизации
 	}
 	ProjectVueHooks struct {
-		Users ProjectVueHooksUsers
 		Profile ProjectVueHooksProfile
-	}
-	ProjectVueHooksUsers struct {
-		ItemHtml []string
 	}
 	ProjectVueHooksProfile struct {
 		Flds string

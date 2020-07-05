@@ -11,7 +11,7 @@
             <q-item-section top side>
               <div class="text-grey-8 q-gutter-xs">
                 <!-- кнопка создания нового документа   -->
-                <template v-if="newDocUrl || newDocEventOnly">
+                <template v-if="!readonly && (newDocUrl || newDocEventOnly)">
                   <q-btn v-if="!newDocEventOnly" size="12px" flat dense round icon="add" @click="$router.push(newDocUrl)"/>
                   <q-btn v-else size="12px" flat dense round icon="add" @click="$emit('clickAddBtn')"/>
                 </template>
@@ -83,7 +83,7 @@
       </q-infinite-scroll>
     </div>
     <!-- кнопка создания нового документа   -->
-    <q-page-sticky v-if="newDocUrl || newDocEventOnly" position="bottom-right" :offset="[18, 18]">
+    <q-page-sticky v-if="!readonly && (newDocUrl || newDocEventOnly)" position="bottom-right" :offset="[18, 18]">
       <q-btn v-if="!newDocEventOnly" fab icon="add" color="accent" @click="$router.push(newDocUrl)"/>
       <q-btn v-else fab icon="add" color="accent" @click="$emit('clickAddBtn')"/>
     </q-page-sticky>
@@ -95,7 +95,7 @@
     import _ from 'lodash'
 
     export default {
-        props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocEventOnly', 'newDocUrl', 'urlQueryParams', 'ext'],
+        props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocEventOnly', 'newDocUrl', 'urlQueryParams', 'ext', 'readonly'],
         computed: {
             computedListTitle() {
                 return !this.listParams.deleted ? this.listTitle : this.listDeletedTitle

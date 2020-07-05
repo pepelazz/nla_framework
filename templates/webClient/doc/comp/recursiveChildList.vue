@@ -5,14 +5,14 @@
       <q-space />
       <q-btn v-if = '!isDeleted' dense flat icon="delete" @click="isDeleted = !isDeleted"><q-tooltip>показать список удаленных</q-tooltip></q-btn>
       <q-btn v-else dense round outline icon="delete" @click="isDeleted = !isDeleted"><q-tooltip>показать список активных</q-tooltip></q-btn>
-      <q-btn dense flat icon="add" @click="$router.push(`/[[.Vue.RouteName]]/${id}/new`)"/>
+      <q-btn v-if="!readonly" dense flat icon="add" @click="$router.push(`/[[.Vue.RouteName]]/${id}/new`)"/>
     </q-bar>
 
     <q-list bordered separator>
       <q-item v-for="item in list" :key="item.id">
           [[.PrintListRowAvatar]]
           [[.PrintListRowLabel]]
-        <comp-delete-btn-in-list update-method="[[.Name]]_update" :item="item" @success="onChangeList"/>
+        <comp-delete-btn-in-list v-if="!readonly" update-method="[[.Name]]_update" :item="item" @success="onChangeList"/>
       </q-item>
     </q-list>
   </div>
@@ -20,7 +20,7 @@
 
 <script>
     export default {
-        props: ['id'],
+        props: ['id', 'readonly'],
         computed: {
           currentUrl: function () {
             return `/[[.Vue.RouteName]]/${this.id}/`

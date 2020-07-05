@@ -50,6 +50,7 @@ type (
 		GloablI18n     map[string]map[string]string // для вынесение справочника в utils.js, чтобы потом можно было вызывать $util.i18n_<название функции>
 		Tabs           []VueTab
 		Hooks          DocVueHooks // куски vue кода
+		Readonly       string
 	}
 
 	VueTab struct {

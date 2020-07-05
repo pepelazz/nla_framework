@@ -5,7 +5,7 @@
       <q-space />
       <q-btn dense flat icon="expand_less" v-if="isShowList && list.length > 0" @click="isShowList = false" />
       <q-btn dense flat icon="expand_more" v-if="!isShowList && list.length > 0" @click="isShowList = true" />
-      <q-btn dense flat icon="add" @click="isShowAddDialog = true"/>
+      <q-btn dense flat icon="add" @click="isShowAddDialog = true" v-if="!readonly"/>
     </q-bar>
 
     <q-list bordered separator v-if="isShowList">
@@ -19,7 +19,7 @@
           <q-item-label>{{item.options.title[tableDependFldTitle]}}</q-item-label>
           <slot name="otherFlds" :item="item"></slot>
         </q-item-section>
-        <q-item-section side>
+        <q-item-section side v-if="!readonly">
           <div class="text-grey-8 q-gutter-xs">
             <q-btn v-if="flds" flat round icon="edit" size="sm" @click="showEditDialog(item)">
               <q-tooltip>Редактировать</q-tooltip>
@@ -108,7 +108,7 @@
 <script>
     import _ from 'lodash'
     export default {
-        props: ['id', 'tableIdName', 'tableIdFldName', 'tableDependName', 'tableDependFldName', 'tableDependRoute', 'linkTableName', 'label', 'avatarSrc', 'hideCreateNew', 'flds'],
+        props: ['id', 'tableIdName', 'tableIdFldName', 'tableDependName', 'tableDependFldName', 'tableDependRoute', 'linkTableName', 'label', 'avatarSrc', 'hideCreateNew', 'flds', 'readonly'],
         computed: {
             tableDependFldTitle() {
                 return this.tableDependFldName.split('_id')[0] + '_title'

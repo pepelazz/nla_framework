@@ -24,7 +24,9 @@
 </template>
 
 <script>
+  import currentUserMixin from '../../../app/mixins/currentUser'
   export default {
+    mixins: [currentUserMixin],
     computed: {
       currentUrl: () => '[[.Vue.RouteName]]/',
     },
