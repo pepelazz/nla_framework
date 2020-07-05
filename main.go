@@ -2,6 +2,7 @@ package projectGenerator
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/pepelazz/projectGenerator/templates"
 	"github.com/pepelazz/projectGenerator/types"
@@ -42,6 +43,14 @@ func readData(p types.ProjectType) {
 	// проставляем дефолтное время сервера, если не задано в настройках проекта
 	if len(project.Config.Postgres.TimeZone) == 0 {
 		project.Config.Postgres.TimeZone = "Europe/Moscow"
+	}
+	// проверяем чтобы не было поля user_id, потому что это служебное поле
+	for _, d := range p.Docs {
+		for _, fld := range d.Flds {
+			if fld.Name == "user_id" {
+				utils.CheckErr(errors.New("field with name 'user_id' is not allowed. Rename field. "), "doc: " + d.Name)
+			}
+		}
 	}
 
 	// передаем project в папку types, чтобы иметь доступ из функций шаблонов к проекту

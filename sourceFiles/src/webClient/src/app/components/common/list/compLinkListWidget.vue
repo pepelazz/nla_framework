@@ -159,7 +159,7 @@
             },
             reload() {
                 let params = {}
-                params[`${this.tableIdName}_id`] = +this.id
+                params[this.tableIdName] = +this.id
                 this.$utils.postCallPgMethod({method: `${this.linkTableName}_list`, params}).subscribe(res => {
                     if (res.ok) {
                         this.list = res.result
