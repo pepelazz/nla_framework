@@ -3,6 +3,7 @@ package templates
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/iancoleman/strcase"
 	"github.com/pepelazz/projectGenerator/types"
@@ -299,6 +300,9 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		extStr := ""
 		for k, v := range fld.Vue.Ext {
 			extStr = extStr + fmt.Sprintf(", %s: \"%s\"", k, v)
+		}
+		if fld.Doc == nil {
+			utils.CheckErr(errors.New("in fld pointer to Doc is nil"), "type files print in Vue error")
 		}
 		return fmt.Sprintf("<comp-fld-files v-if=\"this.id != 'new'\" fldName='%s' label='%s' :fld='item.%s' :ext = '{tableName: \"%s\", tableId: this.id%s}' :readonly='%s' %s/>", name, nameRu, name, fld.Doc.Name, extStr, readonly, params)
 	case types.FldVueTypeImg:

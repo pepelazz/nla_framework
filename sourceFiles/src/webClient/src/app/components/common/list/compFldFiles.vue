@@ -5,7 +5,7 @@
       <q-space/>
       <q-btn dense flat icon="expand_less" v-if="isShowList && list.length > 0" @click="isShowList = false"/>
       <q-btn dense flat icon="expand_more" v-if="!isShowList && list.length > 0" @click="isShowList = true"/>
-      <q-btn dense flat icon="add" @click="isShowDialog = true"/>
+      <q-btn dense flat icon="add" @click="isShowDialog = true" v-if="!readonly"/>
     </q-bar>
 
     <!-- список   -->
@@ -19,7 +19,7 @@
         <q-item-section>
           <q-item-label>{{item.filename}}</q-item-label>
         </q-item-section>
-        <q-item-section side>
+        <q-item-section side v-if="!readonly">
           <q-btn flat round icon="delete" size="sm" @click="showDeleteDialog(item.filename)">
             <q-tooltip>Удалить</q-tooltip>
           </q-btn>

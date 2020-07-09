@@ -36,6 +36,10 @@ func main() {
 	pgPort := flag.String("pg_port", "", "an string")
 	pgPassword := flag.String("pg_pass", "", "an string")
 	dbName := flag.String("dbname", "", "an string")
+	{{if .IsTelegramIntegration -}}
+	tgBotName := flag.String("telegram_bot_name", "", "an string")
+	tgBotToken:= flag.String("telegram_bot_token", "", "an string")
+	{{- end}}
 	flag.Parse()
 
 	if *isDev {
@@ -50,6 +54,16 @@ func main() {
 		if len(*dbName) > 0 {
 			_ = os.Setenv("PG_DBNAME", *dbName)
 		}
+		{{if .IsTelegramIntegration -}}
+		if len(*tgBotName) > 0 {
+			_ = os.Setenv("TELEGRAM_BOT_NAME", *tgBotName)
+		} else {
+			utils.Panic("Write 'telegram_bot_name' and 'telegram_bot_token' in go parameters for developmeent mode")
+		}
+		if len(*tgBotToken) > 0 {
+			_ = os.Setenv("TELEGRAM_BOT_TOKEN", *tgBotToken)
+		}
+		{{- end}}
 		_ = os.Setenv("IS_DEVELOPMENT", "true")
 	}
 

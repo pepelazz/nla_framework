@@ -99,5 +99,10 @@ func processPgEvent(event string) {
 		sse.SendJson(strconv.FormatInt(userIdInt, 10), gjson.Get(event, "flds").Value())
 	case "process_error":
 		fmt.Printf("postgres event %s\n", event)
+	[[if .IsTelegramIntegration -]]
+	// отправка сообщения пользователю в телеграм
+	case "send_msg_to_user_telegram":
+		tgBot.SendMsg(gjson.Get(event, "telegram_id").String(), gjson.Get(event, "msg").String())
+	[[- end]]
 	}
 }

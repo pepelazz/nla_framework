@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"[[.Config.LocalProjectPath]]/types"
 	tb "gopkg.in/tucnak/telebot.v2"
+	"strings"
 	"time"
 )
 
@@ -71,6 +72,10 @@ func Start(config types.Config) {
 	})
 
 	bot.Handle(tb.OnText, func(m *tb.Message) {
+		if strings.ToLower(m.Text) == "привет" {
+			bot.Send(m.Sender, "Гамарджоба!")
+			return
+		}
 		if m.Text == "key" {
 			bot.Send(m.Sender, "Hello!", menu)
 			return
@@ -107,6 +112,7 @@ func Start(config types.Config) {
 
 func SendMsg(tgId, msg string)  {
 	if bot != nil && len(tgId) > 0 && len(msg) > 0 {
-		bot.Send(&tgUser{tgId}, msg)
+		msg = strings.Replace(msg, "\\n", "\n", -1)
+		bot.Send(&tgUser{tgId}, msg, tb.ModeHTML)
 	}
 }

@@ -69,6 +69,10 @@ func CheckErr(err error, msg string) {
 	}
 }
 
+func Panic(msg string) {
+	log.Fatalf("%s", msg)
+}
+
 func MinInt(x, y int) int {
 	if x < y {
 		return x

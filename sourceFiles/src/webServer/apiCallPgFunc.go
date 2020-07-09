@@ -10,6 +10,7 @@ import (
 	"github.com/pepelazz/projectGenerator/utils"
 	"github.com/tidwall/gjson"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -181,11 +182,13 @@ func callPgFuncToJson(funcName string, jsonMap interface{}) (queryRes []byte, er
 	// по разному обрабатываем параметры запроса в зависмости от типа: может быть строка, а может быть map
 	switch v := jsonMap.(type) {
 	case string:
+		v = strings.Replace(v, "'", "''", -1)
 		jsonStr = []byte(v)
 	case map[string]interface{}:
 		if jsonStr, err = json.Marshal(v); err != nil {
 			return
 		}
+		jsonStr = []byte(strings.Replace(string(jsonStr), "'", "''", -1))
 	default:
 		jsonStr = []byte{}
 	}

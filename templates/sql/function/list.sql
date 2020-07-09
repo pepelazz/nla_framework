@@ -17,12 +17,23 @@ DECLARE
     result       JSON;
     condQueryStr TEXT;
     whereStr     TEXT;
+    checkMsg     TEXT;
 BEGIN
+
+    checkMsg = check_required_params(params, ARRAY ['user_id']);
+    IF checkMsg IS NOT NULL
+    THEN
+        RETURN checkMsg;
+    END IF;
+
+    {{.Sql.Hooks.Print "list" "listBeforeBuildWhere"}}
 
     -- сборка условия WHERE (where_str_build - функция из папки base)
     whereStr = where_str_build(params, 'doc', ARRAY [
         {{.PrintSqlFuncListWhereCond}}
     ]);
+
+    {{.Sql.Hooks.Print "list" "listAfterBuildWhere"}}
 
     -- финальная сборка строки с условиями выборки (build_query_part_for_list - функция из папки base)
     condQueryStr = '' || whereStr || build_query_part_for_list(params);

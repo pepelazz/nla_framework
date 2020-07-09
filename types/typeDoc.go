@@ -116,6 +116,8 @@ type (
 		BeforeInsert        []string
 		AfterInsertUpdate   []string
 		BeforeTriggerBefore []string
+		ListBeforeBuildWhere []string
+		ListAfterBuildWhere []string
 	}
 
 	DocIntegrations struct {

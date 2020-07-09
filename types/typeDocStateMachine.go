@@ -32,6 +32,7 @@ type (
 	DocSmActionlHooks struct {
 		DeclareVars []string
 		Before      []string
+		After       []string
 	}
 
 	DocSmActionCondition struct {
@@ -50,7 +51,7 @@ func (DocSm) TmplSqlActionPrintCaseBlock(d DocType) string {
 				copyToParamsFlds = append(copyToParamsFlds, v.Name)
 			}
 			// собираем строку - updateFlds = ARRAY ['amount', 'sum', 'state', 'comment']
-			updateFlds := []string{}
+			updateFlds := []string{"'state'"}
 			for _, v := range actn.UpdateFlds {
 				updateFlds = append(updateFlds, fmt.Sprintf("'%s'", v.Name))
 			}
@@ -67,11 +68,30 @@ func (DocSm) TmplSqlActionPrintCaseBlock(d DocType) string {
 			newStateName = '%[3]s';
 			allowedStates = '{%[2]s}'::text[];
 			copyToParamsFlds = '{%[4]s}'::text[];
-			updateFlds = ARRAY [%[5]s];
+			updateFlds = ARRAY [%[5]s]::text[];
 			%[6]s 
 			%[7]s
 `, res, st.Title, actn.To, strings.Join(copyToParamsFlds, ", "), strings.Join(updateFlds, ", "), conditions, beforeHooks)
 		}
+	}
+	return res
+}
+
+func (DocSm) TmplSqlActionPrintAfterHook(d DocType) string  {
+	res := ""
+	for _, st := range d.StateMachine.States {
+		for _, actn := range st.Actions {
+			afterHooks := ""
+			for _, hook := range actn.Hooks.After {
+				afterHooks = afterHooks + hook + "\n"
+			}
+			if len(afterHooks) > 0 {
+				res = fmt.Sprintf("%s\n\t\twhen '%s_to_%s' then \n\t\t\t\t%s", res, st.Title, actn.To, afterHooks)
+			}
+		}
+	}
+	if len(res)>0 {
+		res = fmt.Sprintf("case params->>'action_name'\n%s\n\t\telse\n\tend case;", res)
 	}
 	return res
 }
@@ -114,7 +134,7 @@ func (DocSm) TmplSqlUpdatePrintCaseBlock(d DocType) string {
 		for _, f := range st.UpdateFlds {
 			fldArr = append(fldArr, fmt.Sprintf("'%s'", f.Name))
 		}
-		res = fmt.Sprintf("%s\t\twhen '%s' then\n\t\t\tupdateFlds = ARRAY [%s];\n", res, st.Title, strings.Join(fldArr, ", "))
+		res = fmt.Sprintf("%s\t\twhen '%s' then\n\t\t\tupdateFlds = ARRAY [%s]::text[];\n", res, st.Title, strings.Join(fldArr, ", "))
 	}
 	return res
 }

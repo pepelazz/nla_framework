@@ -183,6 +183,16 @@ func (d DocType) PrintSqlFuncGetById() (res string) {
 	return
 }
 
+func (d DocType) PrintSqlFuncListRoleConditions() string {
+	res := ""
+	res = fmt.Sprintf(`if is_user_role((params->>'user_id')::int, '{"admin"}') is not true then
+        params = params || jsonb_build_object('manager_id', params->>'user_id');
+    end if;`, )
+
+	return res
+}
+
+
 func (d DocType) PrintSqlFuncListWhereCond() string {
 	arr := []string{"['ilike', 'search_text', 'search_text']"}
 	for _, fld := range d.Flds {
@@ -593,6 +603,14 @@ func (d DocSqlHooks) Print(tmplName, hookName string) string {
 	case "BeforeTriggerBefore":
 		if d.BeforeTriggerBefore != nil {
 			return strings.Join(d.BeforeTriggerBefore, "\n\n")
+		}
+	case "listBeforeBuildWhere":
+		if d.ListBeforeBuildWhere != nil {
+			return strings.Join(d.ListBeforeBuildWhere, "\n\n")
+		}
+	case "listAfterBuildWhere":
+		if d.ListAfterBuildWhere != nil {
+			return strings.Join(d.ListAfterBuildWhere, "\n\n")
 		}
 	default:
 		return fmt.Sprintf("DocSqlHooks.Print not found code for hook '%s'", hookName)

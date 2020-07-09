@@ -122,9 +122,17 @@ func ReadConfigFile(path string) (c *Config, err error) {
 	if tree.Has("telegram") {
 		if tree.Has("telegram.botName") {
 			c.Telegram.BotName = tree.Get("telegram.botName").(string)
+			if len(os.Getenv("TG_BOT_NAME")) > 0 {
+				// перезаписываем, если есть глобальная переменная
+				c.Telegram.BotName = os.Getenv("TG_BOT_NAME")
+			}
 		}
 		if tree.Has("telegram.token") {
 			c.Telegram.Token = tree.Get("telegram.token").(string)
+			if len(os.Getenv("TELEGRAM_BOT_TOKEN")) > 0 {
+				// перезаписываем, если есть глобальная переменная
+				c.Telegram.Token = os.Getenv("TELEGRAM_BOT_TOKEN")
+			}
 		}
 	}
 	[[- end]]

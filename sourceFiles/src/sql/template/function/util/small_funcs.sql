@@ -74,6 +74,36 @@ BEGIN
 END;
 $function$;
 
+-- проверка, что пользователь имеет одну из ролей
+DROP FUNCTION IF EXISTS is_user_role(userId int, roles text[]);
+CREATE OR REPLACE FUNCTION is_user_role(userId int, roles text[])
+    RETURNS bool
+    LANGUAGE plpgsql
+AS
+$function$
+DECLARE
+BEGIN
+    return (select  EXISTS (SELECT 1 FROM "user" where id=userId AND role && roles));
+END;
+$function$;
+
+-- проверка, что пользователь имеет одну из ролей
+DROP FUNCTION IF EXISTS send_msg_to_user_telegram(userId int, msg text);
+CREATE OR REPLACE FUNCTION send_msg_to_user_telegram(userId int, msg text)
+    RETURNS void
+    LANGUAGE plpgsql
+AS
+$function$
+DECLARE
+    tgId text;
+BEGIN
+    select options->>'telegram_id' into tgId from "user" where id=userId;
+    if tgId notnull then
+        PERFORM pg_notify('events', jsonb_build_object('table', 'send_msg_to_user_telegram', 'telegram_id', tgId, 'msg', msg):: TEXT);
+    end if;
+END;
+$function$;
+
 
 
 
