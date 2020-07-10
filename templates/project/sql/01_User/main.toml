@@ -45,6 +45,7 @@ methods = [
     "user_trigger_after", # для рассылки админам
     [[if .IsTelegramIntegration -]]
     "user_telegram_auth",
+    "user_get_by_telegram_id",
     [[- end]]
 #    "user_create",
 #    "user_change_role",

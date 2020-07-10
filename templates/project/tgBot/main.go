@@ -3,9 +3,14 @@ package tgBot
 import (
 	"fmt"
 	"[[.Config.LocalProjectPath]]/types"
+	"[[.Config.LocalProjectPath]]/cacheUtil"
+	"[[.Config.LocalProjectPath]]/pg"
+	"github.com/tidwall/gjson"
 	tb "gopkg.in/tucnak/telebot.v2"
+	"strconv"
 	"strings"
 	"time"
+	"encoding/json"
 )
 
 type tgUser struct {
@@ -54,6 +59,9 @@ func Start(config types.Config) {
 		return
 	}
 
+	// добавляем подписку на события в postgres
+	pg.AddPgEventListener(pgListener)
+
 	menu.Reply(
 		menu.Row(btnHelp),
 		menu.Row(btnSettings),
@@ -80,7 +88,12 @@ func Start(config types.Config) {
 			bot.Send(m.Sender, "Hello!", menu)
 			return
 		}
-		fmt.Printf("%s send '%s'\n", m.Sender.Username, m.Text)
+		user, _ := userFindByTelegramId(strconv.Itoa(m.Sender.ID))
+		if user != nil {
+			fmt.Printf("user: %s (%s) send '%s'\n", user.Fullname, m.Sender.Username, m.Text)
+		} else {
+			fmt.Printf("not auth user %s send '%s'\n", m.Sender.Username, m.Text)
+		}
 	})
 
 	bot.Handle(&btnHelp, func(m *tb.Message) {
@@ -115,4 +128,31 @@ func SendMsg(tgId, msg string)  {
 		msg = strings.Replace(msg, "\\n", "\n", -1)
 		bot.Send(&tgUser{tgId}, msg, tb.ModeHTML)
 	}
+}
+
+func pgListener(event string)  {
+	tableName := gjson.Get(event, "table").Str
+	if tableName == "send_msg_to_user_telegram" {
+		SendMsg(gjson.Get(event, "telegram_id").String(), gjson.Get(event, "msg").String())
+	}
+}
+
+func userFindByTelegramId(tgId string) (user *types.User, err error) {
+	cacheKey := "telegram_id" + tgId
+	// ищем пользователя в кэше
+	userIntreface, _ := cacheUtil.GoCacheGet(cacheKey)
+	if userIntreface != nil {
+		var ok bool
+		user, ok = userIntreface.(*types.User)
+		if ok {
+			return
+		}
+	}
+	jsonStr, _ := json.Marshal(map[string]interface{}{"id": tgId})
+	err = pg.CallPgFunc("user_get_by_telegram_id", jsonStr, &user, nil)
+	// записываем в кэш
+	if err == nil {
+		cacheUtil.GoCacheSet(cacheKey, user, time.Minute*1)
+	}
+	return
 }

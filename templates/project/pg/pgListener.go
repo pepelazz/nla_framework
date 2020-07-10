@@ -11,9 +11,6 @@ import (
 	"github.com/tidwall/gjson"
 	"strconv"
 	"time"
-	[[if .IsTelegramIntegration -]]
-	"[[.Config.LocalProjectPath]]/tgBot"
-	[[- end]]
 )
 
 type (
@@ -90,19 +87,11 @@ func processPgEvent(event string) {
 		if (gjson.Get(event, "flds.tg_op").Str == "INSERT") {
 			userIdInt := gjson.Get(event, "flds.user_id").Int()
 			sse.SendJson(strconv.FormatInt(userIdInt, 10), gjson.Get(event, "flds").Value())
-			[[if .IsTelegramIntegration -]]
-			tgBot.SendMsg(gjson.Get(event, "flds.user_options.telegram_id").String(), gjson.Get(event, "flds.title").String())
-			[[- end]]
 		}
 	case "task":
 		userIdInt := gjson.Get(event, "flds.executor_id").Int()
 		sse.SendJson(strconv.FormatInt(userIdInt, 10), gjson.Get(event, "flds").Value())
 	case "process_error":
 		fmt.Printf("postgres event %s\n", event)
-	[[if .IsTelegramIntegration -]]
-	// отправка сообщения пользователю в телеграм
-	case "send_msg_to_user_telegram":
-		tgBot.SendMsg(gjson.Get(event, "telegram_id").String(), gjson.Get(event, "msg").String())
-	[[- end]]
 	}
 }

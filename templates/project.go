@@ -54,6 +54,7 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	if p.IsTelegramIntegration() {
 		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/telegram/telegramAuth.go", "/webServer", "telegramAuth.go", nil)
 		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/telegram/user_telegram_auth.sql", "/sql/template/function/_User", "user_telegram_auth.sql", nil)
+		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/telegram/user_get_by_telegram_id.sql", "/sql/template/function/_User", "user_get_by_telegram_id.sql", nil)
 		ReadTmplAndPrint(p, projectTmplPath + "/tgBot/main.go", "/tgBot", "main.go", nil)
 	}
 
