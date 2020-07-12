@@ -39,7 +39,7 @@
       </q-header>
 
       <!-- боковое меню     -->
-      <side-menu :leftSide="leftSide" :currentUser="currentUser"/>
+      <side-menu :leftSide="leftSide" :currentUser="currentUser" @hide="leftSide=false"/>
       <!-- список сообщений     -->
       <message-list ref="messageList" :rightSide="isShowMsgList" :currentUser="currentUser" @hide="isShowMsgList = false" @updateCounter="v => messageCounter = v"/>
       <!-- список задач     -->

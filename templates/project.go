@@ -46,6 +46,7 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	ReadTmplAndPrint(p, projectTmplPath + "/sql/01_User/main.toml", "/sql/model/01_User",  "main.toml", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/jobs/main.go", "/jobs",  "main.go", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/pg/pgListener.go", "/pg",  "pgListener.go", nil)
+	ReadTmplAndPrint(p, projectTmplPath + "/webClient/index.template.html", "/webClient/src",  "index.template.html", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/users/roles.js", "/webClient/src/app/components/users",  "roles.js", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/users/item.vue", "/webClient/src/app/components/users",  "item.vue", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/currentUser/profile.vue", "/webClient/src/app/components/currentUser",  "profile.vue", nil)

@@ -33,6 +33,7 @@ type (
 		Bitrix           BitrixConfig
 		Telegram         TelegramConfig
 		Odata            OdataConfig
+		Yandex           YandexConfig
 	}
 	PostrgesConfig struct {
 		DbName   string
@@ -94,6 +95,10 @@ type (
 		Password         string
 		ExchangePlanName string
 		ExchangePlanGuid string
+	}
+
+	YandexConfig struct {
+		MetrikaId string
 	}
 
 	ProjectSql struct {

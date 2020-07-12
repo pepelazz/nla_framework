@@ -1,7 +1,7 @@
 export default {
   computed: {
     isRole() {
-      return (roles) => {
+      return (...roles) => {
         if (!roles || roles.length === 0) return true
         if (!this.currentUser.role) return false
         let isAccess = false

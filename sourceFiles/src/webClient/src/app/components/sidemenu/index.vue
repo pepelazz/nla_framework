@@ -1,7 +1,7 @@
 <template>
   <q-drawer :value="leftSide" side="left" bordered show-if-above
             content-class="bg-grey-2"
-            :width="240">
+            :width="240" @hide="$emit('hide')">
     <q-scroll-area class="fit">
       <q-list padding>
         <div v-for="link in menuLinks" :key="link.text">
