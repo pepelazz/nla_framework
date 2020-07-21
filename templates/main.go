@@ -208,7 +208,9 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	}
 	params := ""
 	if len(fld.Vue.Class) > 0 {
-		params = params + fmt.Sprintf(" class='%s' ", fld.Vue.ClassPrint())
+		params = params + fmt.Sprintf(" class='q-mb-sm %s' ", fld.Vue.ClassPrint())
+	} else {
+		params = params + " class='q-mb-sm' "
 	}
 	if len(fld.Vue.Vif)>0 {
 		params = params + fmt.Sprintf(" v-if=\"%s\" ", fld.Vue.Vif)
@@ -285,7 +287,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		for _, v := range fld.Vue.Options {
 			options = fmt.Sprintf("%s <q-radio size='xs' dense v-model='item.%s' val='%s' label='%s' :disable ='%s'/>\n", options, name, v.Value, v.Label, readonly)
 		}
-		return fmt.Sprintf(`<div class="row q-col-gutter-md q-pb-xs">
+		return fmt.Sprintf(`<div class="row q-col-gutter-md q-pb-xs q-mb-sm">
 	<div class="col-4">%s</div>
 	<div class="col-8 q-gutter-sm ">
 	%s

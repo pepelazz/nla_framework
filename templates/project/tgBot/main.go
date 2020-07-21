@@ -92,7 +92,7 @@ func Start(config types.Config) {
 		if user != nil {
 			fmt.Printf("user: %s (%s) send '%s'\n", user.Fullname, m.Sender.Username, m.Text)
 		} else {
-			fmt.Printf("not auth user %s send '%s'\n", m.Sender.Username, m.Text)
+			fmt.Printf("not auth user %s %v send '%s'\n", m.Sender.Username, m.Sender.ID, m.Text)
 		}
 	})
 

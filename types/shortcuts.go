@@ -270,6 +270,21 @@ func GetFldDadataAddress(name, nameRu string, rowCol [][]int, params ...string) 
 		classStr= params[0]
 	}
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeDadataAddress, Class: []string{classStr}}}
+	for i, v := range params {
+		if i == 0 {
+			classStr = v
+		} else {
+			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
+				fld.Vue.Readonly = "true"
+			}
+			if v == "isClearable" {
+				if fld.Vue.Ext == nil {
+					fld.Vue.Ext = map[string]string{}
+				}
+				fld.Vue.Ext["isClearable"] = "true"
+			}
+		}
+	}
 	return
 }
 
