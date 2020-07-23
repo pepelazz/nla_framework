@@ -22,12 +22,12 @@
     </template>
 
     <!-- кнопка добавления   -->
-    <template v-slot:append v-if="ext && ext.addNewUrl">
+    <template v-slot:append v-if="ext && ext.addNewUrl && !readonly">
       <q-btn round dense flat icon="add" @click="openNewTab"/>
     </template>
 
     <!-- кнопка удаления   -->
-    <template v-slot:append  v-if="ext && ext.isClearable && localItem.label">
+    <template v-slot:append  v-if="ext && ext.isClearable && localItem.label && !readonly">
       <q-icon name="cancel" @click.stop="clear" class="cursor-pointer" />
     </template>
 
