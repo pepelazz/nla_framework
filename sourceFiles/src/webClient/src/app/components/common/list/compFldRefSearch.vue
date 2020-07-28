@@ -31,6 +31,22 @@
       <q-icon name="cancel" @click.stop="clear" class="cursor-pointer" />
     </template>
 
+    <!-- форматирование списка   -->
+    <template v-slot:option="scope">
+      <q-item
+        v-bind="scope.itemProps"
+        v-on="scope.itemEvents"
+      >
+        <q-item-section avatar v-if="scope.opt.icon">
+          <q-icon :name="scope.opt.icon" />
+        </q-item-section>
+        <q-item-section>
+          <q-item-label v-html="scope.opt.label" />
+          <q-item-label caption v-if="ext.descriptionFunc">{{ ext.descriptionFunc(scope.opt.item)}}</q-item-label>
+        </q-item-section>
+      </q-item>
+    </template>
+
     <template v-slot:no-option>
       <q-item>
         <q-item-section class="text-grey">
@@ -80,7 +96,7 @@
         },
         created() {
             const title = this.item ? this.item : null
-            this.localItem = {label: title, value: title}
+            this.localItem = {label: title, value: this.ext?.value || title}
         },
         watch: {
             localItem: function (v) {
@@ -103,7 +119,7 @@
                             this.options = res.result.map(v => {
                                 return {
                                     label: v[this.itemTitleFldName],
-                                    value: v[this.itemTitleFldName],
+                                    value: `${v[this.ext.itemValueFldName ? this.ext.itemValueFldName : this.itemTitleFldName]}`,
                                     id: v.id,
                                     item: v,
                                 }

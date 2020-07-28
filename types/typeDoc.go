@@ -21,7 +21,7 @@ type (
 		Sql                  DocSql
 		Templates            map[string]*DocTemplate
 		TemplatePathOverride map[string]TmplPathOverride // map для переопределения источника шаблона по его названию
-		IsBaseTemapltes      DocIsBaseTemapltes          // флаг что генерируем стандартные шаблоны для документа
+		IsBaseTemapltes      DocIsBaseTemplates          // флаг что генерируем стандартные шаблоны для документа
 		PathPrefix           string                      // префикс,если папка, в которой лежит папка с описанием документа находится не на одном уровне с main.go. Например 'docs', если docs/client/...
 		IsTaskAllowed        bool                        // признак, что к таблице можно прикреплять задачи
 		StateMachine         *DocSm
@@ -92,7 +92,7 @@ type (
 		Hooks           DocSqlHooks // куски sql кода
 	}
 
-	DocIsBaseTemapltes struct {
+	DocIsBaseTemplates struct {
 		Vue bool
 		Sql bool
 	}
