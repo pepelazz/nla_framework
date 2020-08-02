@@ -42,7 +42,7 @@
         </q-item-section>
         <q-item-section>
           <q-item-label v-html="scope.opt.label" />
-          <q-item-label caption v-if="ext.descriptionFunc">{{ ext.descriptionFunc(scope.opt.item)}}</q-item-label>
+          <q-item-label caption v-if="ext && ext.descriptionFunc">{{ ext.descriptionFunc(scope.opt.item)}}</q-item-label>
         </q-item-section>
       </q-item>
     </template>
@@ -119,7 +119,7 @@
                             this.options = res.result.map(v => {
                                 return {
                                     label: v[this.itemTitleFldName],
-                                    value: `${v[this.ext.itemValueFldName ? this.ext.itemValueFldName : this.itemTitleFldName]}`,
+                                    value: `${v[this.ext?.itemValueFldName ? this.ext.itemValueFldName : this.itemTitleFldName]}`,
                                     id: v.id,
                                     item: v,
                                 }
