@@ -18,6 +18,8 @@ BEGIN
         end if;
         {{- end }}
 
+        {{.Sql.Hooks.Print "triggerAfter" "AfterTriggerAfter"}}
+
     RETURN NEW;
 END;
 

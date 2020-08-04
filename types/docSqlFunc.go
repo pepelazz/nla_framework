@@ -604,6 +604,10 @@ func (d DocSqlHooks) Print(tmplName, hookName string) string {
 		if d.BeforeTriggerBefore != nil {
 			return strings.Join(d.BeforeTriggerBefore, "\n\n")
 		}
+	case "AfterTriggerAfter":
+		if d.AfterTriggerAfter != nil {
+			return strings.Join(d.AfterTriggerAfter, "\n\n")
+		}
 	case "listBeforeBuildWhere":
 		if d.ListBeforeBuildWhere != nil {
 			return strings.Join(d.ListBeforeBuildWhere, "\n\n")

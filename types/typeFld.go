@@ -216,10 +216,12 @@ func (fld FldType) SetIsOptionFld() FldType {
 	fld.Sql.IsOptionFld = true
 	return fld
 }
+// признак что поле участвует в поиске. В options.title записывается значение. А также добавляется в колонку search_txt
 func (fld FldType) SetIsSearch() FldType {
 	fld.Sql.IsSearch = true
 	return fld
 }
+// дефолтное значение для колонки в postgres таблицы
 func (fld FldType) SetDefault(s string) FldType {
 	fld.Sql.Default = s
 	return fld

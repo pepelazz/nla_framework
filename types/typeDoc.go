@@ -9,6 +9,7 @@ import (
 
 const (
 	DocTypeLinkTable = "linkTable"
+	VueIsNotNew = "item.id != -1"
 )
 
 type (
@@ -116,6 +117,7 @@ type (
 		BeforeInsert        []string
 		AfterInsertUpdate   []string
 		BeforeTriggerBefore []string
+		AfterTriggerAfter []string
 		ListBeforeBuildWhere []string
 		ListAfterBuildWhere []string
 	}
