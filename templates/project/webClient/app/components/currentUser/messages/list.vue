@@ -9,54 +9,21 @@
           <q-btn round flat color="secondary" icon="refresh" size="sm" @click="reload"/>
         </div>
         <q-separator/>
-        <q-item v-for="item in listForRender" :key="item.id">
-          <q-avatar square>
-            <q-icon :name="item.type" :color="item.type"/>
-          </q-avatar>
-          <q-item-section>
-            <q-item-label>{{item.title}}</q-item-label>
-            <q-item-label caption>{{formatDate(item.created_at)}}</q-item-label>
-            <q-item-label>
-              <q-btn v-if="item.data.message" label="детали" size="xs" flat
-                     @click="showDetailDialog(item)"/>
-            </q-item-label>
-          </q-item-section>
-          <q-item-section side>
-            <div class="text-grey-8">
-              <q-btn size="12px" flat dense round icon="done" @click="markAsRead(item.id)"/>
-            </div>
-          </q-item-section>
-        </q-item>
+        <component v-for="item in listForRender" :key="item.id" :is="item.template" :item="item" @markAsRead="markAsRead"></component>
       </q-list>
       <q-separator/>
     </q-drawer>
-
-    <!-- диалог с подробностями   -->
-    <q-dialog
-      v-model="isShowDetailDialog"
-    >
-      <q-card style="width: 700px; max-width: 80vw;">
-        <q-card-section>
-          <div class="text-h6">{{detailDialogItem.title}}</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none" v-if="detailDialogItem.data">
-          <span v-html="detailDialogItem.data.message"></span>
-        </q-card-section>
-
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="OK" v-close-popup/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
 <script>
     import moment from 'moment'
+    import defaultTmpl from './msgTemplate/default.vue'
+    [[range .Vue.MessageTmpls]]import [[.CompName]] from '[[.CompPath]]' [[- end]]
 
     export default {
         props: ['currentUser', 'rightSide'],
+      components: {defaultTmpl [[range .Vue.MessageTmpls]], [[.CompName]] [[- end]]},
         computed: {
             listForRender: function () {
                 return this.list.filter(v => !v.is_read)
@@ -73,6 +40,7 @@
             newMessage(msg) {
                 if (this.list.findIndex(v => msg.id === v.id) === -1) {
                     if (!msg.type) msg.type = 'info'
+                    msg.template = msg.options && msg.options.template ? msg.options.template : 'defaultTmpl'
                     this.list.unshift(msg)
                     this.showNotifyMsg()
                     this.updateCounter()
@@ -86,10 +54,11 @@
                     if (res.ok) {
                         this.list = res.result.map(v => {
                             if (!v.type) v.type = 'info'
+                            v.template = v.options && v.options.template ? v.options.template : 'defaultTmpl'
                             return v
                         })
+                        this.updateCounter()
                         if (this.list.length > 0) {
-                            this.updateCounter()
                             this.showNotifyMsg()
                         }
                     }

@@ -50,6 +50,7 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/users/roles.js", "/webClient/src/app/components/users",  "roles.js", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/users/item.vue", "/webClient/src/app/components/users",  "item.vue", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/currentUser/profile.vue", "/webClient/src/app/components/currentUser",  "profile.vue", nil)
+	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/currentUser/messages/list.vue", "/webClient/src/app/components/currentUser/messages",  "list.vue", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/home.vue", "/webClient/src/app/components",  "home.vue", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/auth/loginPage.vue", "/webClient/src/app/components/auth",  "loginPage.vue", nil)
 

@@ -74,6 +74,9 @@ func ReadConfigFile(path string) (c *Config, err error) {
 		}
 		if tree.Has("webServer.url") {
 			c.WebServer.Url = tree.Get("webServer.url").(string)
+			if os.Getenv("IS_DEVELOPMENT") == "true" {
+				c.WebServer.Url = "http://localhost:8080"
+			}
 		} else {
 			c.WebServer.Url = "localhost"
 		}

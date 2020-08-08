@@ -63,6 +63,8 @@ type (
 		Routes    [][]string
 		Menu      []VueMenu
 		Hooks     ProjectVueHooks
+		// кастомные шаблоны сообщений, которые выводятся в правом боковом списке
+		MessageTmpls []ProjectVueMessageTmpl
 	}
 	VueMenu struct {
 		DocName  string // если указано docName, то url и иконка копируются из описания документа
@@ -122,6 +124,11 @@ type (
 	}
 	ProjectVueHooksProfile struct {
 		Flds string
+	}
+	// компонента - кастомный шаблон сообщения
+	ProjectVueMessageTmpl struct {
+		CompName string // название компоненты
+		CompPath string // путь к файлу компоненты
 	}
 )
 

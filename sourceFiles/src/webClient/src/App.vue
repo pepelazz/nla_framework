@@ -46,7 +46,7 @@
       <task-list ref="taskList" :rightSide="isShowTaskList" :currentUser="currentUser" @hide="isShowTaskList = false" @updateCounter="v => taskCounter = v"/>
 
       <q-page-container>
-        <router-view :key="$route.fullPath" :currentUser="currentUser"/>
+        <router-view :key="$route.fullPath" :currentUser="currentUser" @reloadMsgList="$refs.messageList ? $refs.messageList.reload() : ''"/>
       </q-page-container>
 
     </q-layout>
@@ -119,6 +119,7 @@
                     // вариант получения message для вывода в боковом правом списке
                     if (res.sse_type === 'message') {
                         if (res.data && typeof res.data === 'string') res.data = JSON.parse(res.data)
+                        if (res.options && typeof res.options === 'string') res.options = JSON.parse(res.options)
                         this.$refs.messageList.newMessage(res)
                     }
                     // вариант получения task для вывода в боковом правом списке
