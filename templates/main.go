@@ -53,6 +53,9 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 	readFiles("sql_", "{{", "}}", path+"main.toml")
 	path = "../../../pepelazz/projectGenerator/templates/sql/function/"
 	readFiles("sql_function_", "{{", "}}", path+"get_by_id.sql", path+"list.sql", path+"update.sql", path+"trigger_before.sql", path+"trigger_after.sql")
+	readFiles("sql_function_", "[[", "]]", path+"create.sql")
+	// отдельно читаем шаблон action для stateMachine. Там нужно передавать свой map с параметрами
+	res["sql_function_action.sql"] = stateMachineReadTmplAction(funcMap, path+"action.sql")
 
 	// парсинг шаблонов для конкретного документа
 	for i, d := range p.Docs {
@@ -81,6 +84,9 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 		}
 		if d.IsBaseTemapltes.Sql {
 			baseTmplNames = append(baseTmplNames, "sql_main.toml", "sql_function_get_by_id.sql", "sql_function_list.sql", "sql_function_update.sql", "sql_function_trigger_before.sql", "sql_function_trigger_after.sql")
+		}
+		if d.StateMachine != nil {
+			baseTmplNames = append(baseTmplNames, "sql_function_action.sql", "sql_function_create.sql",)
 		}
 		// если документ отмечен свойством рекурсии, то дополнительные шаблоны
 		if d.IsRecursion {
@@ -148,6 +154,20 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 					continue
 				}
 				d.Templates[tName] = &types.DocTemplate{Tmpl: tmpl, DistPath: distPath, DistFilename: distFilename}
+
+				// в случае state machine переопределяем шаблон update
+				if d.IsStateMachine() {
+					if tName == "sql_function_update.sql" {
+						if _, ok := d.Templates["sql_function_update.sql"]; ok {
+							d.Templates["sql_function_update.sql"].Tmpl = stateMachineReadTmplUpdate(funcMap, "../../../pepelazz/projectGenerator/templates/sql/function/stateMachine_update.sql")
+						}
+					}
+					if tName == "webClient_item.vue" {
+						if _, ok := d.Templates["webClient_item.vue"]; ok {
+							d.Templates["webClient_item.vue"].Tmpl = stateMachineReadTmplWebclientItem(funcMap, "../../../pepelazz/projectGenerator/templates/webClient/doc/comp/stateMachine/webClient_item.vue")
+						}
+					}
+				}
 			}
 		}
 

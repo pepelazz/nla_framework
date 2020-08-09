@@ -112,14 +112,15 @@ type (
 	}
 
 	DocSqlHooks struct {
-		DeclareVars         map[string]string
-		BeforeInsertUpdate  []string
-		BeforeInsert        []string
-		AfterInsertUpdate   []string
-		BeforeTriggerBefore []string
-		AfterTriggerAfter []string
+		DeclareVars          map[string]string
+		BeforeInsertUpdate   []string
+		BeforeInsert         []string
+		AfterInsertUpdate    []string
+		BeforeTriggerBefore  []string
+		AfterTriggerAfter    []string
 		ListBeforeBuildWhere []string
-		ListAfterBuildWhere []string
+		ListAfterBuildWhere  []string
+		AfterCreate          []string
 	}
 
 	DocIntegrations struct {
@@ -203,6 +204,10 @@ func (d DocType) PgName() string {
 
 func (d DocType) NameCamelCase() string {
 	return snaker.SnakeToCamel(d.Name)
+}
+
+func (d DocType) IsStateMachine() bool {
+	return d.StateMachine != nil
 }
 
 func (d DocType) IsBitrixIntegration() bool {

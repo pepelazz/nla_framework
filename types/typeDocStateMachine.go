@@ -139,6 +139,13 @@ func (DocSm) TmplSqlUpdatePrintCaseBlock(d DocType) string {
 	return res
 }
 
+func (st DocSm) GetFirstState() DocSmState {
+	if len(st.States) > 0 {
+		return *(st.States[0])
+	}
+	return DocSmState{}
+}
+
 func (st DocSmState) GetStateUpdateFldsGrid() func() [][]FldType {
 	res := [][]FldType{}
 	for _, f := range st.UpdateFlds {
@@ -178,5 +185,76 @@ func (action DocSmAction) GetUpdateFldsGrid() func() [][]FldType {
 	}
 	return func() [][]FldType {
 		return res
+	}
+}
+
+func (sm *DocSm) GenerateTmpls(doc *DocType, params map[string]interface{}) {
+	path := "../../../pepelazz/projectGenerator/templates/webClient/doc/comp/stateMachine"
+	cardTmplPath := path + "/cardTmpl.vue"
+	actionBtnPath := path + "/actionBtn.vue"
+	if params != nil {
+		if p, ok := params["cardTmplPath"]; ok {
+			cardTmplPath = p.(string)
+		}
+		if p, ok := params["actionBtnPath"]; ok {
+			actionBtnPath = p.(string)
+		}
+	}
+	for _, st := range sm.States {
+		// шабоны cardTmpl для карточек состояний
+		fileName := "state_" + st.Title + "_card.vue"
+		stTitle := st.Title
+		stTitleRu := st.TitleRu
+		iconSrc := st.IconSrc
+		doc.Templates[fileName] = &DocTemplate{
+			Source:       cardTmplPath,
+			DistPath:     fmt.Sprintf("../src/webClient/src/app/components/%s/comp", doc.Name),
+			DistFilename: fileName,
+			FuncMap: map[string]interface{}{
+				"GetStateName": func() string { return stTitle },
+				"GetLabel":     func() string { return stTitleRu },
+				"GetIconSrc":   func() string { return iconSrc },
+				//"GetUpdateFlds": func() []t.FldType {return updateFlds},
+				"GetStateUpdateFldsGrid": st.GetStateUpdateFldsGrid(),
+			},
+		}
+		// шабоны actionBtn для кнопок по переходу в новое состояние
+		for _, actn := range st.Actions {
+			fileName := st.Title + "_to_" + actn.To + "_btn.vue"
+			actnLabel := actn.Label
+			actnName := st.Title + "_to_" + actn.To
+			updateFlds := []FldType{}
+			// собираем цепочку условий vif
+			vifArr := []string{}
+			for _, v := range actn.Conditions {
+				if len(v.VueIf) > 0 {
+					vifArr = append(vifArr, v.VueIf)
+				}
+			}
+			// собираем строчку с условиями v-if только в том случае если условия существуют
+			vif := ""
+			if len(vifArr) > 0 {
+				vif = fmt.Sprintf("v-if=\"%s\"", strings.Join(vifArr, " && "))
+			}
+
+			for _, fld := range actn.UpdateFlds {
+				if fld.Name == "state" {
+					continue
+				}
+				updateFlds = append(updateFlds, fld)
+			}
+			doc.Templates[fileName] = &DocTemplate{
+				Source:       actionBtnPath,
+				DistPath:     fmt.Sprintf("../src/webClient/src/app/components/%s/comp", doc.Name),
+				DistFilename: fileName,
+				FuncMap: map[string]interface{}{
+					"GetLabel":          func() string { return actnLabel },
+					"GetActionName":     func() string { return actnName },
+					"GetUpdateFlds":     func() []FldType { return updateFlds },
+					"GetUpdateFldsGrid": actn.GetUpdateFldsGrid(),
+					"Vif":               func() string { return vif },
+				},
+			}
+		}
 	}
 }

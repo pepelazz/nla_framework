@@ -616,6 +616,10 @@ func (d DocSqlHooks) Print(tmplName, hookName string) string {
 		if d.ListAfterBuildWhere != nil {
 			return strings.Join(d.ListAfterBuildWhere, "\n\n")
 		}
+	case "afterCreate":
+		if d.AfterCreate != nil {
+			return strings.Join(d.AfterCreate, "\n\n")
+		}
 	default:
 		return fmt.Sprintf("DocSqlHooks.Print not found code for hook '%s'", hookName)
 	}
