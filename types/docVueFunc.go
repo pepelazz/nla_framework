@@ -215,6 +215,35 @@ func (d DocType) PrintVueItemResultModify() string {
 	return res
 }
 
+// функция преобразования select полей внтури карточки в state machine
+func (d DocType) PrintVueItemStateMachineCardMounted() string {
+	res := ""
+	for _, fld := range d.Flds {
+		// single select - преобразуем v -> {label: label, value: v}
+		if fld.Vue.Type == FldVueTypeSelect {
+			funcStr := fmt.Sprintf(`
+				if (this.item.%[1]s && !this.is_current_state) {
+					if (this.item.%[1]s) this.item.%[1]s  = {label: this.$utils.i18n_%[2]s_%[1]s(this.item.%[1]s), value: this.item.%[1]s}
+                    }
+			`, fld.Name, d.Name)
+			res = fmt.Sprintf("%s%s", res, funcStr)
+		}
+		// multiple select - преобразуем v -> {label: label, value: v}
+		if fld.Vue.Type == FldVueTypeMultipleSelect {
+			options, err := json.Marshal(fld.Vue.Options)
+			utils.CheckErr(err, fmt.Sprintf("'%s' json.Marshal(fld.Vue.Options)", fld.Name))
+			funcStr := fmt.Sprintf(`
+				if (res.%[1]s) {
+                    let arr = %[2]s
+					res.%[1]s = res.%[1]s.map(name => _.find(arr, {value: name})).filter(v => v)
+                    }
+			`, fld.Name, options)
+			res = fmt.Sprintf("%s%s", res, funcStr)
+		}
+	}
+	return res
+}
+
 func (d DocVue) PrintMixins(tmplName string) string  {
 	res := []string{}
 	if d.Mixins != nil {

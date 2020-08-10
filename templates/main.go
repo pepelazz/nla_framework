@@ -171,6 +171,19 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 			}
 		}
 
+		// если state machine то добавляем в sql методы
+		if d.IsStateMachine() {
+			if d.Sql.Methods == nil {
+				d.Sql.Methods = map[string]*types.DocSqlMethod{}
+			}
+			if _, ok := d.Sql.Methods[d.Name+"_create"]; !ok {
+				d.Sql.Methods[d.Name+"_create"] = &types.DocSqlMethod{Name: d.Name+"_create"}
+			}
+			if _, ok := d.Sql.Methods[d.Name+"_action"]; !ok {
+				d.Sql.Methods[d.Name+"_action"] = &types.DocSqlMethod{Name: d.Name+"_action"}
+			}
+		}
+
 		p.Docs[i] = d
 	}
 

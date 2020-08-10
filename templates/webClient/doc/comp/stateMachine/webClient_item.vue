@@ -107,7 +107,7 @@
         },
         methods: {
             resultModify(res) {
-                if (res.payment_type) res.payment_type = {label: this.$utils.i18n_procurment_payment_type(res.payment_type), value: res.payment_type}
+                [[.PrintVueItemResultModify]]
                 return res
             },
             stateChanged() {
@@ -116,7 +116,9 @@
             },
             save() {
                 let itemForSave = this.item
-                itemForSave.payment_type = this.item.payment_type ? this.item.payment_type.value : null
+                [[range .Flds ]]
+                    [[ if eq .Vue.Type "select"]]itemForSave.[[.Name]] = this.item.[[.Name]] ? this.item.[[.Name]].value : null[[end]]
+                [[- end]]
                 this.$utils.postCallPgMethod({method: `[[.Name]]_update`, params: itemForSave}).subscribe(res => {
                     if (res.ok) {
                         this.item = this.resultModify(res.result)

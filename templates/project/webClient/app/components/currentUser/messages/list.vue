@@ -19,7 +19,9 @@
 <script>
     import moment from 'moment'
     import defaultTmpl from './msgTemplate/default.vue'
-    [[range .Vue.MessageTmpls]]import [[.CompName]] from '[[.CompPath]]' [[- end]]
+    [[range .Vue.MessageTmpls]]
+    import [[.CompName]] from '[[.CompPath]]'
+    [[- end]]
 
     export default {
         props: ['currentUser', 'rightSide'],

@@ -64,10 +64,8 @@
             }
         },
         mounted() {
-            if (this.item.payment_type && !this.is_current_state) {
-                if (this.item.payment_type) this.item.payment_type = {label: this.$utils.i18n_procurment_payment_type(this.item.payment_type), value: this.item.payment_type}
-            }
-            // this.isOpen = this.is_current_state
+            [[.PrintVueItemStateMachineCardMounted]]
+            this.isOpen = this.is_current_state
         }
     }
 </script>
