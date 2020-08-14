@@ -10,6 +10,7 @@ type (
 	// State machine
 	DocSm struct {
 		States []*DocSmState
+		Tmpls DocSmTmpls
 	}
 
 	DocSmState struct {
@@ -38,6 +39,11 @@ type (
 	DocSmActionCondition struct {
 		SqlText string
 		VueIf   string
+	}
+
+	DocSmTmpls struct {
+		ItemStateHeader string
+		IsShowChat bool
 	}
 )
 

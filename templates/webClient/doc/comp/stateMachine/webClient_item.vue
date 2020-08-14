@@ -16,6 +16,7 @@
                     {{$utils.i18n_[[.Name]]_state(item.state)}}
                     <q-tooltip>статус</q-tooltip>
                 </q-chip>
+                [[.StateMachine.Tmpls.ItemStateHeader]]
             </q-banner>
             <!--  action кнопки   -->
             <div class="row q-gutter-sm q-mb-md" v-if="item.state != 'failed'">
@@ -37,7 +38,7 @@
                     <comp-item-btn-save @save="save" @cancel="$router.push(docUrl)"/>
                 </div>
                 <div class="col-xs-12 col-sm-4 com-md-4">
-                    <comp-chat table_name="[[.Name]]" :table_id="id"/>
+                    [[if .StateMachine.Tmpls.IsShowChat]]<comp-chat table_name="[[.Name]]" :table_id="id"/>[[end]]
                 </div>
 <!--                    <q-tabs-->
 <!--                            v-model="tab"-->

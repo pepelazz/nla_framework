@@ -9,7 +9,7 @@ import (
 
 const (
 	DocTypeLinkTable = "linkTable"
-	VueIsNotNew = "item.id != -1"
+	VueIsNotNew      = "item.id != -1"
 )
 
 type (
@@ -144,11 +144,20 @@ type (
 		Name        string
 		Url         string // часть имени запроса. Например crm.company.list.json
 		IsDebugMode bool   // показываем открытый get метод для тестирования импорта
+		Filter      []string
+		Hooks       DocIntegrationsOdataHooks
 		//Result struct {
 		//	StructDesc string // описание вложенной структуры для маппинга json
 		//	PathStr string // путь до массива с данными. Например, Result.Tasks
 		//}
 		//UrlQuery string
+	}
+
+	DocIntegrationsOdataHooks struct {
+		TypeAddFlds string // дополнительные поля в go структуру, для чтения из odata
+		PgTypeAddFlds string // дополнительные поля в go структуру, для записи в базу
+		ConvertAddFlds string // код для конвертирования
+		UrlAddFlds []string // дополнительные поля в url запроса
 	}
 
 	DocVueHooks struct {
@@ -226,7 +235,7 @@ func (d DocType) IsOdataIntegrationDebugMode() bool {
 	return d.Integrations.Odata.IsDebugMode
 }
 
-func (d *DocType) AddFld(fld FldType)  {
+func (d *DocType) AddFld(fld FldType) {
 	if d.Flds == nil {
 		d.Flds = []FldType{}
 	}
@@ -274,7 +283,7 @@ func (d *DocType) SetIsRecursion(title string) {
 	d.IsRecursion = true
 	d.Flds = append(d.Flds,
 		FldType{Name: "parent_id", NameRu: "родитель", Type: FldTypeInt, Sql: FldSql{Ref: d.Name, IsSearch: true, IsNotUpdatable: true}},
-		FldType{Name: "is_folder", NameRu: "признак, что является группой", Type: FldTypeBool, Sql: FldSql{IsNotUpdatable: true}}, )
+		FldType{Name: "is_folder", NameRu: "признак, что является группой", Type: FldTypeBool, Sql: FldSql{IsNotUpdatable: true}})
 	d.Vue.I18nAdd("recursiveListTitle", title)
 }
 

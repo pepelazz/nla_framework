@@ -108,20 +108,19 @@ func docIsIntegrationOdataProccess(p types.ProjectType, d *types.DocType) {
 		}
 	}
 	docName := d.Name
+	odataName := d.Integrations.Odata.Name
+	odataFldNames := []string{}
+	for _, fld := range d.Flds {
+		odataName := getOdataFld(*d, fld).Name
+		if len(odataName) > 0 {
+			odataFldNames = append(odataFldNames, odataName)
+		}
+	}
 	localFuncMap := template.FuncMap{
 		"LocalProjectPath": func() string{ return p.Config.LocalProjectPath},
 		"DocNameCamel": func() string{ return snaker.SnakeToCamel(docName)},
-		"GetOdataName": func() string { return d.Integrations.Odata.Name},
-		"GetOdataFldNames": func() []string {
-			res := []string{}
-			for _, fld := range d.Flds {
-				odataName := getOdataFld(*d, fld).Name
-				if len(odataName) > 0 {
-					res = append(res, odataName)
-				}
-			}
-			return res
-		},
+		"GetOdataName": func() string { return odataName},
+		"GetOdataFldNames": func() []string {return odataFldNames},
 		"IsOdataFld": func(fld types.FldType) bool {
 			return len(getOdataFld(*d, fld).Name) > 0
 		},

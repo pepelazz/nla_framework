@@ -21,6 +21,7 @@ type (
 		Sql      ProjectSql
 		Go       ProjectGo
 		Roles    []ProjectRole // список ролей в проекте
+		IsDebugMode bool
 	}
 	ProjectConfig struct {
 		Logo             string

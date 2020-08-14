@@ -16,6 +16,7 @@ type (
 		[[ToCamel .Name]] 			[[GetOdataFldType .]]  		`json:"[[GetOdataFldName .]]" xml:"[[GetOdataFldName .]]"`
 	[[- end]]
 	[[- end]]
+	[[.Integrations.Odata.Hooks.TypeAddFlds]]
 	}
 
 	[[DocNameCamel]]ForPgType struct {
@@ -25,6 +26,7 @@ type (
 		[[ToCamel .Name]] 		[[.GoType]]  		`json:"[[.Name]]"`
 	[[- end]]
 	[[- end]]
+	[[.Integrations.Odata.Hooks.PgTypeAddFlds]]
 	}
 )
 
@@ -73,9 +75,9 @@ func get[[DocNameCamel]]() ([][[DocNameCamel]]ForPgType, error) {
 	odataQuery := odataQueryType{
 		DocType: "[[GetOdataName]]",
 		Format:  "json",
-		Select:  []string{[[range GetOdataFldNames]]"[[.]]",[[end]]},
+		Select:  []string{[[range GetOdataFldNames]]"[[.]]",[[end]][[range .Integrations.Odata.Hooks.UrlAddFlds]]"[[.]]",[[end]]},
 		Expand:  []string{},
-		Filter:  []string{},
+		Filter:  []string{[[range .Integrations.Odata.Filter]]`[[.]]`,[[end]]},
 		//Limit:   50,
 	}
 	targetUrl := odataQuery.buildQuery()
@@ -96,6 +98,7 @@ func get[[DocNameCamel]]() ([][[DocNameCamel]]ForPgType, error) {
 		c.[[ToCamel .Name]] = v.[[ToCamel .Name]]
 		[[- end]]
 		[[- end]]
+		[[.Integrations.Odata.Hooks.ConvertAddFlds]]
 		res = append(res, c)
 	}
 	return res, nil
@@ -108,11 +111,12 @@ func Sync[[DocNameCamel]]With1CDebug(c *gin.Context) {
 	odataQuery := odataQueryType{
 		DocType: "[[GetOdataName]]",
 		Format:  "json",
-		Select:  []string{[[range GetOdataFldNames]]"[[.]]",[[end]]},
+		Select:  []string{[[range GetOdataFldNames]]"[[.]]",[[end]][[range .Integrations.Odata.Hooks.UrlAddFlds]]"[[.]]",[[end]]},
 		Expand:  []string{},
-		Filter:  []string{},
-		Limit:   100,
+		Filter:  []string{[[range .Integrations.Odata.Filter]]`[[.]]`,[[end]]},
+		Limit:   [[if .Integrations.Odata.Filter]] 0 [[else]] 100 [[end]],
 	}
+
 	targetUrl := odataQuery.buildQuery()
 	//fmt.Printf("targetUrl %s\n", targetUrl)
 	tempRes := struct {
@@ -132,6 +136,7 @@ func Sync[[DocNameCamel]]With1CDebug(c *gin.Context) {
 		c.[[ToCamel .Name]] = v.[[ToCamel .Name]]
 		[[- end]]
 		[[- end]]
+		[[.Integrations.Odata.Hooks.ConvertAddFlds]]
 		resList = append(resList, c)
 	}
 
