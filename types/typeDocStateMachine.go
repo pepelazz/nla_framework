@@ -19,6 +19,8 @@ type (
 		Actions    []DocSmAction
 		UpdateFlds []FldType // поля, которые можно редактировать в этом стейте
 		IconSrc    string
+		FuncMapForCard    map[string]interface{}
+		FuncMapForAction    map[string]interface{}
 	}
 
 	DocSmAction struct {
@@ -224,6 +226,10 @@ func (sm *DocSm) GenerateTmpls(doc *DocType, params map[string]interface{}) {
 				"GetStateUpdateFldsGrid": st.GetStateUpdateFldsGrid(),
 			},
 		}
+		// расширяем FuncMap функциями, которые указаны в шаблоне
+		for k, v := range st.FuncMapForCard {
+			doc.Templates[fileName].FuncMap[k] = v
+		}
 		// шабоны actionBtn для кнопок по переходу в новое состояние
 		for _, actn := range st.Actions {
 			fileName := st.Title + "_to_" + actn.To + "_btn.vue"
@@ -260,6 +266,10 @@ func (sm *DocSm) GenerateTmpls(doc *DocType, params map[string]interface{}) {
 					"GetUpdateFldsGrid": actn.GetUpdateFldsGrid(),
 					"Vif":               func() string { return vif },
 				},
+			}
+			// расширяем FuncMap функциями, которые указаны в шаблоне
+			for k, v := range st.FuncMapForAction {
+				doc.Templates[fileName].FuncMap[k] = v
 			}
 		}
 	}

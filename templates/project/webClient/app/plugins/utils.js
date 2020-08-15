@@ -112,7 +112,7 @@ const extractOptionsFlds = (that) => (v) => {
 const updateUrlQuery = (params = {}, isAdd = true) => {
   let searchParams = new URLSearchParams(window.location.search)
   Object.keys(params).forEach(function (key) {
-    if (isAdd) {
+    if (isAdd && params[key] !== null) {
       searchParams.set(key, params[key])
     } else {
       searchParams.delete(key)

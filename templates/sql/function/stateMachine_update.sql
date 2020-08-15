@@ -11,6 +11,7 @@ $function$
 
 DECLARE
     r           [[.Name]]%ROWTYPE;
+    rNew        [[.Name]]%ROWTYPE;
     checkMsg    TEXT;
     result      JSONB;
     updateValue TEXT;
@@ -52,7 +53,9 @@ BEGIN
         end loop;
 
     EXECUTE (concat('UPDATE [[.Name]] SET ', '' || update_str_from_json(params, arrFlds), ' WHERE id=', params ->> 'id', ' RETURNING *;'))
-        INTO r;
+        INTO rNew;
+
+    [[.Sql.Hooks.Print "update" "afterInsertUpdate"]]
 
     RETURN [[.Name]]_get_by_id(params);
 
