@@ -7,6 +7,9 @@ import (
 	"[[LocalProjectPath]]/pg"
 	"[[LocalProjectPath]]/utils"
 	"time"
+	[[range .Integrations.Odata.Import]]
+	"[[.]]"
+	[[- end]]
 )
 
 type (
@@ -77,7 +80,7 @@ func get[[DocNameCamel]]() ([][[DocNameCamel]]ForPgType, error) {
 		Format:  "json",
 		Select:  []string{[[range GetOdataFldNames]]"[[.]]",[[end]][[range .Integrations.Odata.Hooks.UrlAddFlds]]"[[.]]",[[end]]},
 		Expand:  []string{},
-		Filter:  []string{[[range .Integrations.Odata.Filter]]`[[.]]`,[[end]]},
+		Filter:  []string{[[range .Integrations.Odata.Filter]][[.]],[[end]]},
 		//Limit:   50,
 	}
 	targetUrl := odataQuery.buildQuery()
@@ -113,7 +116,7 @@ func Sync[[DocNameCamel]]With1CDebug(c *gin.Context) {
 		Format:  "json",
 		Select:  []string{[[range GetOdataFldNames]]"[[.]]",[[end]][[range .Integrations.Odata.Hooks.UrlAddFlds]]"[[.]]",[[end]]},
 		Expand:  []string{},
-		Filter:  []string{[[range .Integrations.Odata.Filter]]`[[.]]`,[[end]]},
+		Filter:  []string{[[range .Integrations.Odata.Filter]][[.]],[[end]]},
 		Limit:   [[if .Integrations.Odata.Filter]] 0 [[else]] 100 [[end]],
 	}
 

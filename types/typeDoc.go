@@ -146,6 +146,7 @@ type (
 		IsDebugMode bool   // показываем открытый get метод для тестирования импорта
 		Filter      []string
 		Hooks       DocIntegrationsOdataHooks
+		Import []string // список дополнительных import'ов для файла odataDoc.go
 		//Result struct {
 		//	StructDesc string // описание вложенной структуры для маппинга json
 		//	PathStr string // путь до массива с данными. Например, Result.Tasks
