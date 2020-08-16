@@ -42,8 +42,8 @@
       <side-menu :leftSide="leftSide" :currentUser="currentUser" @hide="leftSide=false"/>
       <!-- список сообщений     -->
       <message-list ref="messageList" :rightSide="isShowMsgList" :currentUser="currentUser" @hide="isShowMsgList = false" @updateCounter="v => messageCounter = v"/>
-      <!-- список задач     -->
-      <task-list ref="taskList" :rightSide="isShowTaskList" :currentUser="currentUser" @hide="isShowTaskList = false" @updateCounter="v => taskCounter = v"/>
+        [[if not .Vue.IsHideTaskToolbar]]<!-- список задач     -->
+      <task-list ref="taskList" :rightSide="isShowTaskList" :currentUser="currentUser" @hide="isShowTaskList = false" @updateCounter="v => taskCounter = v"/>[[end]]
 
       <q-page-container>
         <router-view :key="$route.fullPath" :currentUser="currentUser" @reloadMsgList="$refs.messageList ? $refs.messageList.reload() : ''"/>
@@ -60,7 +60,7 @@
     import sideMenu from './app/components/sidemenu/index.vue'
     import authComp from './app/components/auth/index'
     import toolbarMessageBtn from './app/components/currentUser/messages/toolbarMessageBtn'
-    import toolbarTaskBtn from './app/components/currentUser/tasks/toolbarTaskBtn'
+    [[if not .Vue.IsHideTaskToolbar]]import toolbarTaskBtn from './app/components/currentUser/tasks/toolbarTaskBtn'[[end]]
     import messageList from './app/components/currentUser/messages/list'
     import taskList from './app/components/currentUser/tasks/list'
     import waitingAuthPage from './app/components/auth/waitingAuthPage'
@@ -68,7 +68,7 @@
 
     export default {
         mixins: [currentUserMixin],
-        components: {waitingAuthPage, currentUserToolbarMenu, sideMenu, authComp, toolbarMessageBtn, toolbarTaskBtn, messageList, taskList, firedPage},
+        components: {waitingAuthPage, currentUserToolbarMenu, sideMenu, authComp, toolbarMessageBtn, [[if not .Vue.IsHideTaskToolbar -]]toolbarTaskBtn,[[- end]] messageList, taskList, firedPage},
         data() {
             return {
                 leftSide: true,

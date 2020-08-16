@@ -66,6 +66,7 @@ type (
 		Hooks     ProjectVueHooks
 		// кастомные шаблоны сообщений, которые выводятся в правом боковом списке
 		MessageTmpls []ProjectVueMessageTmpl
+		IsHideTaskToolbar bool // не показывааем бокове меню с задачами
 	}
 	VueMenu struct {
 		DocName  string // если указано docName, то url и иконка копируются из описания документа
