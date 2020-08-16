@@ -30,8 +30,8 @@
 
           <!-- аватарка и меню пользователя -->
           <div class="q-gutter-sm row items-center no-wrap">
-            <toolbar-task-btn :counter="taskCounter" @click="toggleTaskList"/>
-            <toolbar-message-btn :counter="messageCounter" @click="toggleMsgList"/>
+              [[if not .Vue.IsHideTaskToolbar]]<toolbar-task-btn :counter="taskCounter" @click="toggleTaskList"/>[[end]]
+              <toolbar-message-btn :counter="messageCounter" @click="toggleMsgList"/>
             <current-user-toolbar-menu :currentUser="currentUser" @logout="logout"/>
           </div>
 
@@ -42,8 +42,8 @@
       <side-menu :leftSide="leftSide" :currentUser="currentUser" @hide="leftSide=false"/>
       <!-- список сообщений     -->
       <message-list ref="messageList" :rightSide="isShowMsgList" :currentUser="currentUser" @hide="isShowMsgList = false" @updateCounter="v => messageCounter = v"/>
-        [[if not .Vue.IsHideTaskToolbar]]<!-- список задач     -->
-      <task-list ref="taskList" :rightSide="isShowTaskList" :currentUser="currentUser" @hide="isShowTaskList = false" @updateCounter="v => taskCounter = v"/>[[end]]
+        <!-- список задач     -->
+      <task-list ref="taskList" :rightSide="isShowTaskList" :currentUser="currentUser" @hide="isShowTaskList = false" @updateCounter="v => taskCounter = v"/>
 
       <q-page-container>
         <router-view :key="$route.fullPath" :currentUser="currentUser" @reloadMsgList="$refs.messageList ? $refs.messageList.reload() : ''"/>
