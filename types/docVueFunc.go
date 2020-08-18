@@ -11,7 +11,7 @@ import (
 
 func (d DocType) PrintListRowAvatar() string  {
 	res := fmt.Sprintf(`
-        <q-item-section avatar @click="$router.push(currentUrl + item.id)">
+        <q-item-section avatar @click="$router.push(currentUrl + item.id)" style="cursor: pointer">
           <q-avatar rounded>
             <img src="%s" alt="">
           </q-avatar>
@@ -31,12 +31,16 @@ func (d DocType) PrintListRowLabel() string  {
 	if d.IsRecursion {
 		isFolder = "<q-item-label caption><q-icon name='folder' v-if='item.is_folder'/></q-item-label>"
 	}
+	clickOpenItem := ""
+	if d.Vue.IsVueTitleClickable {
+		clickOpenItem = fmt.Sprintf(` @click="$router.push(currentUrl + item.id)" style="cursor: pointer" `, )
+	}
 	res := fmt.Sprintf(`
         <q-item-section>
-          <q-item-label lines="1">{{item.title}}</q-item-label>
+          <q-item-label lines="1" %s>{{item.title}}</q-item-label>
           %s
         </q-item-section>
-	`, isFolder)
+	`, clickOpenItem, isFolder)
 	// проверяем есть ли переопределение шаблона
 	if d.Vue.TmplFuncs != nil {
 		if f, ok := d.Vue.TmplFuncs["PrintListRowLabel"]; ok {

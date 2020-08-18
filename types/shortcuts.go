@@ -11,7 +11,7 @@ import (
 
 // создание поля title
 func GetFldTitle(params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
 		classStr= params[0]
 	}
@@ -26,7 +26,7 @@ func GetFldTitleComputed(triggerSqlString string) (fld FldType) {
 }
 
 func GetFldDouble(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
 		classStr= params[0]
 	}
@@ -36,7 +36,7 @@ func GetFldDouble(name, nameRu string, rowCol [][]int, params ...string) (fld Fl
 
 // создание простого поля String
 func GetFldString(name, nameRu string, size int, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	readonly := "false"
 	for i, v := range params {
 		if i == 0 {
@@ -56,7 +56,7 @@ func GetFldString(name, nameRu string, size int, rowCol [][]int, params ...strin
 
 // создание простого Date
 func GetFldDate(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
 		classStr= params[0]
 	}
@@ -66,7 +66,7 @@ func GetFldDate(name, nameRu string, rowCol [][]int, params ...string) (fld FldT
 
 // создание простого DateTime
 func GetFldDateTime(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
 		classStr= params[0]
 	}
@@ -76,7 +76,7 @@ func GetFldDateTime(name, nameRu string, rowCol [][]int, params ...string) (fld 
 
 // создание простого поля Int
 func GetFldInt(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
 		classStr= params[0]
 	}
@@ -86,7 +86,7 @@ func GetFldInt(name, nameRu string, rowCol [][]int, params ...string) (fld FldTy
 
 // создание простого поля Int64
 func GetFldInt64(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
 		classStr= params[0]
 	}
@@ -96,7 +96,7 @@ func GetFldInt64(name, nameRu string, rowCol [][]int, params ...string) (fld Fld
 
 // создание поля UUID
 func GetFldUuid(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
 		classStr= params[0]
 	}
@@ -106,7 +106,7 @@ func GetFldUuid(name, nameRu string, rowCol [][]int, params ...string) (fld FldT
 
 // создание простого поля Checkbox
 func GetFldCheckbox(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	readonly := "false"
 	for i, v := range params {
 		if i == 0 {
@@ -123,7 +123,7 @@ func GetFldCheckbox(name, nameRu string, rowCol [][]int, params ...string) (fld 
 
 // создание простого поля Radio
 func GetFldRadioString(name, nameRu string, rowCol [][]int, options []FldVueOptionsItem, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	readonly := "false"
 	for i, v := range params {
 		if i == 0 {
@@ -141,7 +141,7 @@ func GetFldRadioString(name, nameRu string, rowCol [][]int, options []FldVueOpti
 
 // создание простого поля Ref
 func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
 		classStr= params[0]
 	}
@@ -187,7 +187,7 @@ func GetFldSimpleHtml(rowCol [][]int, classStr, htmlStr string) (fld FldType) {
 
 // создание простого поля Select с типом string
 func GetFldSelectString(name, nameRu string, size int, rowCol [][]int, options []FldVueOptionsItem, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	readonly := "false"
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeSelect, Ext: map[string]string{}, Class: []string{classStr}, Readonly:readonly, Options:options}}
 	for i, v := range params {
@@ -210,7 +210,7 @@ func GetFldSelectString(name, nameRu string, size int, rowCol [][]int, options [
 
 // создание простого поля MultipleSelect с типом string
 func GetFldSelectMultilple(name, nameRu string, rowCol [][]int, options []FldVueOptionsItem, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	readonly := "false"
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeTextArray, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeMultipleSelect, Ext: map[string]string{}, Class: []string{classStr}, Readonly:readonly, Options:options}}
 	for i, v := range params {
@@ -231,7 +231,7 @@ func GetFldSelectMultilple(name, nameRu string, rowCol [][]int, options []FldVue
 
 // создание простого поля Int
 func GetFldTag(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	onlyExistTags := "false" // флаг для UI контрола, чтобы можно было только выбирать из существующих тэгов и нельзя было создавать новые
 	for i, v := range params {
 		if i == 0 {
@@ -265,7 +265,7 @@ func GetCustomTemplates(p ...string) map[string]*DocTemplate  {
 
 // создание поля адрес с возможностью поиска через dadata
 func GetFldDadataAddress(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
 		classStr= params[0]
 	}
@@ -290,7 +290,7 @@ func GetFldDadataAddress(name, nameRu string, rowCol [][]int, params ...string) 
 
 // создание поля json c редактируемым массивом элементов
 func GetFldJsonList(name, nameRu string, rowCol [][]int, listParams FldVueJsonList, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
 		classStr= params[0]
 	}
@@ -300,7 +300,7 @@ func GetFldJsonList(name, nameRu string, rowCol [][]int, listParams FldVueJsonLi
 
 // создание поля для загрузки файлов
 func GetFldFiles(name, nameRu string, rowCol [][]int, fileParams FldVueFilesParams, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
 		classStr= params[0]
 	}
@@ -319,7 +319,7 @@ func GetFldFiles(name, nameRu string, rowCol [][]int, fileParams FldVueFilesPara
 
 // создание поля для загрузки списка изображений
 func GetFldImgList(name, nameRu string, rowCol [][]int, fileParams FldVueImgParams, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
 		classStr= params[0]
 	}
@@ -358,7 +358,7 @@ func GetFldImgList(name, nameRu string, rowCol [][]int, fileParams FldVueImgPara
 
 // создание поля для загрузки одного
 func GetFldImg(name, nameRu string, rowCol [][]int, fileParams FldVueImgParams, params ...string) (fld FldType) {
-	classStr := "col-4"
+	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
 		classStr= params[0]
 	}

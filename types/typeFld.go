@@ -190,9 +190,22 @@ func (fld FldType) SetRowCol(n ...int) FldType {
 	if len(n) > 2 {
 		// копируем значения в новый массив, инчае возможны спецэффекты
 		arr := []string{}
+		colClass := "col-md-4 col-xs-6"
+		if n[2] == 6 {
+			colClass = "col-md-6 col-xs-12"
+		}
+		if n[2] == 8 {
+			colClass = "col-md-8 col-xs-12"
+		}
+		if n[2] == 12 {
+			colClass = "col-12"
+		}
+		arr = append(arr, colClass)
 		for _, s := range fld.Vue.Class {
 			if strings.HasPrefix(s, "col-") {
-				s = fmt.Sprintf("col-%v", n[2])
+				// классы, описывающие ширину колонки пропускаем, потому что будем полностью перезаписывать
+				//s = fmt.Sprintf("col-%v", n[2])
+				continue
 			}
 			arr = append(arr, s)
 		}

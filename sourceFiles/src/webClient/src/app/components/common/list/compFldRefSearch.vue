@@ -117,8 +117,12 @@
                         if (res.ok) {
                             if (!res.result) res.result = []
                             this.options = res.result.map(v => {
+                                let label = v[this.itemTitleFldName]
+                                if (this.ext?.itemTitleFunc) {
+                                  label = this.ext.itemTitleFunc(v)
+                                }
                                 return {
-                                    label: v[this.itemTitleFldName],
+                                    label,
                                     value: `${v[this.ext?.itemValueFldName ? this.ext.itemValueFldName : this.itemTitleFldName]}`,
                                     id: v.id,
                                     item: v,
@@ -141,8 +145,12 @@
                 if (res.ok) {
                     if (!res.result) res.result = []
                     this.options = res.result.map(v => {
+                        let label = v[this.itemTitleFldName]
+                        if (this.ext?.itemTitleFunc) {
+                          label = this.ext.itemTitleFunc(v)
+                        }
                         return {
-                            label: v[this.itemTitleFldName],
+                            label,
                             value: v[this.itemTitleFldName],
                             id: v.id,
                             item: v,

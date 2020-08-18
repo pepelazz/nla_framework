@@ -22,7 +22,7 @@
 
       [[- if .IsRecursion -]]
       <div class="row q-col-gutter-md q-mb-sm q-mt-sm">
-        <div class="col-8" v-if="id !== 'new'">
+        <div class="col-md-8 col-xs-12" v-if="id !== 'new'">
           <comp-recursive-child-list :id='id' :readonly="[[if .Vue.Readonly -]][[.Vue.Readonly]][[else]]false[[- end]]" @update='save'/>
         </div>
       </div>
