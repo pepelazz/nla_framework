@@ -32,6 +32,11 @@
     export default {
         props: ['item', 'currentUser'],
         mixins: [isRole],
+        computed: {
+          id: function () {
+            return this.item?.id
+          }
+        },
         data() {
             return {
                 isShowDialog: false,
