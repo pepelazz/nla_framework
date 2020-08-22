@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/pepelazz/projectGenerator/pg"
-	"github.com/pepelazz/projectGenerator/types"
-	"github.com/pepelazz/projectGenerator/utils"
+	"[[.Config.LocalProjectPath]]/pg"
+	"[[.Config.LocalProjectPath]]/types"
+	"[[.Config.LocalProjectPath]]/utils"
 	"github.com/tidwall/gjson"
 	"net/http"
 	"strings"
@@ -35,7 +35,7 @@ var (
 	pgFuncCache = map[string]pgFuncCacheType{}
 	pgFuncList  = []PgMethod{
 		PgMethod{"user_update", []string{"admin"}, nil, nil},
-		PgMethod{"user_list", []string{}, nil, nil},
+		PgMethod{"user_list", []string{[[ArrayStringJoin .Config.User.Roles.UserList ]]}, nil, nil},
 		PgMethod{"user_get_by_id", []string{}, nil, BeforeHookAddUserId},
 		PgMethod{"user_get_by_id_for_ui", []string{}, nil, BeforeHookAddUserId},
 		PgMethod{"current_user_update", []string{}, nil, BeforeHookAddUserId},
@@ -55,8 +55,7 @@ var (
 		PgMethod{"chat_get_by_id", []string{}, nil, BeforeHookAddUserId},
 		PgMethod{"chat_for_table_id", []string{}, nil, BeforeHookAddUserId},
 		PgMethod{"chat_message_update", []string{}, nil, BeforeHookAddUserId},
-
-		// for codeGenerate ##pgFuncList_slot1
+		[[.PrintApiCallPgFuncMethods]]
 	}
 )
 

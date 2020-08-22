@@ -8,6 +8,7 @@
 -- auth_provider_id type:string
 -- auth_token       type:string
 -- email            type:string
+-- phone            type:string
 -- password         type:string
 
 DROP FUNCTION IF EXISTS user_auth_create(params JSONB );
@@ -71,26 +72,27 @@ BEGIN
                 roleArr = text_array_from_json(params -> 'role');
             END IF;
             optionJson =  COALESCE((params -> 'options') :: JSONB, '{}':: JSONB);
-            -- проверяем что если это перввый пользователь в базе, то назначаем его админом и сразу устанавливаем статус: working
+            -- проверяем что если это первый пользователь в базе, то назначаем его админом и сразу устанавливаем статус: working
             select count(*) into userCount from "user";
             if userCount < 1 then
                 roleArr = roleArr || '{admin}'::text[];
                 optionJson = optionJson || jsonb_build_object('state', 'working');
             end if;
             -- вначале создаем нового пользователя на базе данных из авторизационного сервиса. Затем уже создаем запись об авторизации и туда записываем id вновь созданного пользователя
-            EXECUTE ('INSERT INTO "user" (last_name, first_name, avatar, email, role, options) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;')
+            EXECUTE ('INSERT INTO "user" (last_name, first_name, avatar, email, phone, role, options) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;')
                 INTO userRow
                 USING
                         params ->> 'last_name',
                         params ->> 'first_name',
                         params ->> 'avatar',
                     COALESCE((params ->> 'email') :: TEXT, NULL),
+                    COALESCE((params ->> 'phone') :: TEXT, NULL),
                     roleArr,
                     optionJson;
         END IF;
 
         -- после того как создали запись о новом пользователе, создаем запись об авторизации и проставляем в ней id вновь созданного пользователя
-        EXECUTE ('INSERT INTO user_auth (user_id, auth_provider, auth_provider_id, last_name, first_name, username, avatar, auth_token, email, options, password) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *;')
+        EXECUTE ('INSERT INTO user_auth (user_id, auth_provider, auth_provider_id, last_name, first_name, username, avatar, auth_token, email, phone, options, password) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *;')
             INTO userAuthRow
             USING
                 userRow.id,
@@ -102,6 +104,7 @@ BEGIN
                     params ->> 'avatar',
                 COALESCE((params ->> 'auth_token') :: TEXT, NULL),
                 COALESCE((params ->> 'email') :: TEXT, NULL),
+                COALESCE((params ->> 'phone') :: TEXT, NULL),
                 COALESCE((params -> 'options') :: JSONB, NULL),
                 (params ->> 'password') :: TEXT;
     END IF;

@@ -47,6 +47,7 @@ methods = [
     "user_telegram_auth",
     "user_get_by_telegram_id",
     [[- end]]
+    [[if .Config.Auth.ByPhone -]] "user_get_by_phone_with_password",[[- end]]
 #    "user_create",
 #    "user_change_role",
 ]

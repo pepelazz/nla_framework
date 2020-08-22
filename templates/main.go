@@ -28,6 +28,7 @@ var funcMap = template.FuncMap{
 	"ToLowerCamel":        strcase.ToLowerCamel,
 	"ToCamel":        	   strcase.ToCamel,
 	"PrintVueFldTemplate": PrintVueFldTemplate,
+	"ArrayStringJoin": arrayStringJoin,
 }
 
 func ParseTemplates(p types.ProjectType) map[string]*template.Template {
@@ -355,4 +356,12 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	default:
 		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fldType)
 	}
+}
+
+func arrayStringJoin(arr []string) string  {
+	tmpArr := []string{}
+	for _, v := range arr {
+		tmpArr = append(tmpArr, fmt.Sprintf(`"%s"`, v))
+	}
+	return strings.Join(tmpArr, ", ")
 }

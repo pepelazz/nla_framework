@@ -6,11 +6,13 @@ tableName ="user_temp_email_auth"
 fields = [
     {name="id",                       type="serial"},
     {name="email",                    type="text",                          comment="Email он же username"},
+    {name="phone",                    type="char", size=20,                 comment="Phone в случае авторизации по номеру телефона через sms"},
     {name="last_name",                type="char", size=100,                comment="Фамилия"},
     {name="first_name",               type="char", size=100,                comment="Имя" },
     {name="password",                 type="text",                          comment="Пароль" },
     {name="token",                    type="text",                          comment="Проверочный токен для подтверждения email" },
     {name="auth_token",               type="char", size=50,                 comment="Токен для авторизации"},
+    {name="options",                  type="jsonb",                         comment="Разные дополнительные параметры" },
     {name="updated_at",               type="timestamp",   ext="with time zone"},
     {name="created_at",               type="timestamp",   ext="with time zone"},
     {name="deleted",                  type="bool",        ext="not null default false"},
@@ -18,6 +20,7 @@ fields = [
 
 fkConstraints = [
     {name="email_already_exist", ext="UNIQUE (email)"},
+    [[if .Config.Auth.ByPhone -]]{name="phone_already_exist", ext="UNIQUE (phone)"},[[- end]]
 ]
 
 triggers = [
@@ -27,5 +30,14 @@ triggers = [
 methods = [
     "user_temp_email_auth_create",
     "user_temp_email_auth_check_token",
+    [[if .Config.Auth.ByPhone -]]
+    "user_temp_phone_auth_create",
+    "user_temp_phone_auth_check_sms_code",
+    [[- end]]
+]
+
+alterScripts = [
+	"alter table user_temp_email_auth add column if not exists phone CHARACTER VARYING(20);",
+	"alter table user_temp_email_auth add column if not exists options jsonb;",
 ]
 

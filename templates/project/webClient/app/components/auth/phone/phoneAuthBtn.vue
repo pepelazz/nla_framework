@@ -13,13 +13,13 @@
 
         <q-card-section>
           <!-- форма логин + пароль -->
-          <comp-login-form v-if='!(emailRegister.isNewRegister || emailRegister.isPasswordRecover)'
+          <comp-login-form v-if='!(registerFrom.isNewRegister || registerFrom.isPasswordRecover)'
                            @register="showNewEmailUserRegister"
                            @passwordRecover="showPasswordRecover"/>
           <!--форма регистрации -->
-          <comp-register-form v-if="emailRegister.isNewRegister" @cancel="resetRegisterForm"/>
+          <comp-register-form v-if="registerFrom.isNewRegister" @cancel="resetRegisterForm"/>
           <!--форма восстановления пароля -->
-          <comp-recover-password-form v-if='emailRegister.isPasswordRecover' @cancel="resetPasswordRecover"/>
+          <comp-recover-password-form v-if='registerFrom.isPasswordRecover' @cancel="resetPasswordRecover"/>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -41,15 +41,15 @@
     components: {compLoginForm, compRegisterForm, compRecoverPasswordForm},
     computed: {
       dialogTitle() {
-        if (this.emailRegister.isNewRegister) return 'Регистрация'
-        if (this.emailRegister.isPasswordRecover) return 'Восстановление пароля'
+        if (this.registerFrom.isNewRegister) return 'Регистрация'
+        if (this.registerFrom.isPasswordRecover) return 'Восстановление пароля'
         return 'Авторизация'
       },
     },
     data() {
       return {
         modalIsOpened: false,
-        emailRegister: {
+        registerFrom: {
           isNewRegister: false,
           isNewRegisterSuccess: false, // флаг для изменения состояния, когда форма регистрации успешно отправлена
           isPasswordRecover: false,
@@ -62,17 +62,17 @@
         this.modalIsOpened = true
       },
       showNewEmailUserRegister() {
-        this.emailRegister.isNewRegister = true
-        this.emailRegister.isNewRegisterSuccess = false
+        this.registerFrom.isNewRegister = true
+        this.registerFrom.isNewRegisterSuccess = false
       },
         resetRegisterForm() {
-        this.emailRegister.isNewRegister = false
+        this.registerFrom.isNewRegister = false
       },
       showPasswordRecover() {
-        this.emailRegister.isPasswordRecover = true
+        this.registerFrom.isPasswordRecover = true
       },
       resetPasswordRecover() {
-        this.emailRegister.isPasswordRecover = false
+        this.registerFrom.isPasswordRecover = false
       },
     },
   }

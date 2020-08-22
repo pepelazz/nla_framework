@@ -22,10 +22,12 @@ type (
 		Go       ProjectGo
 		Roles    []ProjectRole // список ролей в проекте
 		IsDebugMode bool
+		OverridePathForTemplates map[string]string // map для замены путей к исходным файлам. Ключ - путь к генерируемому файлу, значение - новый путь к исходному файлу.
 	}
 	ProjectConfig struct {
 		Logo             string
 		LocalProjectPath string
+		Auth 			 AuthConfig
 		Postgres         PostrgesConfig
 		WebServer        WebServerConfig
 		Email            EmailConfig
@@ -35,6 +37,23 @@ type (
 		Telegram         TelegramConfig
 		Odata            OdataConfig
 		Yandex           YandexConfig
+		User UserConfig
+	}
+	AuthConfig struct {
+		ByEmail  bool // дефолт - авторизация по email
+		ByPhone  bool // авторизация по номеру телефона
+		SqlHooks AuthConfigSqlHooks
+		IsPassStepWaitingAuth bool // возможность отключить статус waiting_auth для вновь зарегестрированных пользователей
+	}
+	AuthConfigSqlHooks struct {
+		CheckIsUserExist []string
+	}
+	// дополнительные настройки для таблицы users
+	UserConfig struct {
+		Roles UserConfigRolesForMethods
+	}
+	UserConfigRolesForMethods struct {
+		UserList []string
 	}
 	PostrgesConfig struct {
 		DbName   string
@@ -343,4 +362,28 @@ func (p *ProjectType) FillLocalPath() string {
 		p.Config.LocalProjectPath = path
 	}
 	return p.Config.LocalProjectPath
+}
+
+func (p ProjectType) PrintApiCallPgFuncMethods() string {
+	res := ""
+	printPgMethod := func(m DocSqlMethod) {
+		var roles string
+		if len(m.Roles) > 0 {
+			roles = fmt.Sprintf(`"%s"`, strings.Join(m.Roles, `", "`))
+		}
+		res = fmt.Sprintf("%s\n\t\tPgMethod{\"%s\", []string{%s}, nil, BeforeHookAddUserId},", res, m.Name, roles)
+	}
+	if project.Sql.Methods != nil {
+		for _, v := range project.Sql.Methods {
+			for _, m := range v {
+				printPgMethod(m)
+			}
+		}
+	}
+	for _, d := range project.Docs {
+		for _, m := range d.Sql.Methods {
+			printPgMethod(*m)
+		}
+	}
+	return res
 }

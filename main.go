@@ -58,6 +58,10 @@ func readData(p types.ProjectType) {
 }
 
 func Start(p types.ProjectType, modifyFunc copyFileModifyFunc) {
+	// проставляем дефолтную авторизацию по email
+	if !p.Config.Auth.ByPhone {
+		p.Config.Auth.ByEmail = true
+	}
 	// читаем данные для проекта
 	readData(p)
 	// читаем темплейты
@@ -66,7 +70,7 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc) {
 	// удаляем старые файлы
 	removeOldFiles(project.DistPath)
 
-	// генерим файлы для проекты
+	// генерим файлы для проекта
 	templates.WriteProjectFiles(project, tmplMap)
 
 	// генерим файлы для документов
@@ -106,10 +110,6 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 				// заменяем ссылки в go файлах
 				if strings.HasSuffix(info.Name(), ".go") {
 					file = []byte(strings.Replace(string(file), "github.com/pepelazz/projectGenerator", p.Config.LocalProjectPath, -1))
-				}
-				// добавляем названия pg методов в файл apiCallPgFunc.go
-				if strings.HasSuffix(info.Name(), "apiCallPgFunc.go") {
-					file = []byte(strings.Replace(string(file), "// for codeGenerate ##pgFuncList_slot1", printApiCallPgFuncMethods(), -1))
 				}
 				// изменение config.js
 				if strings.HasSuffix(path, "app"+string(os.PathSeparator)+"plugins"+string(os.PathSeparator)+"config.js") {
@@ -184,30 +184,6 @@ func removeOldFiles(distPath string) {
 	// удаляем модели в sql, потому что могула изменится нумерация файлов и тогдда риск дублирования
 	err := os.RemoveAll(distPath + "/sql/model")
 	utils.CheckErr(err, "removeOldFiles")
-}
-
-func printApiCallPgFuncMethods() (res string) {
-	res = "// for codeGenerate ##pgFuncList_slot1"
-	printPgMethod := func(m types.DocSqlMethod) {
-		var roles string
-		if len(m.Roles) > 0 {
-			roles = fmt.Sprintf(`"%s"`, strings.Join(m.Roles, `", "`))
-		}
-		res = fmt.Sprintf("%s\n\t\tPgMethod{\"%s\", []string{%s}, nil, BeforeHookAddUserId},", res, m.Name, roles)
-	}
-	if project.Sql.Methods != nil {
-		for _, v := range project.Sql.Methods {
-			for _, m := range v {
-				printPgMethod(m)
-			}
-		}
-	}
-	for _, d := range project.Docs {
-		for _, m := range d.Sql.Methods {
-			printPgMethod(*m)
-		}
-	}
-	return
 }
 
 func configJsModify(p types.ProjectType, file []byte) (res []byte) {

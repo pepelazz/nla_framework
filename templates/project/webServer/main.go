@@ -6,7 +6,8 @@ import (
 	"[[.Config.LocalProjectPath]]/utils"
 	"[[.Config.LocalProjectPath]]/webServer/auth"
 	"github.com/gin-gonic/gin"
-	[[if .IsBitrixIntegration -]]
+
+[[if .IsBitrixIntegration -]]
 	"[[.Config.LocalProjectPath]]/bitrix"
 	[[- end]]
 	[[if .IsOdataIntegration -]]
@@ -40,6 +41,12 @@ func StartWebServer(config types.Config) {
 		authRoute.POST("/check_user_email", auth.EmailAuthCheckUserEmail)
 		authRoute.POST("/email_auth_start_recover_password", auth.EmailAuthStartRecoverPassword)
 		authRoute.POST("/email_auth_recover_password", auth.EmailAuthRecoverPassword)
+		[[if .Config.Auth.ByPhone -]]
+		// авторизация по номеру телефона
+		authRoute.POST("/phone", auth.PhoneAuth)
+		authRoute.POST("/check_sms_code", auth.CheckSmsCode)
+		authRoute.POST("/phone_auth_start_recover_password", auth.PhoneAuthStartRecoverPassword)
+		[[- end]]
 	}
 
 	apiRoute := r.Group("/api", authRequired)

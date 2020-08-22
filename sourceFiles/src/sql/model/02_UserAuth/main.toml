@@ -13,6 +13,7 @@ fields = [
     {name="username",           type="char", size=100, comment="Ник" },
     {name="avatar",             type="char", size=500, comment="Ссылка на аватарку"},
     {name="email",              type="char", size=200, comment="Email"},
+    {name="phone",              type="char", size=50, comment="Phone"},
     {name="auth_token",         type="char", size=200, comment="Токен для авторизации"},
     {name="password",           type="char", size=200, comment="Пароль в случае авторизации через email"},
     {name="options",            type="jsonb",          comment="Разные дополнительные параметры"},
@@ -39,4 +40,5 @@ methods = [
 ]
 
 alterScripts = [
+	"alter table user_auth add column if not exists phone CHARACTER VARYING(50);",
 ]

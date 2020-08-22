@@ -1,10 +1,12 @@
 -- создание новой записи пользователе, который должен подтвердить свой  email
 -- параметры:
 -- email            type: string
+-- phone            type: string
 -- last_name        type: string
 -- first_name       type: string
 -- password         type: string
 -- token            type: string
+-- options          type: json
 
 DROP FUNCTION IF EXISTS user_temp_email_auth_create(params JSONB );
 CREATE OR REPLACE FUNCTION user_temp_email_auth_create(params JSONB)

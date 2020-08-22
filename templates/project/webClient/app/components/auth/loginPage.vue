@@ -9,7 +9,9 @@
       </div>
       <!--Кнопки авторизации-->
       <div class="row justify-center q-mt-lg">
-        <email-btn/>
+        [[if .Config.Auth.ByEmail]]<email-btn/>[[end]]
+        [[if .Config.Auth.ByPhone]]<phone-btn/>[[end]]
+
       </div>
     </div>
 
@@ -17,10 +19,12 @@
 </template>
 
 <script>
-    import emailBtn from './email/emailAuthBtn'
+  [[if .Config.Auth.ByEmail]]import emailBtn from './email/emailAuthBtn'[[end]]
+  [[if .Config.Auth.ByPhone]]import phoneBtn from './phone/phoneAuthBtn'[[end]]
 
     export default {
-        components: {emailBtn},
+      [[if .Config.Auth.ByEmail]]components: {emailBtn},[[end]]
+      [[if .Config.Auth.ByPhone]]components: {phoneBtn},[[end]]
         data() {
             return {}
         },
