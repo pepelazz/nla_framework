@@ -31,7 +31,7 @@
           <!-- аватарка и меню пользователя -->
           <div class="q-gutter-sm row items-center no-wrap">
               [[if not .Vue.IsHideTaskToolbar]]<toolbar-task-btn :counter="taskCounter" @click="toggleTaskList"/>[[end]]
-              <toolbar-message-btn :counter="messageCounter" @click="toggleMsgList"/>
+              [[if not .Vue.IsHideMessageToolbar]]<toolbar-message-btn :counter="messageCounter" @click="toggleMsgList"/>[[end]]
             <current-user-toolbar-menu :currentUser="currentUser" @logout="logout"/>
           </div>
 
@@ -59,8 +59,8 @@
     import currentUserToolbarMenu from './app/components/currentUser/toolbarMenu'
     import sideMenu from './app/components/sidemenu/index.vue'
     import authComp from './app/components/auth/index'
-    import toolbarMessageBtn from './app/components/currentUser/messages/toolbarMessageBtn'
     [[if not .Vue.IsHideTaskToolbar]]import toolbarTaskBtn from './app/components/currentUser/tasks/toolbarTaskBtn'[[end]]
+    [[if not .Vue.IsHideMessageToolbar]]import toolbarMessageBtn from './app/components/currentUser/messages/toolbarMessageBtn'[[end]]
     import messageList from './app/components/currentUser/messages/list'
     import taskList from './app/components/currentUser/tasks/list'
     import waitingAuthPage from './app/components/auth/waitingAuthPage'
@@ -68,7 +68,7 @@
 
     export default {
         mixins: [currentUserMixin],
-        components: {waitingAuthPage, currentUserToolbarMenu, sideMenu, authComp, toolbarMessageBtn, [[if not .Vue.IsHideTaskToolbar -]]toolbarTaskBtn,[[- end]] messageList, taskList, firedPage},
+        components: {waitingAuthPage, currentUserToolbarMenu, sideMenu, authComp, messageList, [[if not .Vue.IsHideTaskToolbar -]]toolbarTaskBtn,[[- end]] [[if not .Vue.IsHideMessageToolbar]]toolbarMessageBtn,[[end]] taskList, firedPage},
         data() {
             return {
                 leftSide: true,
