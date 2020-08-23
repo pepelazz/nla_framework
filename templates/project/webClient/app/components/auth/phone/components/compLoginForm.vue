@@ -1,11 +1,11 @@
 <template>
   <div class="q-gutter-md">
-    <q-input outlined mask="(###) ### - ####" label="номер телефона" v-model="phone" :autofocus=true>
+    <q-input outlined mask="+# (###) ### - ####" label="номер телефона" v-model="phone" :autofocus=true>
       <template v-slot:prepend>
         <q-icon name="phone"/>
       </template>
     </q-input>
-    <q-input outlined type='password' label="пароль" v-model="password">
+    <q-input outlined type='password' label="пароль" v-model="password" @keydown.enter.prevent="login">
       <template v-slot:prepend>
         <q-icon name="lock"/>
       </template>

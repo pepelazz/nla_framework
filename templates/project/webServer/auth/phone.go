@@ -17,6 +17,7 @@ import (
 type (
 	PasswordRecoverPhoneToken struct {
 		Phone       string `json:"phone"`
+		Token       string `json:"token"`
 		ExpiredTime time.Time
 	}
 )
@@ -24,29 +25,28 @@ type (
 // map для хранения токенов, для отправленных писем со сбросом пароля. Данная структура сбрасывается при перезапуске приложения
 var passwordRecoverPhoneTokenMap = map[string]PasswordRecoverPhoneToken{}
 
-
 func PhoneAuth(c *gin.Context) {
 
 	reqParams := struct {
 		Params struct {
-			Login      string `json:"login"`
-			Password   string `json:"password"`
-			LastName   string `json:"last_name"`
-			FirstName  string `json:"first_name"`
-			Options map[string]interface{} `json:"options"`
-			IsRegister bool   `json:"is_register"` // флаг, которым различаем регистрацию нового пользователя и авторизацию существующего
+			Login      string                 `json:"login"`
+			Password   string                 `json:"password"`
+			LastName   string                 `json:"last_name"`
+			FirstName  string                 `json:"first_name"`
+			Options    map[string]interface{} `json:"options"`
+			IsRegister bool                   `json:"is_register"` // флаг, которым различаем регистрацию нового пользователя и авторизацию существующего
 		} `json:"params"`
 	}{}
 
 	type UserRegisterData struct {
-		Login      string `json:"login"`
-		Password   string `json:"password"`
-		LastName   string `json:"last_name"`
-		FirstName  string `json:"first_name"`
-		AuthToken  string `json:"auth_token"`
-		Token      string `json:"token"`
-		Phone      string `json:"phone"`
-		Options map[string]interface{} `json:"options"`
+		Login     string                 `json:"login"`
+		Password  string                 `json:"password"`
+		LastName  string                 `json:"last_name"`
+		FirstName string                 `json:"first_name"`
+		AuthToken string                 `json:"auth_token"`
+		Token     string                 `json:"token"`
+		Phone     string                 `json:"phone"`
+		Options   map[string]interface{} `json:"options"`
 	}
 
 	var userRegData UserRegisterData
@@ -72,7 +72,7 @@ func PhoneAuth(c *gin.Context) {
 		userRegData.FirstName = reqParams.Params.FirstName
 		userRegData.Options = reqParams.Params.Options
 
-		jsonStr, err := json.Marshal(userRegData);
+		jsonStr, err := json.Marshal(userRegData)
 		err = pg.CallPgFunc("user_temp_phone_auth_create", jsonStr, nil, nil)
 		if err != nil {
 			utils.HttpError(c, http.StatusOK, "pg call user_temp_phone_auth_create err:"+fmt.Sprintf("%s", err))
@@ -127,7 +127,7 @@ func CheckSmsCode(c *gin.Context) {
 	}
 
 	user := types.User{}
-	jsonStr, err := json.Marshal(queryData.Params);
+	jsonStr, err := json.Marshal(queryData.Params)
 	err = pg.CallPgFunc("user_temp_phone_auth_check_sms_code", jsonStr, &user, nil)
 	if err != nil {
 		if len(err.Error()) > 0 {
@@ -146,6 +146,7 @@ func PhoneAuthStartRecoverPassword(c *gin.Context) {
 	type QueryData struct {
 		Params struct {
 			Phone string `json:"phone"`
+			Token string `json:"token"`
 		} `json:"params"`
 	}
 
@@ -157,7 +158,7 @@ func PhoneAuthStartRecoverPassword(c *gin.Context) {
 	}
 	// проверяем что такой пользователь с таким phone есть в базе
 	user := types.User{}
-	jsonStr, err := json.Marshal(queryData.Params);
+	jsonStr, err := json.Marshal(queryData.Params)
 	err = pg.CallPgFunc("user_get_by_phone_with_password", jsonStr, &user, nil)
 	if err != nil {
 		utils.HttpError(c, http.StatusOK, "pg call user_get_by_phone_with_password err:"+fmt.Sprintf("%s", err))
@@ -169,8 +170,10 @@ func PhoneAuthStartRecoverPassword(c *gin.Context) {
 	}
 
 	token := strconv.Itoa(100000 + rand.Intn(999999-100000))
+	phone := queryData.Params.Phone
+	fmt.Printf("token: %s\n", token)
 	// добавляем пару токен-email а коллекцию
-	passwordRecoverPhoneTokenMap[token] = PasswordRecoverPhoneToken{queryData.Params.Phone, time.Now().Add(1 * time.Minute)}
+	passwordRecoverPhoneTokenMap[phone] = PasswordRecoverPhoneToken{phone, token, time.Now().Add(1 * time.Minute)}
 	//удаляем просроченные токены
 	for k, v := range passwordRecoverPhoneTokenMap {
 		if time.Now().After(v.ExpiredTime) {
@@ -179,6 +182,78 @@ func PhoneAuthStartRecoverPassword(c *gin.Context) {
 	}
 
 	//TODO: отправляем sms с кодом для восставноления пароля
+
+	utils.HttpSuccess(c, nil)
+}
+
+// функция замены пароля.
+func PhoneAuthRecoverPassword(c *gin.Context) {
+	type QueryData struct {
+		Params struct {
+			Phone    string `json:"phone"`
+			Token    string `json:"token"`
+			Password string `json:"password"`
+		} `json:"params"`
+	}
+
+	var queryData QueryData
+	// извлекаем json-параметры запроса
+	if err := c.BindJSON(&queryData); err != nil {
+		utils.HttpError(c, http.StatusOK, "post json params error:"+fmt.Sprintf("%s", err))
+		return
+	}
+
+	// проверяем что новый пароль не пустой
+	if len(queryData.Params.Password) == 0 {
+		utils.HttpError(c, http.StatusOK, "password is empty")
+		return
+	}
+	// находим запись по номеру телефона
+	if v, ok := passwordRecoverPhoneTokenMap[queryData.Params.Phone]; ok {
+		if time.Now().After(v.ExpiredTime) {
+			// токен просрочен
+			utils.HttpError(c, http.StatusOK, "invalid token")
+			return
+		}
+		// сравниваем код полученный от пользоваателя, с тем, который был отправлен ему по sms
+		if v.Token != queryData.Params.Token {
+			// токен не совпадает с тем, который был отправлен по sms
+			utils.HttpError(c, http.StatusOK, "invalid token")
+			return
+		}
+		// вариант валидного токена
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(queryData.Params.Password), 8)
+		if err != nil {
+			utils.HttpError(c, 400, fmt.Sprintf("bcrypt.GenerateFromPassword error:%s", err))
+			return
+		}
+		// по phone находим пользователя
+		user := types.User{}
+		jsonStr, err := json.Marshal(v)
+		err = pg.CallPgFunc("user_get_by_phone_with_password", jsonStr, &user, nil)
+		if err != nil {
+			utils.HttpError(c, http.StatusOK, "pg call user_get_by_email_with_password err:"+fmt.Sprintf("%s", err))
+			return
+		}
+		if user.Id == 0 {
+			utils.HttpError(c, http.StatusOK, "user not found")
+			return
+		}
+		// сохраняем новый пароль в базу
+		err = updateUserPassword(&user, string(hashedPassword), "phone")
+		if err != nil {
+			utils.HttpError(c, http.StatusOK, err.Error())
+			return
+		}
+		// стираем токен из коллекции
+		delete(passwordRecoverPhoneTokenMap, queryData.Params.Phone)
+		utils.HttpSuccess(c, nil)
+		return
+	} else {
+		// токен не найден в коллекции
+		utils.HttpError(c, http.StatusOK, "invalid token")
+		return
+	}
 
 	utils.HttpSuccess(c, nil)
 }

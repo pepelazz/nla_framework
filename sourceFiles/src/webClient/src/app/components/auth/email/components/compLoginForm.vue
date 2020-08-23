@@ -6,7 +6,7 @@
         <q-icon name="email"/>
       </template>
     </q-input>
-    <q-input outlined type='password' label="пароль" v-model="password">
+    <q-input outlined type='password' label="пароль" v-model="password" @keydown.enter.prevent="login">
       <template v-slot:prepend>
         <q-icon name="lock"/>
       </template>

@@ -46,6 +46,7 @@ func StartWebServer(config types.Config) {
 		authRoute.POST("/phone", auth.PhoneAuth)
 		authRoute.POST("/check_sms_code", auth.CheckSmsCode)
 		authRoute.POST("/phone_auth_start_recover_password", auth.PhoneAuthStartRecoverPassword)
+		authRoute.POST("/phone_auth_recover_password", auth.PhoneAuthRecoverPassword)
 		[[- end]]
 	}
 

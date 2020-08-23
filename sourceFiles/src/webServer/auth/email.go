@@ -224,6 +224,7 @@ func EmailAuthRecoverPassword(c *gin.Context) {
 			if time.Now().After(v.ExpiredTime) {
 				// токен просрочен
 				utils.HttpError(c, http.StatusOK, "invalid token")
+				return
 			}
 			// вариант валидного токена
 			hashedPassword, err := bcrypt.GenerateFromPassword([]byte(queryData.Params.Password), 8)
@@ -244,7 +245,7 @@ func EmailAuthRecoverPassword(c *gin.Context) {
 				return
 			}
 			// сохраняем новый пароль в базу
-			err = updateUserPassword(&user, string(hashedPassword))
+			err = updateUserPassword(&user, string(hashedPassword), "email")
 			if err != nil {
 				utils.HttpError(c, http.StatusOK, err.Error())
 				return
@@ -256,19 +257,20 @@ func EmailAuthRecoverPassword(c *gin.Context) {
 		} else {
 			// токен не найден в коллекции
 			utils.HttpError(c, http.StatusOK, "invalid token")
+			return
 		}
 	}
 
 	utils.HttpSuccess(c, nil)
 }
 
-func updateUserPassword(user *types.User, pwd string) (err error) {
+func updateUserPassword(user *types.User, pwd, authProvider string) (err error) {
 	if user == nil {
 		return errors.New("updateUserPassword user is nil")
 	}
 	user.Password = pwd
 
-	jsonStr, _ := json.Marshal(map[string]interface{}{"id": user.Id, "password": pwd})
+	jsonStr, _ := json.Marshal(map[string]interface{}{"id": user.Id, "password": pwd, "auth_provider": authProvider})
 
 	err = pg.CallPgFunc("user_auth_update_password", jsonStr, &user, nil)
 	if err != nil {
