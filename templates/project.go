@@ -66,15 +66,20 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 		ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/auth/phone/components/compLoginForm.vue", "/webClient/src/app/components/auth/phone/components",  "compLoginForm.vue", nil)
 		ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/auth/phone/components/compRecoverPasswordForm.vue", "/webClient/src/app/components/auth/phone/components",  "compRecoverPasswordForm.vue", nil)
 		ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/auth/phone/components/compRegisterForm.vue", "/webClient/src/app/components/auth/phone/components",  "compRegisterForm.vue", nil)
-
 	}
-
 
 	if p.IsTelegramIntegration() {
 		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/telegram/telegramAuth.go", "/webServer", "telegramAuth.go", nil)
 		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/telegram/user_telegram_auth.sql", "/sql/template/function/_User", "user_telegram_auth.sql", nil)
 		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/telegram/user_get_by_telegram_id.sql", "/sql/template/function/_User", "user_get_by_telegram_id.sql", nil)
 		ReadTmplAndPrint(p, projectTmplPath + "/tgBot/main.go", "/tgBot", "main.go", nil)
+	}
+
+	if p.IsBackupOnYandexDisk() {
+		ReadTmplAndPrint(p, projectTmplPath + "/yandexDiskBackup/main.go", "/yandexDiskBackup",  "main.go", nil)
+		ReadTmplAndPrint(p, projectTmplPath + "/yandexDiskBackup/yandexApi.go", "/yandexDiskBackup",  "yandexApi.go", nil)
+		ReadTmplAndPrint(p, projectTmplPath + "/yandexDiskBackup/dbBackup.go", "/yandexDiskBackup",  "dbBackup.go", nil)
+		ReadTmplAndPrint(p, projectTmplPath + "/jobs/yandexDiskBackup.go", "/jobs",  "yandexDiskBackup.go", nil)
 	}
 
 	// в случае коннекта к Битрикс генерим файлы

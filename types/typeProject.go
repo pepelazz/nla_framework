@@ -38,6 +38,7 @@ type (
 		Odata            OdataConfig
 		Yandex           YandexConfig
 		User UserConfig
+		Backup BackupConfig
 	}
 	AuthConfig struct {
 		ByEmail  bool // дефолт - авторизация по email
@@ -152,6 +153,15 @@ type (
 	ProjectVueMessageTmpl struct {
 		CompName string // название компоненты
 		CompPath string // путь к файлу компоненты
+	}
+	BackupConfig struct {
+		ToYandexDisk BackupConfigYandexDisk
+	}
+	BackupConfigYandexDisk struct {
+		Token string
+		Path string
+		Period int // периодичность в минутах
+		FilesCount int // количество последних файлов, которое остается на яндекс сервере. Остальные удаляются
 	}
 )
 
@@ -310,6 +320,11 @@ func (p ProjectType) IsTelegramIntegration() bool {
 // признак что есть интеграция с Odata
 func (p ProjectType) IsOdataIntegration() bool {
 	return len(p.Config.Odata.Url) > 0
+}
+
+// признак что настроен бэкап на яндекс диск
+func (p ProjectType) IsBackupOnYandexDisk() bool {
+	return len(p.Config.Backup.ToYandexDisk.Token) > 0
 }
 
 // печать списка go jobs
