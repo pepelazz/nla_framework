@@ -1,4 +1,4 @@
-package yandexDiskBackup
+package main
 
 import (
 	"errors"
@@ -14,7 +14,8 @@ func getBackupFile() (string, error) {
 	fileName := fmt.Sprintf("[[.Config.Postgres.DbName]]_dump_%s.zip", time.Now().Format("2006_01_02_15_04"))
 	// делаем бэкап базы на сервере
 	cmd := exec.Command("sh", "-c", strings.Join([]string{
-		fmt.Sprintf("pg_dumpall -c -U postgres  > db_dump"),
+		//fmt.Sprintf("pg_dumpall -c -U postgres  > db_dump"),
+		fmt.Sprintf("docker exec -t [[.Config.Postgres.DbName]]_postgres_1 pg_dumpall -c -U postgres  > db_dump"),
 		fmt.Sprintf("zip %s db_dump", fileName), // архивируем бэкап
 		fmt.Sprintf("rm db_dump"),               // удаляем бэкап
 	}, ";"))

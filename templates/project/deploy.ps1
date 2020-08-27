@@ -14,6 +14,7 @@ git pull
 
 # сборка бинарника
 cd src
+Remove-Item 'app'
 $env:GOOS = "linux"
 $env:GOARCH = "amd64"
 echo "start build"

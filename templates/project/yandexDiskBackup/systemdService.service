@@ -1,0 +1,12 @@
+[Unit]
+Description=[[.Config.Postgres.DbName]]_yandex_backup
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=[[.Config.WebServer.Path]]
+ExecStart=[[.Config.WebServer.Path]]/yandexDiskBackup
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,4 +1,4 @@
-package yandexDiskBackup
+package main
 
 import (
 	"encoding/json"

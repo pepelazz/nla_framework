@@ -79,7 +79,8 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 		ReadTmplAndPrint(p, projectTmplPath + "/yandexDiskBackup/main.go", "/yandexDiskBackup",  "main.go", nil)
 		ReadTmplAndPrint(p, projectTmplPath + "/yandexDiskBackup/yandexApi.go", "/yandexDiskBackup",  "yandexApi.go", nil)
 		ReadTmplAndPrint(p, projectTmplPath + "/yandexDiskBackup/dbBackup.go", "/yandexDiskBackup",  "dbBackup.go", nil)
-		ReadTmplAndPrint(p, projectTmplPath + "/jobs/yandexDiskBackup.go", "/jobs",  "yandexDiskBackup.go", nil)
+		ReadTmplAndPrint(p, projectTmplPath + "/yandexDiskBackup/systemdService.service", "/yandexDiskBackup",  p.Config.Postgres.DbName + "_yandexBackup.service", nil)
+		ReadTmplAndPrint(p, projectTmplPath + "/yandexDiskBackup/startYandexBackupService.sh", "/yandexDiskBackup","startYandexBackupService.sh", nil)
 	}
 
 	// в случае коннекта к Битрикс генерим файлы

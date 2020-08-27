@@ -1,4 +1,4 @@
-package yandexDiskBackup
+package main
 
 import (
 	"fmt"
@@ -8,7 +8,15 @@ import (
 var ynxUrl = "https://cloud-api.yandex.net/v1/disk"
 var authToken = "[[.Config.Backup.ToYandexDisk.Token]]"
 
-func CreateBackup()  {
+func main()  {
+
+		for {
+			createBackup()
+			time.Sleep([[.Config.Backup.ToYandexDisk.Period]]* time.Minute)
+	}
+}
+
+func createBackup()  {
 	// создаем папку на яндексе для проекта
 	err := createFolder("[[.Config.Backup.ToYandexDisk.Path]]")
 	if err != nil {

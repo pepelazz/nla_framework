@@ -52,9 +52,9 @@
             isManager() {
                 return [this.item.manager_id, this.item.creator_id].includes(this.currentUser.id)
             },
-            id: function () {
-                return this.item?.id
-            }
+            // id: function () {
+            //     return this.item?.id
+            // }
         },
         data() {
             return {

@@ -12,6 +12,9 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+	"errors"
+	"io/ioutil"
+	"strings"
 )
 
 type (
@@ -79,12 +82,11 @@ func PhoneAuth(c *gin.Context) {
 			return
 		}
 		// отправляем sms
-		//TODO: обращение к сервису по отправке смс
-		//href := fmt.Sprintf("%s/check_user_email?t=%v", webServerConfig.Url, userRegData.Token)
-		//err = utils.EmailSendRegistrationConfirm(userRegData.Email, href)
-		//if err != nil {
-		//	fmt.Printf("utils.EmailSendRegistrationConfirm: %s", err)
-		//}
+		err = sendSms(userRegData.Phone, userRegData.Token)
+		if err != nil {
+			utils.HttpError(c, http.StatusOK, fmt.Sprintf("ошибка отправки sms: %s", err.Error()))
+			return
+		}
 		// в независимости от результатов отправки письма отправляем, что данный этап регистрации успешно пройден
 		utils.HttpSuccess(c, nil)
 	} else {
@@ -181,7 +183,12 @@ func PhoneAuthStartRecoverPassword(c *gin.Context) {
 		}
 	}
 
-	//TODO: отправляем sms с кодом для восставноления пароля
+	// отправляем sms с кодом для восставноления пароля
+	err = sendSms(phone, token)
+	if err != nil {
+		utils.HttpError(c, http.StatusOK, fmt.Sprintf("ошибка отправки sms: %s", err.Error()))
+		return
+	}
 
 	utils.HttpSuccess(c, nil)
 }
@@ -256,4 +263,25 @@ func PhoneAuthRecoverPassword(c *gin.Context) {
 	}
 
 	utils.HttpSuccess(c, nil)
+}
+
+
+func sendSms(phone, token string) error  {
+	httpRes, err := http.Get(fmt.Sprintf("[[.Config.Auth.SmsService.Url]]", phone, token))
+	if err != nil {
+		return err
+	}
+
+	if httpRes.StatusCode != http.StatusOK {
+		return errors.New("bad request")
+	}
+	body, err := ioutil.ReadAll(httpRes.Body)
+	if err != nil {
+		return err
+	}
+	[[.Config.Auth.SmsService.CheckErr]]
+	if strings.Contains(string(body), "ERROR") {
+		return errors.New(string(body))
+	}
+	return nil
 }

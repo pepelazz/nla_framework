@@ -45,9 +45,14 @@ type (
 		ByPhone  bool // авторизация по номеру телефона
 		SqlHooks AuthConfigSqlHooks
 		IsPassStepWaitingAuth bool // возможность отключить статус waiting_auth для вновь зарегестрированных пользователей
+		SmsService AuthConfigSmsService
 	}
 	AuthConfigSqlHooks struct {
 		CheckIsUserExist []string
+	}
+	AuthConfigSmsService struct {
+		Url string // url для отправки sms,в которой первый параметр телефон, второй токен.  https://smsc.ru/sys/send.php?login=&psw=&phones=+%s&mes=%s
+		CheckErr string
 	}
 	// дополнительные настройки для таблицы users
 	UserConfig struct {
