@@ -12,7 +12,7 @@
         [[.PrintListRowAvatar]]
         [[.PrintListRowLabel]]
         <q-item-section top side>
-          <comp-item-dropdown-btn :item="item" itemProp="title" :is-edit="true" :is-delete="true" fkProp=""
+          <comp-item-dropdown-btn :item="item" itemProp="title" :is-edit="true" :is-delete="[[not .Vue.IsHideDeleteOptions]]" fkProp=""
                                   pg-method="[[.PgName]]_update"
                                   @edit="$router.push(`${currentUrl}${item.id}`)"
                                   @reload-list="$refs.docList.reloadList()"/>

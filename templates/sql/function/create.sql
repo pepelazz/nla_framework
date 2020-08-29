@@ -19,7 +19,7 @@ BEGIN
     [[.Sql.Hooks.Print "update" "beforeInsertUpdate"]]
 
     [[if .RequiredFldsString -]]
-    -- проверика наличия обязательных параметров
+    -- проверка наличия обязательных параметров
     checkMsg = check_required_params(params, ARRAY [ [[.RequiredFldsString]] ]);
     IF checkMsg IS NOT NULL
     THEN

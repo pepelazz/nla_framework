@@ -53,6 +53,7 @@ type (
 		Hooks          DocVueHooks // куски vue кода
 		Readonly       string
 		IsVueTitleClickable bool // включаем возможность перехода на item из списка не только при клике по аватарке, но и по названию
+		IsHideDeleteOptions bool // возможность не показыввать опцию "удалить" в списке
 	}
 
 	VueTab struct {

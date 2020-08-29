@@ -177,6 +177,14 @@ func GetFldJsonbComposition(name, nameRu string, rowCol [][]int, classStr, compN
 	return
 }
 
+// поле с кастомной композицией
+func GetFldJsonbCompositionWithoutFld(rowCol [][]int, classStr, compName string, params ...string) (fld FldType) {
+	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
+		return fmt.Sprintf("<%[1]s :item='item'/>", compName)
+	}}}
+	return
+}
+
 // простое html поле
 func GetFldSimpleHtml(rowCol [][]int, classStr, htmlStr string) (fld FldType) {
 	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {

@@ -268,6 +268,14 @@ func (fld FldType) AddClass(s string) FldType {
 	return fld
 }
 
+func (fld FldType) AddVueExt(k, v string) FldType {
+	if fld.Vue.Ext == nil {
+		fld.Vue.Ext = map[string]string{}
+	}
+	fld.Vue.Ext[k] = v
+	return fld
+}
+
 // передается либо true/false, либо функция вида ()=> item !== 'a'
 func (fld FldType) SetReadonly(s string) FldType {
 	fld.Vue.Readonly = s
