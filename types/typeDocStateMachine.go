@@ -47,6 +47,10 @@ type (
 	DocSmTmpls struct {
 		ItemStateHeader string
 		IsShowChat      bool
+		Hooks DocSmTmplsHooks
+	}
+	DocSmTmplsHooks struct {
+		AfterActionBtns []string
 	}
 )
 

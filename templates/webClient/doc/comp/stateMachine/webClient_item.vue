@@ -24,6 +24,9 @@
                     <component :is="btn.compName" :item="item" :currentUser="currentUser" @stateChanged="stateChanged"/>
                 </div>
             </div>
+            [[range .StateMachine.Tmpls.Hooks.AfterActionBtns]]
+            [[.]]
+            [[- end]]
             <div class="row q-col-gutter-sm">
                 <!-- блок с параметрами сделки       -->
                 <div class="col-xs-12 col-sm-8 col-md-8">
@@ -69,6 +72,7 @@
 </template>
 
 <script>
+    [[ .PrintVueImport "docItem" ]]
     [[range .StateMachine.States]]
         [[- $state := . -]]
     import state_[[$state.Title]]_card from './comp/state_[[$state.Title]]_card'
@@ -82,7 +86,7 @@
 
     export default {
         props: ['id', 'isOpenInDialog', 'currentUser'],
-        components: {[[range .StateMachine.States]] [[- $state := . -]] state_[[.Title]]_card, [[- range .Actions -]] [[$state.Title]]_to_[[.To]]_btn, [[end]] [[end]]},
+        components: {[[range .StateMachine.States]] [[- $state := . -]] state_[[.Title]]_card, [[- range .Actions -]] [[$state.Title]]_to_[[.To]]_btn, [[end]] [[end]] [[- .PrintComponents "docItem" -]]},
         computed: {
             docUrl() {
                 return `/[[.Vue.RouteName]]`
