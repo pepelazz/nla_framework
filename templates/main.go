@@ -82,10 +82,10 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 		}
 		// дописываем стандартные шаблоны
 		baseTmplNames := []string{}
-		if d.IsBaseTemapltes.Vue {
+		if d.IsBaseTemplates.Vue {
 			baseTmplNames = append(baseTmplNames, "webClient_item.vue", "webClient_index.vue")
 		}
-		if d.IsBaseTemapltes.Sql {
+		if d.IsBaseTemplates.Sql {
 			baseTmplNames = append(baseTmplNames, "sql_main.toml", "sql_function_get_by_id.sql", "sql_function_list.sql", "sql_function_update.sql", "sql_function_trigger_before.sql", "sql_function_trigger_after.sql")
 		}
 		if d.StateMachine != nil {

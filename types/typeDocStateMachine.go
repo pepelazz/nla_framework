@@ -10,23 +10,24 @@ type (
 	// State machine
 	DocSm struct {
 		States []*DocSmState
-		Tmpls DocSmTmpls
+		Tmpls  DocSmTmpls
 	}
 
 	DocSmState struct {
-		Title      string
-		TitleRu    string
-		Actions    []DocSmAction
-		UpdateFlds []FldType // поля, которые можно редактировать в этом стейте
-		IconSrc    string
-		FuncMapForCard    map[string]interface{}
-		FuncMapForAction    map[string]interface{}
+		Title            string
+		TitleRu          string
+		Actions          []DocSmAction
+		UpdateFlds       []FldType // поля, которые можно редактировать в этом стейте
+		IconSrc          string
+		FuncMapForCard   map[string]interface{}
+		FuncMapForAction map[string]interface{}
 	}
 
 	DocSmAction struct {
 		From       string
 		To         string
 		Label      string
+		Icon       string
 		UpdateFlds []FldType              // поля, которые заполняются при смене стейта
 		Conditions []DocSmActionCondition // условия выполнения экшена
 		Hooks      DocSmActionlHooks
@@ -45,7 +46,7 @@ type (
 
 	DocSmTmpls struct {
 		ItemStateHeader string
-		IsShowChat bool
+		IsShowChat      bool
 	}
 )
 
@@ -85,7 +86,7 @@ func (DocSm) TmplSqlActionPrintCaseBlock(d DocType) string {
 	return res
 }
 
-func (DocSm) TmplSqlActionPrintAfterHook(d DocType) string  {
+func (DocSm) TmplSqlActionPrintAfterHook(d DocType) string {
 	res := ""
 	for _, st := range d.StateMachine.States {
 		for _, actn := range st.Actions {
@@ -98,7 +99,7 @@ func (DocSm) TmplSqlActionPrintAfterHook(d DocType) string  {
 			}
 		}
 	}
-	if len(res)>0 {
+	if len(res) > 0 {
 		res = fmt.Sprintf("case params->>'action_name'\n%s\n\t\telse\n\tend case;", res)
 	}
 	return res
@@ -235,6 +236,7 @@ func (sm *DocSm) GenerateTmpls(doc *DocType, params map[string]interface{}) {
 			fileName := st.Title + "_to_" + actn.To + "_btn.vue"
 			actnLabel := actn.Label
 			actnName := st.Title + "_to_" + actn.To
+			actnIconSrc := actn.Icon
 			updateFlds := []FldType{}
 			// собираем цепочку условий vif
 			vifArr := []string{}
@@ -261,6 +263,7 @@ func (sm *DocSm) GenerateTmpls(doc *DocType, params map[string]interface{}) {
 				DistFilename: fileName,
 				FuncMap: map[string]interface{}{
 					"GetLabel":          func() string { return actnLabel },
+					"GetIconSrc":        func() string { return actnIconSrc },
 					"GetActionName":     func() string { return actnName },
 					"GetUpdateFlds":     func() []FldType { return updateFlds },
 					"GetUpdateFldsGrid": actn.GetUpdateFldsGrid(),

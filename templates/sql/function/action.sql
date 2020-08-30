@@ -36,7 +36,7 @@ BEGIN
     THEN
         RETURN json_build_object('ok', FALSE, 'message', 'wrong id');
     END IF;
-    -- создаем json объект из записи, чтобы можно было обращаться к занчениям колонок через назваание переменных
+    -- создаем json объект из записи, чтобы можно было обращаться к значениям колонок через название переменных
     rJson = row_to_json(r)::jsonb;
 
     if params->'options'->'states' isnull then
@@ -58,21 +58,24 @@ BEGIN
     --записываем название нового стейта
     params = params || jsonb_build_object('state', newStateName);
 
-    -- сразу сохраняем коммент, потому что это поле есть во всех стейтах
-    params = params || jsonb_set(params, '{options, states, 0}'::text[] || '{comment}'::text[], rJson -> 'comment');
+    -- если это смена стейта.
+    if r.state != newStateName then
+        -- сразу сохраняем коммент, потому что это поле есть во всех стейтах
+        params = params || jsonb_set(params, '{options, states, 0}'::text[] || '{comment}'::text[], rJson -> 'comment');
 
-    -- копируем в options значения необходимых полей из предыдущего стейта
-    if array_length(copyToParamsFlds, 1) > 0 then
-        FOREACH copyFldName IN ARRAY copyToParamsFlds
-            LOOP
-                params = params || jsonb_set(params, '{options, states, 0}'::text[] || copyFldName, rJson -> copyFldName);
-                [[tmplSqlActionPrintRefUpdateBlock .]]
-            END LOOP;
-    end if;
-
+        -- копируем в options значения необходимых полей из предыдущего стейта
+        if array_length(copyToParamsFlds, 1) > 0 then
+            FOREACH copyFldName IN ARRAY copyToParamsFlds
+                LOOP
+                    params = params || jsonb_set(params, '{options, states, 0}'::text[] || copyFldName, rJson -> copyFldName);
+                    [[tmplSqlActionPrintRefUpdateBlock .]]
+                END LOOP;
+        end if;
     -- прописываем кто изменил статус и когда
 --     params = params || jsonb_build_object('options', options_add_fld((params->>'user_id')::int, params->'options', 'states', jsonb_build_object('state', newStateName)));
     params = params || jsonb_build_object('options', jsonb_insert( params->'options', '{states, 0}'::text[], jsonb_build_object('state', newStateName, 'user_id', (params->>'user_id')::int, 'date', now() at time zone 'Asia/Novosibirsk')));
+
+    end if;
 
     -- оставляем только поля, которые указаны в updateFlds, котрые отфильтрованы в зависимости от текущего стейта
     FOREACH m SLICE 1 IN ARRAY ARRAY [

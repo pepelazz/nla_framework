@@ -1,6 +1,6 @@
 <template>
   <div [[Vif]]>
-    <q-btn color="primary" outline label="[[GetLabel]]" @click="open"/>
+    <q-btn color="primary" outline label="[[GetLabel]]" [[if GetIconSrc]]icon="[[GetIconSrc]]" [[end]] @click="open"/>
     <q-dialog v-model="isShowDialog" persistent>
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
