@@ -140,6 +140,7 @@ func GetFldRadioString(name, nameRu string, rowCol [][]int, options []FldVueOpti
 }
 
 // создание простого поля Ref
+// - isShowLink
 func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) (fld FldType) {
 	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
