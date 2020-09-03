@@ -4,12 +4,17 @@
             :data="list"
             :columns="columns"
             row-key="name"
+            :pagination.sync="pagination"
+            separator="[[GetSeparator]]"
     />
 </template>
 <script>
     export default {
         data() {
             return {
+                pagination: {
+                    rowsPerPage: [[GetRowsPerPage]]
+                },
                 columns: [
                     [[range GetColumns -]]
                     { name: '[[.Name]]', align: '[[.Align]]', label: '[[.Label]]', field: '[[.Field]]', sortable: [[.Sortable]] },

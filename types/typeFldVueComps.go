@@ -7,6 +7,21 @@ import (
 	"strings"
 )
 
+// пример
+//doc.AddFld(t.GetFldVueCompositionTable(&doc, t.FldVueCompositionTable{
+//	FldName: "parcel_table",
+//	TableName: "Список посылок",
+//	Columns: []t.FldVueCompositionTableColumn{
+//	{Name: "id", Label: "ID"},
+//	{Name: "title", Label: "название", Sortable: true},
+//	},
+//	PgMethod: `{method: 'parcel_list', params: {}}`,
+//	Pagination: t.FldVueCompositionTablePagination{
+//	RowsPerPage: 10,
+//	},
+//	Separator: "cell",
+//}, [][]int{{2, 1}}, "col-8"))
+
 // таблица
 type (
 
@@ -15,6 +30,8 @@ type (
 		TableName string
 		Columns []FldVueCompositionTableColumn
 		PgMethod string
+		Pagination FldVueCompositionTablePagination
+		Separator string // horizontal (default), vertical, cell, none
 	}
 	FldVueCompositionTableColumn struct {
 		Name string
@@ -22,6 +39,9 @@ type (
 		Align string
 		Field string
 		Sortable bool
+	}
+	FldVueCompositionTablePagination struct {
+		RowsPerPage int
 	}
 
 )
@@ -50,6 +70,12 @@ func GetFldVueCompositionTable(d *DocType, tbl FldVueCompositionTable, rowCol []
 		}
 		tbl.Columns[i] = col
 	}
+	if tbl.Pagination.RowsPerPage == 0 {
+		tbl.Pagination.RowsPerPage = 5
+	}
+	if len(tbl.Separator)== 0{
+		tbl.Separator = "horizontal"
+	}
 	// прописываем пути шаблона
 	if d.Templates == nil {
 		d.Templates = map[string]*DocTemplate{}
@@ -62,6 +88,8 @@ func GetFldVueCompositionTable(d *DocType, tbl FldVueCompositionTable, rowCol []
 			"GetTableTitle": func() string {return tbl.TableName},
 			"GetColumns": func() []FldVueCompositionTableColumn { return tbl.Columns},
 			"GetPgMethod": func() string {return tbl.PgMethod},
+			"GetRowsPerPage": func() int {return tbl.Pagination.RowsPerPage },
+			"GetSeparator": func() string {return tbl.Separator },
 		},
 	}
 
@@ -90,32 +118,3 @@ func GetFldVueCompositionTable(d *DocType, tbl FldVueCompositionTable, rowCol []
 
 	return
 }
-
-//func (fld FldType) SetFromConfigTable(d *DocType, fldName string) FldType {
-//	if d.Sql.Hooks.BeforeInsertUpdate == nil {
-//		d.Sql.Hooks.BeforeInsertUpdate = []string{}
-//	}
-//	triggerStr := fmt.Sprintf(`
-//		params = params || jsonb_build_object('%[1]s', (select %[2]s from config limit 1));
-//		if params->>'%[1]s' isnull then
-//			return jsonb_build_object('ok', false, 'message', 'missed %[2]s in "config" table');
-//		end if;
-//	`, fld.Name, fldName)
-//	d.Sql.Hooks.BeforeInsertUpdate = append(d.Sql.Hooks.BeforeInsertUpdate, triggerStr)
-//	return fld
-//}
-
-//func GetFldVueCompTable(d *DocType, comp FldVueCompositionTable, rowCol [][]int, params... string) (fld FldType) {
-//	return getFldVueComposition(d, comp, rowCol, params...)
-//}
-//
-//func getFldVueComposition(d *DocType, comp FldVueCompositionTmp, rowCol [][]int, params... string) (fld FldType) {
-//	classStr := "col-md-4 col-xs-6"
-//	if len(params)>0 {
-//		classStr= params[0]
-//	}
-//	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
-//		return fmt.Sprintf("<%[1]s :item='item'/>", comp.GetName())
-//	}}}
-//	return
-//}
