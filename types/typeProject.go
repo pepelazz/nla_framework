@@ -13,21 +13,21 @@ import (
 
 type (
 	ProjectType struct {
-		Name     string
-		Docs     []DocType
-		DistPath string
-		Config   ProjectConfig
-		Vue      ProjectVue
-		Sql      ProjectSql
-		Go       ProjectGo
-		Roles    []ProjectRole // список ролей в проекте
-		IsDebugMode bool
+		Name                     string
+		Docs                     []DocType
+		DistPath                 string
+		Config                   ProjectConfig
+		Vue                      ProjectVue
+		Sql                      ProjectSql
+		Go                       ProjectGo
+		Roles                    []ProjectRole // список ролей в проекте
+		IsDebugMode              bool
 		OverridePathForTemplates map[string]string // map для замены путей к исходным файлам. Ключ - путь к генерируемому файлу, значение - новый путь к исходному файлу.
 	}
 	ProjectConfig struct {
 		Logo             string
 		LocalProjectPath string
-		Auth 			 AuthConfig
+		Auth             AuthConfig
 		Postgres         PostrgesConfig
 		WebServer        WebServerConfig
 		Email            EmailConfig
@@ -37,21 +37,21 @@ type (
 		Telegram         TelegramConfig
 		Odata            OdataConfig
 		Yandex           YandexConfig
-		User UserConfig
-		Backup BackupConfig
+		User             UserConfig
+		Backup           BackupConfig
 	}
 	AuthConfig struct {
-		ByEmail  bool // дефолт - авторизация по email
-		ByPhone  bool // авторизация по номеру телефона
-		SqlHooks AuthConfigSqlHooks
+		ByEmail               bool // дефолт - авторизация по email
+		ByPhone               bool // авторизация по номеру телефона
+		SqlHooks              AuthConfigSqlHooks
 		IsPassStepWaitingAuth bool // возможность отключить статус waiting_auth для вновь зарегестрированных пользователей
-		SmsService AuthConfigSmsService
+		SmsService            AuthConfigSmsService
 	}
 	AuthConfigSqlHooks struct {
 		CheckIsUserExist []string
 	}
 	AuthConfigSmsService struct {
-		Url string // url для отправки sms,в которой первый параметр телефон, второй токен.  https://smsc.ru/sys/send.php?login=&psw=&phones=+%s&mes=%s
+		Url      string // url для отправки sms,в которой первый параметр телефон, второй токен.  https://smsc.ru/sys/send.php?login=&psw=&phones=+%s&mes=%s
 		CheckErr string
 	}
 	// дополнительные настройки для таблицы users
@@ -90,9 +90,9 @@ type (
 		Menu      []VueMenu
 		Hooks     ProjectVueHooks
 		// кастомные шаблоны сообщений, которые выводятся в правом боковом списке
-		MessageTmpls []ProjectVueMessageTmpl
-		IsHideTaskToolbar bool // не показывааем боковое меню с задачами
-		IsHideMessageToolbar bool // не показывааем боковое меню с сообщениями
+		MessageTmpls             []ProjectVueMessageTmpl
+		IsHideTaskToolbar        bool // не показывааем боковое меню с задачами
+		IsHideMessageToolbar     bool // не показывааем боковое меню с сообщениями
 		IsHideUserAvatarUploader bool // не даем возможность пользователям загружать аватарки
 	}
 	VueMenu struct {
@@ -163,10 +163,11 @@ type (
 		ToYandexDisk BackupConfigYandexDisk
 	}
 	BackupConfigYandexDisk struct {
-		Token string
-		Path string
-		Period int // периодичность в минутах
-		FilesCount int // количество последних файлов, которое остается на яндекс сервере. Остальные удаляются
+		Token              string
+		Path               string
+		PostgresDockerName string
+		Period             int // периодичность в минутах
+		FilesCount         int // количество последних файлов, которое остается на яндекс сервере. Остальные удаляются
 	}
 )
 
@@ -240,7 +241,7 @@ func (p *ProjectType) FillVueFlds() {
 
 // заполняем боковое меню для Vue
 func (p *ProjectType) FillSideMenu() {
-	if (p.Vue.Menu == nil) {
+	if p.Vue.Menu == nil {
 		log.Fatalf("ProjectType.FillSideMenu p.Vue.Menu == nil")
 	}
 	for i, v := range p.Vue.Menu {

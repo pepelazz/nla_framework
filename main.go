@@ -62,6 +62,18 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc) {
 	if !p.Config.Auth.ByPhone {
 		p.Config.Auth.ByEmail = true
 	}
+	// дефолты для бэкапа на яндекс диск
+	if p.IsBackupOnYandexDisk() {
+		if p.Config.Backup.ToYandexDisk.FilesCount == 0 {
+			p.Config.Backup.ToYandexDisk.FilesCount = 3
+		}
+		if p.Config.Backup.ToYandexDisk.Period == 0 {
+			p.Config.Backup.ToYandexDisk.Period = 12*60
+		}
+		if len(p.Config.Backup.ToYandexDisk.PostgresDockerName) == 0 {
+			p.Config.Backup.ToYandexDisk.PostgresDockerName = p.Config.Postgres.DbName
+		}
+	}
 	// читаем данные для проекта
 	readData(p)
 	// читаем темплейты
