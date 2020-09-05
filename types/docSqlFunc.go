@@ -466,6 +466,8 @@ func (d DocType) GetBeforeTriggerDeclareVars() string {
 			}
 		}
 	}
+	res = res  + "\n" + d.Sql.Hooks.Print("triggerBefore", "declareVars")
+
 	return res
 }
 func (d DocType) GetBeforeTriggerFillRefVars() string {
@@ -584,6 +586,7 @@ func (d DocSqlHooks) Print(tmplName, hookName string) string {
 	switch hookName {
 	case "declareVars":
 		if d.DeclareVars != nil {
+			// update, triggerBefore
 			if r, ok := d.DeclareVars[tmplName]; ok {
 				return "-- codogenerated from doc.Sql.Hooks.declareVars\n\t" + r
 			}
@@ -595,6 +598,10 @@ func (d DocSqlHooks) Print(tmplName, hookName string) string {
 	case "beforeInsert":
 		if d.BeforeInsert != nil {
 			return strings.Join(d.BeforeInsert, "\n\n")
+		}
+	case "afterInsert":
+		if d.AfterInsert != nil {
+			return strings.Join(d.AfterInsert, "\n\n")
 		}
 	case "afterInsertUpdate":
 		if d.AfterInsertUpdate != nil {

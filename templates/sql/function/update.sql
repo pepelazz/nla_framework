@@ -43,6 +43,8 @@ BEGIN
 
         {{.PrintSqlFuncInsertNew}}
 
+        {{.Sql.Hooks.Print "update" "afterInsert"}}
+
     else
         updateValue = '' || update_str_from_json(params, ARRAY [
 {{.PrintSqlFuncUpdateFlds}}

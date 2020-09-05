@@ -5,6 +5,7 @@ CREATE OR REPLACE FUNCTION {{.PgName}}_trigger_before() RETURNS trigger AS
 $$
 DECLARE
        {{- .GetBeforeTriggerDeclareVars}}
+       searchTxtVar TEXT := '';
 BEGIN
         {{.Sql.Hooks.Print "triggerBefore" "BeforeTriggerBefore"}}
 
@@ -24,7 +25,7 @@ BEGIN
         NEW.options = coalesce(OLD.options, '{}'::jsonb) || NEW.options || jsonb_build_object('title', jsonb_build_object({{.GetSearchTextJson}}));
         -- заполняем search_text
         {{if .GetSearchTextString}}
-        NEW.search_text = concat({{.GetSearchTextString}});
+        NEW.search_text = concat({{.GetSearchTextString}}, ' ', searchTxtVar);
         {{- else}}
         NEW.search_text = '';
         {{- end}}

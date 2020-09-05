@@ -118,6 +118,7 @@ type (
 		DeclareVars          map[string]string
 		BeforeInsertUpdate   []string
 		BeforeInsert         []string
+		AfterInsert          []string
 		AfterInsertUpdate    []string
 		BeforeTriggerBefore  []string
 		AfterTriggerAfter    []string
