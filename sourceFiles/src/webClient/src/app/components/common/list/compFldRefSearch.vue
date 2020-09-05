@@ -31,6 +31,11 @@
       <q-icon name="cancel" @click.stop="clear" class="cursor-pointer" />
     </template>
 
+    <!-- кнопка сохранения   -->
+    <template v-slot:after  v-if="ext && ext.isSaveBtn && localItem.label && !readonly">
+      <q-icon name="save" @click="$emit('save')" class="cursor-pointer" color="primary" />
+    </template>
+
     <!-- форматирование списка   -->
     <template v-slot:option="scope">
       <q-item
