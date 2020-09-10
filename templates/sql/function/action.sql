@@ -73,7 +73,7 @@ BEGIN
         end if;
     -- прописываем кто изменил статус и когда
 --     params = params || jsonb_build_object('options', options_add_fld((params->>'user_id')::int, params->'options', 'states', jsonb_build_object('state', newStateName)));
-    params = params || jsonb_build_object('options', jsonb_insert( params->'options', '{states, 0}'::text[], jsonb_build_object('state', newStateName, 'user_id', (params->>'user_id')::int, 'date', now() at time zone 'Asia/Novosibirsk')));
+    params = params || jsonb_build_object('options', jsonb_insert( params->'options', '{states, 0}'::text[], jsonb_build_object('state', newStateName, 'user_id', (params->>'user_id')::int, 'date', now() at time zone '[[GetPgTimeZone]]')));
 
     end if;
 

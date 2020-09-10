@@ -29,9 +29,16 @@ var funcMap = template.FuncMap{
 	"ToCamel":        	   strcase.ToCamel,
 	"PrintVueFldTemplate": PrintVueFldTemplate,
 	"ArrayStringJoin": arrayStringJoin,
+	"GetPgTimeZone": func() string {
+		if project !=nil {
+			return project.Config.Postgres.TimeZone
+		}
+		return "null"
+	},
 }
 
 func ParseTemplates(p types.ProjectType) map[string]*template.Template {
+
 	// парсинг общих шаблонов
 	res := map[string]*template.Template{}
 	readFiles := func(prefix, delimLeft, delimRight string, path ...string) {

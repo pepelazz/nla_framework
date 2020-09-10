@@ -233,6 +233,12 @@ func (p *ProjectType) FillVueFlds() {
 							fld.Vue.Ext["avatar"] = dRef.Vue.MenuIcon
 						}
 					}
+					// для ссылки на таблицу user проставляем иконки отдельно
+					if fld.Sql.Ref == "user" {
+						fld.Vue.Ext["pathUrl"] = "/users"
+						fld.Vue.Ext["avatar"] = "https://image.flaticon.com/icons/svg/423/423063.svg"
+
+					}
 				}
 			}
 		}
