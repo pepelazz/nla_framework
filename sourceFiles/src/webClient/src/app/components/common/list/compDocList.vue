@@ -149,6 +149,8 @@
                         } else {
                             if (done) done(true)
                         }
+                    } else {
+                      if (done) done(true)
                     }
                 })
             },
