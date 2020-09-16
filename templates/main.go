@@ -324,7 +324,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 			return fmt.Sprintf("<q-select %s label='%s' v-model='item.%s' use-input use-chips multiple input-debounce='0' @new-value='%[3]sCreateValue' @filter='%[3]sFilterFn' :options='%[3]sFilterOptions' :readonly='%s'/>", borderStyle, nameRu, name, readonly, params)
 		}
 	case types.FldVueTypeCheckbox:
-		return fmt.Sprintf("<q-checkbox label='%s' v-model='item.%s' :disabled='%s' :false-value='null' indeterminate-value='some' %s/>", nameRu, name, readonly, params)
+		return fmt.Sprintf("<q-checkbox label='%s' v-model='item.%s' :disable='%s' :false-value='null' indeterminate-value='some' %s/>", nameRu, name, readonly, params)
 	case types.FldVueTypeRadio:
 		options := ""
 		for _, v := range fld.Vue.Options {

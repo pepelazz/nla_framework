@@ -15,6 +15,8 @@
                   <q-btn v-if="!newDocEventOnly" size="12px" flat dense round icon="add" @click="$router.push(newDocUrl)"/>
                   <q-btn v-else size="12px" flat dense round icon="add" @click="$emit('clickAddBtn')"/>
                 </template>
+                <!-- дополнительные кнопки   -->
+                <slot name="addBtnsSlot"/>
                 <!-- кнопка поиска  -->
                 <q-btn size="12px" v-if="searchFldName" flat dense round icon="search" @click="toggleSearchFld"/>
                 <!--  СОРТИРОВКА ПО ВОЗРАСТАНИЮ  -->
@@ -68,6 +70,9 @@
             </q-item-section>
           </q-item>
 
+          <!-- дополнительные поля (фильтр по датам и пр)   -->
+          <slot name="addFilterSlot"/>
+
           <q-item v-for="item in itemList" :key="item.id">
             <!--  слот для рендеринга элемента списка -->
             <slot name="listItem" :item="item"></slot>
@@ -91,95 +96,95 @@
 </template>
 
 <script>
-    import {debounce} from 'quasar'
-    import _ from 'lodash'
+  import {debounce} from 'quasar'
+  import _ from 'lodash'
 
-    export default {
-        props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocEventOnly', 'newDocUrl', 'urlQueryParams', 'ext', 'readonly'],
-        computed: {
-            computedListTitle() {
-                return !this.listParams.deleted ? this.listTitle : this.listDeletedTitle
-            },
-        },
-        data() {
-            return {
-                searchTxt: '',
-                isShowSearchfld: false,
-                itemList: [],
-                listParams: {page: 0, per_page: 10, deleted: false},
-                isUrlQueryProcessed: false, // флаг для обработки query из url при первоначальной загрузке
-            }
-        },
-        methods: {
-            toggleSearchFld() {
-                this.isShowSearchfld = !this.isShowSearchfld
-                if (!this.isShowSearchfld) this.listParams[this.searchFldName] = ''
-                if (this.isShowSearchfld) {
-                    this.$nextTick(() => {
-                        this.$refs.searchInput.focus()
-                    })
-                }
-            },
-            itemListLoad(index, done) {
-                // при первоначальной загрузке обрабатываем query из url
-                if (!this.isUrlQueryProcessed) {
-                    this.isUrlQueryProcessed = true
-                    if (this.urlQueryParams) {
-                        const urlParams = new URLSearchParams(window.location.search)
-                        this.urlQueryParams.map(v => {
-                            // объекты обрабатываем отдельно, например даты. Можно для них здесь написать отдельную обработку
-                            if (typeof v === 'string' && urlParams.has(v)) {
-                                this.$set(this.listParams, v, urlParams.get(v))
-                            }
-                        })
-                    }
-                }
-                this.loadList({list: this.itemList, params: this.listParams, done})
-            },
-            loadList({list = [], params = {}, done}) {
-                this.listParams.page++
-                // обновляем параметры в query параметрах списка
-                this.$utils.updateUrlQuery(_.omit(params, ['per_page', 'page']))
-                this.$utils.postCallPgMethod({method: this.pgMethod, params: Object.assign(params, this.ext ? this.ext : {})}).subscribe(res => {
-                    if (res.ok) {
-                        if (res.result && res.result.length > 0) {
-                            res.result.map(v => list.push(v))
-                            this.$emit('updateCount', list.length)
-                            if (done) done()
-                        } else {
-                            if (done) done(true)
-                        }
-                    } else {
-                      if (done) done(true)
-                    }
-                })
-            },
-            reloadList() {
-                this.itemList.length = 0
-                this.listParams.page = 0
-                this.$refs.infiniteScroll.resume()
-                this.loadList({list: this.itemList, params: this.listParams})
-                this.$forceUpdate()
-            },
-            reloadListDebounce() {
-                this.reloadList()
-            },
-            changeItemList(params) {
-                this.listParams = Object.assign(this.listParams, params)
-                this.reloadList()
-            }
-        },
-        watch: {
-            searchTxt(v) {
-                if (this.searchFldName && (v.length === 0 || v.length > 3)) {
-                    this.listParams[this.searchFldName] = v
-                    this.reloadListDebounce()
-                }
-            }
-        },
-        mounted() {
-            this.loadList({list: this.itemList, params: this.listParams})
-            this.reloadListDebounce = debounce(this.reloadListDebounce, 300)
+  export default {
+    props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocEventOnly', 'newDocUrl', 'urlQueryParams', 'ext', 'readonly'],
+    computed: {
+      computedListTitle() {
+        return !this.listParams.deleted ? this.listTitle : this.listDeletedTitle
+      },
+    },
+    data() {
+      return {
+        searchTxt: '',
+        isShowSearchfld: false,
+        itemList: [],
+        listParams: {page: 0, per_page: 10, deleted: false},
+        isUrlQueryProcessed: false, // флаг для обработки query из url при первоначальной загрузке
+      }
+    },
+    methods: {
+      toggleSearchFld() {
+        this.isShowSearchfld = !this.isShowSearchfld
+        if (!this.isShowSearchfld) this.listParams[this.searchFldName] = ''
+        if (this.isShowSearchfld) {
+          this.$nextTick(() => {
+            this.$refs.searchInput.focus()
+          })
         }
+      },
+      itemListLoad(index, done) {
+        // при первоначальной загрузке обрабатываем query из url
+        if (!this.isUrlQueryProcessed) {
+          this.isUrlQueryProcessed = true
+          if (this.urlQueryParams) {
+            const urlParams = new URLSearchParams(window.location.search)
+            this.urlQueryParams.map(v => {
+              // объекты обрабатываем отдельно, например даты. Можно для них здесь написать отдельную обработку
+              if (typeof v === 'string' && urlParams.has(v)) {
+                this.$set(this.listParams, v, urlParams.get(v))
+              }
+            })
+          }
+        }
+        this.loadList({list: this.itemList, params: this.listParams, done})
+      },
+      loadList({list = [], params = {}, done}) {
+        this.listParams.page++
+        // обновляем параметры в query параметрах списка
+        this.$utils.updateUrlQuery(_.omit(params, ['per_page', 'page']))
+        this.$utils.postCallPgMethod({method: this.pgMethod, params: Object.assign(params, this.ext ? this.ext : {})}).subscribe(res => {
+          if (res.ok) {
+            if (res.result && res.result.length > 0) {
+              res.result.map(v => list.push(v))
+              this.$emit('updateCount', list.length)
+              if (done) done()
+            } else {
+              if (done) done(true)
+            }
+          } else {
+            if (done) done(true)
+          }
+        })
+      },
+      reloadList() {
+        this.itemList = []
+        this.listParams.page = 0
+        this.$refs.infiniteScroll.resume()
+        this.loadList({list: this.itemList, params: this.listParams})
+        this.$forceUpdate()
+      },
+      reloadListDebounce() {
+        this.reloadList()
+      },
+      changeItemList(params) {
+        this.listParams = Object.assign(this.listParams, params)
+        this.reloadList()
+      }
+    },
+    watch: {
+      searchTxt(v) {
+        if (this.searchFldName && (v.length === 0 || v.length > 3)) {
+          this.listParams[this.searchFldName] = v
+          this.reloadListDebounce()
+        }
+      }
+    },
+    mounted() {
+      this.loadList({list: this.itemList, params: this.listParams})
+      this.reloadListDebounce = debounce(this.reloadListDebounce, 300)
     }
+  }
 </script>
