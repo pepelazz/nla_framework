@@ -250,6 +250,11 @@ func (fld FldType) SetIsNotUniq() FldType {
 	return fld
 }
 
+func (fld FldType) SetIsUniq() FldType {
+	fld.Sql.IsUniq = true
+	return fld
+}
+
 func (fld FldType) SetIsHide() FldType {
 	fld.Vue.Vif = "false"
 	return fld
