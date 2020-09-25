@@ -8,6 +8,9 @@ RUN apk update && apk add ca-certificates && apk add --update curl && apk add zi
 COPY ./src/app /app
 COPY ./src/sql /sql
 COPY ./src/webClient/dist /webClient/dist
+{{range .Config.Docker.AfterCopy}}
+{{.}}
+{{- end}}
 RUN chmod -Rf 777 /app
 ENTRYPOINT ["/app"]
 

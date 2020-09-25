@@ -1,13 +1,13 @@
 <template>
   <div :class="columnClass">
-    <div v-if="type=='separator'" class="text-weight-bold form-separator-header">{{label}}</div>
+    <div v-if="type=='separator' && vif" class="text-weight-bold form-separator-header">{{label}}</div>
     <!-- строка, число  -->
-    <q-input v-if="type=='string'"
+    <q-input v-if="type=='string' && vif"
              outlined :type='type' :label="label" :value="fld"
              @input="v=>$emit('update', v)"
              :readonly="readonly" autogrow/>
     <!-- строка, число  -->
-    <q-input v-if="type=='number'"
+    <q-input v-if="type=='number' && vif"
              outlined :type='type' :label="label" :value="fld"
              @input="v=>$emit('update', v)"
              :readonly="readonly"/>
@@ -26,7 +26,7 @@
     </q-select>
     <!-- выбор нескольких вариантов из списка   -->
     <q-select
-      v-if="type=='selectMultiple'"
+      v-if="type=='selectMultiple' && vif"
       outlined
       :label="label" :value="fld"
       multiple
@@ -35,18 +35,18 @@
       :readonly="readonly"
     />
     <!-- выбор пользователя   -->
-    <comp-fld-user-search v-if="type=='userId'" :label="label" :user="ajaxSelectTitle" :ext="ext"
+    <comp-fld-user-search v-if="type=='userId' && vif" :label="label" :user="ajaxSelectTitle" :ext="ext"
                           @update="v=>$emit('update', v.id)"
                           :readonly="readonly"/>
     <!-- выбор ajax-селектора -->
-    <comp-fld-ref-search v-if="type=='refSearch'" :label="label" :pgMethod="pgMethod" :itemTitleFldName="itemTitleFldName"
+    <comp-fld-ref-search v-if="type=='refSearch' && vif" :label="label" :pgMethod="pgMethod" :itemTitleFldName="itemTitleFldName"
                          @update="v=>$emit('update', v.id)" :readonly="readonly" :ext="ext"/>
     <!-- date   -->
-    <comp-fld-date  v-if="type=='date'" :label="label" :date-string="formatDateForSelector(fld)" @update="v=>$emit('update', v)" :readonly="readonly"/>
+    <comp-fld-date  v-if="type=='date' && vif" :label="label" :date-string="formatDateForSelector(fld)" @update="v=>$emit('update', v)" :readonly="readonly"/>
     <!-- datetime   -->
-    <comp-fld-date-time  v-if="type=='datetime'" :label="label" :date-string="formatDateTimeForSelector(fld)" @update="v=>$emit('update', v)" :readonly="readonly"/>
+    <comp-fld-date-time  v-if="type=='datetime' && vif" :label="label" :date-string="formatDateTimeForSelector(fld)" @update="v=>$emit('update', v)" :readonly="readonly"/>
 
-    <div class="q-gutter-sm" v-if="type=='checkbox'">
+    <div class="q-gutter-sm" v-if="type=='checkbox' && vif">
       <q-checkbox v-model="localFld" :label="label" @input="v=>$emit('update', v)"/>
     </div>
     <!-- вариант кастомной директивы   -->

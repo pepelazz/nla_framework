@@ -226,7 +226,7 @@ func (d DocType) PrintVueItemStateMachineCardMounted() string {
 		// single select - преобразуем v -> {label: label, value: v}
 		if fld.Vue.Type == FldVueTypeSelect {
 			funcStr := fmt.Sprintf(`
-				if (this.item.%[1]s && !this.is_current_state) {
+				if (this.item.%[1]s && this.$utils._.isString(this.item.%[1]s) && !this.is_current_state) {
 					if (this.item.%[1]s) this.item.%[1]s  = {label: this.$utils.i18n_%[2]s_%[1]s(this.item.%[1]s), value: this.item.%[1]s}
                     }
 			`, fld.Name, d.Name)
@@ -237,7 +237,7 @@ func (d DocType) PrintVueItemStateMachineCardMounted() string {
 			options, err := json.Marshal(fld.Vue.Options)
 			utils.CheckErr(err, fmt.Sprintf("'%s' json.Marshal(fld.Vue.Options)", fld.Name))
 			funcStr := fmt.Sprintf(`
-				if (res.%[1]s) {
+				if (res.%[1]s)) {
                     let arr = %[2]s
 					res.%[1]s = res.%[1]s.map(name => _.find(arr, {value: name})).filter(v => v)
                     }

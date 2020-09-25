@@ -28,7 +28,7 @@ BEGIN
     [[end -]]
     -- прописываем кто изменил статус и когда
     params = params || jsonb_build_object('options', options_add_fld((params->>'user_id')::int, coalesce(params->'options', '{}'::jsonb), 'states',
-                                                                     jsonb_build_object('state', '[[with .StateMachine.GetFirstState]][[.Title]][[end]]')));
+                                                                     jsonb_build_object('state', '[[with .StateMachine.GetFirstState]][[.Title]][[end]]', 'date', now() at time zone '[[GetPgTimeZone]]')));
 
     [[.Sql.Hooks.Print "update" "beforeInsert"]]
 

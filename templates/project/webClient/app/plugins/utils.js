@@ -145,6 +145,7 @@ export default {
   updateUrlQuery,
   formatPgDateTime,
   formatPgDate,
+  _,
   [[ExportDefaultList]]
 }
 

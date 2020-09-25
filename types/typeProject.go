@@ -39,6 +39,7 @@ type (
 		Yandex           YandexConfig
 		User             UserConfig
 		Backup           BackupConfig
+		Docker 			 DockerConfig
 	}
 	AuthConfig struct {
 		ByEmail               bool // дефолт - авторизация по email
@@ -168,6 +169,9 @@ type (
 		PostgresDockerName string
 		Period             int // периодичность в минутах
 		FilesCount         int // количество последних файлов, которое остается на яндекс сервере. Остальные удаляются
+	}
+	DockerConfig struct {
+		AfterCopy []string // дополнительные строки для копирования в Dockerfile
 	}
 )
 
