@@ -11,6 +11,7 @@ module.exports = function (ctx) {
       'currentUser',
       'myCommon',
       'userTasks',
+      'axios',
     ],
 
     css: [

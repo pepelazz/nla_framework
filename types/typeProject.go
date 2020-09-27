@@ -148,6 +148,7 @@ type (
 	ProjectGoRoutes struct {
 		Imports []string
 		NotAuth []string // роуты вне блока, требующего авторизации
+		Api []string // роуты в блоке, требующего авторизации
 	}
 	ProjectVueHooks struct {
 		Profile ProjectVueHooksProfile
