@@ -52,3 +52,10 @@ func (p *ProjectType) FillVueBaseRoutes() {
 		}
 	}
 }
+
+func (pv *ProjectVue) AddRoute(r []string)  {
+	if pv.Routes == nil {
+		pv.Routes = [][]string{}
+	}
+	pv.Routes = append(pv.Routes, r)
+}
