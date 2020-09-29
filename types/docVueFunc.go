@@ -323,7 +323,7 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 	}
 	fldsProp := ""
 	slotOtherFlds := ""
-	readonly := "false"
+	readonly := d.Vue.Readonly
 	if opts != nil {
 		// убираем кнопку 'создать'
 		if v, ok := opts["hideCreateNew"]; ok {

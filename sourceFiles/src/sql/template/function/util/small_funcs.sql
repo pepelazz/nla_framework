@@ -88,6 +88,24 @@ END;
 $function$;
 
 -- проверка, что пользователь имеет одну из ролей
+DROP FUNCTION IF EXISTS is_admin(params jsonb);
+CREATE OR REPLACE FUNCTION is_admin(params jsonb)
+    RETURNS bool
+    LANGUAGE plpgsql
+AS
+$function$
+DECLARE
+    userId int;
+BEGIN
+    userId = (params->>'user_id');
+    if userId isnull then
+        raise exception 'is_admin missed user_id params';
+    end if;
+    return (select  EXISTS (SELECT 1 FROM "user" where id=userId AND role && '{admin}'::text[]));
+END;
+$function$;
+
+-- отправка сообщение пользователю в телеграм
 DROP FUNCTION IF EXISTS send_msg_to_user_telegram(userId int, msg text);
 CREATE OR REPLACE FUNCTION send_msg_to_user_telegram(userId int, msg text)
     RETURNS void

@@ -197,8 +197,15 @@ func (d *DocType) Init() {
 	//}
 
 	d.Filli18n()
+	if len(d.Vue.Readonly) == 0 {
+		d.Vue.Readonly = "false"
+	}
 	for i := range d.Flds {
 		d.Flds[i].Doc = d
+		// если у документа опередлено условие readonly, то распространяем его на поле. Только если отдельно у поля не определено свое условие
+		if d.Vue.Readonly != "false" && d.Flds[i].Vue.Readonly != "true"  {
+			d.Flds[i].Vue.Readonly = d.Vue.Readonly
+		}
 	}
 	// если есть табы и к документу можно присоединять задачи, то прописываем миксин
 	if d.IsTaskAllowed && len(d.Vue.Tabs) > 0 {
