@@ -65,7 +65,7 @@ const getDocItemById = function ({method, cb}) {
 }
 
 // функция сохранения/создани документа
-const saveItem = function ({method, itemForSaveMod = {}, resultModify}) {
+const saveItem = function ({method, itemForSaveMod = {}, resultModify, cb}) {
   let item = Object.assign({}, this.item)
   const fldNames = _.flattenDeep(this.flds).map(({name}) => name)
   if (!item.options) item.options = {}
@@ -99,6 +99,7 @@ const saveItem = function ({method, itemForSaveMod = {}, resultModify}) {
       resultModify = resultModify || (v => v)
       this.item = fp.compose(resultModify, extractOptionsFlds(this))(v.result)
       this.$emit('updated', this.item)
+      if (cb) cb()
     }
   })
 }

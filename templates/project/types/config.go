@@ -93,12 +93,27 @@ func ReadConfigFile(path string) (c *Config, err error) {
 
 	if tree.Has("email") {
 		c.Email.Sender = tree.Get("email.sender").(string)
+		if len(os.Getenv("EMAIL_SENDER")) > 0 {
+			c.Email.Sender = os.Getenv("EMAIL_SENDER")
+		}
 		c.Email.Password = tree.Get("email.password").(string)
+		if len(os.Getenv("EMAIL_PASSWORD")) > 0 {
+			c.Email.Password = os.Getenv("EMAIL_PASSWORD")
+		}
 		c.Email.Host = tree.Get("email.host").(string)
+		if len(os.Getenv("EMAIL_HOST")) > 0 {
+			c.Email.Host = os.Getenv("EMAIL_HOST")
+		}
 		if tree.Has("email.port") {
 			c.Email.Port = tree.Get("email.port").(int64)
 		} else {
 			c.Email.Port = 25
+		}
+		if len(os.Getenv("EMAIL_PORT")) > 0 {
+			c.Email.Port, err = strconv.ParseInt(os.Getenv("EMAIL_PORT"), 10, 64)
+			if err != nil {
+				return nil, err
+			}
 		}
 		if tree.Has("email.senderName") {
 			c.Email.SenderName = tree.Get("email.senderName").(string)
