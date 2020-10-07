@@ -52,6 +52,7 @@ type (
 		Tabs           []VueTab
 		Hooks          DocVueHooks // куски vue кода
 		Readonly       string
+		ListUrlQueryParams []string // список параметров, которые можно передавать в url для фильтрации
 		IsVueTitleClickable bool // включаем возможность перехода на item из списка не только при клике по аватарке, но и по названию
 		IsHideDeleteOptions bool // возможность не показыввать опцию "удалить" в списке
 		//IsHideCreateNewBtn bool // возможность не показыввать кнопку "+" в списке

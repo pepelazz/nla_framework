@@ -213,6 +213,16 @@ func ExecuteToFile(t *template.Template, d interface{}, path, filename string) e
 	if err != nil {
 		return err
 	}
+	// для оптимизации записи файлов webClient (чтобы ускорить рестарт quasar), проверяем что файл изменен и только в этом случае его перезаписываем
+	if strings.Contains(path, "webClient") {
+		if existFile, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", path, filename)); err == nil {
+			isEqual := utils.ByteSliceEqual(existFile, []byte(tpl.String()))
+			if isEqual {
+				return nil
+			}
+			//fmt.Printf("file changed: %s/%s not equal\n", path, filename)
+		}
+	}
 	return ioutil.WriteFile(path+"/"+filename, []byte(tpl.String()), 0644)
 }
 

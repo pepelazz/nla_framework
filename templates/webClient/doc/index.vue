@@ -5,6 +5,7 @@
     <comp-doc-list ref="docList" listTitle='[[index .Vue.I18n "listTitle"]]' listDeletedTitle='[[index .Vue.I18n "listDeletedTitle"]]' pg-method="[[.PgName]]_list"
                    :list-sort-data="listSortData" :list-filter-data="listFilterData"
                    :newDocUrl="currentUrl + 'new'"
+                   [[- if .Vue.ListUrlQueryParams]] :urlQueryParams="[ [[range .Vue.ListUrlQueryParams]]'[[.]]',[[- end]] ]" [[end]]
                    [[- if .IsRecursion]] :ext="ext ? Object.assign(ext, {parent_id: 'null'}) : {parent_id: 'null'}" [[else]] :ext="ext" [[end]]
                    search-fld-name="search_text" :readonly="[[.Vue.Readonly]]">
 

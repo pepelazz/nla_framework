@@ -181,6 +181,20 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 				if modifyFunc != nil {
 					file = modifyFunc(dirPath+info.Name(), file)
 				}
+				// если файл в директории webClient/.quasar/ уже существует, то не перезаписываем в любом случае
+				if strings.Contains(dist+dirPath+info.Name(), "webClient/.quasar/") {
+					return nil
+				}
+				// для оптимизации записи файлов webClient (чтобы ускорить рестарт quasar), проверяем что файл изменен и только в этом случае его перезаписываем
+				if strings.Contains(dist+dirPath+info.Name(), "webClient") {
+					if existFile, err := ioutil.ReadFile(dist+dirPath+info.Name()); err == nil {
+						isEqual := utils.ByteSliceEqual(existFile, file)
+						if isEqual {
+							return nil
+						}
+						//fmt.Printf("file changed: %s not equal\n", dist+dirPath+info.Name())
+					}
+				}
 				// записываем файл по новому пути
 				err = ioutil.WriteFile(dist+dirPath+info.Name(), file, 0644)
 				if err != nil {

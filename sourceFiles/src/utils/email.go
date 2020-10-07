@@ -16,10 +16,19 @@ func EmailSend(to, subject, emailBody string) error {
 
 	d := gomail.NewDialer(emailConfig.Host, int(emailConfig.Port), emailConfig.Sender, emailConfig.Password)
 
-	if err := d.DialAndSend(m); err != nil {
-		return err
-	}
-	return nil
+	return d.DialAndSend(m)
+}
+
+func EmailSendWithEmptySender(to, subject, emailBody string) error  {
+	m := gomail.NewMessage()
+	m.SetHeader("To", to)
+	m.SetAddressHeader("From", emailConfig.Sender, emailConfig.SenderName)
+	m.SetHeader("Subject", subject)
+	m.SetBody("text/html", emailBody)
+
+	d := gomail.NewDialer(emailConfig.Host, int(emailConfig.Port), "", emailConfig.Password)
+
+	return d.DialAndSend(m)
 }
 
 func EmailSendChangePassword(to, href string) error  {
