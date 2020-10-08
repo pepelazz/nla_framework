@@ -61,6 +61,9 @@ func EmailSendChangePassword(to, href string) error  {
 	}
 	emailBody := buf.String()
 
+	if emailConfig.IsSendWithEmptySender {
+		return EmailSendWithEmptySender(to, "Смена пароля", emailBody)
+	}
 	return EmailSend(to, "Смена пароля", emailBody)
 }
 
@@ -93,6 +96,10 @@ func EmailSendRegistrationConfirm(to, href string) error  {
 		return err
 	}
 	emailBody := buf.String()
+
+	if emailConfig.IsSendWithEmptySender {
+		return EmailSendWithEmptySender(to, "Завершение процесса регистрации", emailBody)
+	}
 
 	return EmailSend(to, "Завершение процесса регистрации", emailBody)
 }

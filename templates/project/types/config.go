@@ -121,6 +121,9 @@ func ReadConfigFile(path string) (c *Config, err error) {
 		if tree.Has("email.senderLogo") {
 			c.Email.SenderLogo = tree.Get("email.senderLogo").(string)
 		}
+		if tree.Has("email.isSendWithEmptySender") {
+			c.Email.IsSendWithEmptySender = tree.Get("email.isSendWithEmptySender").(bool)
+		}
 	}
 	[[if .IsBitrixIntegration -]]
 	if tree.Has("bitrix") {

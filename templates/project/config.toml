@@ -24,6 +24,7 @@ password = "{{.Config.Email.Password}}"
 host = "{{.Config.Email.Host}}"
 port = {{.Config.Email.Port}}
 senderName = "{{.Config.Email.SenderName}}"
+isSendWithEmptySender = {{.Config.Email.IsSendWithEmptySender}}
 
 {{if .IsTelegramIntegration -}}
 [telegram]

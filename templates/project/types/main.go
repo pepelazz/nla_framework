@@ -25,6 +25,7 @@ type EmailConfig struct {
 	Port       int64
 	SenderName string //название отправителя
 	SenderLogo string
+	IsSendWithEmptySender bool // признак что не прописывать отправителя
 }
 
 [[if .IsTelegramIntegration -]]

@@ -84,6 +84,7 @@ type (
 		Host       string
 		Port       int64
 		SenderName string
+		IsSendWithEmptySender bool
 	}
 	ProjectVue struct {
 		UiAppName string
