@@ -26,7 +26,8 @@ BEGIN
   whereStr = where_str_build(params, 'doc', ARRAY [
   ['enum', 'state', 'doc.state'],
   ['jsonArrayText', 'role', 'doc.role'],
-  ['ilike', 'search_fullname', 'doc.fullname']
+  ['ilike', 'search_fullname', 'doc.fullname'],
+  ['ilike', 'search_text', 'doc.fullname']
   ]);
 
   -- финальная сборка строки с условиями выборки (build_query_part_for_list - функция из папки base)

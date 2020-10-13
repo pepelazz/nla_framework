@@ -11,6 +11,7 @@ import (
 	"github.com/rs/xid"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -58,8 +59,8 @@ func EmailAuth(c *gin.Context) {
 		utils.HttpError(c, 400, fmt.Sprintf("bcrypt.GenerateFromPassword error:%s", err))
 		return
 	}
-	userRegData.Login = reqParams.Params.Login
-	userRegData.Email = reqParams.Params.Login
+	userRegData.Login = strings.ToLower(reqParams.Params.Login)
+	userRegData.Email = strings.ToLower(reqParams.Params.Login)
 
 	if reqParams.Params.IsRegister {
 		// вариант регистрации нового пользователя
@@ -151,6 +152,7 @@ func EmailAuthStartRecoverPassword(c *gin.Context) {
 	}
 	// проверяем что такой пользователь с таким email есть в базе
 	user := types.User{}
+	queryData.Params.Email = strings.ToLower(queryData.Params.Email)
 	jsonStr, err := json.Marshal(queryData.Params);
 	err = pg.CallPgFunc("user_get_by_email_with_password", jsonStr, &user, nil)
 	if err != nil {

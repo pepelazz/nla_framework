@@ -27,7 +27,8 @@
         watch: {
             dateString: function (newVal, oldVal) {
                 // обрабатываем только случай когда значение поменялось с null на новое
-                if (newVal && !oldVal && !this.date) this.date = newVal
+                // if (newVal && !oldVal && !this.date) this.date = newVal
+                if (newVal) this.date = newVal
             },
             date: function (newVal, oldVal) {
                 // console.log('newVal:', newVal, 'oldVal:', oldVal, 'newVal !== oldVal:', newVal !== oldVal)
