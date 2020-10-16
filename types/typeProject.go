@@ -246,6 +246,13 @@ func (p *ProjectType) FillVueFlds() {
 
 					}
 				}
+				if k == "addNewUrl" && len(fld.Sql.Ref) > 0 {
+					for _, dRef := range p.Docs {
+						if dRef.Name == fld.Sql.Ref {
+							fld.Vue.Ext["addNewUrl"] = "/" + dRef.Vue.RouteName + "/new"
+						}
+					}
+				}
 			}
 		}
 	}

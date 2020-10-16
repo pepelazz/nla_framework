@@ -144,7 +144,9 @@ func GetFldRadioString(name, nameRu string, rowCol [][]int, options []FldVueOpti
 func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) (fld FldType) {
 	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
-		classStr= params[0]
+		if strings.Contains(params[0], "col-") {
+			classStr= params[0]
+		}
 	}
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeInt,  Sql: FldSql{Ref: refTable, IsSearch:true}, Vue:FldVue{RowCol: rowCol, Ext: map[string]string{}, Class: []string{classStr}}}
 	for _, v := range params {
@@ -153,6 +155,11 @@ func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) 
 			// проставляем значение pathUrl и avatar на последнем шаге, после инициализации всех документов  в методе FillVueFlds
 			fld.Vue.Ext["pathUrl"] = ""
 			fld.Vue.Ext["avatar"] = ""
+		}
+		// добавляем возможность создание новой записи
+		if v == "isAddNew" {
+			// проставляем значение addNewUrl на последнем шаге, после инициализации всех документов  в методе FillVueFlds
+			fld.Vue.Ext["addNewUrl"] = ""
 		}
 		for _, v := range params {
 			if v == "isClearable" {

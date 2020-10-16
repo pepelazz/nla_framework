@@ -21,14 +21,11 @@
       <q-avatar v-else rounded style="opacity: 0.7"><img :src="ext.avatar"></q-avatar>
     </template>
 
-    <!-- кнопка добавления   -->
-    <template v-slot:append v-if="ext && ext.addNewUrl && !readonly">
-      <q-btn round dense flat icon="add" @click="openNewTab"/>
-    </template>
-
-    <!-- кнопка удаления   -->
-    <template v-slot:append  v-if="ext && ext.isClearable && localItem.label && !readonly">
-      <q-icon name="cancel" @click.stop="clear" class="cursor-pointer" />
+    <template v-slot:append>
+      <!-- кнопка добавления   -->
+      <q-btn v-if="ext && ext.addNewUrl && !readonly" round dense flat icon="add" @click="openNewTab"/>
+      <!-- кнопка удаления   -->
+      <q-icon v-if="ext && ext.isClearable && localItem.label && !readonly" name="cancel" @click.stop="clear" class="cursor-pointer" />
     </template>
 
     <!-- кнопка сохранения   -->
