@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/pepelazz/projectGenerator/utils"
 	"github.com/spf13/cast"
@@ -341,6 +342,10 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 		if v, ok := opts["readonly"]; ok {
 			readonly = cast.ToString(v)
 		}
+	}
+
+	if len(tableIdFldName) == 0 || len(tableDependName) == 0 || len(tableDependFldName) == 0 || len(tableDependRoute) == 0 {
+		utils.CheckErr(errors.New(fmt.Sprintf("GetFldLinkListWidget. Something wrong with table name: '%s'. For this widget link table must be named <table1_name>_<table2_name>_link", tableName)), "doc: " + d.Name)
 	}
 
 	return fmt.Sprintf("<comp-link-list-widget label='%s' :id='id' tableIdName='%s' tableIdFldName='%s' tableDependName='%s' tableDependFldName='%s' tableDependRoute='/%s' linkTableName='%s' avatarSrc='%s' :hideCreateNew='%v' :readonly='%s' %s>%s</comp-link-list-widget>", label, tableIdName, tableIdFldName, tableDependName, tableDependFldName, tableDependRoute, linkTableName, avatarSrc, hideCreateNew, readonly, fldsProp, slotOtherFlds)

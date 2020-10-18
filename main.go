@@ -58,6 +58,16 @@ func readData(p types.ProjectType) {
 			utils.CheckErr(errors.New("in Config.Email fill fields: 'Sender', 'Password', 'Host', 'Port'"), "")
 		}
 	}
+	// порверка что если документ - это уникальная связь двух таблиц, то в нем поле title если есть, то не должно быть уникальным
+	for _, d := range p.Docs {
+		if d.Sql.IsUniqLink {
+			for _, fld := range d.Flds {
+				if fld.Name == "title" && fld.Sql.IsUniq {
+					utils.CheckErr(errors.New("field 'title' must be not uniq. Remove fld 'title' or t.GetFldTitle().SetIsNotUniq()"), "doc: " + d.Name)
+				}
+			}
+		}
+	}
 
 	// передаем project в папку types, чтобы иметь доступ из функций шаблонов к проекту
 	types.SetProject(&project)
