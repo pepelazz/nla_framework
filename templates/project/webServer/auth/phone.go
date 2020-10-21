@@ -2,19 +2,20 @@ package auth
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pepelazz/indivigo/src/pg"
 	"github.com/pepelazz/indivigo/src/types"
 	"github.com/pepelazz/indivigo/src/utils"
 	"golang.org/x/crypto/bcrypt"
+	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"os"
 	"strconv"
-	"time"
-	"errors"
-	"io/ioutil"
 	"strings"
+	"time"
 )
 
 type (
@@ -64,8 +65,17 @@ func PhoneAuth(c *gin.Context) {
 		utils.HttpError(c, 400, fmt.Sprintf("bcrypt.GenerateFromPassword error:%s", err))
 		return
 	}
-	userRegData.Login = reqParams.Params.Login
-	userRegData.Phone = reqParams.Params.Login
+	// проверяем корректность телефонного номера и если начинается на 8, то приводим его к 7
+	login := strings.TrimSpace(reqParams.Params.Login)
+	if len(login) != 11 {
+		utils.HttpError(c, 400, "wrong phone number")
+		return
+	}
+	if strings.HasPrefix(login, "8") {
+		login = "7" + strings.TrimPrefix(login, "8")
+	}
+	userRegData.Login = login
+	userRegData.Phone = login
 
 	if reqParams.Params.IsRegister {
 		// вариант регистрации нового пользователя
@@ -81,6 +91,11 @@ func PhoneAuth(c *gin.Context) {
 			utils.HttpError(c, http.StatusOK, "pg call user_temp_phone_auth_create err:"+fmt.Sprintf("%s", err))
 			return
 		}
+		// в dev режиме sms не отсылаем
+		if len(os.Getenv("IS_DEVELOPMENT")) > 0 {
+			utils.HttpSuccess(c, "SMS code has been sent")
+			return
+		}
 		// отправляем sms
 		err = sendSms(userRegData.Phone, userRegData.Token)
 		if err != nil {
@@ -88,7 +103,7 @@ func PhoneAuth(c *gin.Context) {
 			return
 		}
 		// в независимости от результатов отправки письма отправляем, что данный этап регистрации успешно пройден
-		utils.HttpSuccess(c, nil)
+		utils.HttpSuccess(c, "SMS code has been sent")
 	} else {
 
 		// вариант авторизации существующего пользователя
@@ -128,6 +143,16 @@ func CheckSmsCode(c *gin.Context) {
 		return
 	}
 
+	// проверяем корректность телефонного номера и если начинается на 8, то приводим его к 7
+	queryData.Params.Phone = strings.TrimSpace(queryData.Params.Phone)
+	if len(queryData.Params.Phone) != 11 {
+		utils.HttpError(c, 400, "wrong phone number")
+		return
+	}
+	if strings.HasPrefix(queryData.Params.Phone, "8") {
+		queryData.Params.Phone = "7" + strings.TrimPrefix(queryData.Params.Phone, "8")
+	}
+
 	user := types.User{}
 	jsonStr, err := json.Marshal(queryData.Params)
 	err = pg.CallPgFunc("user_temp_phone_auth_check_sms_code", jsonStr, &user, nil)
@@ -135,7 +160,7 @@ func CheckSmsCode(c *gin.Context) {
 		if len(err.Error()) > 0 {
 			utils.HttpError(c, http.StatusOK, "pg call user_temp_phone_auth_check_sms_code err:"+fmt.Sprintf("%s", err))
 		} else {
-			utils.HttpError(c, http.StatusOK, "")
+			utils.HttpError(c, http.StatusOK, "wrong token")
 		}
 		return
 	}
@@ -157,6 +182,15 @@ func PhoneAuthStartRecoverPassword(c *gin.Context) {
 	if err := c.BindJSON(&queryData); err != nil {
 		utils.HttpError(c, http.StatusOK, fmt.Sprintf("post json params error: %s", err))
 		return
+	}
+	// проверяем корректность телефонного номера и если начинается на 8, то приводим его к 7
+	queryData.Params.Phone = strings.TrimSpace(queryData.Params.Phone)
+	if len(queryData.Params.Phone) != 11 {
+		utils.HttpError(c, 400, "wrong phone number")
+		return
+	}
+	if strings.HasPrefix(queryData.Params.Phone, "8") {
+		queryData.Params.Phone = "7" + strings.TrimPrefix(queryData.Params.Phone, "8")
 	}
 	// проверяем что такой пользователь с таким phone есть в базе
 	user := types.User{}
@@ -215,6 +249,18 @@ func PhoneAuthRecoverPassword(c *gin.Context) {
 		utils.HttpError(c, http.StatusOK, "password is empty")
 		return
 	}
+
+	// проверяем корректность телефонного номера и если начинается на 8, то приводим его к 7
+	queryData.Params.Phone = strings.TrimSpace(queryData.Params.Phone)
+	if len(queryData.Params.Phone) != 11 {
+		utils.HttpError(c, 400, "wrong phone number")
+		return
+	}
+	if strings.HasPrefix(queryData.Params.Phone, "8") {
+		queryData.Params.Phone = "7" + strings.TrimPrefix(queryData.Params.Phone, "8")
+	}
+
+
 	// находим запись по номеру телефона
 	if v, ok := passwordRecoverPhoneTokenMap[queryData.Params.Phone]; ok {
 		if time.Now().After(v.ExpiredTime) {

@@ -24,7 +24,7 @@ BEGIN
   -- вначале находим все истекшие токены и стираем их
   UPDATE user_temp_email_auth
   SET token = NULL, auth_token = NULL
-  WHERE phone notnull and updated_at < (now() - INTERVAL '45 second');
+  WHERE phone notnull and updated_at < (now() - INTERVAL '120 second');
 
   -- находим запись с токеном
   EXECUTE 'SELECT * FROM user_temp_email_auth WHERE token=$1 AND phone=$2'
