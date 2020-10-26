@@ -65,6 +65,10 @@ func (d DocType) PrintSqlModelFkConstraints() (res string) {
 	if d.Sql.IsUniqLink {
 		arr = append(arr, printSqlUniqLinkConstraint(d))
 	}
+	// check constraints
+	for _, cnstr := range d.Sql.CheckConstrains {
+		arr = append(arr, fmt.Sprintf("\t{name=\"%s\", ext=\"CHECK(%s)\"}", cnstr.Name, cnstr.CheckConditions))
+	}
 	if len(arr) > 0 {
 		res = fmt.Sprintf("fkConstraints = [\n%s\n]", strings.Join(arr, ",\n"))
 	}

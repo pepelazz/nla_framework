@@ -95,6 +95,7 @@ type (
 		IsSearchText    bool        // флаг что добавляем поле search_text
 		Indexes         []string    // индексы
 		Hooks           DocSqlHooks // куски sql кода
+		CheckConstrains []DocSqlCheckConstraint // список ограничений в таблице
 	}
 
 	DocIsBaseTemplates struct {
@@ -126,6 +127,11 @@ type (
 		ListBeforeBuildWhere []string
 		ListAfterBuildWhere  []string
 		AfterCreate          []string
+	}
+
+	DocSqlCheckConstraint struct {
+		Name string
+		CheckConditions string //
 	}
 
 	DocIntegrations struct {
