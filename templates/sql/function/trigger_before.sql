@@ -18,6 +18,9 @@ BEGIN
         {{- if .Sql.FillValueInBeforeTrigger }}
         NEW.{{.Name}} = {{.Sql.FillValueInBeforeTrigger}};
         {{- end -}}
+        {{- if eq .Vue.Type "phone" }}
+        NEW.{{.Name}} = phone_change_8_to_7(NEW.{{.Name}});
+        {{- end -}}
         {{- end -}}
 
         {{if .Sql.IsSearchText}}

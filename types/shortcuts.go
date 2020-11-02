@@ -170,6 +170,40 @@ func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) 
 	return
 }
 
+// создание поля phone
+func GetFldPhone(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
+	classStr := "col-md-4 col-xs-6"
+	readonly := "false"
+	for i, v := range params {
+		if i == 0 {
+			classStr = v
+		} else {
+			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
+				readonly="true"
+			}
+		}
+	}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Sql: FldSql{Size: 30}, Vue:FldVue{RowCol: rowCol, Type:FldVueTypePhone, Class: []string{classStr}, Readonly:readonly}}
+	return
+}
+
+// создание поля email
+func GetFldEmail(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
+	classStr := "col-md-4 col-xs-6"
+	readonly := "false"
+	for i, v := range params {
+		if i == 0 {
+			classStr = v
+		} else {
+			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
+				readonly="true"
+			}
+		}
+	}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Sql: FldSql{Size: 100}, Vue:FldVue{RowCol: rowCol, Type:FldVueTypeEmail, Class: []string{classStr}, Readonly:readonly}}
+	return
+}
+
 // поле с кастомной композицией
 func GetFldJsonbComposition(name, nameRu string, rowCol [][]int, classStr, compName string, params ...string) (fld FldType) {
 	isOptionsFld := ""

@@ -122,6 +122,22 @@ BEGIN
 END;
 $function$;
 
+-- отправка сообщение пользователю в телеграм
+DROP FUNCTION IF EXISTS phone_change_8_to_7(phone text);
+CREATE OR REPLACE FUNCTION phone_change_8_to_7(phone text)
+    RETURNS text
+    LANGUAGE plpgsql
+AS
+$function$
+BEGIN
+    phone = regexp_replace(phone, '[^0-9]+', '', 'g');
+    if starts_with(phone, '8') then
+        return '7' || substr(phone, 2);
+    end if;
+    return phone;
+END;
+$function$;
+
 
 
 

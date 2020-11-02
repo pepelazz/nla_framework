@@ -31,6 +31,8 @@ const (
 	FldVueTypeFiles          = "files"
 	FldVueTypeImgList        = "imgList"
 	FldVueTypeImg            = "img"
+	FldVueTypePhone          = "phone"
+	FldVueTypeEmail          = "email"
 )
 
 type (
