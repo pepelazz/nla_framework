@@ -21,7 +21,8 @@ func GetFldTitle(params ...string) (fld FldType) {
 
 // создание поля title, которое заполняется тригером
 func GetFldTitleComputed(triggerSqlString string) (fld FldType) {
-	fld = FldType {Name: "title", NameRu: "название", Type: FldTypeString, Sql: FldSql{IsSearch:true, FillValueInBeforeTrigger: triggerSqlString}}
+	classStr := "col-md-4 col-xs-6"
+	fld = FldType {Name: "title", NameRu: "название", Type: FldTypeString, Sql: FldSql{IsSearch:true, FillValueInBeforeTrigger: triggerSqlString}, Vue: FldVue{RowCol: [][]int{{1, 1}}, Class: []string{classStr}}}
 	return
 }
 
