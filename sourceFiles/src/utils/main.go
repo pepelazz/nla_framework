@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pepelazz/projectGenerator/types"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"fmt"
 	"strconv"
@@ -13,6 +14,7 @@ import (
 	"crypto/rand"
 	"errors"
 	"log"
+	"strings"
 )
 
 const (
@@ -221,3 +223,42 @@ func GetJsonByUrl(url string, res interface{}) error {
 	return nil
 }
 
+func ReadUploadedFile(c *gin.Context, exts []string) (multipart.File, error) {
+	// извлекаем файл из парамeтров post запроса
+	form, _ := c.MultipartForm()
+	var fileName, fileExt string
+
+	if len(form.File) == 0 {
+		return nil, errors.New("list of files is empty")
+	}
+	// берем первое имя файла из присланного списка
+	for key := range form.File {
+		if len(fileName) > 0 {
+			continue
+		}
+		fileName = key
+		// извлекаем расширение файла
+		arr := strings.Split(fileName, ".")
+		if len(arr) > 1 {
+			fileExt = arr[len(arr)-1]
+		}
+	}
+	if len(fileExt) == 0 {
+		return nil, errors.New("wrong file extansion")
+	}
+	isExtTrue := false
+	for _, v := range exts {
+		if fileExt == v {
+			isExtTrue = true
+		}
+	}
+	if !isExtTrue {
+		return nil, errors.New(fmt.Sprintf("file extansion must be %s", exts))
+	}
+	// извлекаем содержание присланного файла по названию файла
+	file, _, err := c.Request.FormFile(fileName)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("uploadFile c.Request.FormFile error: %s", err.Error()))
+	}
+	return file, nil
+}

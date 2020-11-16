@@ -104,6 +104,13 @@ const saveItem = function ({method, itemForSaveMod = {}, resultModify, cb}) {
   })
 }
 
+// shortcut для postCallPgMethod
+const callPgMethod = (method, params, cb) => {
+  postCallPgMethod({method, params}).subscribe(res => {
+    if (res.ok && cb) cb(res.result)
+  })
+}
+
 // функция для перекладывания поля из options в item, чтобы можно было их редактировать
 const extractOptionsFlds = (that) => (v) => {
   if (that.optionsFlds) that.optionsFlds.map(fldName => v[fldName] = v.options[fldName])
@@ -140,6 +147,7 @@ const formatPgDate = (d) => {
 export default {
   postApiRequest,
   postCallPgMethod,
+  callPgMethod,
   pgCall,
   getDocItemById,
   saveItem,

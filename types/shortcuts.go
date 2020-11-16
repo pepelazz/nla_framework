@@ -223,7 +223,7 @@ func GetFldJsonbComposition(name, nameRu string, rowCol [][]int, classStr, compN
 // поле с кастомной композицией
 func GetFldJsonbCompositionWithoutFld(rowCol [][]int, classStr, compName string, params ...string) (fld FldType) {
 	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
-		return fmt.Sprintf("<%[1]s :item='item'/>", compName)
+		return fmt.Sprintf("<%[1]s :item='item' %[2]s/>", compName, strings.Join(params, " "))
 	}}}
 	return
 }
@@ -303,7 +303,6 @@ func GetFldLinkListWidget(linkTable string, rowCol [][]int, classStr string, opt
 		return GetVueCompLinkListWidget(p, d, linkTable, opts)
 	}}}
 }
-
 
 // функция конвертации списка имен файлов с шаблонами в  map[string]*DocTemplate
 func GetCustomTemplates(p ...string) map[string]*DocTemplate  {

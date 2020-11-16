@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/serenize/snaker"
 	"github.com/spf13/cast"
 	"log"
 	"strings"
@@ -349,6 +350,118 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 	}
 
 	return fmt.Sprintf("<comp-link-list-widget label='%s' :id='id' tableIdName='%s' tableIdFldName='%s' tableDependName='%s' tableDependFldName='%s' tableDependRoute='/%s' linkTableName='%s' avatarSrc='%s' :hideCreateNew='%v' :readonly='%s' %s>%s</comp-link-list-widget>", label, tableIdName, tableIdFldName, tableDependName, tableDependFldName, tableDependRoute, linkTableName, avatarSrc, hideCreateNew, readonly, fldsProp, slotOtherFlds)
+}
+
+// параметры для VueCompRefListWidget
+type VueCompRefListWidgetParams struct {
+	Label     string
+	FldName   string
+	TableName string // название таблицы, список из которой выводим
+	RefFldName string // название ref-поля в таблице, по которому осуществляется связь
+	Avatar     string
+	Route 	   string // путь для формирования ссылки
+	IsHideAdd bool
+	IsHideDelete bool
+	NewFlds 	[]FldType // поля при создании новой записи
+}
+
+
+// создание поля-виджета со связями один-к-многим
+func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams, rowCol [][]int, params... string) (fld FldType) {
+	if len(refDoc.Label) == 0 {
+		log.Fatalf("doc: '%s'. Missed Label in FldVueCompositionRefList", d.Name)
+	}
+	if len(refDoc.FldName) == 0 {
+		log.Fatalf("doc: '%s'. Missed FldName in FldVueCompositionRefList", d.Name)
+	}
+	if len(refDoc.TableName) == 0 {
+		log.Fatalf("doc: '%s'. Missed TableName in FldVueCompositionRefList", d.Name)
+	}
+	if len(refDoc.RefFldName) == 0 {
+		log.Fatalf("doc: '%s'. Missed RefFldName in FldVueCompositionRefList", d.Name)
+	}
+	if len(refDoc.Avatar) == 0 {
+		log.Fatalf("doc: '%s'. Missed Avatar in FldVueCompositionRefList", d.Name)
+	}
+	//var refFldName, refTableRoute string
+	fldName := refDoc.FldName + "RefListWidget"
+	if strings.Contains(fldName, "_") {
+		fldName = snaker.SnakeToCamelLower(fldName)
+	}
+	if len(refDoc.Route) == 0 {
+		refDoc.Route = refDoc.TableName
+	}
+
+	// признак, что среди полей есть поле tag. Тогда надо добавить mixin
+	tagFlds := []string{}
+	for _, fld := range refDoc.NewFlds {
+		if fld.Vue.Type == FldVueTypeTags {
+			tagFlds = append(tagFlds, fld.Name)
+		}
+	}
+
+	// прописываем пути шаблона
+	if d.Templates == nil {
+		d.Templates = map[string]*DocTemplate{}
+	}
+	d.Templates[fmt.Sprintf("%s_ref_list_widget", refDoc.FldName)] = &DocTemplate{
+		Source:       "../../../pepelazz/projectGenerator/templates/webClient/doc/comp/refListWidget.vue",
+		DistPath:     fmt.Sprintf("../src/webClient/src/app/components/%s/comp", d.PgName()),
+		DistFilename: snaker.SnakeToCamelLower(refDoc.FldName) + "RefListWidget.vue",
+		FuncMap: map[string]interface{}{
+			"GetTableName": func() string {return refDoc.TableName},
+			"GetRefFldName": func() string {return refDoc.RefFldName},
+			"GetLabel": func() string {return refDoc.Label},
+			"IsShowAdd": func() bool {return !refDoc.IsHideAdd},
+			"IsShowDelete": func() bool {return !refDoc.IsHideDelete},
+			"GetRoute": func() string {return refDoc.Route},
+			"GetAvatar": func() string {return refDoc.Avatar},
+			"GetNewFlds": func() []FldType {return refDoc.NewFlds},
+			"GetTagFlds": func() []string {return tagFlds},
+			//"GetColumns": func() []FldVueCompositionTableColumn { return tbl.Columns},
+			//"GetPgMethod": func() string {return tbl.PgMethod},
+			//"GetRowsPerPage": func() int {return tbl.Pagination.RowsPerPage },
+			//"GetSeparator": func() string {return tbl.Separator },
+		},
+	}
+
+	// добавляем в список компонент
+	parentPath := "./comp/"
+	if len(d.Vue.Tabs) > 0 {
+		parentPath = "../../comp/"
+	}
+	importAddress := parentPath + snaker.SnakeToCamelLower(refDoc.FldName) + "RefListWidget.vue"
+	if d.Vue.Components == nil {
+		d.Vue.Components = map[string]map[string]string{}
+	}
+	if d.Vue.Components["docItem"] == nil {
+		d.Vue.Components["docItem"] = map[string]string{}
+	}
+	d.Vue.Components["docItem"][snaker.SnakeToCamelLower(refDoc.FldName) + "RefListWidget"] = importAddress
+
+	// параметры самого поля
+	//classStr := "col-md-4 col-xs-6"
+	//if len(params.Class)>0 {
+	//	classStr= params.Class
+	//}
+	//fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
+	//	return fmt.Sprintf("<%[1]s :item='item'/>", strings.Replace(snaker.CamelToSnake(tbl.FldName + "CommonTable"), "_", "-", -1))
+	//}}}
+
+	var readonly string
+	if len(d.Vue.Readonly) > 0 {
+		readonly = fmt.Sprintf(":readonly='%s'", d.Vue.Readonly)
+	}
+
+	// параметры самого поля
+	classStr := "col-md-4 col-xs-6"
+	if len(params)>0 {
+		classStr= params[0]
+	}
+	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
+		return fmt.Sprintf("<%[1]s v-if='item.id != -1' :id='item.id' %s/>", strings.Replace(snaker.CamelToSnake(refDoc.FldName + "RefListWidget"), "_", "-", -1), readonly)
+	}}}
+	return
 }
 
 // заголовки табов
