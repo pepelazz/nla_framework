@@ -15,6 +15,9 @@ BEGIN
         {{- end}}
 
         {{- range .Flds}}
+        {{- if eq .Vue.Type "tags"}}
+         searchTxtVar = searchTxtVar || (NEW.{{.Name}})::text;
+        {{- end -}}
         {{- if .Sql.FillValueInBeforeTrigger }}
         NEW.{{.Name}} = {{.Sql.FillValueInBeforeTrigger}};
         {{- end -}}

@@ -16,7 +16,7 @@
                     </q-avatar>
                 </q-item-section>
                 <q-item-section>
-                    <q-item-label>{{v.title}}</q-item-label>
+                    [[GetTitleTemplate]]
                 </q-item-section>
                 [[if IsShowDelete]] <q-item-section side>
                     <q-icon :name="deleted ? 'done' : 'delete'" size="xs" class="cursor-pointer" color="grey" @click="removeRecover(v)"/>
@@ -69,7 +69,12 @@
                 this.$utils.callPgMethod('[[GetTableName]]_list', {'[[GetRefFldName]]': this.id, deleted: this.deleted}, (result) => this.list = result)
             },
             saveNew() {
-                if (!this.item.title) return
+                [[range GetNewFlds]]
+                    [[if .Vue.IsRequired]]if (!this.item.[[.Name]]) {
+                    this.$q.notify({type: 'negative', message: 'не заполнено поле: "[[.NameRu]]"'})
+                    return
+                }[[- end]]
+                [[- end]]
                 let params = Object.assign({id: -1, [[GetRefFldName]]: this.id}, this.item)
                 this.$utils.callPgMethod('[[GetTableName]]_update', params, () => {
                     this.isShowAddDialog = false

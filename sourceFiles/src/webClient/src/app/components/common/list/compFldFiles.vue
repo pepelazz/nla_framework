@@ -201,7 +201,7 @@
                 // обновляем список файлов в самой записи
                 this.$utils.postCallPgMethod({
                     method: `${this.ext.tableName}_update`,
-                    params: {id: this.ext.tableId, files: this.list}
+                    params: {id: this.ext.tableId, [this.fldName]: this.list}
                 }).subscribe(res => {
                     this.$emit('update', this.list)
                 })

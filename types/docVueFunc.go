@@ -363,6 +363,7 @@ type VueCompRefListWidgetParams struct {
 	IsHideAdd bool
 	IsHideDelete bool
 	NewFlds 	[]FldType // поля при создании новой записи
+	TitleTemplate string // шаблон для строки с названием
 }
 
 
@@ -418,10 +419,13 @@ func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams,
 			"GetAvatar": func() string {return refDoc.Avatar},
 			"GetNewFlds": func() []FldType {return refDoc.NewFlds},
 			"GetTagFlds": func() []string {return tagFlds},
-			//"GetColumns": func() []FldVueCompositionTableColumn { return tbl.Columns},
-			//"GetPgMethod": func() string {return tbl.PgMethod},
-			//"GetRowsPerPage": func() int {return tbl.Pagination.RowsPerPage },
-			//"GetSeparator": func() string {return tbl.Separator },
+			"GetTitleTemplate": func() string {
+				if len(refDoc.TitleTemplate) > 0 {
+					return refDoc.TitleTemplate
+				}
+				return "<q-item-label>{{v.title}}</q-item-label>"
+			},
+
 		},
 	}
 
