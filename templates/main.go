@@ -375,7 +375,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		for k, v := range fld.Vue.Ext {
 			extStr = extStr + fmt.Sprintf(", %s: \"%s\"", k, v)
 		}
-		return fmt.Sprintf("<comp-fld-img-list v-if=\"this.id != 'new'\" label='%s' :fld='item.%s' :ext = '{tableName: \"%s\", tableId: this.id, fldName: \"%s\"%s}' :readonly='%s' %s/>", nameRu, name, fld.Doc.Name, name, extStr, readonly, params)
+		return fmt.Sprintf("<comp-fld-img-list v-if=\"this.id != 'new'\" label='%s' :fld='item.%s' :ext = '{tableName: \"%s\", tableId: this.id, fldName: \"%s\"%s}' @update=\"v=> item.%s = v\" :readonly='%s' %s/>", nameRu, name, fld.Doc.Name, name, extStr, name, readonly, params)
 	default:
 		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fldType)
 	}

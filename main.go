@@ -44,6 +44,10 @@ func readData(p types.ProjectType) {
 	if len(project.Config.Postgres.TimeZone) == 0 {
 		project.Config.Postgres.TimeZone = "Europe/Moscow"
 	}
+	// проверяем что название проекта без пробелов
+	if strings.Contains(p.Name, " ") {
+		utils.CheckErr(errors.New(fmt.Sprintf("Wrong project name: '%s'. Remove spaces.", p.Name)), "")
+	}
 	// проверяем чтобы не было поля user_id, потому что это служебное поле
 	for _, d := range p.Docs {
 		for _, fld := range d.Flds {
