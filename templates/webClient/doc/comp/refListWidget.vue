@@ -76,6 +76,12 @@
                 }[[- end]]
                 [[- end]]
                 let params = Object.assign({id: -1, [[GetRefFldName]]: this.id}, this.item)
+                [[range GetNewFlds]]
+                    [[if eq .Vue.Type "select"]]
+                        // если поле select то заменяем объект на строку
+                        if (this.item.[[.Name]]) params = Object.assign(params, {[[.Name]]:this.item.[[.Name]].value})
+                        [[- end]]
+                [[- end]]
                 this.$utils.callPgMethod('[[GetTableName]]_update', params, () => {
                     this.isShowAddDialog = false
                     [[range GetNewFlds]]

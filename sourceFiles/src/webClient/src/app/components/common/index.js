@@ -21,6 +21,7 @@ import compDadataAddressDialog from './list/compDadataAddressDialog'
 import compDadataCompany from './list/compDadataCompany'
 import compSearchRefInListWidget from './list/compSearchRefInListWidget'
 import compLinkListWidget from './list/compLinkListWidget'
+import compFileUpload from './list/compFileUpload'
 import statImgSrc from './utils/statImgSrc'
 import compDialogTaskAdd from './task/compDialogTaskAdd'
 import compDialogTaskDone from './task/compDialogTaskDone'
@@ -54,4 +55,5 @@ export default (Vue) => {
   Vue.component('comp-dialog-task-add', compDialogTaskAdd)
   Vue.component('comp-dialog-task-done', compDialogTaskDone)
   Vue.component('comp-chat', compChat)
+  Vue.component('comp-file-upload', compFileUpload)
 }

@@ -96,6 +96,7 @@ type (
 		Indexes         []string    // индексы
 		Hooks           DocSqlHooks // куски sql кода
 		CheckConstrains []DocSqlCheckConstraint // список ограничений в таблице
+		UniqConstrains []DocSqlUniqConstraint // список ограничений на уникаальность
 	}
 
 	DocIsBaseTemplates struct {
@@ -132,6 +133,11 @@ type (
 	DocSqlCheckConstraint struct {
 		Name string
 		CheckConditions string //
+	}
+
+	DocSqlUniqConstraint struct {
+		Name string
+		UniqConditions string //
 	}
 
 	DocIntegrations struct {

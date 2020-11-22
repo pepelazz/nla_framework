@@ -69,6 +69,10 @@ func (d DocType) PrintSqlModelFkConstraints() (res string) {
 	for _, cnstr := range d.Sql.CheckConstrains {
 		arr = append(arr, fmt.Sprintf("\t{name=\"%s\", ext=\"CHECK(%s)\"}", cnstr.Name, cnstr.CheckConditions))
 	}
+	// uniq constraints
+	for _, cnstr := range d.Sql.UniqConstrains {
+		arr = append(arr, fmt.Sprintf("\t{name=\"%s\", ext=\"UNIQUE(%s)\"}", cnstr.Name, cnstr.UniqConditions))
+	}
 	if len(arr) > 0 {
 		res = fmt.Sprintf("fkConstraints = [\n%s\n]", strings.Join(arr, ",\n"))
 	}
