@@ -25,6 +25,14 @@ func CallPgSelectToJson(queryStr string, res interface{}) (err error) {
 	return nil
 }
 
+func CallPgFuncWithStruct(funcName string, jsonStruct, res interface{}) error  {
+	jsonStr, err := json.Marshal(jsonStruct)
+	if err != nil {
+		return err
+	}
+	return CallPgFunc(funcName, jsonStr, res, nil)
+}
+
 func CallPgFunc(funcName string, jsonStr []byte, res interface{}, metaInfo interface{}) (err error) {
 
 	var queryRes []byte
