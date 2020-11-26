@@ -7,6 +7,7 @@ import (
 	"github.com/pepelazz/projectGenerator/templates"
 	"github.com/pepelazz/projectGenerator/types"
 	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/spf13/cast"
 	"io/ioutil"
 	"log"
 	"os"
@@ -48,11 +49,17 @@ func readData(p types.ProjectType) {
 	if strings.Contains(p.Name, " ") {
 		utils.CheckErr(errors.New(fmt.Sprintf("Wrong project name: '%s'. Remove spaces.", p.Name)), "")
 	}
-	// проверяем чтобы не было поля user_id, потому что это служебное поле
+	// проверки правил для fld
 	for _, d := range p.Docs {
 		for _, fld := range d.Flds {
+			// проверяем чтобы не было поля user_id, потому что это служебное поле
 			if fld.Name == "user_id" {
 				utils.CheckErr(errors.New("field with name 'user_id' is not allowed. Rename field. "), "doc: " + d.Name)
+			}
+			for _, v := range fld.Vue.Options {
+				if strings.Contains(cast.ToString(v.Value), " ") {
+					utils.CheckErr(errors.New(fmt.Sprintf("field with name '%s' contains value '%s'. Remove spaces from value.", fld.Name, v.Value)), "doc: " + d.Name)
+				}
 			}
 		}
 	}
