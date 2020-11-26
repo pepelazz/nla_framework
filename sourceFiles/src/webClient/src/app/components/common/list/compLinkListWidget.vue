@@ -9,7 +9,7 @@
     </q-bar>
 
     <q-list bordered separator v-if="isShowList">
-      <q-item v-for="item in list" :key="item.id">
+      <q-item v-for="item in filteredList" :key="item.id">
         <q-item-section avatar @click="$router.push(`${tableDependRoute}/${item[tableDependFldName]}`)">
           <q-avatar rounded>
             <comp-stat-img-src :src="avatar(item)"/>
@@ -40,7 +40,7 @@
         </q-card-section>
 
         <q-card-section>
-          <comp-search-ref-in-list-widget label="Поиск" :pg-method="tableDependName + '_list'" @update="v => selectedForAdd = v"/>
+          <comp-search-ref-in-list-widget label="Поиск" :pg-method="tableDependName + '_list'" @update="v => selectedForAdd = v" :ext="searchExt"/>
           <template v-if="flds">
             <div class="row q-col-gutter-md q-mt-sm" v-for="fldRow in flds">
               <comp-fld v-for="fld in fldRow" :key='fld.name'
@@ -106,82 +106,88 @@
 </template>
 
 <script>
-    import _ from 'lodash'
-    export default {
-        props: ['id', 'tableIdName', 'tableIdFldName', 'tableDependName', 'tableDependFldName', 'tableDependRoute', 'linkTableName', 'label', 'avatarSrc', 'hideCreateNew', 'flds', 'readonly'],
-        computed: {
-            tableDependFldTitle() {
-                return this.tableDependFldName.split('_id')[0] + '_title'
-            },
-            avatar() {
-                return function(item) {
-                    let fldName = this.tableDependFldName.split('_id')[0]
-                    return item.options.title[fldName + '_avatar'] || this.avatarSrc || 'https://www.svgrepo.com/show/95333/avatar.svg'
-                }
-            },
-        },
-        data() {
-            return {
-                isShowList: true,
-                list: [],
-                localItem: {},
-                isShowAddDialog: false,
-                isShowDeleteDialog: false,
-                selectedForDeleteId: null,
-                selectedForAdd: null,
-                isShowEditDialog: false,
-                selectedForEdit: null,
-            }
-        },
-        methods: {
-            showDeleteDialog(id) {
-                this.selectedForDeleteId = id
-                this.isShowDeleteDialog = true
-            },
-            showEditDialog(v) {
-                this.isShowEditDialog = true
-                this.selectedForEdit = v
-            },
-            add() {
-                let params = {id: -1}
-                params[this.tableIdFldName] = +this.id
-                params[this.tableDependFldName] = this.selectedForAdd.id
-                this.$utils.postCallPgMethod({method: `${this.linkTableName}_update`, params: Object.assign(params, this.localItem)}).subscribe(res => {
-                    if (res.ok) this.reload()
-                })
-            },
-            remove() {
-                this.$utils.postCallPgMethod({method: `${this.linkTableName}_update`, params: {id: this.selectedForDeleteId, deleted: true}}).subscribe(res => {
-                    if (res.ok) {
-                        this.reload()
-                    }
-                })
-            },
-            reload() {
-                let params = {}
-                params[this.tableIdFldName] = +this.id
-                this.$utils.postCallPgMethod({method: `${this.linkTableName}_list`, params}).subscribe(res => {
-                    if (res.ok) {
-                        this.list = res.result
-                    }
-                })
-            },
-            save() {
-                this.$utils.postCallPgMethod({method: `${this.linkTableName}_update`, params: this.selectedForEdit}).subscribe(res => {
-                    if (res.ok) {
-                        this.isShowEditDialog = false
-                        this.selectedForEdit = null
-                    }
-                })
-            }
-        },
-        mounted() {
-            this.reload()
-            if (this.flds) {
-                _.flattenDeep(this.flds).map(v => {
-                    this.$set(this.localItem, v.name, v.type === 'checkbox' ? false : null)
-                })
-            }
+  import _ from 'lodash'
+  export default {
+    props: ['id', 'tableIdName', 'tableIdFldName', 'tableDependName', 'tableDependFldName', 'tableDependRoute', 'linkTableName', 'label', 'avatarSrc', 'hideCreateNew', 'flds', 'readonly', 'searchExt', 'filterListFn'],
+    computed: {
+      tableDependFldTitle() {
+        return this.tableDependFldName.split('_id')[0] + '_title'
+      },
+      avatar() {
+        return function(item) {
+          let fldName = this.tableDependFldName.split('_id')[0]
+          return item.options.title[fldName + '_avatar'] || this.avatarSrc || 'https://www.svgrepo.com/show/95333/avatar.svg'
         }
+      },
+      filteredList() {
+        // возможность передать в компоненту функцию для фильтрации списка
+        if (this.filterListFn) return this.list.filter(this.filterListFn)
+        return this.list
+      }
+    },
+    data() {
+      return {
+        isShowList: true,
+        list: [],
+        localItem: {},
+        isShowAddDialog: false,
+        isShowDeleteDialog: false,
+        selectedForDeleteId: null,
+        selectedForAdd: null,
+        isShowEditDialog: false,
+        selectedForEdit: null,
+      }
+    },
+    methods: {
+      showDeleteDialog(id) {
+        this.selectedForDeleteId = id
+        this.isShowDeleteDialog = true
+      },
+      showEditDialog(v) {
+        this.isShowEditDialog = true
+        this.selectedForEdit = v
+      },
+      add() {
+        if (!this.selectedForAdd) return
+        let params = {id: -1}
+        params[this.tableIdFldName] = +this.id
+        params[this.tableDependFldName] = this.selectedForAdd.id
+        this.$utils.postCallPgMethod({method: `${this.linkTableName}_update`, params: Object.assign(params, this.localItem)}).subscribe(res => {
+          if (res.ok) this.reload()
+        })
+      },
+      remove() {
+        this.$utils.postCallPgMethod({method: `${this.linkTableName}_update`, params: {id: this.selectedForDeleteId, deleted: true}}).subscribe(res => {
+          if (res.ok) {
+            this.reload()
+          }
+        })
+      },
+      reload() {
+        let params = {}
+        params[this.tableIdFldName] = +this.id
+        this.$utils.postCallPgMethod({method: `${this.linkTableName}_list`, params}).subscribe(res => {
+          if (res.ok) {
+            this.list = res.result
+          }
+        })
+      },
+      save() {
+        this.$utils.postCallPgMethod({method: `${this.linkTableName}_update`, params: this.selectedForEdit}).subscribe(res => {
+          if (res.ok) {
+            this.isShowEditDialog = false
+            this.selectedForEdit = null
+          }
+        })
+      }
+    },
+    mounted() {
+      this.reload()
+      if (this.flds) {
+        _.flattenDeep(this.flds).map(v => {
+          this.$set(this.localItem, v.name, v.type === 'checkbox' ? false : null)
+        })
+      }
     }
+  }
 </script>
