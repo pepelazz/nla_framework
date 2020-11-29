@@ -252,6 +252,11 @@ func (fld FldType) SetIsNotUniq() FldType {
 	return fld
 }
 
+func (fld FldType) SetSqlSize(size int) FldType {
+	fld.Sql.Size = size
+	return fld
+}
+
 func (fld FldType) SetIsUniq() FldType {
 	fld.Sql.IsUniq = true
 	return fld
