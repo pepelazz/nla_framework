@@ -246,14 +246,16 @@ func ReadUploadedFile(c *gin.Context, exts []string) (multipart.File, error) {
 	if len(fileExt) == 0 {
 		return nil, errors.New("wrong file extansion")
 	}
-	isExtTrue := false
-	for _, v := range exts {
-		if fileExt == v {
-			isExtTrue = true
+	if exts != nil && len(exts) > 0{
+		isExtTrue := false
+		for _, v := range exts {
+			if fileExt == v {
+				isExtTrue = true
+			}
 		}
-	}
-	if !isExtTrue {
-		return nil, errors.New(fmt.Sprintf("file extansion must be %s", exts))
+		if !isExtTrue {
+			return nil, errors.New(fmt.Sprintf("file extansion must be %s", exts))
+		}
 	}
 	// извлекаем содержание присланного файла по названию файла
 	file, _, err := c.Request.FormFile(fileName)

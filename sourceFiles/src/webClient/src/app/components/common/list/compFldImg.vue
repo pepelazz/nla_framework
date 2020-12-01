@@ -89,12 +89,14 @@
                     this.$refs.uploader.reset()
                     this.isShowDialog = false
                     this.$emit('update', this.localSrc)
-                    // обновляем запись
-                    this.$utils.postCallPgMethod({
-                        method: `${this.ext.methodUpdate || this.ext.tableName + '_update'}`,
-                        params: {id: this.ext.tableId, [this.ext.fldName]: this.localSrc}
-                    }).subscribe(res => {
-                    })
+                    // обновляем запись, если указано fldName
+                    if (this.ext.fldName) {
+                      this.$utils.postCallPgMethod({
+                          method: `${this.ext.methodUpdate || this.ext.tableName + '_update'}`,
+                          params: {id: this.ext.tableId, [this.ext.fldName]: this.localSrc}
+                      }).subscribe(res => {
+                      })
+                    }
                 }
             },
             failed(msg) {
@@ -133,23 +135,27 @@
                 })
             },
             remove() {
-                // обновляем запись
+              // обновляем запись, если указано fldName
+              if (this.ext.fldName) {
                 this.$utils.postCallPgMethod({
-                    method: `${this.ext.methodUpdate || this.ext.tableName + '_update'}`,
-                    params: {id: this.ext.tableId, [this.ext.fldName]: null}
+                  method: `${this.ext.methodUpdate || this.ext.tableName + '_update'}`,
+                  params: {id: this.ext.tableId, [this.ext.fldName]: null}
                 }).subscribe(res => {
-                    this.localSrc = null
-                    this.$emit('update', null)
+                  this.localSrc = null
+                  this.$emit('update', null)
                 })
+              } else {
+                  this.$emit('update', null)
+              }
             },
         },
         mounted() {
             if (!this.ext) {
                 throw new Error('compFldFiles missed param: "ext"')
             }
-            if (!this.ext.fldName) {
-                throw new Error('compFldFiles missed param: "ext.fldName"')
-            }
+            // if (!this.ext.fldName) {
+            //     throw new Error('compFldFiles missed param: "ext.fldName"')
+            // }
             if (!this.ext.methodUpdate && !(this.ext.tableId && this.ext.tableName)) {
                 throw new Error('compFldFiles missed param: "ext.methodUpdate" OR "ext.tableId" AND "ext.tableName"')
             }
