@@ -39,11 +39,14 @@
     },
     methods: {
       checkFileType (files) {
-        let isRightExt = files.filter(file => this.fileExt.filter(ext => file.name.includes(`.${ext}`)).length > 0)
-        if (isRightExt.length === 0) {
-          this.$q.notify({type: 'negative', message: `файл должен иметь расширение ${this.fileExt}`})
+        if (this.fileExt && this.fileExt.length > 0) {
+          let isRightExt = files.filter(file => this.fileExt.filter(ext => file.name.includes(`.${ext}`)).length > 0)
+          if (isRightExt.length === 0) {
+            this.$q.notify({type: 'negative', message: `файл должен иметь расширение ${this.fileExt}`})
+          }
+          return isRightExt
         }
-        return isRightExt
+        return files
       },
       uploaded({xhr: {response}}) {
         const res = JSON.parse(response)
