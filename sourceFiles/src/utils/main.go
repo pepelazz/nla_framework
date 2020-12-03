@@ -223,13 +223,13 @@ func GetJsonByUrl(url string, res interface{}) error {
 	return nil
 }
 
-func ReadUploadedFile(c *gin.Context, exts []string) (multipart.File, error) {
+func ReadUploadedFile(c *gin.Context, exts []string) (file multipart.File, filename string, err error) {
 	// извлекаем файл из парамeтров post запроса
 	form, _ := c.MultipartForm()
 	var fileName, fileExt string
 
 	if len(form.File) == 0 {
-		return nil, errors.New("list of files is empty")
+		return nil, fileName, errors.New("list of files is empty")
 	}
 	// берем первое имя файла из присланного списка
 	for key := range form.File {
@@ -244,7 +244,7 @@ func ReadUploadedFile(c *gin.Context, exts []string) (multipart.File, error) {
 		}
 	}
 	if len(fileExt) == 0 {
-		return nil, errors.New("wrong file extansion")
+		return nil, fileName, errors.New("wrong file extansion")
 	}
 	if exts != nil && len(exts) > 0{
 		isExtTrue := false
@@ -254,13 +254,13 @@ func ReadUploadedFile(c *gin.Context, exts []string) (multipart.File, error) {
 			}
 		}
 		if !isExtTrue {
-			return nil, errors.New(fmt.Sprintf("file extansion must be %s", exts))
+			return nil, fileName, errors.New(fmt.Sprintf("file extansion must be %s", exts))
 		}
 	}
 	// извлекаем содержание присланного файла по названию файла
-	file, _, err := c.Request.FormFile(fileName)
+	file, _, err = c.Request.FormFile(fileName)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("uploadFile c.Request.FormFile error: %s", err.Error()))
+		return nil, fileName, errors.New(fmt.Sprintf("uploadFile c.Request.FormFile error: %s", err.Error()))
 	}
-	return file, nil
+	return file, fileName, nil
 }

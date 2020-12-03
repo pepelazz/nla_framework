@@ -1,12 +1,14 @@
 <template>
   <div>
-    <q-btn icon="cloud_upload" flat round size="sm" @click="isOpenUpload=true"/>
+    <q-btn :icon="iconName" flat round size="sm" @click="isOpenUpload=true">
+      <q-tooltip v-if="tooltip">{{tooltip}}</q-tooltip>
+    </q-btn>
     <q-dialog v-model="isOpenUpload">
       <q-card>
         <q-card-section>
           <q-uploader
             ref="uploader"
-            label="Выберите файл для загрузки"
+            :label="labelName"
             auto-upload
             :filter="checkFileType"
             :url="uploadUrl"
@@ -22,7 +24,7 @@
 
 <script>
   export default {
-    props: ['url', 'fileExt'],
+    props: ['url', 'fileExt', 'icon', 'tooltip', 'label'],
     computed: {
       uploadUrl() {
         return `${this.$config.apiUrl()}/api/${this.url}`
@@ -35,6 +37,8 @@
     data() {
       return {
         isOpenUpload: false,
+        iconName: 'cloud_upload',
+        labelName: 'Выберите файл для загрузки',
       }
     },
     methods: {
@@ -74,6 +78,10 @@
           message: msgText,
         })
       },
+    },
+    mounted() {
+      if (this.icon) this.iconName = this.icon
+      if (this.label) this.labelName = this.label
     }
   }
 </script>
