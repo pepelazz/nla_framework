@@ -29,7 +29,7 @@
       <q-uploader
         ref="uploader"
         label="Выберите файл для загрузки"
-        auto-upload
+        multiple
         :url="uploadUrl"
         :headers='headers'
         :accept="(ext && ext.accept) ? ext.accept : ''"
@@ -37,6 +37,7 @@
         @rejected="rejected"
         @uploaded='uploaded'
         @failed='failed'
+        @finish ='finish'
         :form-fields="formField"
       />
     </q-dialog>
@@ -125,16 +126,7 @@
             message: res.message,
           })
         } else {
-          this.$refs.uploader.reset()
-          this.isShowDialog = false
           this.list.push(res.result)
-          // обновляем запись
-          this.$utils.postCallPgMethod({
-            method: `${this.ext.methodUpdate || this.ext.tableName + '_update'}`,
-            params: {id: this.ext.tableId, [this.ext.fldName]: this.list}
-          }).subscribe(res => {
-            this.$emit('update', this.list)
-          })
         }
       },
       failed(msg) {
@@ -217,7 +209,18 @@
             this.newImgUrl = null
           }
         })
-      }
+      },
+      finish() {
+        this.$refs.uploader.reset()
+        this.isShowDialog = false
+        this.$emit('update', this.list)
+        // обновляем запись
+        this.$utils.postCallPgMethod({
+          method: `${this.ext.methodUpdate || this.ext.tableName + '_update'}`,
+          params: {id: this.ext.tableId, [this.ext.fldName]: this.list}
+        }).subscribe(res => {
+        })
+      },
     },
     mounted() {
       // проверки только если не readonly
