@@ -2,7 +2,7 @@
   <div>
     <p class="text-caption">{{label}}</p>
     <div class="q-gutter-md row items-start">
-      <comp-stat-img-src v-for="item in filteredList" :key="item.file"
+      <comp-stat-img-src v-for="(item, index) in filteredList" :key="item.file"
                          :src="item.file" @error="v=> imgSrcError(item.file, v)"
                          style="width: 150px"
       >
@@ -11,6 +11,9 @@
         </a>
         <q-btn v-if="!readonly" flat round size="sm" icon="delete" color="white" @click="showDeleteDialog(item.file)" class="absolute-bottom-right">
           <q-tooltip>Удалить фото</q-tooltip>
+        </q-btn>
+        <q-btn v-if="!readonly && index>0" flat round size="sm" icon="keyboard_backspace" color="white" @click="moveLeft(item.file, index)" class="absolute-bottom-left">
+          <q-tooltip>Поменять местами</q-tooltip>
         </q-btn>
       </comp-stat-img-src>
       <q-btn v-if="!readonly" flat round icon="add" size="sm" @click="isShowDialog = true">
@@ -181,6 +184,11 @@
         })
         this.selectedForDeleteFilename = filename
         this.remove()
+      },
+      moveLeft(file, i) {
+        let origin = this.list[i]
+        this.list[i] = this.list[i - 1]
+        this.$set(this.list, i - 1, origin)
       },
       remove() {
         let i = this.list.findIndex(v => v.file === this.selectedForDeleteFilename && !v.deleted)
