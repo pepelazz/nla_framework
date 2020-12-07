@@ -1,8 +1,8 @@
 {
-  "name": "fourPl",
+  "name": "[[.Name]]",
   "version": "0.0.1",
-  "description": "fourPl",
-  "productName": "fourPl",
+  "description": "[[.Name]]",
+  "productName": "[[.Name]]",
   "cordovaId": "org.cordova.quasar.app",
   "author": "Markov Alexey <alex@nl-a.ru>",
   "private": true,
