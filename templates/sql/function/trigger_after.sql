@@ -5,6 +5,7 @@ CREATE OR REPLACE FUNCTION {{.PgName}}_trigger_after() RETURNS trigger AS
 $$
 DECLARE
         r record;
+        jsonbEl      jsonb;
 BEGIN
         {{.PrintAfterTriggerUpdateLinkedRecords}}
 
