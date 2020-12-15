@@ -1,6 +1,9 @@
 <template>
   <div>
-    <q-btn :icon="iconName" flat round size="sm" @click="isOpenUpload=true">
+    <q-btn v-if="!is_btn_with_label" :icon="iconName" flat round :size="btnSize" @click="isOpenUpload=true">
+      <q-tooltip v-if="tooltip">{{tooltip}}</q-tooltip>
+    </q-btn>
+    <q-btn v-if="is_btn_with_label" :icon="iconName" outline :label="label" :color="btnColor" :size="btnSize" @click="isOpenUpload=true">
       <q-tooltip v-if="tooltip">{{tooltip}}</q-tooltip>
     </q-btn>
     <q-dialog v-model="isOpenUpload">
@@ -24,7 +27,7 @@
 
 <script>
   export default {
-    props: ['url', 'fileExt', 'icon', 'tooltip', 'label'],
+    props: ['url', 'fileExt', 'icon', 'tooltip', 'label', 'is_btn_with_label', 'size', 'color'],
     computed: {
       uploadUrl() {
         return `${this.$config.apiUrl()}/api/${this.url}`
@@ -32,6 +35,12 @@
       headers: function () {
         const authToken = localStorage.getItem(this.$config.appName)
         return [{name: 'Auth-token', value: authToken}]
+      },
+      btnSize() {
+        return this.size || 'sm'
+      },
+      btnColor() {
+        return this.color || 'primary'
       },
     },
     data() {
