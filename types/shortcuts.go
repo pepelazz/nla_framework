@@ -142,6 +142,8 @@ func GetFldRadioString(name, nameRu string, rowCol [][]int, options []FldVueOpti
 
 // создание простого поля Ref
 // - isShowLink
+// - isAddNew
+// - isClearable
 func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) (fld FldType) {
 	classStr := "col-md-4 col-xs-6"
 	if len(params)>0 {
@@ -162,10 +164,12 @@ func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) 
 			// проставляем значение addNewUrl на последнем шаге, после инициализации всех документов  в методе FillVueFlds
 			fld.Vue.Ext["addNewUrl"] = ""
 		}
-		for _, v := range params {
-			if v == "isClearable" {
-				fld.Vue.Ext["isClearable"] = "true"
-			}
+		if v == "isClearable" {
+			fld.Vue.Ext["isClearable"] = "true"
+		}
+		if strings.HasPrefix(v, "ext:") {
+			// записываем как есть, потом преобразуем при записи во vue
+			fld.Vue.Ext["rawJsonExt"] = strings.TrimPrefix(v, "ext:")
 		}
 	}
 	return

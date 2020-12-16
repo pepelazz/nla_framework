@@ -294,8 +294,16 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		if v, ok := fld.Vue.Ext["ajaxSelectTitle"]; ok {
 			ajaxSelectTitle = v
 		}
-		extJsonStr, err := json.Marshal(fld.Vue.Ext)
-		utils.CheckErr(err, fmt.Sprintf("json.Marshal(fld.Vue.Ext) fld %s", fld.Name))
+		// если есть параметр rawJsonExt, то используем его для ext. Остальные параметры игнорируются
+		var extJsonStr []byte
+		if rawJson, ok := fld.Vue.Ext["rawJsonExt"]; ok {
+			extJsonStr = []byte(rawJson)
+			fmt.Printf("rawJson: %s\n", rawJson)
+		} else {
+			var err error
+			extJsonStr, err = json.Marshal(fld.Vue.Ext)
+			utils.CheckErr(err, fmt.Sprintf("json.Marshal(fld.Vue.Ext) fld %s", fld.Name))
+		}
 
 		// заполняем название postgres метода для получения списка. По дефолту [ref_table_name]_list
 		pgMethod := fld.Sql.Ref + "_list"
