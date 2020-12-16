@@ -17,7 +17,7 @@
         </q-item-section>
         <q-item-section>
           <q-item-label>{{item.options.title[tableDependFldTitle]}}</q-item-label>
-          <slot name="otherFlds" :item="item"></slot>
+          <slot :item="item"></slot>
         </q-item-section>
         <q-item-section side v-if="!readonly">
           <div class="text-grey-8 q-gutter-xs">

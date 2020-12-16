@@ -298,7 +298,6 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		var extJsonStr []byte
 		if rawJson, ok := fld.Vue.Ext["rawJsonExt"]; ok {
 			extJsonStr = []byte(rawJson)
-			fmt.Printf("rawJson: %s\n", rawJson)
 		} else {
 			var err error
 			extJsonStr, err = json.Marshal(fld.Vue.Ext)
