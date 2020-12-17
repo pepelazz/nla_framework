@@ -82,7 +82,8 @@
                         if (this.item.[[.Name]]) params = Object.assign(params, {[[.Name]]:this.item.[[.Name]].value})
                         [[- end]]
                 [[- end]]
-                this.$utils.callPgMethod('[[GetTableName]]_update', params, () => {
+                // если IsStateMachine то [[GetTableName]]_create, в остальных случаях [[GetTableName]]_update
+                this.$utils.callPgMethod('[[GetTableName]]_[[if IsStateMachine]]create[[else]]update[[end]]', params, () => {
                     this.isShowAddDialog = false
                     [[range GetNewFlds]]
                     this.item.[[.Name]] = null [[end]]

@@ -342,7 +342,7 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 			fldsProp = fmt.Sprintf("\n\t\t\t\t\t\t:flds= \"%s\"", v)
 		}
 		if v, ok := opts["slotOtherFlds"]; ok {
-			slotOtherFlds = fmt.Sprintf("\n\t\t\t\t\t\t<template v-slot:otherFlds='slotProps'>\n\t\t\t\t\t\t\t%s\n\t\t\t\t\t\t\t</template>", v)
+			slotOtherFlds = fmt.Sprintf("\n\t\t\t\t\t\t<template v-slot:default='slotProps'>\n\t\t\t\t\t\t\t%s\n\t\t\t\t\t\t\t</template>", v)
 		}
 		if v, ok := opts["tableDependRoute"]; ok {
 			tableDependRoute = cast.ToString(v)
@@ -377,6 +377,7 @@ type VueCompRefListWidgetParams struct {
 	IsHideDelete bool
 	NewFlds 	[]FldType // поля при создании новой записи
 	TitleTemplate string // шаблон для строки с названием
+	IsStateMachine bool // признак, что документ реализует поведение машины состояний. Тогда несколько иная логика создания
 }
 
 
@@ -438,6 +439,7 @@ func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams,
 				}
 				return "<q-item-label>{{v.title}}</q-item-label>"
 			},
+			"IsStateMachine": func() bool {return refDoc.IsStateMachine},
 
 		},
 	}

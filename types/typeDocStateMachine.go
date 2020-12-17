@@ -219,6 +219,9 @@ func (sm *DocSm) GenerateTmpls(doc *DocType, params map[string]interface{}) {
 		stTitle := st.Title
 		stTitleRu := st.TitleRu
 		iconSrc := st.IconSrc
+		if doc.Templates == nil {
+			doc.Templates = map[string]*DocTemplate{}
+		}
 		doc.Templates[fileName] = &DocTemplate{
 			Source:       cardTmplPath,
 			DistPath:     fmt.Sprintf("../src/webClient/src/app/components/%s/comp", doc.Name),
