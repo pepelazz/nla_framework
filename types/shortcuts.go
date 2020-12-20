@@ -218,7 +218,7 @@ func GetFldJsonbComposition(name, nameRu string, rowCol [][]int, classStr, compN
 			isOptionsFld = "options."
 		}
 	}
-	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
 		return fmt.Sprintf("<%[1]s :fld='item.%[5]s%[2]s' :item='item' @update='item.%[5]s%[2]s = $event' label='%[3]s' %[4]s/>", compName, name, nameRu, strings.Join(params, " "), isOptionsFld)
 	}}}
 	return
@@ -226,7 +226,7 @@ func GetFldJsonbComposition(name, nameRu string, rowCol [][]int, classStr, compN
 
 // поле с кастомной композицией
 func GetFldJsonbCompositionWithoutFld(rowCol [][]int, classStr, compName string, params ...string) (fld FldType) {
-	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
+	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
 		return fmt.Sprintf("<%[1]s :item='item' %[2]s/>", compName, strings.Join(params, " "))
 	}}}
 	return
@@ -234,7 +234,7 @@ func GetFldJsonbCompositionWithoutFld(rowCol [][]int, classStr, compName string,
 
 // простое html поле
 func GetFldSimpleHtml(rowCol [][]int, classStr, htmlStr string) (fld FldType) {
-	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
+	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
 		return htmlStr
 	}}}
 	return
@@ -303,7 +303,7 @@ func GetFldTag(name, nameRu string, rowCol [][]int, params ...string) (fld FldTy
 
 // создание поля-виджета со связями многие-к-многим
 func GetFldLinkListWidget(linkTable string, rowCol [][]int, classStr string, opts map[string]interface{}) (fld FldType) {
-	return FldType{Type: FldTypeVueComposition,  Vue: FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
+	return FldType{Type: FldTypeVueComposition,  Vue: FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
 		return GetVueCompLinkListWidget(p, d, linkTable, opts)
 	}}}
 }

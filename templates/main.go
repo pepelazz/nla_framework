@@ -335,7 +335,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		if fld.Doc != nil {
 			linkOnDoc = *fld.Doc
 		}
-		return fld.Vue.Composition(*project, linkOnDoc)
+		return fld.Vue.Composition(*project, linkOnDoc, fld)
 	case types.FldVueTypeTags:
 		if fld.Vue.Ext["onlyExistTags"] == "true" {
 			// вариант когда нельзя создавать новые тэги, только выбирать из существующих

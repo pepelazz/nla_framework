@@ -51,6 +51,7 @@ type (
 	}
 	DocSmTmplsHooks struct {
 		AfterActionBtns []string
+		ItemMethods []string
 	}
 )
 

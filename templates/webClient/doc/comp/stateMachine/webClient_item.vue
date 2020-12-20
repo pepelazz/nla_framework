@@ -137,7 +137,10 @@
                     this.stateList = this.item.options.states
                 }
                 this.$utils.getDocItemById.call(this, {method: '[[.Name]]_get_by_id', cb})
-            }
+            },
+            [[range .StateMachine.Tmpls.Hooks.ItemMethods]]
+                [[.]],
+            [[- end]]
         },
         mounted() {
             this.reload()

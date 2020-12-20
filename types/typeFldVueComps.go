@@ -112,7 +112,7 @@ func GetFldVueCompositionTable(d *DocType, tbl FldVueCompositionTable, rowCol []
 	if len(params)>0 {
 		classStr= params[0]
 	}
-	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType) string {
+	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
 		return fmt.Sprintf("<%[1]s :item='item'/>", strings.Replace(snaker.CamelToSnake(tbl.FldName + "CommonTable"), "_", "-", -1))
 	}}}
 

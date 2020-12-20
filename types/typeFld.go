@@ -57,7 +57,7 @@ type (
 		Readonly     string
 		Ext          map[string]string
 		Options      []FldVueOptionsItem
-		Composition  func(ProjectType, DocType) string
+		Composition  func(ProjectType, DocType, FldType) string
 		Vif          string
 		JsonList     FldVueJsonList
 	}
