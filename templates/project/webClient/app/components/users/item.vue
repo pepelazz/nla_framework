@@ -19,11 +19,11 @@
         />
       </div>
       <!-- аватарка     -->
-<!--      <div class="row q-col-gutter-md" v-if="item.avatar">-->
-<!--        <div class="col-xs-12 col-sm-6 col-md-4">-->
-<!--          <comp-stat-img-src :src="item.avatar"/>-->
-<!--        </div>-->
-<!--      </div>-->
+      <div class="row q-col-gutter-md">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <comp-fld-img label="фото" :fld="item.avatar" :ext="{fldName: 'avatar', uploadUrl: 'upload_profile_image', methodUpdate: 'user_update', tableId: item.id}"/>
+        </div>
+      </div>
 
       <!--  кнопки   -->
       <comp-item-btn-save @save="save" @cancel="$router.push(docUrl)"/>
@@ -77,9 +77,9 @@
                     [
                         {name: 'grade', type: 'string', label: 'Должность'},
                     ],
-                    [
-                      {name: 'avatar', compName: 'comp-fld-img', label: 'Фото', ext: {fldName: 'avatar', uploadUrl: 'upload_profile_image', methodUpdate: 'current_user_update'}},
-                    ],
+                    // [
+                    //   {name: 'avatar', compName: 'comp-fld-img', label: 'Фото', ext: {fldName: 'avatar', uploadUrl: 'upload_profile_image', methodUpdate: 'current_user_update'}},
+                    // ],
                     // for codeGenerate #flds_slot
                 ],
                 options: roles,
