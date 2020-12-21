@@ -167,6 +167,10 @@ func (st DocSmState) GetStateUpdateFldsGrid() func() [][]FldType {
 			continue
 		}
 		rowNum := f.Vue.RowCol[0][0]
+		// проставляем дефолтное значение readonly
+		if len(f.Vue.Readonly) == 0 {
+			f.Vue.Readonly = "isReadonly"
+		}
 		// автоматически увеличиваем массив в зависимости от количества строк
 		for {
 			if len(res) > rowNum {
