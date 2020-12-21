@@ -37,6 +37,8 @@ BEGIN
         {{- end}}
         {{- end }}
 
+        {{.Sql.Hooks.Print "triggerBefore" "AfterTriggerBefore"}}
+
 
     RETURN NEW;
 END;

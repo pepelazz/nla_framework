@@ -124,6 +124,7 @@ type (
 		AfterInsert          []string
 		AfterInsertUpdate    []string
 		BeforeTriggerBefore  []string
+		AfterTriggerBefore  []string
 		AfterTriggerAfter    []string
 		ListBeforeBuildWhere []string
 		ListAfterBuildWhere  []string
