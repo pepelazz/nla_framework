@@ -166,6 +166,7 @@
       reload() {
         let params = {}
         params[this.tableIdFldName] = +this.id
+        params.order_by = 'id'
         this.$utils.postCallPgMethod({method: `${this.linkTableName}_list`, params}).subscribe(res => {
           if (res.ok) {
             this.list = res.result
