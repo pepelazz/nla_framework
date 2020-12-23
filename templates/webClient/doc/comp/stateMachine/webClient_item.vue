@@ -41,6 +41,9 @@
                     <comp-item-btn-save @save="save" @cancel="$router.push(docUrl)"/>
                 </div>
                 <div class="col-xs-12 col-sm-4 com-md-4">
+                    [[range .StateMachine.Tmpls.Hooks.BeforeChat]]
+                        [[.]]
+                    [[- end]]
                     [[if .StateMachine.Tmpls.IsShowChat]]<comp-chat table_name="[[.Name]]" :table_id="id"/>[[end]]
                 </div>
 <!--                    <q-tabs-->

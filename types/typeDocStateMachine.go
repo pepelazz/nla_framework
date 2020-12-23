@@ -52,6 +52,7 @@ type (
 	DocSmTmplsHooks struct {
 		AfterActionBtns []string
 		ItemMethods []string
+		BeforeChat []string
 	}
 )
 
