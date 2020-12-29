@@ -130,6 +130,11 @@
                 this.$utils.postCallPgMethod({method: `[[.Name]]_update`, params: itemForSave}).subscribe(res => {
                     if (res.ok) {
                         this.item = this.resultModify(res.result)
+                        this.$q.notify({
+                            color: 'positive',
+                            position: 'bottom-right',
+                            message: `изменения сохранены`,
+                        })
                     }
                 })
             },

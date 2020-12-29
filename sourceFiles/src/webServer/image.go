@@ -132,6 +132,10 @@ func saveImage(c *gin.Context, path, filePrefix string, width int, crop []int) {
 	}
 	defer fileOnDisk.Close()
 
+	// сжатие размеров картинки до минимума - 500 или фактический размер
+	imgWidth := uint(utils.MinInt(width, img.Bounds().Max.X))
+	resizedImg := resize.Resize(imgWidth, 0, img, resize.Lanczos3)
+
 	// если необходимо обрезать
 	if crop != nil && len(crop) == 2 {
 		analyzer := smartcrop.NewAnalyzer(nfnt.NewDefaultResizer())
@@ -142,9 +146,6 @@ func saveImage(c *gin.Context, path, filePrefix string, width int, crop []int) {
 		img = img.(SubImager).SubImage(topCrop)
 	}
 
-	// сжатие размеров картинки до минимума - 500 или фактический размер
-	imgWidth := uint(utils.MinInt(width, img.Bounds().Max.X))
-	resizedImg := resize.Resize(imgWidth, 0, img, resize.Lanczos3)
 
 	// сохранение файла
 	err = jpeg.Encode(fileOnDisk, resizedImg, nil)

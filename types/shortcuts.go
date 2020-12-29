@@ -169,7 +169,7 @@ func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) 
 		}
 		if strings.HasPrefix(v, "ext:") {
 			// записываем как есть, потом преобразуем при записи во vue
-			fld.Vue.Ext["rawJsonExt"] = strings.TrimPrefix(v, "ext:")
+			fld.Vue.Ext["rawJsonExt"] = strings.TrimSpace(strings.TrimPrefix(v, "ext:"))
 		}
 	}
 	return
