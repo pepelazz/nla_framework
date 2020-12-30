@@ -12,10 +12,16 @@ import (
 // создание поля title
 func GetFldTitle(params ...string) (fld FldType) {
 	classStr := "col-md-4 col-xs-6"
+	nameRu := "название"
 	if len(params)>0 {
 		classStr= params[0]
 	}
-	fld = FldType {Name: "title", NameRu: "название", Type: FldTypeString, Sql: FldSql{IsRequired: true, IsUniq: true, IsSearch:true, Size:150}, Vue: FldVue{RowCol: [][]int{{1, 1}}, Class: []string{classStr}}}
+	for _, v := range params {
+		if strings.HasPrefix(v, "name_ru:") {
+			nameRu = strings.TrimSpace(strings.TrimPrefix(v, "name_ru:"))
+		}
+	}
+	fld = FldType {Name: "title", NameRu: nameRu, Type: FldTypeString, Sql: FldSql{IsRequired: true, IsUniq: true, IsSearch:true, Size:150}, Vue: FldVue{RowCol: [][]int{{1, 1}}, Class: []string{classStr}}}
 	return
 }
 
