@@ -30,11 +30,16 @@ BEGIN
         RETURN checkMsg;
     END IF;
 
+    if params->>'phone' notnull then
+        params = params || jsonb_build_object('phone', phone_change_8_to_7((params->>'phone')::text));
+    end if;
+
     updateValue = '' || update_str_from_json(params, ARRAY [
         ['last_name', 'last_name', 'text'],
         ['first_name', 'first_name', 'text'],
         ['role', 'role', 'jsonArrayText'],
         ['avatar', 'avatar', 'text'],
+        ['phone', 'phone', 'text'],
         ['grade', 'grade', 'text'],
         ['options', 'options', 'jsonb'],
         ['deleted', 'deleted', 'bool']
