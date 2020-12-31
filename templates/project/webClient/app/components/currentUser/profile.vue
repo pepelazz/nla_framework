@@ -45,6 +45,9 @@
                         {name: 'last_name', type: 'string', label: 'Фамилия', required: true},
                         {name: 'first_name', type: 'string', label: 'Имя', required: true},
                     ],
+                    [
+                        {name: 'phone', type: 'phone', label: 'Телефон'},
+                    ],
                     [[if not .Vue.IsHideUserAvatarUploader]][
                         {name: 'avatar', compName: 'comp-fld-img', label: 'Фото', ext: {fldName: 'avatar', uploadUrl: 'upload_profile_image', methodUpdate: 'current_user_update'}, columnClass: 'col-xs-6 col-sm-6 col-md-2'},
                     ],[[end]]

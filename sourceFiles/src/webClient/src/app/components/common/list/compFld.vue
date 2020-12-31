@@ -11,6 +11,13 @@
              outlined :type='type' :label="label" :value="fld"
              @input="v=>$emit('update', v)"
              :readonly="readonly"/>
+    <q-input v-if="type=='phone' && vif"
+             outlined :label="label" :value="fld"
+             @input="v=>$emit('update', v)"
+             mask="+# (###) ### - ####"
+             :readonly="readonly">
+      <template v-slot:prepend><q-icon name="phone"/></template>
+    </q-input>
     <!-- выбор варианта из списка   -->
     <q-select
       v-if="type=='select' && vif"
