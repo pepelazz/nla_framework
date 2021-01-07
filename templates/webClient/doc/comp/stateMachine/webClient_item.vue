@@ -21,7 +21,7 @@
             <!--  action кнопки   -->
             <div class="row q-gutter-sm q-mb-md" v-if="item.state != 'failed'">
                 <div v-for="btn in actionBtnsByState[item.state]" :key="btn.compName" class="col-auto">
-                    <component :is="btn.compName" :item="item" :currentUser="currentUser" @stateChanged="stateChanged"/>
+                    <component :is="btn.compName" :parent="item" :currentUser="currentUser" @stateChanged="stateChanged"/>
                 </div>
             </div>
             [[range .StateMachine.Tmpls.Hooks.AfterActionBtns]]
@@ -32,7 +32,8 @@
                 <div class="col-xs-12 col-sm-8 col-md-8">
 
                     <!-- карточки с полями заполненными в стейтах     -->
-                    <div v-for="(v, index) in stateList" :key="v.date" class="row q-col-gutter-md q-mb-sm">
+                    <!-- :key="v.date" убрал, потому что иначе при смене стейта карточка предпоследнего не схлопывается. Без key все ок                    -->
+                    <div v-for="(v, index) in stateList" class="row q-col-gutter-md q-mb-sm">
                         <!-- в зависимости от стейта передаем в качестве item либо сам item, либо запись из истории item.options.states - потому что это не для редактирования, а для отображения                        -->
                         <component v-if="item" :is="'state_'+ v.state + '_card'" :state="item.state" :id="id" :item="item.state == v.state ? item : v" :date="v.date" :is_current_state="index === 0" :currentUser="currentUser" class="col-12"/>
                     </div>
@@ -71,6 +72,9 @@
             </div>
 
         </div>
+        [[range .Vue.Hooks.ItemHtml]]
+        [[.]]
+        [[- end]]
     </q-page>
 </template>
 

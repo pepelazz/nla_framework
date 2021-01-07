@@ -378,6 +378,7 @@ type VueCompRefListWidgetParams struct {
 	NewFlds 	[]FldType // поля при создании новой записи
 	TitleTemplate string // шаблон для строки с названием
 	IsStateMachine bool // признак, что документ реализует поведение машины состояний. Тогда несколько иная логика создания
+	Readonly string
 }
 
 
@@ -471,6 +472,9 @@ func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams,
 	if len(d.Vue.Readonly) > 0 {
 		readonly = fmt.Sprintf(":readonly='%s'", d.Vue.Readonly)
 	}
+	if len(refDoc.Readonly)>0{
+		readonly = fmt.Sprintf(":readonly='%s'", refDoc.Readonly)
+	}
 
 	// параметры самого поля
 	classStr := "col-md-4 col-xs-6"
@@ -480,7 +484,7 @@ func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams,
 	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
 		return fmt.Sprintf("<%[1]s v-if='item.id != -1' :id='item.id' %s/>", strings.Replace(snaker.CamelToSnake(refDoc.FldName + "RefListWidget"), "_", "-", -1), readonly)
 	}}}
-	return
+	return fld
 }
 
 // заголовки табов

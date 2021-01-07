@@ -253,7 +253,7 @@ func GetFldSelectString(name, nameRu string, size int, rowCol [][]int, options [
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeSelect, Ext: map[string]string{}, Class: []string{classStr}, Readonly:readonly, Options:options}}
 	for i, v := range params {
 		if i == 0 {
-			classStr = v
+			fld.Vue.Class = []string{v}
 		} else {
 			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
 				fld.Vue.Readonly = "true"

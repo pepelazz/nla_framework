@@ -145,7 +145,7 @@ func (DocSm) TmplSqlActionPrintRefUpdateVarDeclare(d DocType) string {
 func (DocSm) TmplSqlUpdatePrintCaseBlock(d DocType) string {
 	res := ""
 	for _, st := range d.StateMachine.States {
-		fldArr := []string{}
+		fldArr := []string{"'deleted'"}
 		for _, f := range st.UpdateFlds {
 			fldArr = append(fldArr, fmt.Sprintf("'%s'", f.Name))
 		}

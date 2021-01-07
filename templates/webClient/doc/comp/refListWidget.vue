@@ -3,9 +3,9 @@
         <q-bar class="bg-secondary text-white shadow-2">
             <div>[[GetLabel]] <span v-if="deleted">удаленные</span></div>
             <q-space />
-            [[if IsShowAdd]]<q-btn icon="add" round flat @click="add"><q-tooltip>Добавить</q-tooltip></q-btn>[[- end]]
-            [[if IsShowDelete]]<q-btn v-if="deleted" icon="delete" round flat @click="reload(false)"><q-tooltip>активные [[GetLabel]]</q-tooltip></q-btn>[[- end]]
-            [[if IsShowDelete]]<q-btn v-if="!deleted" icon="delete_outline" round flat @click="reload(true)"><q-tooltip>удаленные [[GetLabel]]</q-tooltip></q-btn>[[- end]]
+            [[if IsShowAdd]]<q-btn icon="add" v-if="!readonly" round flat @click="add"><q-tooltip>Добавить</q-tooltip></q-btn>[[- end]]
+            [[if IsShowDelete]]<q-btn v-if="deleted && !readonly" icon="delete" round flat @click="reload(false)"><q-tooltip>активные [[GetLabel]]</q-tooltip></q-btn>[[- end]]
+            [[if IsShowDelete]]<q-btn v-if="!deleted && !readonly" icon="delete_outline" round flat @click="reload(true)"><q-tooltip>удаленные [[GetLabel]]</q-tooltip></q-btn>[[- end]]
         </q-bar>
 
         <q-list bordered separator>
@@ -18,7 +18,7 @@
                 <q-item-section>
                     [[GetTitleTemplate]]
                 </q-item-section>
-                [[if IsShowDelete]] <q-item-section side>
+                [[if IsShowDelete]] <q-item-section side v-if="!readonly">
                     <q-icon :name="deleted ? 'done' : 'delete'" size="xs" class="cursor-pointer" color="grey" @click="removeRecover(v)"/>
                 </q-item-section>[[end]]
             </q-item>
@@ -50,7 +50,7 @@
     import [[.]]_tag_list from '../../[[GetTableName]]/mixins/[[.]]_tag_list'
     [[- end]]
     export default {
-        props: ['id'],
+        props: ['id', 'readonly'],
         mixins: [ [[range GetTagFlds]][[.]]_tag_list,[[end]] ],
         data() {
             return {
@@ -66,7 +66,7 @@
             },
             reload(isDeleted) {
                 !isDeleted ? this.deleted = false : this.deleted = true
-                this.$utils.callPgMethod('[[GetTableName]]_list', {'[[GetRefFldName]]': this.id, deleted: this.deleted}, (result) => this.list = result)
+                this.$utils.callPgMethod('[[GetTableName]]_list', {'[[GetRefFldName]]': this.id, deleted: this.deleted, 'order_by': 'created_at desc'}, (result) => this.list = result)
             },
             saveNew() {
                 [[range GetNewFlds]]

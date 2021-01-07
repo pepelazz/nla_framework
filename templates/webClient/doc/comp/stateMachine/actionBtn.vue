@@ -1,10 +1,10 @@
 <template>
   <div [[Vif]]>
     <q-btn color="primary" outline label="[[GetLabel]]" [[if GetIconSrc]]icon="[[GetIconSrc]]" [[end]] @click="open"/>
-    <q-dialog v-model="isShowDialog" persistent>
+    <q-dialog v-model="isShowDialog" persistent v-if="item">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
-          <div class="row q-col-gutter-md q-mb-sm">
+          <div class="row q-col-gutter-md q-mb-md">
             <div class="text-h6">[[UpperCaseFirst GetLabel]]</div>
           </div>
           [[range GetUpdateFldsGrid]]
@@ -30,17 +30,22 @@
 <script>
     import isRole from '../../../mixins/isRole'
     export default {
-        props: ['item', 'currentUser'],
+        props: ['parent', 'currentUser'],
         mixins: [isRole],
         computed: {
           id: function () {
-            return this.item?.id
+            return this.parent?.id
           }
         },
         data() {
             return {
                 isShowDialog: false,
                 isReadonly: false, // заглушка для корректного отображения полей
+                item: {
+                  [[range GetUpdateFlds -]]
+                  [[.Name]]: null,
+                  [[- end]]
+                },
             }
         },
         methods: {
@@ -60,7 +65,7 @@
               }
                       [[- end -]]
               [[- end]]
-                this.$utils.postCallPgMethod({method: '[[.Name]]_action', params: Object.assign(this.item, {action_name: '[[GetActionName]]', [[range GetUpdateFlds]] [[.Name]]: this.item.[[.Name]], [[end]]})}).subscribe(res => {
+                this.$utils.postCallPgMethod({method: '[[.Name]]_action', params: Object.assign(this.item, {id: this.id, options: this.parent.options, action_name: '[[GetActionName]]', [[range GetUpdateFlds]] [[.Name]]: this.item.[[.Name]], [[end]]})}).subscribe(res => {
                     if (res.ok) {
                         this.isShowDialog = false
                         this.$emit('stateChanged')
