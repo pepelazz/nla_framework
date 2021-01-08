@@ -1,10 +1,10 @@
 package webServer
 
 import (
+	"[[.Config.LocalProjectPath]]/sse"
 	"[[.Config.LocalProjectPath]]/types"
 	"[[.Config.LocalProjectPath]]/utils"
 	"[[.Config.LocalProjectPath]]/webServer/auth"
-	"[[.Config.LocalProjectPath]]/sse"
 	"github.com/gin-gonic/gin"
 
 [[if .IsBitrixIntegration -]]

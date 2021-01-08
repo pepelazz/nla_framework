@@ -75,6 +75,11 @@
                 localSrc: null,
             }
         },
+        watch: {
+          fld(v) {
+            if (v) this.localSrc = v
+          }
+        },
         methods: {
             uploaded({xhr: {response}}) {
                 const res = JSON.parse(response)

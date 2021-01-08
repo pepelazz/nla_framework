@@ -52,6 +52,10 @@
             isManager() {
                 return [this.item.manager_id, this.item.creator_id].includes(this.currentUser.id)
             },
+            // alias для обращения к item. Потому что в btn item передаю как parent. Соответственно тут тоже parent чтобы не путаться при настройке state-machine
+            parent() {
+                return this.item
+            }
             // id: function () {
             //     return this.item?.id
             // }
