@@ -103,6 +103,7 @@ module.exports = function (ctx) {
         'QTree',
         'QTd',
         'QUploader',
+        'QVideo',
       ],
 
       directives: [

@@ -257,6 +257,7 @@ func (fld FldType) SetSqlSize(size int) FldType {
 	return fld
 }
 
+
 func (fld FldType) SetIsUniq() FldType {
 	fld.Sql.IsUniq = true
 	return fld
