@@ -74,6 +74,21 @@ func (d *DocType) Filli18n() {
 	}
 }
 
+// добавление зафиксированной кнопки сохранения (правый нижний угол)
+func (d *DocVue) AddFixedSaveBtn()  {
+	if d.Hooks.ItemHtml == nil {
+		d.Hooks.ItemHtml = []string{}
+	}
+
+	d.Hooks.ItemHtml = append(d.Hooks.ItemHtml, `
+        <!-- кнопка сохранения, которая закреплена в углу экрана     -->
+	<q-page-sticky position="bottom-right" :offset="[18, 18]">
+	<q-btn size="sm" fab icon="save" color="primary" @click="save">
+	<q-tooltip>Сохранить</q-tooltip>
+	</q-btn>
+	</q-page-sticky>`)
+}
+
 func (d DocType) PrintVueItemOptionsFld() string  {
 	arr := []string{}
 	for _, fld := range d.Flds {

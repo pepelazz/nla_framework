@@ -8,11 +8,12 @@ import (
 	"github.com/muesli/smartcrop/nfnt"
 	"github.com/nfnt/resize"
 	"github.com/oklog/ulid"
-	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/dimasez/nla_site/src/utils"
 	"image"
 	"image/gif"
 	"image/jpeg"
 	"image/png"
+	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"os"
@@ -92,30 +93,70 @@ func saveImage(c *gin.Context, path, filePrefix string, width int, crop []int) {
 
 	// извлекаем расширение файла
 	imgExt := "jpeg"
+	isImgExtInContentType := false
 	contentType, _ := c.GetPostForm("Content-Type")
 	if len(contentType) > 0 {
 		arr := strings.Split(contentType, "/")
 		if len(arr) > 1 {
 			imgExt = arr[1]
+			isImgExtInContentType = true
+		}
+	}
+
+	// в случае если расширение файла не найдено в Content-Type, то извлекаем его из названия файла
+	if !isImgExtInContentType {
+		arr := strings.Split(fileName, ".")
+		ext := arr[len(arr)-1]
+		if ext == "png" || ext == "jpeg" || ext == "jpg" || ext == "gif" {
+			imgExt = ext
+		}
+	}
+
+	var isSaveAsIs bool
+	// для png, gif если не указаны параметры преобразования, то сохраняем их без декодирования. Иначе анимация gif теряется, а у png теряется прозрачный фон
+	if imgExt =="png" || imgExt == "gif" {
+		if (crop == nil || len(crop) != 2) && width == 0 {
+			isSaveAsIs = true
 		}
 	}
 
 	// перекодируем файл в картинку
 	var img image.Image
-	switch imgExt {
-	case "jpeg":
-		img, err = jpeg.Decode(file)
-	case "png":
-		img, err = png.Decode(file)
-	case "gif":
-		img, err = gif.Decode(file)
-	default:
-		err = errors.New("Unsupported file type")
+	var resizedImg image.Image
+	if !isSaveAsIs {
+		switch imgExt {
+		case "jpeg", "jpg":
+			img, err = jpeg.Decode(file)
+		case "png":
+			img, err = png.Decode(file)
+		case "gif":
+			img, err = gif.Decode(file)
+		default:
+			err = errors.New("Unsupported file type")
+		}
+		if err != nil {
+			utils.HttpError(c, http.StatusBadRequest, fmt.Sprintf("uploadImage jpeg.Decode error: %s", err.Error()))
+			return
+		}
+
+		// сжатие размеров картинки до минимума - 500 или фактический размер
+		imgWidth := uint(utils.MinInt(width, img.Bounds().Max.X))
+		resizedImg = resize.Resize(imgWidth, 0, img, resize.Lanczos3)
+
+		// если необходимо обрезать
+		if crop != nil && len(crop) == 2 {
+			analyzer := smartcrop.NewAnalyzer(nfnt.NewDefaultResizer())
+			topCrop, _ := analyzer.FindBestCrop(img, crop[0], crop[1])
+			type SubImager interface {
+				SubImage(r image.Rectangle) image.Image
+			}
+			img = img.(SubImager).SubImage(topCrop)
+			// повторно ресайзим, потому что после crop размер может быть некорректным
+			resizedImg = resize.Resize(imgWidth, 0, img, resize.Lanczos3)
+		}
 	}
-	if err != nil {
-		utils.HttpError(c, http.StatusBadRequest, fmt.Sprintf("uploadImage jpeg.Decode error: %s", err.Error()))
-		return
-	}
+
+
 	// создаем директорию, если еще не создана
 	err = os.MkdirAll(path, os.ModePerm)
 	if err != nil {
@@ -132,26 +173,27 @@ func saveImage(c *gin.Context, path, filePrefix string, width int, crop []int) {
 	}
 	defer fileOnDisk.Close()
 
-	// сжатие размеров картинки до минимума - 500 или фактический размер
-	imgWidth := uint(utils.MinInt(width, img.Bounds().Max.X))
-	resizedImg := resize.Resize(imgWidth, 0, img, resize.Lanczos3)
-
-	// если необходимо обрезать
-	if crop != nil && len(crop) == 2 {
-		analyzer := smartcrop.NewAnalyzer(nfnt.NewDefaultResizer())
-		topCrop, _ := analyzer.FindBestCrop(img, crop[0], crop[1])
-		type SubImager interface {
-			SubImage(r image.Rectangle) image.Image
-		}
-		img = img.(SubImager).SubImage(topCrop)
-	}
-
-
 	// сохранение файла
-	err = jpeg.Encode(fileOnDisk, resizedImg, nil)
-	if err != nil {
-		utils.HttpError(c, http.StatusBadRequest, fmt.Sprintf("uploadImage jpeg.Encode err: %s", err))
-		return
+	// два варианта
+	if isSaveAsIs {
+		// без перкодировки - сохраняем как есть, только заменяем имя
+		fileBytes, err := ioutil.ReadAll(file)
+		if err != nil {
+			utils.HttpError(c, http.StatusBadRequest, fmt.Sprintf("uploadImage ioutil.ReadAll(file) error: %s", err))
+			return
+		}
+		_, err = fileOnDisk.Write(fileBytes)
+		if err != nil {
+			utils.HttpError(c, http.StatusBadRequest, fmt.Sprintf("uploadImage fileOnDisk.Write error: %s", err))
+			return
+		}
+	} else {
+		// с перекодировкой
+		err = jpeg.Encode(fileOnDisk, resizedImg, nil)
+		if err != nil {
+			utils.HttpError(c, http.StatusBadRequest, fmt.Sprintf("uploadImage jpeg.Encode err: %s", err))
+			return
+		}
 	}
 
 	// возвращаем ссылку на файл
