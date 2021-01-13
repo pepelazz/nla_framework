@@ -58,6 +58,8 @@ module.exports = function (ctx) {
         'QChatMessage',
         'QField',
         'QExpansionItem',
+        'QFab',
+        'QFabAction',
         'QIcon',
         'QImg',
         'QInput',
