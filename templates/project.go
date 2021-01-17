@@ -49,6 +49,7 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	ReadTmplAndPrint(p, projectTmplPath + "/jobs/main.go", "/jobs",  "main.go", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/pg/pgListener.go", "/pg",  "pgListener.go", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/webClient/index.template.html", "/webClient/src",  "index.template.html", nil)
+	ReadTmplAndPrint(p, projectTmplPath + "/webClient/quasar.conf.js", "/webClient",  "quasar.conf.js", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/webClient/package.json", "/webClient",  "package.json", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/webClient/App.vue", "/webClient/src",  "App.vue", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/users/roles.js", "/webClient/src/app/components/users",  "roles.js", nil)

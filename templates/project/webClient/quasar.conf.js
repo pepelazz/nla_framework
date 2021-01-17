@@ -126,6 +126,7 @@ module.exports = function (ctx) {
     build: {
       scopeHoisting: true,
       vueRouterMode: 'history',
+      vueRouterBase: '/',
       vueCompiler: true,
       publicPath: './static/',
       distDir: 'dist',
