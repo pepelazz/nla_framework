@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-6 q-gutter-md q-pt-md">
+    <div :class="colClassComputed">
       <q-infinite-scroll @load="itemListLoad" :offset="250" ref="infiniteScroll">
         <!-- список         -->
         <q-list bordered class="rounded-borders" separator>
@@ -100,11 +100,14 @@
   import _ from 'lodash'
 
   export default {
-    props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocEventOnly', 'newDocUrl', 'urlQueryParams', 'ext', 'readonly'],
+    props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocEventOnly', 'newDocUrl', 'urlQueryParams', 'ext', 'readonly', 'colClass'],
     computed: {
       computedListTitle() {
         return !this.listParams.deleted ? this.listTitle : this.listDeletedTitle
       },
+      colClassComputed() {
+        return this.colClass || 'col-xs-12 col-sm-12 col-md-6 q-gutter-md q-pt-md'
+      }
     },
     data() {
       return {
