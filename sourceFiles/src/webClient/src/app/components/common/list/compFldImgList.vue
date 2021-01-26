@@ -2,7 +2,7 @@
   <div>
     <p class="text-caption">{{label}}</p>
     <div class="q-gutter-md row items-start">
-      <comp-stat-img-src v-for="(item, index) in filteredList" :key="item.file"
+      <comp-stat-img-src v-for="(item, index) in list" :key="item.file"
                          :src="item.file" @error="v=> imgSrcError(item.file, v)"
                          style="width: 150px"
       >
@@ -99,9 +99,6 @@
         if (this.ext.crop) res.push({name: 'crop', value: this.ext.crop})
         return res
       },
-      filteredList: function () {
-        return this.list.filter(v => !v.deleted)
-      },
       imgUrl: function () {
         return (src) => src.includes('http') ? src : `${this.$config.apiUrl()}${src}`
       },
@@ -181,6 +178,7 @@
         let origin = this.list[i]
         this.list[i] = this.list[i - 1]
         this.$set(this.list, i - 1, origin)
+        this.$emit('update', this.list)
       },
       remove() {
         let i = this.list.findIndex(v => v.file === this.selectedForDeleteFilename && !v.deleted)
@@ -235,7 +233,11 @@
           throw new Error('compFldFiles missed param: "ext.methodUpdate" OR "ext.tableId" AND "ext.tableName"')
         }
       }
-      this.list = this.fld || []
+      if (this.fld) {
+        this.list = this.fld.filter(v => !v.deleted)
+      } else {
+        this.list = []
+      }
     }
   }
 </script>
