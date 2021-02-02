@@ -297,6 +297,14 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		// если есть параметр rawJsonExt, то используем его для ext. Остальные параметры игнорируются
 		var extJsonStr []byte
 		if rawJson, ok := fld.Vue.Ext["rawJsonExt"]; ok {
+			// если есть доп параметры, то вручную дописываем их к json строке
+			if len(fld.Vue.Ext)>0{
+				rawJson = strings.TrimSuffix(rawJson, "}")
+				for k, v := range fld.Vue.Ext {
+					rawJson = fmt.Sprintf(`%s, %s: "%s"`, rawJson, k, v)
+				}
+				rawJson = rawJson + "}"
+			}
 			extJsonStr = []byte(rawJson)
 		} else {
 			var err error
