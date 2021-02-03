@@ -100,7 +100,7 @@
   import _ from 'lodash'
 
   export default {
-    props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocEventOnly', 'newDocUrl', 'urlQueryParams', 'ext', 'readonly', 'colClass'],
+    props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocEventOnly', 'newDocUrl', 'urlQueryParams', 'ext', 'readonly', 'colClass', 'startFilter'],
     computed: {
       computedListTitle() {
         return !this.listParams.deleted ? this.listTitle : this.listDeletedTitle
@@ -186,6 +186,10 @@
       }
     },
     mounted() {
+      // если указан начальный фильтр, то применяем его при первоначальной загрузке
+      if (this.startFilter) {
+        this.listParams = Object.assign(this.listParams, this.startFilter)
+      }
       this.loadList({list: this.itemList, params: this.listParams})
       this.reloadListDebounce = debounce(this.reloadListDebounce, 300)
     }

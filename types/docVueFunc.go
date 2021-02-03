@@ -13,11 +13,13 @@ import (
 
 func (d DocType) PrintListRowAvatar() string  {
 	res := fmt.Sprintf(`
-        <q-item-section avatar @click="$router.push(currentUrl + item.id)" style="cursor: pointer">
-          <q-avatar rounded>
-            <img src="%s" alt="">
-          </q-avatar>
-        </q-item-section>
+		<router-link :to="currentUrl + item.id" style="cursor: pointer">
+			<q-item-section avatar>
+			  <q-avatar rounded>
+				<img src="%s" alt="">
+			  </q-avatar>
+			</q-item-section>
+		</router-link>
 	`, d.Vue.MenuIcon)
 	// проверяем есть ли переопределение шаблона
 	if d.Vue.TmplFuncs != nil {
