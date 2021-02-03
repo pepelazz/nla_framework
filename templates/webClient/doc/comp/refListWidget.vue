@@ -66,7 +66,7 @@
             },
             reload(isDeleted) {
                 !isDeleted ? this.deleted = false : this.deleted = true
-                this.$utils.callPgMethod('[[GetTableName]]_list', {'[[GetRefFldName]]': this.id, deleted: this.deleted, 'order_by': 'created_at desc'}, (result) => this.list = result)
+                this.$utils.callPgMethod('[[GetTableName]]_list', {'[[GetRefFldName]]': this.id, deleted: this.deleted, 'order_by': '[[GetOrderBy]]'}, (result) => this.list = result)
             },
             saveNew() {
                 [[range GetNewFlds]]

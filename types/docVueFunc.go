@@ -394,6 +394,7 @@ type VueCompRefListWidgetParams struct {
 	TitleTemplate string // шаблон для строки с названием
 	IsStateMachine bool // признак, что документ реализует поведение машины состояний. Тогда несколько иная логика создания
 	Readonly string
+	OrderBy string // default: created_at desc
 }
 
 
@@ -423,6 +424,10 @@ func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams,
 		refDoc.Route = refDoc.TableName
 	}
 
+	if len(refDoc.OrderBy)==0 {
+		refDoc.OrderBy = "created_at desc"
+	}
+
 	// признак, что среди полей есть поле tag. Тогда надо добавить mixin
 	tagFlds := []string{}
 	for _, fld := range refDoc.NewFlds {
@@ -449,6 +454,7 @@ func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams,
 			"GetAvatar": func() string {return refDoc.Avatar},
 			"GetNewFlds": func() []FldType {return refDoc.NewFlds},
 			"GetTagFlds": func() []string {return tagFlds},
+			"GetOrderBy": func() string {return refDoc.OrderBy},
 			"GetTitleTemplate": func() string {
 				if len(refDoc.TitleTemplate) > 0 {
 					return refDoc.TitleTemplate
