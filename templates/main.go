@@ -301,7 +301,9 @@ func PrintVueFldTemplate(fld types.FldType) string {
 			if len(fld.Vue.Ext)>0{
 				rawJson = strings.TrimSuffix(rawJson, "}")
 				for k, v := range fld.Vue.Ext {
-					rawJson = fmt.Sprintf(`%s, %s: "%s"`, rawJson, k, v)
+					if k != "rawJsonExt" {
+ 						rawJson = fmt.Sprintf(`%s, %s: "%s"`, rawJson, k, v)
+					}
 				}
 				rawJson = rawJson + "}"
 			}
