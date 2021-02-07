@@ -15,9 +15,11 @@
 
     <!-- аватарка со ссылкой   -->
     <template v-slot:before v-if="ext && ext.pathUrl">
-      <q-avatar rounded v-if="(localItem && localItem.id) || itemId" @click="$router.push(ext.pathUrl + '/' + ((localItem && localItem.id) || itemId))" class="cursor-pointer">
-        <img :src="ext.avatar">
-      </q-avatar>
+      <router-link v-if="(localItem && localItem.id) || itemId" :to="ext.pathUrl + '/' + ((localItem && localItem.id) || itemId)" style="cursor: pointer">
+        <q-avatar rounded >
+            <img :src="ext.avatar">
+        </q-avatar>
+      </router-link>
       <q-avatar v-else rounded style="opacity: 0.7"><img :src="ext.avatar"></q-avatar>
     </template>
 
