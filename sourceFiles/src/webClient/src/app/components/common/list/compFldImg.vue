@@ -6,10 +6,10 @@
           {{label}}
         </div>
       </comp-stat-img-src>
-      <q-btn flat round icon="add" color="white" @click="isShowDialog = true" class="absolute-top-right">
+      <q-btn outline round icon="add" color="grey" @click="isShowDialog = true" class="absolute-top-right">
         <q-tooltip>Загрузить фото</q-tooltip>
       </q-btn>
-      <q-btn flat round size="sm" icon="delete" color="white" @click="isShowDeleteDialog=true"
+      <q-btn outline round size="sm" icon="delete" color="grey" @click="isShowDeleteDialog=true"
              class="absolute-bottom-right">
         <q-tooltip>Удалить фото</q-tooltip>
       </q-btn>
@@ -156,6 +156,7 @@
             this.$emit('update', null)
           })
         } else {
+          this.localSrc = null
           this.$emit('update', null)
         }
       },
