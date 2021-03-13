@@ -10,11 +10,13 @@
 
         <q-list bordered separator>
             <q-item v-for="v in list" :key="v.id">
-                <q-item-section avatar @click="$router.push('/[[GetRoute]]/' + v.id)" style="cursor: pointer">
-                    <q-avatar rounded size="sm">
-                        <img src="[[GetAvatar]]" alt="">
-                    </q-avatar>
-                </q-item-section>
+                <router-link :to="'/[[GetRoute]]/' + v.id" style="cursor: pointer">
+                    <q-item-section avatar>
+                        <q-avatar rounded size="sm">
+                            <img src="[[GetAvatar]]" alt="">
+                        </q-avatar>
+                    </q-item-section>
+                </router-link>
                 <q-item-section>
                     [[GetTitleTemplate]]
                 </q-item-section>
