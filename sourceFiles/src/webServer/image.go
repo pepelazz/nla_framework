@@ -146,13 +146,11 @@ func saveImage(c *gin.Context, path, filePrefix string, width int, crop []int) {
 		// если необходимо обрезать
 		if crop != nil && len(crop) == 2 {
 			analyzer := smartcrop.NewAnalyzer(nfnt.NewDefaultResizer())
-			topCrop, _ := analyzer.FindBestCrop(img, crop[0], crop[1])
+			topCrop, _ := analyzer.FindBestCrop(resizedImg, crop[0], crop[1])
 			type SubImager interface {
 				SubImage(r image.Rectangle) image.Image
 			}
-			img = img.(SubImager).SubImage(topCrop)
-			// повторно ресайзим, потому что после crop размер может быть некорректным
-			resizedImg = resize.Resize(imgWidth, 0, img, resize.Lanczos3)
+			resizedImg = resizedImg.(SubImager).SubImage(topCrop)
 		}
 	}
 

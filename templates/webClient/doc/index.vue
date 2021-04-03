@@ -9,6 +9,7 @@
                    [[- if .IsRecursion]] :ext="ext ? Object.assign(ext, {parent_id: 'null'}) : {parent_id: 'null'}" [[else]] :ext="ext" [[end]]
                    search-fld-name="search_text" :readonly="[[.Vue.Readonly]]">
 
+
       <template #listItem="{item}">
         [[.PrintListRowAvatar]]
         [[.PrintListRowLabel]]
