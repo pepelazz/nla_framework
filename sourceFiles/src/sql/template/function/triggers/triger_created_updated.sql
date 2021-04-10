@@ -9,12 +9,12 @@ BEGIN
 
     IF (TG_OP = 'INSERT') THEN
 
-        NEW.created_at := now();
-        NEW.updated_at := now();
+        NEW.created_at := now() at time zone '[[Config.Postgres.TimeZone]]';
+        NEW.updated_at := now() at time zone '[[Config.Postgres.TimeZone]]';
 
     ELSIF (TG_OP = 'UPDATE') THEN
 
-        NEW.updated_at := now();
+        NEW.updated_at := now() at time zone '[[Config.Postgres.TimeZone]]';
 
     END IF;
 
