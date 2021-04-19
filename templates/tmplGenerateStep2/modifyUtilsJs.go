@@ -34,12 +34,17 @@ func getI18nForSelectFlds(p types.ProjectType) (funcNames, funcBodyes string) {
 	for _, d := range p.Docs {
 		for _, fld := range d.Flds {
 			if fld.Vue.Type == types.FldVueTypeSelect || fld.Vue.Type == types.FldVueTypeMultipleSelect  || fld.Vue.Type == types.FldVueTypeRadio {
+				// флаг, для определения указан ли цвет
+				isColor := false
 				fNname := fmt.Sprintf("i18n_%s_%s", d.Name, fld.Name)
 				// название функции
 				funcNames = fmt.Sprintf("%s%s,\n\t", funcNames, fNname)
 				arr := []string{}
 				for _, v := range fld.Vue.Options {
 					arr = append(arr, fmt.Sprintf("%s: '%s'", v.Value, v.Label))
+					if len(v.Color)>0{
+						isColor = true
+					}
 				}
 				funcBodyes = fmt.Sprintf(`%s
 const %s = (v) => {
@@ -49,6 +54,25 @@ const %s = (v) => {
 	return Array.isArray(v) ? v.map(v1 => d[v1]) : d[v]
 }
 				`, funcBodyes, fNname, strings.Join(arr, ",\n\t\t"))
+
+				// если указан цвет, то делаем доп функцию по переводу названия в цвет
+				if isColor {
+					fNname = fmt.Sprintf("color_%s_%s", d.Name, fld.Name)
+					// название функции
+					funcNames = fmt.Sprintf("%s%s,\n\t", funcNames, fNname)
+					arr := []string{}
+					for _, v := range fld.Vue.Options {
+						arr = append(arr, fmt.Sprintf("%s: '%s'", v.Value, v.Color))
+					}
+					funcBodyes = fmt.Sprintf(`%s
+const %s = (v) => {
+	const d = {
+		%s
+	}
+	return Array.isArray(v) ? v.map(v1 => d[v1]) : d[v]
+}
+				`, funcBodyes, fNname, strings.Join(arr, ",\n\t\t"))
+				}
 			}
 		}
 		// в документе может быть прописан дополнительный глобальный справочник

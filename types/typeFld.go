@@ -78,6 +78,7 @@ type (
 	FldVueOptionsItem struct {
 		Label string      `json:"label"`
 		Value interface{} `json:"value"`
+		Color string `json:"color"`
 	}
 
 	FldVueJsonList struct {
