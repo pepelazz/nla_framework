@@ -58,7 +58,7 @@
         <q-card-actions align="right">
           <q-btn flat label="Отмена" v-close-popup/>
           <q-btn flat label="Добавить" v-close-popup @click="add"/>
-          <q-btn v-if="!hideCreateNew" flat label="Создать" v-close-popup @click="$router.push(`${tableDependRoute}/new`)" class="q-ml-md"/>
+          <q-btn v-if="!hideCreateNew" flat label="Создать" v-close-popup @click="openNew" class="q-ml-md"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -180,6 +180,9 @@
             this.selectedForEdit = null
           }
         })
+      },
+      openNew() {
+        window.open(`${this.tableDependRoute}/new`, '_blank')
       }
     },
     mounted() {
