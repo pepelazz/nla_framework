@@ -56,6 +56,7 @@ type (
 		IsVueTitleClickable bool // включаем возможность перехода на item из списка не только при клике по аватарке, но и по названию
 		IsHideDeleteOptions bool // возможность не показыввать опцию "удалить" в списке
 		IsHideCreateNewBtn bool // возможность не показыввать кнопку "+" в списке
+		IsOpenNewInTab bool // создание новой записи открывается в новом табе
 	}
 
 	VueTab struct {

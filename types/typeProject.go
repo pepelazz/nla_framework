@@ -243,7 +243,6 @@ func (p *ProjectType) FillVueFlds() {
 					if fld.Sql.Ref == "user" {
 						fld.Vue.Ext["pathUrl"] = "/users"
 						fld.Vue.Ext["avatar"] = "https://image.flaticon.com/icons/svg/423/423063.svg"
-
 					}
 				}
 				if k == "addNewUrl" && len(fld.Sql.Ref) > 0 {

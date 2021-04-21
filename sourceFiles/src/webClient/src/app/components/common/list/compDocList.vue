@@ -12,7 +12,7 @@
               <div class="text-grey-8 q-gutter-xs">
                 <!-- кнопка создания нового документа   -->
                 <template v-if="!readonly && (newDocUrl || newDocEventOnly)">
-                  <q-btn v-if="!newDocEventOnly" size="12px" flat dense round icon="add" @click="$router.push(newDocUrl)"/>
+                  <q-btn v-if="!newDocEventOnly" size="12px" flat dense round icon="add" @click="openNewDoc"/>
                   <q-btn v-else size="12px" flat dense round icon="add" @click="$emit('clickAddBtn')"/>
                 </template>
                 <!-- дополнительные кнопки   -->
@@ -89,7 +89,7 @@
     </div>
     <!-- кнопка создания нового документа   -->
     <q-page-sticky v-if="!readonly && (newDocUrl || newDocEventOnly)" position="bottom-right" :offset="[18, 18]">
-      <q-btn v-if="!newDocEventOnly" fab icon="add" color="accent" @click="$router.push(newDocUrl)"/>
+      <q-btn v-if="!newDocEventOnly" fab icon="add" color="accent" @click="openNewDoc"/>
       <q-btn v-else fab icon="add" color="accent" @click="$emit('clickAddBtn')"/>
     </q-page-sticky>
   </div>
@@ -100,7 +100,7 @@
   import _ from 'lodash'
 
   export default {
-    props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocEventOnly', 'newDocUrl', 'urlQueryParams', 'ext', 'readonly', 'colClass', 'startFilter'],
+    props: ['listTitle','listDeletedTitle', 'pgMethod', 'listSortData', 'listFilterData', 'searchFldName', 'newDocEventOnly', 'newDocUrl', 'isOpenNewInTab', 'urlQueryParams', 'ext', 'readonly', 'colClass', 'startFilter'],
     computed: {
       computedListTitle() {
         return !this.listParams.deleted ? this.listTitle : this.listDeletedTitle
@@ -175,6 +175,10 @@
       changeItemList(params) {
         this.listParams = Object.assign(this.listParams, params)
         this.reloadList()
+      },
+      openNewDoc() {
+        // либо открываем в новом табе, либо в этом же
+        this.isOpenNewInTab ? window.open(this.newDocUrl, '_blank') : this.$router.push(this.newDocUrl)
       }
     },
     watch: {
