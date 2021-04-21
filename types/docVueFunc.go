@@ -350,6 +350,7 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 	readonly := d.Vue.Readonly
 	searchExt := ""
 	filterListFn := ""
+	ext := ""
 	if opts != nil {
 		// убираем кнопку 'создать'
 		if v, ok := opts["hideCreateNew"]; ok {
@@ -373,13 +374,16 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 		if v, ok := opts["filterListFn"]; ok {
 			filterListFn = fmt.Sprintf(":filterListFn=\"%s\"", cast.ToString(v))
 		}
+		if v, ok := opts["ext"]; ok {
+			ext = cast.ToString(v)
+		}
 	}
 
 	if len(tableIdFldName) == 0 || len(tableDependName) == 0 || len(tableDependFldName) == 0 || len(tableDependRoute) == 0 {
 		utils.CheckErr(errors.New(fmt.Sprintf("GetFldLinkListWidget. Something wrong with table name: '%s'. For this widget link table must be named <table1_name>_<table2_name>_link", tableName)), "doc: " + d.Name)
 	}
 
-	return fmt.Sprintf("<comp-link-list-widget label='%s' :id='id' tableIdName='%s' tableIdFldName='%s' tableDependName='%s' tableDependFldName='%s' tableDependRoute='/%s' linkTableName='%s' avatarSrc='%s' :hideCreateNew='%v' :readonly='%s' %s %s %s>%s</comp-link-list-widget>", label, tableIdName, tableIdFldName, tableDependName, tableDependFldName, tableDependRoute, linkTableName, avatarSrc, hideCreateNew, readonly, searchExt, filterListFn, fldsProp, slotOtherFlds)
+	return fmt.Sprintf("<comp-link-list-widget label='%s' :id='id' tableIdName='%s' tableIdFldName='%s' tableDependName='%s' tableDependFldName='%s' tableDependRoute='/%s' linkTableName='%s' avatarSrc='%s' :hideCreateNew='%v' :readonly='%s' %s %s %s %s>%s</comp-link-list-widget>", label, tableIdName, tableIdFldName, tableDependName, tableDependFldName, tableDependRoute, linkTableName, avatarSrc, hideCreateNew, readonly, searchExt, filterListFn, fldsProp, ext, slotOtherFlds)
 }
 
 // параметры для VueCompRefListWidget

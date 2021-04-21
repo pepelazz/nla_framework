@@ -153,13 +153,17 @@
         params[this.tableIdFldName] = +this.id
         params[this.tableDependFldName] = this.selectedForAdd.id
         this.$utils.postCallPgMethod({method: `${this.linkTableName}_update`, params: Object.assign(params, this.localItem)}).subscribe(res => {
-          if (res.ok) this.reload()
+          if (res.ok) {
+            this.reload()
+            this.$emit('reload')
+          }
         })
       },
       remove() {
         this.$utils.postCallPgMethod({method: `${this.linkTableName}_update`, params: {id: this.selectedForDeleteId, deleted: true}}).subscribe(res => {
           if (res.ok) {
             this.reload()
+            this.$emit('reload')
           }
         })
       },
@@ -178,6 +182,8 @@
           if (res.ok) {
             this.isShowEditDialog = false
             this.selectedForEdit = null
+            this.reload()
+            this.$emit('reload')
           }
         })
       },
