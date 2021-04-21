@@ -397,6 +397,7 @@ type VueCompRefListWidgetParams struct {
 	IsStateMachine bool // признак, что документ реализует поведение машины состояний. Тогда несколько иная логика создания
 	Readonly string
 	OrderBy string // default: created_at desc
+	PgExt string // дополнительные параметры для postgres запроса
 }
 
 
@@ -457,6 +458,7 @@ func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams,
 			"GetNewFlds": func() []FldType {return refDoc.NewFlds},
 			"GetTagFlds": func() []string {return tagFlds},
 			"GetOrderBy": func() string {return refDoc.OrderBy},
+			"GetPgExt": func() string {return refDoc.PgExt},
 			"GetTitleTemplate": func() string {
 				if len(refDoc.TitleTemplate) > 0 {
 					return refDoc.TitleTemplate
