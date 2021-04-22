@@ -152,6 +152,26 @@ func (d DocType) PrintVueImport(tmplName string) string  {
 	return strings.Join(res, "\n")
 }
 
+// печать дополнительных переменныз
+func (d DocType) PrintVueVars(tmplName string) string  {
+	// извлекаем map с переменными из описания документа
+	vars := map[string]string{}
+	if d.Vue.Vars != nil {
+		if m , ok := d.Vue.Vars[tmplName]; ok {
+			// копируем переменные в map, который указан выше
+			for k, v := range m {
+				vars[k] = v
+			}
+		}
+	}
+	// печатаем переменные
+	res := ""
+	for vName, value := range vars {
+		res = fmt.Sprintf("%s\t%s: %s,\n", res, vName, value)
+	}
+	return res
+}
+
 func (d DocType) PrintVueMethods(tmplName string) string  {
 	// извлекаем map с методами из описания документа
 	methods := map[string]string{}

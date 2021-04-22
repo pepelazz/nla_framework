@@ -65,6 +65,7 @@
                 ],
                 optionsFlds: [ [[- .PrintVueItemOptionsFld -]] ],
                 [[if .IsRecursion -]]parentProductBreadcrumb: [], [[ end -]]
+                [[ .PrintVueVars "docItem" ]]
             }
         },
         methods: {

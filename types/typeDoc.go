@@ -45,6 +45,7 @@ type (
 		Grid           []VueGridDiv
 		Mixins         map[string][]VueMixin        // название файла - название миксина. Для прописывания импорта
 		Components     map[string]map[string]string // название файла - название миксина: путь для импорта. Для прописывания импорта
+		Vars           map[string]map[string]string // название файла - название переменной - значение
 		Methods        map[string]map[string]string // название файла - название метода - текст функции
 		TmplFuncs      map[string]func(DocType) string
 		I18n           map[string]string
