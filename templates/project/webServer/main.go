@@ -1,7 +1,6 @@
 package webServer
 
 import (
-	"[[.Config.LocalProjectPath]]/sse"
 	"[[.Config.LocalProjectPath]]/types"
 	"[[.Config.LocalProjectPath]]/utils"
 	"[[.Config.LocalProjectPath]]/webServer/auth"
@@ -28,6 +27,9 @@ func StartWebServer(config types.Config) {
 
 	// вырубаем CORS
 	r.Use(LiberalCORS)
+	[[- range .Go.Routes.Static]]
+		[[.]]
+	[[- end]]
 	r.Static("/stat-img", "../image")
 	r.Static("/static", "./webClient/dist")
 	r.Static("/statics", "./webClient/dist/statics")

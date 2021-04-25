@@ -150,6 +150,7 @@ type (
 		Imports []string
 		NotAuth []string // роуты вне блока, требующего авторизации
 		Api []string // роуты в блоке, требующего авторизации
+		Static []string // роуты в static блоке
 	}
 	ProjectVueHooks struct {
 		Profile ProjectVueHooksProfile
