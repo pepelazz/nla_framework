@@ -1,6 +1,7 @@
 {{$projectNameSnake := .Config.Postgres.DbName -}}
 {{$serverPath := .Config.WebServer.Path -}}
 {{$webPort := .Config.WebServer.Port -}}
+{{$volumes := .Config.Docker.Volumes -}}
 version: '2'
 services:
   bot:
@@ -11,6 +12,9 @@ services:
     volumes:
       - {{$serverPath}}/src/config.toml:/config.toml
       - {{$serverPath}}/image:/image
+      {{- range $volumes}}
+      - {{.}}
+      {{- end}}
     ports:
       - "{{$webPort}}:{{$webPort}}"
     logging:

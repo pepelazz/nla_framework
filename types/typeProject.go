@@ -175,6 +175,7 @@ type (
 	}
 	DockerConfig struct {
 		AfterCopy []string // дополнительные строки для копирования в Dockerfile
+		Volumes []string // маппинг директорий
 	}
 )
 
