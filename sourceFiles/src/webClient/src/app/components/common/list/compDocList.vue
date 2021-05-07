@@ -178,7 +178,7 @@
       },
       openNewDoc() {
         // либо открываем в новом табе, либо в этом же
-        this.isOpenNewInTab ? window.open(this.newDocUrl, '_blank') : this.$router.push(this.newDocUrl)
+        this.isOpenNewInTab ? window.open('/' + this.newDocUrl, '_blank') : this.$router.push(this.newDocUrl)
       }
     },
     watch: {
