@@ -11,7 +11,7 @@ import (
 
 // создание поля title
 func GetFldTitle(params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	var classStr string
 	nameRu := "название"
 	if len(params)>0 {
 		classStr= params[0]
@@ -21,29 +21,31 @@ func GetFldTitle(params ...string) (fld FldType) {
 			nameRu = strings.TrimSpace(strings.TrimPrefix(v, "name_ru:"))
 		}
 	}
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType {Name: "title", NameRu: nameRu, Type: FldTypeString, Sql: FldSql{IsRequired: true, IsUniq: true, IsSearch:true, Size:150}, Vue: FldVue{RowCol: [][]int{{1, 1}}, Class: []string{classStr}}}
 	return
 }
 
 // создание поля title, которое заполняется тригером
 func GetFldTitleComputed(triggerSqlString string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	classStr := getDefaultClassStr("")
 	fld = FldType {Name: "title", NameRu: "название", Type: FldTypeString, Sql: FldSql{IsSearch:true, FillValueInBeforeTrigger: triggerSqlString}, Vue: FldVue{RowCol: [][]int{{1, 1}}, Class: []string{classStr}}}
 	return
 }
 
 func GetFldDouble(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	var classStr string
 	if len(params)>0 {
 		classStr= params[0]
 	}
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeDouble, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}}}
 	return
 }
 
 // создание простого поля String
 func GetFldString(name, nameRu string, size int, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	var classStr string
 	readonly := "false"
 	for i, v := range params {
 		if i == 0 {
@@ -54,6 +56,7 @@ func GetFldString(name, nameRu string, size int, rowCol [][]int, params ...strin
 			}
 		}
 	}
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Readonly:readonly}}
 	if size > 0 {
 		fld.Sql.Size = size
@@ -63,57 +66,62 @@ func GetFldString(name, nameRu string, size int, rowCol [][]int, params ...strin
 
 // создание простого Date
 func GetFldDate(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	var classStr string
 	if len(params)>0 {
 		classStr= params[0]
 	}
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeDate, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}}}
 	return
 }
 
 // создание простого DateTime
 func GetFldDateTime(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	var classStr string
 	if len(params)>0 {
 		classStr= params[0]
 	}
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeDatetime, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}}}
 	return
 }
 
 // создание простого поля Int
 func GetFldInt(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	var classStr string
 	if len(params)>0 {
 		classStr= params[0]
 	}
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeInt, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}}}
 	return
 }
 
 // создание простого поля Int64
 func GetFldInt64(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	var classStr string
 	if len(params)>0 {
 		classStr= params[0]
 	}
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeInt64, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}}}
 	return
 }
 
 // создание поля UUID
 func GetFldUuid(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	var classStr string
 	if len(params)>0 {
 		classStr= params[0]
 	}
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeUuid, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}}}
 	return
 }
 
 // создание простого поля Checkbox
 func GetFldCheckbox(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	var classStr string
 	readonly := "false"
 	for i, v := range params {
 		if i == 0 {
@@ -124,13 +132,14 @@ func GetFldCheckbox(name, nameRu string, rowCol [][]int, params ...string) (fld 
 			}
 		}
 	}
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeBool, Vue:FldVue{RowCol: rowCol, Type:FldVueTypeCheckbox, Class: []string{classStr}, Readonly:readonly}}
 	return
 }
 
 // создание простого поля Radio
 func GetFldRadioString(name, nameRu string, rowCol [][]int, options []FldVueOptionsItem, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	var classStr string
 	readonly := "false"
 	for i, v := range params {
 		if i == 0 {
@@ -141,7 +150,7 @@ func GetFldRadioString(name, nameRu string, rowCol [][]int, options []FldVueOpti
 			}
 		}
 	}
-
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Sql:FldSql{Size:50}, Vue:FldVue{RowCol: rowCol, Type:FldVueTypeRadio, Options: options, Class: []string{classStr}, Readonly:readonly}}
 	return
 }
@@ -151,12 +160,13 @@ func GetFldRadioString(name, nameRu string, rowCol [][]int, options []FldVueOpti
 // - isAddNew
 // - isClearable
 func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	var classStr string
 	if len(params)>0 {
 		if strings.Contains(params[0], "col-") {
 			classStr= params[0]
 		}
 	}
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeInt,  Sql: FldSql{Ref: refTable, IsSearch:true}, Vue:FldVue{RowCol: rowCol, Ext: map[string]string{}, Class: []string{classStr}}}
 	for _, v := range params {
 		// добавляем аватарку с ссылкой на выбранный документ
@@ -183,7 +193,7 @@ func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) 
 
 // создание поля phone
 func GetFldPhone(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	var classStr string
 	readonly := "false"
 	for i, v := range params {
 		if i == 0 {
@@ -194,13 +204,14 @@ func GetFldPhone(name, nameRu string, rowCol [][]int, params ...string) (fld Fld
 			}
 		}
 	}
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Sql: FldSql{Size: 30}, Vue:FldVue{RowCol: rowCol, Type:FldVueTypePhone, Class: []string{classStr}, Readonly:readonly}}
 	return
 }
 
 // создание поля email
 func GetFldEmail(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	var classStr string
 	readonly := "false"
 	for i, v := range params {
 		if i == 0 {
@@ -211,6 +222,7 @@ func GetFldEmail(name, nameRu string, rowCol [][]int, params ...string) (fld Fld
 			}
 		}
 	}
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Sql: FldSql{Size: 100}, Vue:FldVue{RowCol: rowCol, Type:FldVueTypeEmail, Class: []string{classStr}, Readonly:readonly}}
 	return
 }
@@ -224,6 +236,7 @@ func GetFldJsonbComposition(name, nameRu string, rowCol [][]int, classStr, compN
 			isOptionsFld = "options."
 		}
 	}
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
 		return fmt.Sprintf("<%[1]s :fld='item.%[5]s%[2]s' :item='item' @update='item.%[5]s%[2]s = $event' label='%[3]s' %[4]s/>", compName, name, nameRu, strings.Join(params, " "), isOptionsFld)
 	}}}
@@ -232,6 +245,7 @@ func GetFldJsonbComposition(name, nameRu string, rowCol [][]int, classStr, compN
 
 // поле с кастомной композицией
 func GetFldJsonbCompositionWithoutFld(rowCol [][]int, classStr, compName string, params ...string) (fld FldType) {
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
 		return fmt.Sprintf("<%[1]s :item='item' %[2]s/>", compName, strings.Join(params, " "))
 	}}}
@@ -240,6 +254,7 @@ func GetFldJsonbCompositionWithoutFld(rowCol [][]int, classStr, compName string,
 
 // простое html поле
 func GetFldSimpleHtml(rowCol [][]int, classStr, htmlStr string) (fld FldType) {
+	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
 		return htmlStr
 	}}}
@@ -248,12 +263,12 @@ func GetFldSimpleHtml(rowCol [][]int, classStr, htmlStr string) (fld FldType) {
 
 // создание простого поля Select с типом string
 func GetFldSelectString(name, nameRu string, size int, rowCol [][]int, options []FldVueOptionsItem, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
 	readonly := "false"
+	classStr := getDefaultClassStr("")
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeSelect, Ext: map[string]string{}, Class: []string{classStr}, Readonly:readonly, Options:options}}
 	for i, v := range params {
 		if i == 0 {
-			fld.Vue.Class = []string{v}
+			fld.Vue.Class = []string{getDefaultClassStr(v)}
 		} else {
 			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
 				fld.Vue.Readonly = "true"
@@ -271,12 +286,12 @@ func GetFldSelectString(name, nameRu string, size int, rowCol [][]int, options [
 
 // создание простого поля MultipleSelect с типом string
 func GetFldSelectMultilple(name, nameRu string, rowCol [][]int, options []FldVueOptionsItem, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
 	readonly := "false"
+	classStr := getDefaultClassStr("")
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeTextArray, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeMultipleSelect, Ext: map[string]string{}, Class: []string{classStr}, Readonly:readonly, Options:options}}
 	for i, v := range params {
 		if i == 0 {
-			classStr = v
+			classStr = getDefaultClassStr(v)
 		} else {
 			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
 				fld.Vue.Readonly = "true"
@@ -292,11 +307,11 @@ func GetFldSelectMultilple(name, nameRu string, rowCol [][]int, options []FldVue
 
 // создание простого поля Int
 func GetFldTag(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	classStr := getDefaultClassStr("")
 	onlyExistTags := "false" // флаг для UI контрола, чтобы можно было только выбирать из существующих тэгов и нельзя было создавать новые
 	for i, v := range params {
 		if i == 0 {
-			classStr = v
+			classStr = getDefaultClassStr(v)
 		} else {
 			if strings.HasPrefix(v, "only_exist_tags") {
 				onlyExistTags="true"
@@ -309,6 +324,7 @@ func GetFldTag(name, nameRu string, rowCol [][]int, params ...string) (fld FldTy
 
 // создание поля-виджета со связями многие-к-многим
 func GetFldLinkListWidget(linkTable string, rowCol [][]int, classStr string, opts map[string]interface{}) (fld FldType) {
+	classStr = getDefaultClassStr(classStr)
 	return FldType{Type: FldTypeVueComposition,  Vue: FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
 		return GetVueCompLinkListWidget(p, d, linkTable, opts)
 	}}}
@@ -325,9 +341,9 @@ func GetCustomTemplates(p ...string) map[string]*DocTemplate  {
 
 // создание поля адрес с возможностью поиска через dadata
 func GetFldDadataAddress(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	classStr := getDefaultClassStr("")
 	if len(params)>0 {
-		classStr= params[0]
+		classStr= getDefaultClassStr(params[0])
 	}
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeDadataAddress, Class: []string{classStr}}}
 	for i, v := range params {
@@ -350,9 +366,9 @@ func GetFldDadataAddress(name, nameRu string, rowCol [][]int, params ...string) 
 
 // создание поля json c редактируемым массивом элементов
 func GetFldJsonList(name, nameRu string, rowCol [][]int, listParams FldVueJsonList, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	classStr := getDefaultClassStr("")
 	if len(params)>0 {
-		classStr= params[0]
+		classStr= getDefaultClassStr(params[0])
 	}
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeJsonList, JsonList: listParams, Class: []string{classStr}}}
 	return
@@ -360,9 +376,9 @@ func GetFldJsonList(name, nameRu string, rowCol [][]int, listParams FldVueJsonLi
 
 // создание поля для загрузки файлов
 func GetFldFiles(name, nameRu string, rowCol [][]int, fileParams FldVueFilesParams, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	classStr := getDefaultClassStr("")
 	if len(params)>0 {
-		classStr= params[0]
+		classStr= getDefaultClassStr(params[0])
 	}
 	// заполняем параметры для ограничений по загрузке файлов
 	ext := map[string]string{}
@@ -379,9 +395,9 @@ func GetFldFiles(name, nameRu string, rowCol [][]int, fileParams FldVueFilesPara
 
 // создание поля для загрузки списка изображений
 func GetFldImgList(name, nameRu string, rowCol [][]int, fileParams FldVueImgParams, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	classStr := getDefaultClassStr("")
 	if len(params)>0 {
-		classStr= params[0]
+		classStr= getDefaultClassStr(params[0])
 	}
 	// заполняем параметры для ограничений
 	ext := map[string]string{}
@@ -418,9 +434,9 @@ func GetFldImgList(name, nameRu string, rowCol [][]int, fileParams FldVueImgPara
 
 // создание поля для загрузки одного
 func GetFldImg(name, nameRu string, rowCol [][]int, fileParams FldVueImgParams, params ...string) (fld FldType) {
-	classStr := "col-md-4 col-xs-6"
+	classStr := getDefaultClassStr("")
 	if len(params)>0 {
-		classStr= params[0]
+		classStr= getDefaultClassStr(params[0])
 	}
 	// заполняем параметры для ограничений
 	ext := map[string]string{}
@@ -490,3 +506,15 @@ func (vt VueTab) AddCounter(d *DocType, tabName, pgMethod, pgParams string)  Vue
 	return vt
 }
 
+func getDefaultClassStr(v string) string  {
+	if len(v) == 0 || v == "col-4" {
+		return "col-md-4 col-sm-6 col-xs-12"
+	}
+	if v == "col-2" {
+		return "col-md-2 col-sm-3 col-xs-6"
+	}
+	if v == "col-8" {
+		return "col-md-8 col-sm-12 col-xs-12"
+	}
+	return v
+}

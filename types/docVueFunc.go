@@ -526,9 +526,9 @@ func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams,
 	}
 
 	// параметры самого поля
-	classStr := "col-md-4 col-xs-6"
+	classStr := getDefaultClassStr("")
 	if len(params)>0 {
-		classStr= params[0]
+		classStr= getDefaultClassStr(params[0])
 	}
 	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
 		return fmt.Sprintf("<%[1]s v-if='item.id != -1' :id='item.id' %s/>", strings.Replace(snaker.CamelToSnake(refDoc.FldName + "RefListWidget"), "_", "-", -1), readonly)
