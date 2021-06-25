@@ -2,14 +2,12 @@ package auth
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pepelazz/indivigo/src/pg"
 	"github.com/pepelazz/indivigo/src/types"
 	"github.com/pepelazz/indivigo/src/utils"
 	"golang.org/x/crypto/bcrypt"
-	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"os"

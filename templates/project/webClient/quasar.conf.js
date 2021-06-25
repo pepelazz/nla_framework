@@ -92,6 +92,8 @@ module.exports = function (ctx) {
         'QStepperNavigation',
         'QSplitter',
         'QTable',
+        'QTh',
+        'QTr',
         'QTabs',
         'QTab',
         'QTabPanels',
