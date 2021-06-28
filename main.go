@@ -65,8 +65,8 @@ func readData(p types.ProjectType) {
 	}
 	// проверяем что если авторизация через email, то должны быть заполнены необходимые поля
 	if p.Config.Auth.ByEmail {
-		if len(p.Config.Email.Sender) == 0 || len(p.Config.Email.Host) == 0 || len(p.Config.Email.Password) == 0 || p.Config.Email.Port == 0 {
-			utils.CheckErr(errors.New("in Config.Email fill fields: 'Sender', 'Password', 'Host', 'Port'"), "")
+		if len(p.Config.Email.Sender) == 0 || len(p.Config.Email.Host) == 0 || p.Config.Email.Port == 0 {
+			utils.CheckErr(errors.New("in Config.Email fill fields: 'Sender', 'Host', 'Port'"), "")
 		}
 	}
 	// порверка что если документ - это уникальная связь двух таблиц, то в нем поле title если есть, то не должно быть уникальным
