@@ -1,7 +1,7 @@
 export default {
   appName: '[[appName]]',
   uiAppName: '[[uiAppName]]',
-  apiUrl: () => process.env.NODE_ENV === 'development' ? 'http://localhost:[[webPort]]' : 'https://[[url]]',
+  apiUrl: () => process.env.NODE_ENV === 'development' ? 'http://localhost:[[webPort]]' : '[[urlWithHttp]]',
   wsUrl: () => process.env.NODE_ENV === 'development' ? 'ws://localhost:[[webPort]]' : 'wss://[[url]]',
   isEmailAuth: {
     firstName: true,

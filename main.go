@@ -261,6 +261,12 @@ func configJsModify(p types.ProjectType, file []byte) (res []byte) {
 	fileStr = strings.Replace(fileStr, "[[uiAppName]]", p.Vue.UiAppName, -1)
 	fileStr = strings.Replace(fileStr, "[[webPort]]", fmt.Sprintf("%v", p.Config.WebServer.Port), -1)
 	fileStr = strings.Replace(fileStr, "[[url]]", strings.TrimPrefix(p.Config.WebServer.Url, "https://"), -1)
+	// возможен вариант, что адрес в конфиге записан с http, тогда так его и оставляем. Иначе убираем префикс https://
+	if strings.HasPrefix(p.Config.WebServer.Url, "http") {
+		fileStr = strings.Replace(fileStr, "[[urlWithHttp]]", p.Config.WebServer.Url, -1)
+	} else {
+		fileStr = strings.Replace(fileStr, "[[urlWithHttp]]", "https://" + p.Config.WebServer.Url , -1)
+	}
 	fileStr = strings.Replace(fileStr, "[[logoSrc]]", p.Config.Logo, -1)
 	fileStr = strings.Replace(fileStr, "[[dadataToken]]", p.Config.Vue.DadataToken, -1)
 	fileStr = strings.Replace(fileStr, "[[breadcrumbIcons]]", strings.Join(breadcrumbIcons, ",\n"), -1)
