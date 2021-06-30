@@ -21,9 +21,16 @@
 <!--            <q-avatar size="26px">-->
 <!--              <img src="https://www.defly.ru/website/defly/template/images/logo.png">-->
 <!--            </q-avatar>-->
+          [[if not .Vue.UiAppLogoOnly]]
             <q-toolbar-title shrink class="text-weight-bold">
               {{$config.uiAppName}}
             </q-toolbar-title>
+          [[- end]]
+          [[if .Vue.UiAppLogoOnly]]
+              <q-toolbar-title shrink class="text-weight-bold">
+                  [[.Vue.UiAppLogoOnly]]
+              </q-toolbar-title>
+          [[- end]]
           </q-btn>
 
           <q-space/>

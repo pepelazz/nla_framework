@@ -88,6 +88,7 @@ type (
 	}
 	ProjectVue struct {
 		UiAppName string
+		UiAppLogoOnly string
 		Routes    [][]string
 		Menu      []VueMenu
 		Hooks     ProjectVueHooks
