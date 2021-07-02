@@ -8,7 +8,7 @@
       <q-btn dense flat icon="add" @click="isShowAddDialog = true" v-if="!readonly"/>
     </q-bar>
 
-    <q-list bordered separator v-if="isShowList">
+    <q-list bordered separator v-if="isShowList" :dense="dense">
       <q-item v-for="item in filteredList" :key="item.id">
         <q-item-section avatar @click="$router.push(`${tableDependRoute}/${item[tableDependFldName]}`)">
           <q-avatar rounded>
@@ -108,7 +108,7 @@
 <script>
   import _ from 'lodash'
   export default {
-    props: ['id', 'tableIdName', 'tableIdFldName', 'tableDependName', 'tableDependFldName', 'tableDependRoute', 'linkTableName', 'label', 'avatarSrc', 'hideCreateNew', 'flds', 'readonly', 'searchExt', 'filterListFn'],
+    props: ['id', 'tableIdName', 'tableIdFldName', 'tableDependName', 'tableDependFldName', 'tableDependRoute', 'linkTableName', 'label', 'avatarSrc', 'hideCreateNew', 'flds', 'readonly', 'searchExt', 'filterListFn', 'dense'],
     computed: {
       tableDependFldTitle() {
         return this.tableDependFldName.split('_id')[0] + '_title'
