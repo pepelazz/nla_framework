@@ -339,6 +339,8 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 						tableDependName = "user"
 						tableDependRoute = "users"
 						label = "сотрудники"
+						// для пользователей всегда убираем кнопку "создать"
+						hideCreateNew = true
 						if opts != nil {
 							if v, ok := opts["listTitle"]; ok {
 								label = cast.ToString(v)
