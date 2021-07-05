@@ -84,6 +84,10 @@ func Start(config types.Config) {
 			bot.Send(m.Sender, "Гамарджоба!")
 			return
 		}
+		if strings.ToLower(m.Text) == "getid" || strings.ToLower(m.Text) == "get id" {
+			bot.Send(m.Sender, fmt.Sprintf("Ваш id: %v", m.Sender.ID))
+			return
+		}
 		if m.Text == "key" {
 			bot.Send(m.Sender, "Hello!", menu)
 			return
