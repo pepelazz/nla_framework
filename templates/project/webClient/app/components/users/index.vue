@@ -16,7 +16,11 @@
         <q-item-section>
           <q-item-label lines="1">{{item.fullname}}</q-item-label>
           <q-item-label caption lines="2">{{item.email}}</q-item-label>
-          <q-item-label caption lines="2">{{rolesI18n(item)}}</q-item-label>
+          <q-item-label caption lines="2">
+            <!-- иконка, что пользователь указал свой telegram_id           -->
+            <q-icon v-if="item.options.telegram_id" name="fab fa-telegram" class="q-mr-sm" size="17px" color="primary"/>
+            {{rolesI18n(item)}}
+          </q-item-label>
         </q-item-section>
         <q-item-section top side>
           <comp-item-dropdown-btn :item="item" itemProp="fullname" :is-edit="true" :is-delete="true"
