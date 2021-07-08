@@ -19,7 +19,9 @@
           <q-item-label caption lines="2">
             <!-- иконка, что пользователь указал свой telegram_id           -->
             <q-icon v-if="item.options.telegram_id" name="fab fa-telegram" class="q-mr-sm" size="17px" color="primary"/>
-            {{rolesI18n(item)}}
+            <q-badge v-if="item.options.state == 'fired'" color="negative" class="q-mr-sm">уволен</q-badge>
+            <q-badge v-if="item.options.state == 'waiting_auth'" color="warning" class="q-mr-sm">ожидает авторизации</q-badge>
+            <q-badge v-for="role in rolesI18n(item)" :key="role" color="secondary" class="q-mr-sm">{{role}}</q-badge>
           </q-item-label>
         </q-item-section>
         <q-item-section top side>
