@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/gob"
 	"github.com/gin-gonic/gin"
-	"github.com/pepelazz/railContinent_regional_dashboard/src/types"
+	"github.com/pepelazz/projectGenerator/types"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
