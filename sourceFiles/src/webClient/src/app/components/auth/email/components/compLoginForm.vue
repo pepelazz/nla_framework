@@ -1,4 +1,3 @@
-<script src="../../../../../../../../../eduai_2/src/webClient/src/router/routes.js"></script>
 <template>
   <div class="q-gutter-md">
     <q-input outlined type='email' label="email" v-model="email" :autofocus=true>
