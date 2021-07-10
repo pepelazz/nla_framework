@@ -134,6 +134,12 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc) {
 	err = copyFiles(project, fmt.Sprintf("../../../pepelazz/projectGenerator/webClient/quasar_%v", project.GetQuasarVersion()), "../src/", modifyFunc)
 	utils.CheckErr(err, "Copy sourceFiles")
 
+	// в случае если quasar-framework v1 то копируем часть устаревших sql файлов. Для поддержания кода старых проектов
+	if p.GetQuasarVersion() == 1 {
+		err = copyFiles(project, "../../../pepelazz/projectGenerator/sourceFilesSQL_legacy", "../src/sql/", modifyFunc)
+		utils.CheckErr(err, "Copy sourceFiles")
+	}
+
 	templates.OtherTemplatesGenerate(project)
 }
 
