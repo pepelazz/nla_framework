@@ -35,7 +35,7 @@ func TasksTmpl(p types.ProjectType)  {
 			return
 		},
 	}
-	path := "../../../pepelazz/projectGenerator/sourceFiles/src/webClient/src/app/components/currentUser/tasks/list.vue"
+	path := "../../../pepelazz/projectGenerator/webClient/quasar_1/webClient/src/app/components/currentUser/tasks/list.vue"
 	t, err := template.New("list.vue").Funcs(funcMap).Delims("[[", "]]").ParseFiles(path)
 	utils.CheckErr(err, "OverriteCopiedFiles ParseFiles")
 

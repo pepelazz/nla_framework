@@ -69,7 +69,7 @@ func readData(p types.ProjectType) {
 			utils.CheckErr(errors.New("in Config.Email fill fields: 'Sender', 'Host', 'Port'"), "")
 		}
 	}
-	// порверка что если документ - это уникальная связь двух таблиц, то в нем поле title если есть, то не должно быть уникальным
+	// проверка что если документ - это уникальная связь двух таблиц, то в нем поле title если есть, то не должно быть уникальным
 	for _, d := range p.Docs {
 		if d.Sql.IsUniqLink {
 			for _, fld := range d.Flds {
@@ -89,18 +89,24 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc) {
 	if !p.Config.Auth.ByPhone {
 		p.Config.Auth.ByEmail = true
 	}
-	// дефолты для бэкапа на яндекс диск
-	if p.IsBackupOnYandexDisk() {
-		if p.Config.Backup.ToYandexDisk.FilesCount == 0 {
-			p.Config.Backup.ToYandexDisk.FilesCount = 3
-		}
-		if p.Config.Backup.ToYandexDisk.Period == 0 {
-			p.Config.Backup.ToYandexDisk.Period = 12*60
-		}
-		if len(p.Config.Backup.ToYandexDisk.PostgresDockerName) == 0 {
-			p.Config.Backup.ToYandexDisk.PostgresDockerName = p.Config.Postgres.DbName
-		}
+	// дефолтная версия quasar-framework 1
+	if p.Config.Vue.QuasarVersion != 2 {
+		p.Config.Vue.QuasarVersion = 1
 	}
+
+	// дефолты для бэкапа на яндекс диск
+	//if p.IsBackupOnYandexDisk() {
+	//	if p.Config.Backup.ToYandexDisk.FilesCount == 0 {
+	//		p.Config.Backup.ToYandexDisk.FilesCount = 3
+	//	}
+	//	if p.Config.Backup.ToYandexDisk.Period == 0 {
+	//		p.Config.Backup.ToYandexDisk.Period = 12*60
+	//	}
+	//	if len(p.Config.Backup.ToYandexDisk.PostgresDockerName) == 0 {
+	//		p.Config.Backup.ToYandexDisk.PostgresDockerName = p.Config.Postgres.DbName
+	//	}
+	//}
+
 	// читаем данные для проекта
 	readData(p)
 	// читаем темплейты
@@ -122,6 +128,10 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc) {
 
 	// копируем файлы проекта (которые не шаблоны)
 	err := copyFiles(project, "../../../pepelazz/projectGenerator/sourceFiles", "../", modifyFunc)
+	utils.CheckErr(err, "Copy sourceFiles")
+
+	// отдельно копируем webClient в зависимости от версии quasar-framework
+	err = copyFiles(project, fmt.Sprintf("../../../pepelazz/projectGenerator/webClient/quasar_%v", project.GetQuasarVersion()), "../src/", modifyFunc)
 	utils.CheckErr(err, "Copy sourceFiles")
 
 	templates.OtherTemplatesGenerate(project)
@@ -234,7 +244,7 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 }
 
 func removeOldFiles(distPath string) {
-	// удаляем модели в sql, потому что могула изменится нумерация файлов и тогдда риск дублирования
+	// удаляем модели в sql, потому что могла изменится нумерация файлов и тогда риск дублирования
 	err := os.RemoveAll(distPath + "/sql/model")
 	utils.CheckErr(err, "removeOldFiles")
 }

@@ -38,6 +38,7 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	}
 
 	projectTmplPath := "../../../pepelazz/projectGenerator/templates/project"
+	webClient := fmt.Sprintf("/webClient/quasar_%v", p.GetQuasarVersion())
 	ReadTmplAndPrint(p, projectTmplPath + "/types/main.go", "/types",  "main.go", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/types/config.go", "/types",  "config.go", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/webServer/main.go", "/webServer",  "main.go", nil)
@@ -48,27 +49,28 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	ReadTmplAndPrint(p, projectTmplPath + "/sql/03_UserTempEmailAuth/main.toml", "/sql/model/03_UserTempEmailAuth",  "main.toml", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/jobs/main.go", "/jobs",  "main.go", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/pg/pgListener.go", "/pg",  "pgListener.go", nil)
-	ReadTmplAndPrint(p, projectTmplPath + "/webClient/index.template.html", "/webClient/src",  "index.template.html", nil)
-	ReadTmplAndPrint(p, projectTmplPath + "/webClient/quasar.conf.js", "/webClient",  "quasar.conf.js", nil)
-	ReadTmplAndPrint(p, projectTmplPath + "/webClient/package.json", "/webClient",  "package.json", nil)
-	ReadTmplAndPrint(p, projectTmplPath + "/webClient/App.vue", "/webClient/src",  "App.vue", nil)
-	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/users/roles.js", "/webClient/src/app/components/users",  "roles.js", nil)
-	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/users/item.vue", "/webClient/src/app/components/users",  "item.vue", nil)
-	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/users/index.vue", "/webClient/src/app/components/users",  "index.vue", nil)
-	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/currentUser/profile.vue", "/webClient/src/app/components/currentUser",  "profile.vue", nil)
-	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/currentUser/messages/list.vue", "/webClient/src/app/components/currentUser/messages",  "list.vue", nil)
-	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/home.vue", "/webClient/src/app/components",  "home.vue", nil)
-	ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/auth/loginPage.vue", "/webClient/src/app/components/auth",  "loginPage.vue", nil)
+
+	ReadTmplAndPrint(p, projectTmplPath + webClient + "/index.template.html", "/webClient/src",  "index.template.html", nil)
+	ReadTmplAndPrint(p, projectTmplPath + webClient + "/quasar.conf.js", "/webClient",  "quasar.conf.js", nil)
+	ReadTmplAndPrint(p, projectTmplPath + webClient + "/package.json", "/webClient",  "package.json", nil)
+	ReadTmplAndPrint(p, projectTmplPath + webClient + "/App.vue", "/webClient/src",  "App.vue", nil)
+	ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/users/roles.js", "/webClient/src/app/components/users",  "roles.js", nil)
+	ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/users/item.vue", "/webClient/src/app/components/users",  "item.vue", nil)
+	ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/users/index.vue", "/webClient/src/app/components/users",  "index.vue", nil)
+	ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/currentUser/profile.vue", "/webClient/src/app/components/currentUser",  "profile.vue", nil)
+	ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/currentUser/messages/list.vue", "/webClient/src/app/components/currentUser/messages",  "list.vue", nil)
+	ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/home.vue", "/webClient/src/app/components",  "home.vue", nil)
+	ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/auth/loginPage.vue", "/webClient/src/app/components/auth",  "loginPage.vue", nil)
 
 	if p.Config.Auth.ByPhone {
 		ReadTmplAndPrint(p, projectTmplPath + "/sql/01_User/user_get_by_phone_with_password.sql", "/sql/template/function/_User",  "user_get_by_phone_with_password.sql", nil)
 		ReadTmplAndPrint(p, projectTmplPath + "/sql/03_UserTempEmailAuth/user_temp_phone_auth_create.sql", "/sql/template/function/_UserTempEmailAuth",  "user_temp_phone_auth_create.sql", nil)
 		ReadTmplAndPrint(p, projectTmplPath + "/sql/03_UserTempEmailAuth/user_temp_phone_auth_check_sms_code.sql", "/sql/template/function/_UserTempEmailAuth",  "user_temp_phone_auth_check_sms_code.sql", nil)
-		ReadTmplAndPrint(p, projectTmplPath + "/webServer/auth/phone.go", "/webServer/auth",  "phone.go", nil)
-		ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/auth/phone/phoneAuthBtn.vue", "/webClient/src/app/components/auth/phone",  "phoneAuthBtn.vue", nil)
-		ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/auth/phone/components/compLoginForm.vue", "/webClient/src/app/components/auth/phone/components",  "compLoginForm.vue", nil)
-		ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/auth/phone/components/compRecoverPasswordForm.vue", "/webClient/src/app/components/auth/phone/components",  "compRecoverPasswordForm.vue", nil)
-		ReadTmplAndPrint(p, projectTmplPath + "/webClient/app/components/auth/phone/components/compRegisterForm.vue", "/webClient/src/app/components/auth/phone/components",  "compRegisterForm.vue", nil)
+		ReadTmplAndPrint(p, projectTmplPath + webClient + "/auth/phone.go", "/webServer/auth",  "phone.go", nil)
+		ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/auth/phone/phoneAuthBtn.vue", "/webClient/src/app/components/auth/phone",  "phoneAuthBtn.vue", nil)
+		ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/auth/phone/components/compLoginForm.vue", "/webClient/src/app/components/auth/phone/components",  "compLoginForm.vue", nil)
+		ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/auth/phone/components/compRecoverPasswordForm.vue", "/webClient/src/app/components/auth/phone/components",  "compRecoverPasswordForm.vue", nil)
+		ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/auth/phone/components/compRegisterForm.vue", "/webClient/src/app/components/auth/phone/components",  "compRegisterForm.vue", nil)
 	}
 
 	if p.IsTelegramIntegration() {
@@ -105,7 +107,10 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 }
 
 func OtherTemplatesGenerate(p types.ProjectType)  {
-	tmplGenerateStep2.TasksTmpl(p)
+	// для второй версии task не обрабатываем
+	if p.GetQuasarVersion() == 1 {
+		tmplGenerateStep2.TasksTmpl(p)
+	}
 	// добавляем функции в plugin/utils.js
 	tmplGenerateStep2.PluginUtilsJs(p)
 }

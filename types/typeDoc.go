@@ -1,6 +1,8 @@
 package types
 
 import (
+	"errors"
+	"fmt"
 	"github.com/pepelazz/projectGenerator/utils"
 	"github.com/serenize/snaker"
 	"log"
@@ -14,6 +16,7 @@ const (
 
 type (
 	DocType struct {
+		Project 	   		*ProjectType // ссылка на проект
 		Name                 string
 		NameRu               string
 		Type                 string
@@ -320,4 +323,11 @@ func (dv *DocVue) I18nAdd(titleEn, titleRu string) {
 		dv.I18n = map[string]string{}
 	}
 	dv.I18n[titleEn] = titleRu
+}
+
+func (d *DocType) GetProject() *ProjectType {
+	if d.Project == nil {
+		utils.CheckErr(errors.New("project is nill. Pass 'project' to GetDoc.\nExample:\n func GetDoc(p *t.ProjectType) t.DocType {\n \tdoc := t.DocType{\n\t\tProject: \tp,\n\t\tName:       name,\n... "), fmt.Sprintf("doc: %s", d.Name))
+	}
+	return d.Project
 }

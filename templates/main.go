@@ -56,8 +56,11 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 		readFiles("project_", "[[", "]]", path+"deployYandexBackup.ps1")
 	}
 	// webClient
-	path = "../../../pepelazz/projectGenerator/templates/webClient/doc/"
-	readFiles("webClient_", "[[", "]]", path+"index.vue", path+"item.vue", path+"itemWithTabs.vue", path+"tabInfo.vue", path+"tabTasks.vue")
+	path = fmt.Sprintf("../../../pepelazz/projectGenerator/templates/webClient/quasar_%v/doc/", p.GetQuasarVersion())
+	readFiles("webClient_", "[[", "]]", path+"index.vue", path+"item.vue", path+"itemWithTabs.vue", path+"tabInfo.vue")
+	if p.GetQuasarVersion() == 1 {
+		readFiles("webClient_", "[[", "]]", path+"tabTasks.vue")
+	}
 	// sql
 	path = "../../../pepelazz/projectGenerator/templates/sql/"
 	readFiles("sql_", "{{", "}}", path+"main.toml")
@@ -172,9 +175,9 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 							d.Templates["sql_function_update.sql"].Tmpl = stateMachineReadTmplUpdate(funcMap, "../../../pepelazz/projectGenerator/templates/sql/function/stateMachine_update.sql")
 						}
 					}
-					if tName == "webClient_item.vue" {
+					if tName == "webClient_item.vue" && p.GetQuasarVersion() == 1 {
 						if _, ok := d.Templates["webClient_item.vue"]; ok {
-							d.Templates["webClient_item.vue"].Tmpl = stateMachineReadTmplWebclientItem(funcMap, "../../../pepelazz/projectGenerator/templates/webClient/doc/comp/stateMachine/webClient_item.vue")
+							d.Templates["webClient_item.vue"].Tmpl = stateMachineReadTmplWebclientItem(funcMap, "../../../pepelazz/projectGenerator/templates/webClient/quasar_1/doc/comp/stateMachine/webClient_item.vue")
 						}
 					}
 				}

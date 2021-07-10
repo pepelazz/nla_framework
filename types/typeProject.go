@@ -110,6 +110,7 @@ type (
 
 	VueConfig struct {
 		DadataToken string
+		QuasarVersion int // версия quasar-framework 1, 2
 	}
 
 	BitrixConfig struct {
@@ -430,4 +431,11 @@ func (p ProjectType) PrintApiCallPgFuncMethods() string {
 		}
 	}
 	return res
+}
+
+func (p *ProjectType) GetQuasarVersion() int  {
+	if p.Config.Vue.QuasarVersion == 0 {
+		return 1
+	}
+	return p.Config.Vue.QuasarVersion
 }

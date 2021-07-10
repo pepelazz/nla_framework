@@ -482,7 +482,7 @@ func (vt VueTab) AddCounter(d *DocType, tabName, pgMethod, pgParams string)  Vue
 		d.Vue.Mixins["docItemWithTabs"] = []VueMixin{}
 	}
 	d.Vue.Mixins["docItemWithTabs"] = append(d.Vue.Mixins["docItemWithTabs"], VueMixin{"tabCounter"+tabName, "./mixins/tabCounter"+tabName+".js"})
-	sourcePath := "../../../pepelazz/projectGenerator/templates/webClient/doc/mixins/tabCounter.js"
+	sourcePath := fmt.Sprintf("../../../pepelazz/projectGenerator/templates/webClient/quasar_%v/doc/mixins/tabCounter.js", d.GetProject().GetQuasarVersion())
 	funcMap := template.FuncMap{
 		"VarName": func() string {return "tabCounter"+tabName},
 		"PgMethod": func() string {return pgMethod},

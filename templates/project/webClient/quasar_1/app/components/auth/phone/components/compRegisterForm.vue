@@ -138,7 +138,7 @@
             },
         },
         mounted() {
-            this.flds.map(v => this.$set(this.regForm, v, null))
+            this.flds.map(v => this.regForm[v.model] = null)
         }
     }
 </script>

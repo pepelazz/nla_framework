@@ -38,7 +38,7 @@ func fldTagProccess(p types.ProjectType, d *types.DocType, fld *types.FldType)  
 		}
 		d.Sql.Methods[methodName] = &types.DocSqlMethod{Name: methodName}
 		// читаем шаблон и генерим файл с mixin
-		t, err = template.New("mixinTag.js").Funcs(funcMap).Delims("[[", "]]").ParseFiles("../../../pepelazz/projectGenerator/templates/webClient/doc/mixinTag.js")
+		t, err = template.New("mixinTag.js").Funcs(funcMap).Delims("[[", "]]").ParseFiles(fmt.Sprintf("../../../pepelazz/projectGenerator/templates/webClient/quasar_%v/doc/mixinTag.js", p.GetQuasarVersion()))
 		utils.CheckErr(err, "mixinTag.js")
 		distPath = fmt.Sprintf("%s/webClient/src/app/components/%s/mixins", p.DistPath, d.Name)
 		// в случае табов изменяем path
