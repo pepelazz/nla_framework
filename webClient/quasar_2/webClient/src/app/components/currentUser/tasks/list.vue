@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-drawer :value="rightSide" side="right" bordered @hide="$emit('hide')">
+    <q-drawer :modelValue="rightSide" side="right" bordered @hide="$emit('hide')">
       <q-list separator>
         <q-item-label header>
           Задачи

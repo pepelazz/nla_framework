@@ -1,5 +1,5 @@
 <template>
-  <q-drawer :value="leftSide" side="left" bordered show-if-above
+  <q-drawer :modelValue="leftSide" side="left" bordered show-if-above
             content-class="bg-grey-2"
             :width="240" @hide="$emit('hide')">
     <q-scroll-area class="fit">
