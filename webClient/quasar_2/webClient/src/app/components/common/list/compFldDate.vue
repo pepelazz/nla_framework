@@ -6,7 +6,11 @@
     <template v-slot:prepend v-if="!readonly">
       <q-icon name="event" class="cursor-pointer">
         <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-          <q-date v-model="date" @input="() => $refs.qDateProxy.hide()" mask="DD-MM-YYYY" :readonly="readonly"/>
+          <q-date v-model="date" mask="DD-MM-YYYY" :readonly="readonly">
+            <div class="row items-center justify-end">
+              <q-btn v-close-popup label="Ok" color="primary" flat />
+            </div>
+          </q-date>
         </q-popup-proxy>
       </q-icon>
     </template>
