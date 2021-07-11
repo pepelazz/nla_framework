@@ -113,12 +113,6 @@
       tableDependFldTitle() {
         return this.tableDependFldName.split('_id')[0] + '_title'
       },
-      avatar() {
-        return function(item) {
-          let fldName = this.tableDependFldName.split('_id')[0]
-          return item.options.title[fldName + '_avatar'] || this.avatarSrc || 'https://www.svgrepo.com/show/95333/avatar.svg'
-        }
-      },
       filteredList() {
         // возможность передать в компоненту функцию для фильтрации списка
         if (this.filterListFn) return this.list.filter(this.filterListFn)
@@ -139,6 +133,10 @@
       }
     },
     methods: {
+      avatar(item) {
+        let fldName = this.tableDependFldName.split('_id')[0]
+        return item.options.title[fldName + '_avatar'] || this.avatarSrc || 'https://www.svgrepo.com/show/95333/avatar.svg'
+      },
       showDeleteDialog(id) {
         this.selectedForDeleteId = id
         this.isShowDeleteDialog = true
