@@ -10,6 +10,14 @@
                    [[- if .IsRecursion]] :ext="ext ? Object.assign(ext, {parent_id: 'null'}) : {parent_id: 'null'}" [[else]] :ext="ext" [[end]]
                    search-fld-name="search_text" :readonly="[[.Vue.Readonly]]">
 
+      [[- if .Vue.List.AddBtnsSlot]]
+      <template #addBtnsSlot>
+        [[range .Vue.List.AddBtnsSlot]]
+        [[- if .UploadFile.Url]]<comp-file-upload url='[[.UploadFile.Url]]' :file-ext='[ [[ArrayStringJoin .UploadFile.FileExt]] ]' tooltip="[[.UploadFile.Tooltip]]" style="display: contents" @reloadList="$refs.docList.reloadList()"/>[[- end]]
+        [[- end]]
+      </template>
+      [[- end]]
+
 
       <template #listItem="{item}">
         [[.PrintListRowAvatar]]

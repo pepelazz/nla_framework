@@ -61,6 +61,7 @@ type (
 		IsHideDeleteOptions bool // возможность не показыввать опцию "удалить" в списке
 		IsHideCreateNewBtn bool // возможность не показыввать кнопку "+" в списке
 		IsOpenNewInTab bool // создание новой записи открывается в новом табе
+		List 		VueDocList // дополнительные настройки списка документов
 	}
 
 	VueTab struct {
@@ -83,6 +84,22 @@ type (
 		Grid  []VueGridDiv
 		Fld   FldType
 	}
+
+	// параметры для настройки списка документов
+	VueDocList struct {
+		AddBtnsSlot []VueDocListAddBtnsSlot
+	}
+
+	VueDocListAddBtnsSlot struct {
+		UploadFile AddBtnsSlot_UploadFile
+	}
+
+	AddBtnsSlot_UploadFile struct {
+		Url string
+		FileExt []string
+		Tooltip string
+	}
+
 
 	DocTemplate struct {
 		Source       string
@@ -271,6 +288,13 @@ func (d *DocType) AddFld(fld FldType) {
 		d.Flds = []FldType{}
 	}
 	d.Flds = append(d.Flds, fld)
+}
+
+func (d *DocType) AddVueListUploadFile(url string, fileExt []string, tooltip string) {
+	if d.Vue.List.AddBtnsSlot == nil {
+		d.Vue.List.AddBtnsSlot = []VueDocListAddBtnsSlot{}
+	}
+	d.Vue.List.AddBtnsSlot = append(d.Vue.List.AddBtnsSlot, VueDocListAddBtnsSlot{ UploadFile: AddBtnsSlot_UploadFile{url, fileExt, tooltip}})
 }
 
 // sugar для добавление компоненты во vue

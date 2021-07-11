@@ -73,6 +73,12 @@
           this.$refs.uploader.reset()
           this.isOpenUpload = false
           this.$emit('result', res.result)
+          this.$emit('reloadList')
+          this.$q.notify({
+            color: 'positive',
+            position: 'bottom',
+            message: res.result,
+          })
         }
       },
       failed(msg) {
