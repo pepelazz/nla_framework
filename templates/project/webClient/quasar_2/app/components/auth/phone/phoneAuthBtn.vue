@@ -26,7 +26,7 @@
   </div>
 </template>
 
-<style lang="stylus" scoped>
+<style lang="sass" scoped>
   .bg-facebook
     background: #4267b2
 </style>

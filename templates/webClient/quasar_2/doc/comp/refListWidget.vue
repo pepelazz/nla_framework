@@ -12,7 +12,7 @@
             <q-item v-for="v in list" :key="v.id">
                 <router-link :to="'/[[GetRoute]]/' + v.id" style="cursor: pointer">
                     <q-item-section avatar>
-                        <q-avatar rounded size="sm">
+                        <q-avatar rounded>
                             <img src="[[GetAvatar]]" alt="">
                         </q-avatar>
                     </q-item-section>
