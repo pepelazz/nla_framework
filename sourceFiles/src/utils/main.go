@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/gob"
 	"github.com/gin-gonic/gin"
-	"github.com/pepelazz/projectGenerator/types"
+	"github.com/pepelazz/nla_framework/types"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"

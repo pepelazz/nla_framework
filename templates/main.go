@@ -6,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/iancoleman/strcase"
-	"github.com/pepelazz/projectGenerator/types"
-	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/pepelazz/nla_framework/types"
+	"github.com/pepelazz/nla_framework/utils"
 	"io/ioutil"
 	"log"
 	"os"
@@ -50,21 +50,21 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 	}
 
 	// project
-	path := "../../../pepelazz/projectGenerator/templates/project/"
+	path := "../../../pepelazz/nla_framework/templates/project/"
 	readFiles("project_", "{{", "}}", path+"config.toml", path+"main.go", path+"docker-compose.yml", path+"docker-compose.dev.yml", path+"restoreDump.sh", path+"deploy.ps1", path+"Dockerfile")
 	if p.IsBackupOnYandexDisk() {
 		readFiles("project_", "[[", "]]", path+"deployYandexBackup.ps1")
 	}
 	// webClient
-	path = fmt.Sprintf("../../../pepelazz/projectGenerator/templates/webClient/quasar_%v/doc/", p.GetQuasarVersion())
+	path = fmt.Sprintf("../../../pepelazz/nla_framework/templates/webClient/quasar_%v/doc/", p.GetQuasarVersion())
 	readFiles("webClient_", "[[", "]]", path+"index.vue", path+"item.vue", path+"itemWithTabs.vue", path+"tabInfo.vue")
 	if p.GetQuasarVersion() == 1 {
 		readFiles("webClient_", "[[", "]]", path+"tabTasks.vue")
 	}
 	// sql
-	path = "../../../pepelazz/projectGenerator/templates/sql/"
+	path = "../../../pepelazz/nla_framework/templates/sql/"
 	readFiles("sql_", "{{", "}}", path+"main.toml")
-	path = "../../../pepelazz/projectGenerator/templates/sql/function/"
+	path = "../../../pepelazz/nla_framework/templates/sql/function/"
 	readFiles("sql_function_", "{{", "}}", path+"get_by_id.sql", path+"list.sql", path+"update.sql", path+"trigger_before.sql", path+"trigger_after.sql")
 	readFiles("sql_function_", "[[", "]]", path+"create.sql")
 	// отдельно читаем шаблон action для stateMachine. Там нужно передавать свой map с параметрами
@@ -172,12 +172,12 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 				if d.IsStateMachine() {
 					if tName == "sql_function_update.sql" {
 						if _, ok := d.Templates["sql_function_update.sql"]; ok {
-							d.Templates["sql_function_update.sql"].Tmpl = stateMachineReadTmplUpdate(funcMap, "../../../pepelazz/projectGenerator/templates/sql/function/stateMachine_update.sql")
+							d.Templates["sql_function_update.sql"].Tmpl = stateMachineReadTmplUpdate(funcMap, "../../../pepelazz/nla_framework/templates/sql/function/stateMachine_update.sql")
 						}
 					}
 					if tName == "webClient_item.vue" && p.GetQuasarVersion() == 1 {
 						if _, ok := d.Templates["webClient_item.vue"]; ok {
-							d.Templates["webClient_item.vue"].Tmpl = stateMachineReadTmplWebclientItem(funcMap, "../../../pepelazz/projectGenerator/templates/webClient/quasar_1/doc/comp/stateMachine/webClient_item.vue")
+							d.Templates["webClient_item.vue"].Tmpl = stateMachineReadTmplWebclientItem(funcMap, "../../../pepelazz/nla_framework/templates/webClient/quasar_1/doc/comp/stateMachine/webClient_item.vue")
 						}
 					}
 				}

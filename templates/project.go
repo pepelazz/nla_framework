@@ -2,9 +2,9 @@ package templates
 
 import (
 	"fmt"
-	"github.com/pepelazz/projectGenerator/templates/tmplGenerateStep2"
-	"github.com/pepelazz/projectGenerator/types"
-	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/pepelazz/nla_framework/templates/tmplGenerateStep2"
+	"github.com/pepelazz/nla_framework/types"
+	"github.com/pepelazz/nla_framework/utils"
 	"strings"
 	"text/template"
 )
@@ -37,7 +37,7 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 		}
 	}
 
-	projectTmplPath := "../../../pepelazz/projectGenerator/templates/project"
+	projectTmplPath := "../../../pepelazz/nla_framework/templates/project"
 	webClient := fmt.Sprintf("/webClient/quasar_%v", p.GetQuasarVersion())
 	ReadTmplAndPrint(p, projectTmplPath + "/types/main.go", "/types",  "main.go", nil)
 	ReadTmplAndPrint(p, projectTmplPath + "/types/config.go", "/types",  "config.go", nil)
@@ -74,9 +74,9 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	}
 
 	if p.IsTelegramIntegration() {
-		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/telegram/telegramAuth.go", "/webServer", "telegramAuth.go", nil)
-		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/telegram/user_telegram_auth.sql", "/sql/template/function/_User", "user_telegram_auth.sql", nil)
-		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/telegram/user_get_by_telegram_id.sql", "/sql/template/function/_User", "user_get_by_telegram_id.sql", nil)
+		ReadTmplAndPrint(p, "../../../pepelazz/nla_framework/templates/integrations/telegram/telegramAuth.go", "/webServer", "telegramAuth.go", nil)
+		ReadTmplAndPrint(p, "../../../pepelazz/nla_framework/templates/integrations/telegram/user_telegram_auth.sql", "/sql/template/function/_User", "user_telegram_auth.sql", nil)
+		ReadTmplAndPrint(p, "../../../pepelazz/nla_framework/templates/integrations/telegram/user_get_by_telegram_id.sql", "/sql/template/function/_User", "user_get_by_telegram_id.sql", nil)
 		ReadTmplAndPrint(p, projectTmplPath + "/tgBot/main.go", "/tgBot", "main.go", nil)
 	}
 
@@ -90,8 +90,8 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 
 	// в случае коннекта к Битрикс генерим файлы
 	if p.IsBitrixIntegration() {
-		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/bitrix/bitrixMain.go", "/bitrix", "main.go", nil)
-		//sourcePath := "../../../pepelazz/projectGenerator/templates/integrations/bitrix/bitrixMain.go"
+		ReadTmplAndPrint(p, "../../../pepelazz/nla_framework/templates/integrations/bitrix/bitrixMain.go", "/bitrix", "main.go", nil)
+		//sourcePath := "../../../pepelazz/nla_framework/templates/integrations/bitrix/bitrixMain.go"
 		//t, err := template.New("bitrixMain.go").Funcs(funcMap).Delims("[[", "]]").ParseFiles(sourcePath)
 		//utils.CheckErr(err, "bitrixMain.go")
 		//distPath := fmt.Sprintf("%s/bitrix", p.DistPath)
@@ -101,8 +101,8 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 
 	// в случае коннекта к 1 Odata генерим файлы
 	if p.IsOdataIntegration() {
-		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/odata/main.go", "/odata", "main.go", nil)
-		ReadTmplAndPrint(p, "../../../pepelazz/projectGenerator/templates/integrations/odata/odataQueryType.go", "/odata", "odataQueryType.go", nil)
+		ReadTmplAndPrint(p, "../../../pepelazz/nla_framework/templates/integrations/odata/main.go", "/odata", "main.go", nil)
+		ReadTmplAndPrint(p, "../../../pepelazz/nla_framework/templates/integrations/odata/odataQueryType.go", "/odata", "odataQueryType.go", nil)
 	}
 }
 

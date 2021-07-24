@@ -2,8 +2,8 @@ package tmplGenerateStep2
 
 import (
 	"fmt"
-	"github.com/pepelazz/projectGenerator/types"
-	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/pepelazz/nla_framework/types"
+	"github.com/pepelazz/nla_framework/utils"
 	"strings"
 	"text/template"
 )
@@ -22,7 +22,7 @@ func PluginUtilsJs(p types.ProjectType)  {
 			return funcBodyes
 		},
 	}
-	path := fmt.Sprintf("../../../pepelazz/projectGenerator/templates/project/webClient/quasar_%v/app/plugins/utils.js", p.GetQuasarVersion())
+	path := fmt.Sprintf("../../../pepelazz/nla_framework/templates/project/webClient/quasar_%v/app/plugins/utils.js", p.GetQuasarVersion())
 	t, err := template.New("utils.js").Funcs(funcMap).Delims("[[", "]]").ParseFiles(path)
 	utils.CheckErr(err, "OverriteCopiedFiles ParseFiles")
 

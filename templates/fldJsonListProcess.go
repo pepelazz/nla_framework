@@ -2,8 +2,8 @@ package templates
 
 import (
 	"fmt"
-	"github.com/pepelazz/projectGenerator/types"
-	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/pepelazz/nla_framework/types"
+	"github.com/pepelazz/nla_framework/utils"
 	"text/template"
 )
 
@@ -18,7 +18,7 @@ func fldJsonListProccess(p types.ProjectType, d *types.DocType, fld *types.FldTy
 			"PrintVueFldTemplate": PrintVueFldTemplate,
 			"GetJsonList": func() types.FldVueJsonList {return JsonList},
 		}
-		sourcePath := fmt.Sprintf("../../../pepelazz/projectGenerator/templates/webClient/quasar_%v/doc/comp/fldJsonList.vue", p.GetQuasarVersion())
+		sourcePath := fmt.Sprintf("../../../pepelazz/nla_framework/templates/webClient/quasar_%v/doc/comp/fldJsonList.vue", p.GetQuasarVersion())
 		// проверяем возможность того, что путь к шаблону был переопределен внутри документа
 		if d.TemplatePathOverride != nil {
 			if tmpl, ok := d.TemplatePathOverride["fldJsonList.vue"]; ok {

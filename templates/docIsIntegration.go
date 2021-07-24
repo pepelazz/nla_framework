@@ -3,8 +3,8 @@ package templates
 import (
 	"fmt"
 	"github.com/iancoleman/strcase"
-	"github.com/pepelazz/projectGenerator/types"
-	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/pepelazz/nla_framework/types"
+	"github.com/pepelazz/nla_framework/utils"
 	"github.com/serenize/snaker"
 	"log"
 	"text/template"
@@ -20,7 +20,7 @@ func docIsIntegrationProccess(p types.ProjectType, d *types.DocType)  {
 }
 
 func docIsIntegrationBitrixProccess(p types.ProjectType, d *types.DocType) {
-	sourcePath := "../../../pepelazz/projectGenerator/templates/integrations/bitrix/bitrixDoc.go"
+	sourcePath := "../../../pepelazz/nla_framework/templates/integrations/bitrix/bitrixDoc.go"
 	// проверяем возможность того, что путь к шаблону был переопределен внутри документа
 	if d.TemplatePathOverride != nil {
 		if tmpl, ok := d.TemplatePathOverride["bitrixDoc.go"]; ok {
@@ -98,7 +98,7 @@ func getBtxFld(d types.DocType, fld types.FldType) types.BitrixFld  {
 }
 
 func docIsIntegrationOdataProccess(p types.ProjectType, d *types.DocType) {
-	sourcePath := "../../../pepelazz/projectGenerator/templates/integrations/odata/odataDoc.go"
+	sourcePath := "../../../pepelazz/nla_framework/templates/integrations/odata/odataDoc.go"
 	// проверяем возможность того, что путь к шаблону был переопределен внутри документа
 	if d.TemplatePathOverride != nil {
 		if tmpl, ok := d.TemplatePathOverride["odataDoc.go"]; ok {

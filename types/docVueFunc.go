@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/pepelazz/nla_framework/utils"
 	"github.com/serenize/snaker"
 	"github.com/spf13/cast"
 	"log"
@@ -470,7 +470,7 @@ func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams,
 		d.Templates = map[string]*DocTemplate{}
 	}
 	d.Templates[fmt.Sprintf("%s_ref_list_widget", refDoc.FldName)] = &DocTemplate{
-		Source:       fmt.Sprintf("../../../pepelazz/projectGenerator/templates/webClient/quasar_%v/doc/comp/refListWidget.vue", d.GetProject().GetQuasarVersion()),
+		Source:       fmt.Sprintf("../../../pepelazz/nla_framework/templates/webClient/quasar_%v/doc/comp/refListWidget.vue", d.GetProject().GetQuasarVersion()),
 		DistPath:     fmt.Sprintf("../src/webClient/src/app/components/%s/comp", d.PgName()),
 		DistFilename: snaker.SnakeToCamelLower(refDoc.FldName) + "RefListWidget.vue",
 		FuncMap: map[string]interface{}{

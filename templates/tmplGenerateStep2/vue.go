@@ -3,8 +3,8 @@ package tmplGenerateStep2
 import (
 	"bytes"
 	"fmt"
-	"github.com/pepelazz/projectGenerator/types"
-	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/pepelazz/nla_framework/types"
+	"github.com/pepelazz/nla_framework/utils"
 	"io/ioutil"
 	"log"
 	"os"
@@ -35,7 +35,7 @@ func TasksTmpl(p types.ProjectType)  {
 			return
 		},
 	}
-	path := "../../../pepelazz/projectGenerator/webClient/quasar_1/webClient/src/app/components/currentUser/tasks/list.vue"
+	path := "../../../pepelazz/nla_framework/webClient/quasar_1/webClient/src/app/components/currentUser/tasks/list.vue"
 	t, err := template.New("list.vue").Funcs(funcMap).Delims("[[", "]]").ParseFiles(path)
 	utils.CheckErr(err, "OverriteCopiedFiles ParseFiles")
 

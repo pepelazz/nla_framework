@@ -1,7 +1,7 @@
 package graylog
 
 import (
-	"github.com/pepelazz/projectGenerator/types"
+	"github.com/pepelazz/nla_framework/types"
 	"gopkg.in/aphistic/golf.v0"
 	"fmt"
 )

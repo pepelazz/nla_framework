@@ -2,7 +2,7 @@ package types
 
 import (
 	"fmt"
-	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/pepelazz/nla_framework/utils"
 	"github.com/serenize/snaker"
 	"go/build"
 	"log"

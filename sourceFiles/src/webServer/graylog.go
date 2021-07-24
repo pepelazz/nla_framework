@@ -3,9 +3,9 @@ package webServer
 import (
 	"github.com/gin-gonic/gin"
 	"fmt"
-	"github.com/pepelazz/projectGenerator/graylog"
-	"github.com/pepelazz/projectGenerator/types"
-	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/pepelazz/nla_framework/graylog"
+	"github.com/pepelazz/nla_framework/types"
+	"github.com/pepelazz/nla_framework/utils"
 	"net/http"
 )
 

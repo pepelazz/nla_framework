@@ -2,7 +2,7 @@ package sse
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/pepelazz/nla_framework/utils"
 	"net/http"
 )
 

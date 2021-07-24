@@ -1,12 +1,12 @@
-package projectGenerator
+package nla_framework
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/pepelazz/projectGenerator/templates"
-	"github.com/pepelazz/projectGenerator/types"
-	"github.com/pepelazz/projectGenerator/utils"
+	"github.com/pepelazz/nla_framework/templates"
+	"github.com/pepelazz/nla_framework/types"
+	"github.com/pepelazz/nla_framework/utils"
 	"github.com/spf13/cast"
 	"io/ioutil"
 	"log"
@@ -127,16 +127,16 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc) {
 	}
 
 	// копируем файлы проекта (которые не шаблоны)
-	err := copyFiles(project, "../../../pepelazz/projectGenerator/sourceFiles", "../", modifyFunc)
+	err := copyFiles(project, "../../../pepelazz/nla_framework/sourceFiles", "../", modifyFunc)
 	utils.CheckErr(err, "Copy sourceFiles")
 
 	// отдельно копируем webClient в зависимости от версии quasar-framework
-	err = copyFiles(project, fmt.Sprintf("../../../pepelazz/projectGenerator/webClient/quasar_%v", project.GetQuasarVersion()), "../src/", modifyFunc)
+	err = copyFiles(project, fmt.Sprintf("../../../pepelazz/nla_framework/webClient/quasar_%v", project.GetQuasarVersion()), "../src/", modifyFunc)
 	utils.CheckErr(err, "Copy sourceFiles")
 
 	// в случае если quasar-framework v1 то копируем часть устаревших sql файлов. Для поддержания кода старых проектов
 	if p.GetQuasarVersion() == 1 {
-		err = copyFiles(project, "../../../pepelazz/projectGenerator/sourceFilesSQL_legacy", "../src/sql/", modifyFunc)
+		err = copyFiles(project, "../../../pepelazz/nla_framework/sourceFilesSQL_legacy", "../src/sql/", modifyFunc)
 		utils.CheckErr(err, "Copy sourceFiles")
 	}
 
@@ -164,7 +164,7 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 				}
 				// заменяем ссылки в go файлах
 				if strings.HasSuffix(info.Name(), ".go") {
-					file = []byte(strings.Replace(string(file), "github.com/pepelazz/projectGenerator", p.Config.LocalProjectPath, -1))
+					file = []byte(strings.Replace(string(file), "github.com/pepelazz/nla_framework", p.Config.LocalProjectPath, -1))
 				}
 				// изменение config.js
 				if strings.HasSuffix(path, "app"+string(os.PathSeparator)+"plugins"+string(os.PathSeparator)+"config.js") {
