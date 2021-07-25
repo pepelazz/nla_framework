@@ -11,7 +11,7 @@
     <!-- основная страница, после авторизации  -->
     <q-layout view="hHh Lpr lFf" v-if="isLoggedIn && isWorking">
 
-      <q-header reveal elevated class="bg-white text-grey-8 q-py-xs">
+      <q-header elevated class="bg-white text-grey-8 q-py-xs">
         <q-toolbar>
           <q-btn dense flat round icon="menu" @click="leftSide = !leftSide"/>
 
