@@ -27,7 +27,7 @@
 
 <script>
   export default {
-    props: ['url', 'fileExt', 'icon', 'tooltip', 'label', 'is_btn_with_label', 'size', 'color'],
+    props: ['url', 'fileExt', 'icon', 'tooltip', 'label', 'is_btn_with_label', 'size', 'color', 'notifyResultFunc'],
     computed: {
       uploadUrl() {
         return `${this.$config.apiUrl()}/api/${this.url}`
@@ -77,7 +77,7 @@
           this.$q.notify({
             color: 'positive',
             position: 'bottom',
-            message: res.result,
+            message: this.notifyResultFunc ? this.notifyResultFunc(res.result) : res.result,
           })
         }
       },
