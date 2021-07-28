@@ -273,7 +273,12 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	}
 	switch fldType {
 	case types.FldTypeString, types.FldTypeText, types.FldTypeUuid:
-		return fmt.Sprintf(`<q-input %s type='text' v-model="item.%s" label="%s" autogrow :readonly='%s' %s/>`, borderStyle, name, nameRu, readonly, params)
+		autogrow := "autogrow"
+		// для коротких текстов не делаем autogrow
+		if fld.Sql.Size > 0 && fld.Sql.Size < 40 {
+			autogrow = ""
+		}
+		return fmt.Sprintf(`<q-input %s type='text' v-model="item.%s" label="%s" %s :readonly='%s' %s/>`, borderStyle, name, nameRu, autogrow, readonly, params)
 	case types.FldTypeInt, types.FldTypeInt64, types.FldTypeDouble:
 		return fmt.Sprintf(`<q-input %s type='number' v-model="item.%s" label="%s" :readonly='%s' %s/>`, borderStyle, name, nameRu, readonly, params)
 	// дата
