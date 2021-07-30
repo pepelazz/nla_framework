@@ -74,6 +74,20 @@ BEGIN
 END;
 $function$;
 
+DROP FUNCTION IF EXISTS add_business_day(from_date date, num_days int);
+create or replace function add_business_day(from_date date, num_days int)
+    returns date
+as $function$
+select d
+from (
+         select d::date, row_number() over (order by d)
+         from generate_series(from_date+ 1, from_date+ num_days* 2+ 5, '1d') d
+         where
+                 extract('dow' from d) not in (0, 6)
+     ) s
+where row_number = num_days
+$function$ language sql;
+
 -- проверка, что пользователь имеет одну из ролей
 DROP FUNCTION IF EXISTS is_user_role(userId int, roles text[]);
 CREATE OR REPLACE FUNCTION is_user_role(userId int, roles text[])
