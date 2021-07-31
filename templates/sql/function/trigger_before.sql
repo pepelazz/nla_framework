@@ -4,6 +4,7 @@ DROP FUNCTION IF EXISTS {{.PgName}}_trigger_before() CASCADE;
 CREATE OR REPLACE FUNCTION {{.PgName}}_trigger_before() RETURNS trigger AS
 $$
 DECLARE
+        r record;
        {{- .GetBeforeTriggerDeclareVars}}
        searchTxtVar TEXT := '';
 BEGIN
