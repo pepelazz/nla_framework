@@ -289,7 +289,7 @@ func GetFldSelectString(name, nameRu string, size int, rowCol [][]int, options [
 }
 
 // создание простого поля MultipleSelect с типом string
-func GetFldSelectMultilple(name, nameRu string, rowCol [][]int, options []FldVueOptionsItem, params ...string) (fld FldType) {
+func GetFldSelectMultiple(name, nameRu string, rowCol [][]int, options []FldVueOptionsItem, params ...string) (fld FldType) {
 	readonly := "false"
 	classStr := getDefaultClassStr("")
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeTextArray, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeMultipleSelect, Ext: map[string]string{}, Class: []string{classStr}, Readonly:readonly, Options:options}}
