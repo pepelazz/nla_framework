@@ -234,14 +234,18 @@ func GetFldEmail(name, nameRu string, rowCol [][]int, params ...string) (fld Fld
 // поле с кастомной композицией
 func GetFldJsonbComposition(name, nameRu string, rowCol [][]int, classStr, compName string, params ...string) (fld FldType) {
 	isOptionsFld := ""
+	sqlType := FldTypeJsonb
 	for _, v := range params {
 		// IsOptionFld передаем отдельным параемтром, потому что SetIsOptionFld() срабатывает уже после того как строка с компонентой сформмирована
 		if v == "IsOptionFld" {
 			isOptionsFld = "options."
 		}
+		if v == "sqlType:" {
+			sqlType = strings.TrimSpace(strings.TrimPrefix(v, "sqlType:"))
+		}
 	}
 	classStr = getDefaultClassStr(classStr)
-	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeJsonb,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
+	fld = FldType{Name:name, NameRu:nameRu, Type: sqlType,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
 		return fmt.Sprintf("<%[1]s :fld='item.%[5]s%[2]s' :item='item' @update='item.%[5]s%[2]s = $event' label='%[3]s' %[4]s/>", compName, name, nameRu, strings.Join(params, " "), isOptionsFld)
 	}}}
 	return
