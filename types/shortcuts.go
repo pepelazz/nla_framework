@@ -235,17 +235,17 @@ func GetFldEmail(name, nameRu string, rowCol [][]int, params ...string) (fld Fld
 func GetFldJsonbComposition(name, nameRu string, rowCol [][]int, classStr, compName string, params ...string) (fld FldType) {
 	isOptionsFld := ""
 	sqlType := FldTypeJsonb
-	for _, v := range params {
+	for i, v := range params {
 		// IsOptionFld передаем отдельным параемтром, потому что SetIsOptionFld() срабатывает уже после того как строка с компонентой сформмирована
 		if v == "IsOptionFld" {
 			isOptionsFld = "options."
 		}
 		if strings.HasPrefix(v, "sqlType:") {
 			sqlType = strings.TrimSpace(strings.TrimPrefix(v, "sqlType:"))
+			// убираем из params, потому что они дальше печатаются во vue компоненту
+			params[i] = ""
 		}
 	}
-	fmt.Printf("params %s\n", params)
-	fmt.Printf("sqlType %s\n", sqlType)
 	classStr = getDefaultClassStr(classStr)
 	fld = FldType{Name:name, NameRu:nameRu, Type: sqlType,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
 		return fmt.Sprintf("<%[1]s :fld='item.%[5]s%[2]s' :item='item' @update='item.%[5]s%[2]s = $event' label='%[3]s' %[4]s/>", compName, name, nameRu, strings.Join(params, " "), isOptionsFld)
