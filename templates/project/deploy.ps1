@@ -22,7 +22,7 @@ go build -o app 2>&1 # redirect error stream (2) to success stream (1)
 
 # копирование бинарника на сервер
 echo "transfer file to server..."
-pscp -r app  {{.Config.WebServer.Username}}@{{.Config.WebServer.Ip}}:/{{.Config.WebServer.Path}}/src
+scp -r app  {{.Config.WebServer.Username}}@{{.Config.WebServer.Ip}}:/{{.Config.WebServer.Path}}/src
 
 cd ./webClient
 echo "start quasar build..."

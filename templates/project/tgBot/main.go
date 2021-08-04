@@ -130,7 +130,13 @@ func Start(config types.Config) {
 func SendMsg(tgId, msg string)  {
 	if bot != nil && len(tgId) > 0 && len(msg) > 0 {
 		msg = strings.Replace(msg, "\\n", "\n", -1)
-		bot.Send(&tgUser{tgId}, msg, tb.ModeHTML)
+		answer, err := bot.Send(&tgUser{tgId}, msg, tb.ModeHTML)
+		if err != nil {
+			fmt.Printf("bot.Send error: %s tgId:%s msg:'%s'\n", err, tgId, msg)
+		}
+		if answer!=nil {
+			fmt.Printf("bot.Send: tgId:%s msg:'%s' answer: %s\n", tgId, msg, answer.Text)
+		}
 	}
 }
 
