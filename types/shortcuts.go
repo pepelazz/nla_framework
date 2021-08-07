@@ -166,14 +166,18 @@ func GetFldRadioString(name, nameRu string, rowCol [][]int, options []FldVueOpti
 // - isAddNew
 // - isClearable
 func GetFldRef(name, nameRu, refTable string, rowCol [][]int, params ...string) (fld FldType) {
-	var classStr string
-	if len(params)>0 {
-		if strings.Contains(params[0], "col-") {
-			classStr= params[0]
+	classArr := []string{getDefaultClassStr("")}
+	for i, v := range params {
+		if strings.HasPrefix(v, "col-") {
+			if i == 0 {
+				classArr = []string{getDefaultClassStr(v)}
+			} else {
+				classArr = append(classArr, v)
+			}
 		}
+
 	}
-	classStr = getDefaultClassStr(classStr)
-	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeInt,  Sql: FldSql{Ref: refTable, IsSearch:true}, Vue:FldVue{RowCol: rowCol, Ext: map[string]string{}, Class: []string{classStr}}}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeInt,  Sql: FldSql{Ref: refTable, IsSearch:true}, Vue:FldVue{RowCol: rowCol, Ext: map[string]string{}, Class: classArr}}
 	for _, v := range params {
 		// добавляем аватарку с ссылкой на выбранный документ
 		if v == "isShowLink" {
@@ -257,8 +261,15 @@ func GetFldJsonbComposition(name, nameRu string, rowCol [][]int, classStr, compN
 
 // поле с кастомной композицией
 func GetFldJsonbCompositionWithoutFld(rowCol [][]int, classStr, compName string, params ...string) (fld FldType) {
-	classStr = getDefaultClassStr(classStr)
-	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
+	classArr := []string{getDefaultClassStr(classStr)}
+	for i, v := range params {
+		if strings.HasPrefix(v, "col-") {
+			classArr = append(classArr, v)
+			// стираем класс, чтобы не попал в атрибуты vue компоненты
+			params[i] = ""
+		}
+	}
+	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: classArr, Composition: func(p ProjectType, d DocType, fld FldType) string {
 		return fmt.Sprintf("<%[1]s :item='item' %[2]s/>", compName, strings.Join(params, " "))
 	}}}
 	return
