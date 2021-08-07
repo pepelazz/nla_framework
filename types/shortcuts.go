@@ -49,19 +49,21 @@ func GetFldDouble(name, nameRu string, rowCol [][]int, params ...string) (fld Fl
 
 // создание простого поля String
 func GetFldString(name, nameRu string, size int, rowCol [][]int, params ...string) (fld FldType) {
-	var classStr string
+	classArr := []string{getDefaultClassStr("")}
 	readonly := "false"
 	for i, v := range params {
 		if i == 0 {
-			classStr = v
+			classArr = []string{getDefaultClassStr(v)}
 		} else {
+			if strings.HasPrefix(v, "col-") {
+				classArr = append(classArr, v)
+			}
 			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
 				readonly="true"
 			}
 		}
 	}
-	classStr = getDefaultClassStr(classStr)
-	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Readonly:readonly}}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeString, Vue:FldVue{RowCol: rowCol, Class: classArr, Readonly:readonly}}
 	if size > 0 {
 		fld.Sql.Size = size
 	}
@@ -283,6 +285,9 @@ func GetFldSelectString(name, nameRu string, size int, rowCol [][]int, options [
 			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
 				fld.Vue.Readonly = "true"
 			}
+			if strings.HasPrefix(v, "col-") {
+				fld.Vue.Class = append(fld.Vue.Class, v)
+			}
 			if v == "isClearable" {
 				fld.Vue.Ext["isClearable"] = "true"
 			}
@@ -301,10 +306,13 @@ func GetFldSelectMultiple(name, nameRu string, rowCol [][]int, options []FldVueO
 	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeTextArray, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeMultipleSelect, Ext: map[string]string{}, Class: []string{classStr}, Readonly:readonly, Options:options}}
 	for i, v := range params {
 		if i == 0 {
-			classStr = getDefaultClassStr(v)
+			fld.Vue.Class = []string{getDefaultClassStr(v)}
 		} else {
 			if strings.HasPrefix(v, "readonly") && strings.HasSuffix(v, "true") {
 				fld.Vue.Readonly = "true"
+			}
+			if strings.HasPrefix(v, "col-") {
+				fld.Vue.Class = append(fld.Vue.Class, v)
 			}
 			if v == "isClearable" {
 				fld.Vue.Ext["isClearable"] = "true"
@@ -317,18 +325,21 @@ func GetFldSelectMultiple(name, nameRu string, rowCol [][]int, options []FldVueO
 
 // создание простого поля Int
 func GetFldTag(name, nameRu string, rowCol [][]int, params ...string) (fld FldType) {
-	classStr := getDefaultClassStr("")
+	classArr := []string{getDefaultClassStr("")}
 	onlyExistTags := "false" // флаг для UI контрола, чтобы можно было только выбирать из существующих тэгов и нельзя было создавать новые
 	for i, v := range params {
 		if i == 0 {
-			classStr = getDefaultClassStr(v)
+			classArr = []string{getDefaultClassStr(v)}
 		} else {
+			if strings.HasPrefix(v, "col-") {
+				fld.Vue.Class = append(fld.Vue.Class, v)
+			}
 			if strings.HasPrefix(v, "only_exist_tags") {
 				onlyExistTags="true"
 			}
 		}
 	}
-	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeTextArray, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeTags,  Class: []string{classStr}, Ext: map[string]string{"onlyExistTags": onlyExistTags}}}
+	fld = FldType{Name:name, NameRu:nameRu, Type:FldTypeTextArray, Vue:FldVue{RowCol: rowCol, Type: FldVueTypeTags,  Class: classArr, Ext: map[string]string{"onlyExistTags": onlyExistTags}}}
 	return
 }
 
