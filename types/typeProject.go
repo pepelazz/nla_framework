@@ -75,6 +75,7 @@ type (
 		Path     string
 		Ip       string
 		Username string // root или ...
+		SshPort  int64
 	}
 	DevModeConfig struct {
 		IsDocker bool
