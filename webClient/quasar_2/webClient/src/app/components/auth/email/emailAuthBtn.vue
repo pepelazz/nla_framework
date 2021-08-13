@@ -5,13 +5,13 @@
       <div>войти</div>
     </q-btn>
     <q-dialog v-model="modalIsOpened" persistent>
-      <q-card style="min-width: 35%">
+      <q-card style="min-width: 25%">
         <q-toolbar>
-          <q-toolbar-title><span class="text-weight-bold">{{dialogTitle}}</span></q-toolbar-title>
+          <q-toolbar-title style="display: flex"><span class="text-weight-bold" style="margin-left: auto; padding-left: 45px; margin-right: auto;">{{dialogTitle}}</span></q-toolbar-title>
           <q-btn flat round dense icon="close" v-close-popup/>
         </q-toolbar>
 
-        <q-card-section>
+        <q-card-section style="padding-top: 10px">
           <!-- форма логин + пароль -->
           <comp-login-form v-if='!(emailRegister.isNewRegister || emailRegister.isPasswordRecover)'
                            @register="showNewEmailUserRegister"
@@ -65,7 +65,7 @@
         this.emailRegister.isNewRegister = true
         this.emailRegister.isNewRegisterSuccess = false
       },
-        resetRegisterForm() {
+      resetRegisterForm() {
         this.emailRegister.isNewRegister = false
       },
       showPasswordRecover() {
