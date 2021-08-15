@@ -17,7 +17,7 @@
     <template v-slot:before v-if="ext && ext.pathUrl">
       <router-link v-if="(localItem && localItem.id) || itemId" :to="ext.pathUrl + '/' + ((localItem && localItem.id) || itemId)" style="cursor: pointer">
         <q-avatar rounded >
-            <img :src="ext.avatar">
+          <img :src="ext.avatar">
         </q-avatar>
       </router-link>
       <q-avatar v-else rounded style="opacity: 0.7"><img :src="ext.avatar"></q-avatar>
@@ -61,110 +61,119 @@
 </template>
 
 <script>
-    export default {
-        props: {
-            itemId: {
-                type: Number
-            },
-            item: {
-                type: String
-            },
-            label: {
-                type: String
-            },
-            ext: {
-                type: Object
-            },
-            readonly: {
-                type: Boolean,
-                default: false
-            },
-            dense: {
-                type: Boolean,
-                default: false
-            },
-            itemTitleFldName: {
-                type: String,
-                default: 'title'
-            },
-            pgMethod: {
-                type: String
-            },
-        },
-        data() {
-            return {
-                localItem: {},
-                options: []
-            }
-        },
-        created() {
-            const title = this.item ? this.item : null
-            this.localItem = {label: title, value: this.ext?.value || title}
-        },
-        watch: {
-            localItem: function (v) {
-                if (v && v.id) this.$emit('update', {id: v.id, item: v})
-            }
-        },
-        methods: {
-            clear() {
-                this.localItem = {label: null, value: null}
-                this.$emit('clear')
-            },
-            filterFn(val, update, abort) {
-                update(() => {
-                    this.$utils.postCallPgMethod({
-                        method: this.pgMethod,
-                        params: Object.assign({search_text: val, per_page: 20}, this.ext ? this.ext : {}),
-                    }).subscribe(res => {
-                        if (res.ok) {
-                            if (!res.result) res.result = []
-                            this.options = res.result.map(v => {
-                                let label = v[this.itemTitleFldName]
-                                if (this.ext?.itemTitleFunc) {
-                                  label = this.ext.itemTitleFunc(v)
-                                }
-                                return {
-                                    label,
-                                    value: `${v[this.ext?.itemValueFldName ? this.ext.itemValueFldName : this.itemTitleFldName]}`,
-                                    id: v.id,
-                                    item: v,
-                                }
-                            })
-                        }
-                    })
-                })
-            },
-            openNewTab() {
-                window.open(this.ext.addNewUrl, '_blank')
-            }
-        },
-        mounted() {
-            // подгружаем список сразу при открытии
-            this.$utils.postCallPgMethod({
-                method: this.pgMethod,
-                params: Object.assign({search_text: '', per_page: 20}, this.ext ? this.ext : {}),
-            }).subscribe(res => {
-                if (res.ok) {
-                    if (!res.result) res.result = []
-                    this.options = res.result.map(v => {
-                        let label = v[this.itemTitleFldName]
-                        if (this.ext?.itemTitleFunc) {
-                          label = this.ext.itemTitleFunc(v)
-                        }
-                        return {
-                            label,
-                            value: v[this.itemTitleFldName],
-                            id: v.id,
-                            item: v,
-                        }
-                    })
-                    // если результат в списке 1, то сразу ставим его как выбранный
-                    // if (this.options.length === 1) {
-                    //     this.localItem = this.options[0]
-                    // }
+  export default {
+    props: {
+      itemId: {
+        type: Number
+      },
+      item: {
+        type: String
+      },
+      label: {
+        type: String
+      },
+      ext: {
+        type: Object
+      },
+      readonly: {
+        type: Boolean,
+        default: false
+      },
+      dense: {
+        type: Boolean,
+        default: false
+      },
+      itemTitleFldName: {
+        type: String,
+        default: 'title'
+      },
+      pgMethod: {
+        type: String
+      },
+    },
+    data() {
+      return {
+        localItem: {},
+        options: []
+      }
+    },
+    created() {
+      const title = this.item ? this.item : null
+      this.localItem = {label: title, value: this.ext?.value || title}
+    },
+    watch: {
+      localItem: function (v) {
+        if (v && v.id) this.$emit('update', {id: v.id, item: v})
+      }
+    },
+    methods: {
+      clear() {
+        this.localItem = {label: null, value: null}
+        this.$emit('clear')
+      },
+      filterFn(val, update, abort) {
+        update(() => {
+          this.$utils.postCallPgMethod({
+            method: this.pgMethod,
+            params: Object.assign({search_text: val, per_page: 20}, this.ext ? this.ext : {}),
+          }).subscribe(res => {
+            if (res.ok) {
+              if (!res.result) res.result = []
+              this.options = res.result.map(v => {
+                let label = v[this.itemTitleFldName]
+                if (this.ext?.itemTitleFunc) {
+                  label = this.ext.itemTitleFunc(v)
                 }
-            })
+                return {
+                  label,
+                  value: `${v[this.ext?.itemValueFldName ? this.ext.itemValueFldName : this.itemTitleFldName]}`,
+                  id: v.id,
+                  item: v,
+                }
+              })
+            }
+          })
+        })
+      },
+      openNewTab() {
+        window.open(this.ext.addNewUrl, '_blank')
+      }
+    },
+    mounted() {
+      // подгружаем список сразу при открытии
+      this.$utils.postCallPgMethod({
+        method: this.pgMethod,
+        params: Object.assign({search_text: '', per_page: 20}, this.ext ? this.ext : {}),
+      }).subscribe(res => {
+        if (res.ok) {
+          if (!res.result) res.result = []
+          this.options = res.result.map(v => {
+            let label = v[this.itemTitleFldName]
+            if (this.ext?.itemTitleFunc) {
+              label = this.ext.itemTitleFunc(v)
+            }
+            // вариант, когда передан id, но нет названия выбранного элемента. Для подстановки названия из загруженного списка
+            if (this.itemId && !this.item && v.id === this.itemId) {
+              this.localItem = {
+                label,
+                value: v[this.itemTitleFldName],
+                id: v.id,
+                item: v,
+              }
+            }
+            return {
+              label,
+              value: v[this.itemTitleFldName],
+              id: v.id,
+              item: v,
+            }
+          })
+          // если результат в списке 1, то сразу ставим его как выбранный
+          // if (this.options.length === 1) {
+          //     this.localItem = this.options[0]
+          // }
         }
+      })
     }
+  }
 </script>
