@@ -30,7 +30,7 @@ func ReadConfigFile(path string) (c *Config, err error) {
 
 	tree, err := toml.LoadFile(path)
 	if err != nil {
-		pwd, _, := os.Getwd()
+		pwd, _ := os.Getwd()
 		fmt.Printf("current directory (pwd): %s\n", pwd)
 		return nil, err
 	}
