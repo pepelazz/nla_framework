@@ -6,11 +6,11 @@
           {{label}}
         </div>
       </comp-stat-img-src>
-      <q-btn outline round icon="add" color="grey" @click="isShowDialog = true" class="absolute-top-right">
+      <q-btn outline round icon="add" color="grey" @click="isShowDialog = true" class="absolute-top-right all-pointer-events">
         <q-tooltip>Загрузить фото</q-tooltip>
       </q-btn>
       <q-btn outline round size="sm" icon="delete" color="grey" @click="isShowDeleteDialog=true"
-             class="absolute-bottom-right">
+             class="absolute-bottom-right all-pointer-events">
         <q-tooltip>Удалить фото</q-tooltip>
       </q-btn>
     </div>

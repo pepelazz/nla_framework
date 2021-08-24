@@ -7,12 +7,12 @@
                          style="width: 150px"
       >
         <a :href="imgUrl(item.file)" target="_blank">
-          <q-btn flat round size="sm" icon="link" color="white" class="absolute-top-right"/>
+          <q-btn flat round size="sm" icon="link" color="white" class="absolute-top-right all-pointer-events"/>
         </a>
-        <q-btn v-if="!readonly" flat round size="sm" icon="delete" color="white" @click="showDeleteDialog(item.file)" class="absolute-bottom-right">
+        <q-btn v-if="!readonly" flat round size="sm" icon="delete" color="white" @click="showDeleteDialog(item.file)" class="absolute-bottom-right all-pointer-events">
           <q-tooltip>Удалить фото</q-tooltip>
         </q-btn>
-        <q-btn v-if="!readonly && index>0" flat round size="sm" icon="keyboard_backspace" color="white" @click="moveLeft(item.file, index)" class="absolute-bottom-left">
+        <q-btn v-if="!readonly && index>0" flat round size="sm" icon="keyboard_backspace" color="white" @click="moveLeft(item.file, index)" class="absolute-bottom-left all-pointer-events">
           <q-tooltip>Поменять местами</q-tooltip>
         </q-btn>
       </comp-stat-img-src>
