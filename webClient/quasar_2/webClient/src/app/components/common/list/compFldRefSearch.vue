@@ -104,6 +104,9 @@
     watch: {
       localItem: function (v) {
         if (v && v.id) this.$emit('update', {id: v.id, item: v})
+      },
+      item: function (v) {
+        this.localItem = {label: v, value: v}
       }
     },
     methods: {
