@@ -4,16 +4,16 @@
     <!-- строка, число  -->
     <q-input v-if="type=='string' && vif"
              outlined :type='type' :label="label" :modelValue="fld"
-             @input="v=>$emit('update', v)"
+             @update:model-value="v=>$emit('update', v)"
              :readonly="readonly" autogrow/>
     <!-- строка, число  -->
     <q-input v-if="type=='number' && vif"
              outlined :type='type' :label="label" :modelValue="fld"
-             @input="v=>$emit('update', v)"
+             @update:model-value="v=>$emit('update', v)"
              :readonly="readonly"/>
     <q-input v-if="type=='phone' && vif"
              outlined :label="label" :modelValue="fld"
-             @input="v=>$emit('update', v)"
+             @update:model-value="v=>$emit('update', v)"
              mask="+# (###) ### - ####"
              :readonly="readonly">
       <template v-slot:prepend><q-icon name="phone"/></template>
@@ -24,7 +24,7 @@
       outlined
       :label="label" :modelValue="fld"
       :options="selectOptions"
-      @input="v=>$emit('update', v)"
+      @update:model-value="v=>$emit('update', v)"
       :readonly="readonly"
     >
       <template v-if="icon" v-slot:prepend>
@@ -38,7 +38,7 @@
       :label="label" :modelValue="fld"
       multiple
       :options="selectOptions"
-      @input="v=>$emit('update', v)"
+      @update:model-value="v=>$emit('update', v)"
       :readonly="readonly"
     />
     <!-- выбор пользователя   -->
@@ -54,7 +54,7 @@
     <comp-fld-date-time  v-if="type=='datetime' && vif" :label="label" :date-string="formatDateTimeForSelector(fld)" @update="v=>$emit('update', v)" :readonly="readonly"/>
 
     <div class="q-gutter-sm" v-if="type=='checkbox' && vif">
-      <q-checkbox v-model="localFld" :label="label" @input="v=>$emit('update', v)"/>
+      <q-checkbox v-model="localFld" :label="label" @update:model-value="v=>$emit('update', v)"/>
     </div>
     <!-- вариант кастомной директивы   -->
     <div v-if="compName && vif">

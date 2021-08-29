@@ -35,6 +35,9 @@
         <div class="col-xs-12 col-sm-6 col-md-4">
           <comp-fld-img label="фото" :fld="item.avatar" :ext="{fldName: 'avatar', uploadUrl: 'upload_profile_image', methodUpdate: 'user_update', tableId: item.id}"/>
         </div>
+        <div class="col-md-4 col-xs-6">
+          <q-input outlined  v-model="item.email" label="email" :readonly='true'  class='q-mb-sm col-md-4 col-xs-6' ><template v-slot:prepend><q-icon name="email"/></template></q-input>
+        </div>
       </div>
 
       <!--  кнопки   -->
