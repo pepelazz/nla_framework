@@ -114,7 +114,7 @@
         searchTxt: '',
         isShowSearchfld: false,
         itemList: [],
-        listParams: {page: 0, per_page: 10, deleted: false},
+        listParams: {page: 0, per_page: 10, deleted: false, order_by: 'created_at desc'},
         isUrlQueryProcessed: false, // флаг для обработки query из url при первоначальной загрузке
       }
     },
