@@ -2,6 +2,19 @@
   <q-page :padding="!isOpenInDialog">
     <comp-breadcrumb v-if="!isOpenInDialog" :list="[{label:'[[index .Vue.I18n "listTitle"]]', docType:'[[.Name]]'}]"/>
 
+    [[- if .Vue.FilterList]]
+    <!-- фильтры   -->
+    <div class="row q-mt-sm q-col-gutter-sm">
+      [[- range .Vue.FilterList]]
+        [[- if .IsRef]]
+        <div class="[[.ColClass]]">
+          <comp-fld-ref-search dense outlined pgMethod="[[.RefTable]]_list" label="[[.Label]]" :item='filter[[ToCamel .RefTable]]Title' :itemId='filter[[ToCamel .RefTable]]Id' :ext='{isClearable: true}'  @update="updateFilter[[ToCamel .RefTable]]" @clear="updateFilter[[ToCamel .RefTable]]"  class='q-mb-sm col-md-4 col-sm-6 col-xs-12' />
+        </div>
+        [[- end]]
+      [[- end]]
+    </div>
+    [[- end]]
+
     <comp-doc-list ref="docList" listTitle='[[index .Vue.I18n "listTitle"]]' listDeletedTitle='[[index .Vue.I18n "listDeletedTitle"]]' pg-method="[[.PgName]]_list"
                    :list-sort-data="listSortData" :list-filter-data="listFilterData"
                   [[if not .Vue.IsHideCreateNewBtn]] :newDocUrl="currentUrl + 'new'" [[- end]]
@@ -52,7 +65,41 @@
           {value: {deleted: false}, title: 'Активные'},
           {value: {deleted: true}, title: 'Удаленные'}
         ],
+        [[- range .Vue.FilterList]]
+        [[- if .IsRef]]
+        filter[[ToCamel .RefTable]]Title: null,
+        filter[[ToCamel .RefTable]]Id: null,
+        [[- end]]
+        [[- end]]
       }
     },
+    methods: {
+      [[- range .Vue.FilterList]]
+      [[- if .IsRef]]
+      updateFilter[[ToCamel .RefTable]](v) {
+        this.$refs.docList.changeItemList({'[[.FldName]]': v ? v.id : null})
+        if (v) {
+          this.$utils.callPgMethod(`[[.RefTable]]_get_by_id`, {id: v.id}, (res) => {
+            this.filter[[ToCamel .RefTable]]Title = res.title
+          })
+        }
+      },
+      [[- end]]
+      [[- end]]
+    },
+    mounted() {
+    [[if .Vue.FilterList -]]
+      // извлекаем параметры фильтрации из url
+      const urlParams = new URLSearchParams(window.location.search)
+      [[- range .Vue.FilterList]]
+      [[- if .IsRef]]
+      if (urlParams.has('[[.FldName]]')) {
+        let id = +urlParams.get('[[.FldName]]')
+        if (id) this.updateFilter[[ToCamel .RefTable]]({id})
+      }
+      [[- end]]
+    [[- end]]
+    [[- end]]
+    }
   }
 </script>

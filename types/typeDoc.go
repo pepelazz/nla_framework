@@ -62,6 +62,7 @@ type (
 		IsHideCreateNewBtn bool // возможность не показыввать кнопку "+" в списке
 		IsOpenNewInTab bool // создание новой записи открывается в новом табе
 		List 		VueDocList // дополнительные настройки списка документов
+		FilterList  []VueDocListFilter // список фильтров
 	}
 
 	VueTab struct {
@@ -98,6 +99,14 @@ type (
 		Url string
 		FileExt []string
 		Tooltip string
+	}
+
+	VueDocListFilter struct {
+		Label string
+		FldName string
+		IsRef bool
+		RefTable string
+		ColClass string
 	}
 
 
