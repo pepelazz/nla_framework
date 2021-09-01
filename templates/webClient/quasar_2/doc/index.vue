@@ -1,3 +1,5 @@
+[[$doc:=.]]
+
 <template>
   <q-page :padding="!isOpenInDialog">
     <comp-breadcrumb v-if="!isOpenInDialog" :list="[{label:'[[index .Vue.I18n "listTitle"]]', docType:'[[.Name]]'}]"/>
@@ -9,6 +11,14 @@
         [[- if .IsRef]]
         <div class="[[.ColClass]]">
           <comp-fld-ref-search dense outlined pgMethod="[[.RefTable]]_list" label="[[.Label]]" :item='filter[[ToCamel .RefTable]]Title' :itemId='filter[[ToCamel .RefTable]]Id' :ext='{isClearable: true}'  @update="updateFilter[[ToCamel .RefTable]]" @clear="updateFilter[[ToCamel .RefTable]]"  class='q-mb-sm col-md-4 col-sm-6 col-xs-12' />
+        </div>
+        [[- else]]
+        <div class="[[.ColClass]]">
+          <q-select dense outlined v-model="filter[[ToCamel .FldName]]" :options="options[[ToCamel .FldName]]" label="[[.Label]]" @update:model-value="v => updateFilter[[ToCamel .FldName]](v.value)"  class='q-mb-sm col-md-4 col-sm-6 col-xs-12'>
+            <template v-slot:append v-if="filter[[ToCamel .FldName]]">
+              <q-icon name="close" @click.stop="updateFilter[[ToCamel .FldName]](null)" class="cursor-pointer" />
+            </template>
+          </q-select>
         </div>
         [[- end]]
       [[- end]]
@@ -69,6 +79,11 @@
         [[- if .IsRef]]
         filter[[ToCamel .RefTable]]Title: null,
         filter[[ToCamel .RefTable]]Id: null,
+        [[- else]]
+        filter[[ToCamel .FldName]]: null,
+        options[[ToCamel .FldName]]: [
+        [[ PrintFldSelectOptions $doc .FldName ]]
+        ],
         [[- end]]
         [[- end]]
       }
@@ -84,6 +99,11 @@
           })
         }
       },
+      [[- else]]
+      updateFilter[[ToCamel .FldName]](v) {
+        this.$refs.docList.changeItemList({'[[.FldName]]': v ? v : null})
+        this.filter[[ToCamel .FldName]] = v ? this.options[[ToCamel .FldName]].find(v1 => v1.value === v) : null
+      },
       [[- end]]
       [[- end]]
     },
@@ -96,6 +116,11 @@
       if (urlParams.has('[[.FldName]]')) {
         let id = +urlParams.get('[[.FldName]]')
         if (id) this.updateFilter[[ToCamel .RefTable]]({id})
+      }
+      [[- else]]
+      if (urlParams.has('[[.FldName]]')) {
+        let name = urlParams.get('[[.FldName]]')
+        if (name) this.updateFilter[[ToCamel .FldName]](name)
       }
       [[- end]]
     [[- end]]

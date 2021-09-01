@@ -35,6 +35,7 @@ var funcMap = template.FuncMap{
 		}
 		return "null"
 	},
+	"PrintFldSelectOptions": PrintFldSelectOptions,
 }
 
 func ParseTemplates(p types.ProjectType) map[string]*template.Template {
@@ -405,6 +406,32 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		return fmt.Sprintf("not found vueFldTemplate for type `%s`", fldType)
 	}
 }
+
+// печать options для поля select. Находим поле по имени
+func PrintFldSelectOptions(doc types.DocType, fldName string) string {
+	var fld types.FldType
+	// ищем поле по имени
+	for _, f := range doc.Flds {
+		if f.Name == fldName {
+			fld = f
+		}
+	}
+	// проверка что поле нашлось
+	if len(fld.Name) == 0 {
+		log.Fatalf("PrintFldSelectOptions fld: '%s' not found in doc: '%s'", fldName, doc.Name)
+	}
+	// проверка что поле имеет тип
+	if fld.Vue.Type != types.FldVueTypeSelect {
+		log.Fatalf("PrintFldSelectOptions fld: '%s' not type GetFldSelectString in doc: '%s'", fldName, doc.Name)
+	}
+	res := []string{}
+	for _, v := range fld.Vue.Options {
+		res = append(res, fmt.Sprintf("{label: '%s', value: '%s'}", v.Label, v.Value))
+	}
+
+	return fmt.Sprintf("\t%s", strings.Join(res, ",\n\t\t\t\t\t"))
+}
+
 
 func arrayStringJoin(arr []string) string  {
 	tmpArr := []string{}
