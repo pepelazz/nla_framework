@@ -46,7 +46,7 @@ BEGIN
                                         valueStr = concat(valueStr, 'NULL', ',');
                                     END IF;
                             WHEN 'number'
-                                THEN valueStr = concat(valueStr, COALESCE(i.value, 'NULL'), ',');
+                                THEN valueStr = concat(valueStr, COALESCE(NULLIF(trim(i.value), ''), 'NULL'), ',');
                             WHEN 'bool'
                                 THEN valueStr = concat(valueStr, COALESCE(i.value, 'NULL'), ',');
                             WHEN 'arrayText'
