@@ -54,16 +54,18 @@ func FillDocI18n(p types.ProjectType) {
 			for _, fld := range p.Docs[i].Flds {
 				// проверяем, чтобы не перезаписать уже существующий ключ
 				if _, ok := p.Docs[i].I18n[lang][fld.Name]; !ok {
-					if lang == "ru" {
-							p.Docs[i].I18n[lang][fld.Name] = fld.NameRu
-							if fld.Name == "title" {
-								p.Docs[i].I18n[lang][fld.Name] = "название"
-							}
-					} else {
-						// все остальные языки кроме русского
-						name := strings.ReplaceAll(fld.Name, "_", " ")
-						name = strings.ReplaceAll(name, "id", "")
-						p.Docs[i].I18n[lang][fld.Name] = name
+					if len(fld.Name) > 0 && len(fld.NameRu) > 0 {
+						if lang == "ru" {
+								p.Docs[i].I18n[lang][fld.Name] = fld.NameRu
+								if fld.Name == "title" {
+									p.Docs[i].I18n[lang][fld.Name] = "название"
+								}
+						} else {
+							// все остальные языки кроме русского
+							name := strings.ReplaceAll(fld.Name, "_", " ")
+							name = strings.ReplaceAll(name, "id", "")
+							p.Docs[i].I18n[lang][fld.Name] = name
+						}
 					}
 				}
 			}

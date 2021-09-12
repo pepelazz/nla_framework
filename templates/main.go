@@ -277,7 +277,11 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	if len(fld.Vue.Vif)>0 {
 		params = params + fmt.Sprintf(" v-if=\"%s\" ", fld.Vue.Vif)
 	}
-	labelI18n := fld.Doc.Name + "." + name
+	// не во всех случаях fld.Doc доступен, но там и label не нужен. Например doc.AddFld(t.GetFldVueCompositionRefList(&doc, t.VueCompRefListWidgetParams{...
+	var labelI18n string
+	if fld.Doc != nil {
+		labelI18n = fld.Doc.Name + "." + name
+	}
 	switch fldType {
 	case types.FldTypeString, types.FldTypeText, types.FldTypeUuid:
 		autogrow := "autogrow"
