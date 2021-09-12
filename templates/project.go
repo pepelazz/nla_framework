@@ -62,6 +62,16 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/home.vue", "/webClient/src/app/components",  "home.vue", nil)
 	ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/auth/loginPage.vue", "/webClient/src/app/components/auth",  "loginPage.vue", nil)
 
+	// заполняем словарь локализаций для всех документов
+	FillDocI18n(p)
+	// печать i18n/index.js
+	PrintI18nJs(p)
+	// создаем папки i18n под каждый указанный язык и в них свой index.js
+	for _, lang := range p.I18n.LangList {
+		PrintDocI18nJs(p, lang)
+	}
+
+
 	if p.Config.Auth.ByPhone {
 		ReadTmplAndPrint(p, projectTmplPath + "/sql/01_User/user_get_by_phone_with_password.sql", "/sql/template/function/_User",  "user_get_by_phone_with_password.sql", nil)
 		ReadTmplAndPrint(p, projectTmplPath + "/sql/03_UserTempEmailAuth/user_temp_phone_auth_create.sql", "/sql/template/function/_UserTempEmailAuth",  "user_temp_phone_auth_create.sql", nil)
@@ -113,6 +123,8 @@ func OtherTemplatesGenerate(p types.ProjectType)  {
 	}
 	// добавляем функции в plugin/utils.js
 	tmplGenerateStep2.PluginUtilsJs(p)
+	//
+	tmplGenerateStep2.BootI18nJs(p)
 }
 
 func ReadTmplAndPrint(p types.ProjectType, sourcePath, distPath, filename string, addFuncMap template.FuncMap) {

@@ -2,7 +2,7 @@
 
 <template>
   <q-page :padding="!isOpenInDialog">
-    <comp-breadcrumb v-if="!isOpenInDialog" :list="[{label:'[[index .Vue.I18n "listTitle"]]', docType:'[[.Name]]'}]"/>
+    <comp-breadcrumb class="text-capitalize" v-if="!isOpenInDialog" :list="[{label: $t('[[.Name]].name_plural'), docType:'[[.Name]]'}]"/>
 
     [[- if .Vue.FilterList]]
     <!-- фильтры   -->
@@ -25,7 +25,7 @@
     </div>
     [[- end]]
 
-    <comp-doc-list ref="docList" listTitle='[[index .Vue.I18n "listTitle"]]' listDeletedTitle='[[index .Vue.I18n "listDeletedTitle"]]' pg-method="[[.PgName]]_list"
+    <comp-doc-list ref="docList" :listTitle="$t('[[.Name]].name_plural')" :listDeletedTitle="$t('[[.Name]].name_plural_deleted')" pg-method="[[.PgName]]_list"
                    :list-sort-data="listSortData" :list-filter-data="listFilterData"
                   [[if not .Vue.IsHideCreateNewBtn]] :newDocUrl="currentUrl + 'new'" [[- end]]
                   [[if .Vue.IsOpenNewInTab]] :isOpenNewInTab="true" [[- end]]

@@ -30,6 +30,18 @@ func PluginUtilsJs(p types.ProjectType)  {
 	utils.CheckErr(err, "OverriteCopiedFiles ExecuteToFile")
 }
 
+// i18n.js
+func BootI18nJs(p types.ProjectType)  {
+	distPath := fmt.Sprintf("%s/webClient/src/boot", p.DistPath)
+
+	path := fmt.Sprintf("../../../pepelazz/nla_framework/templates/project/webClient/quasar_%v/boot/i18n.js", p.GetQuasarVersion())
+	t, err := template.New("i18n.js").Delims("[[", "]]").ParseFiles(path)
+	utils.CheckErr(err, "OverriteCopiedFiles ParseFiles")
+
+	err = executeToFile(t, "", distPath, "i18n.js")
+	utils.CheckErr(err, "OverriteCopiedFiles ExecuteToFile")
+}
+
 func getI18nForSelectFlds(p types.ProjectType) (funcNames, funcBodyes string) {
 	for _, d := range p.Docs {
 		for _, fld := range d.Flds {

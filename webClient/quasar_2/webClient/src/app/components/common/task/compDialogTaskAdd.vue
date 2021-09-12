@@ -24,7 +24,7 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Отмена" v-close-popup/>
+        <q-btn flat :label="$t('message.cancel')" v-close-popup/>
         <q-btn flat label="OK" color="primary" @click="done"/>
       </q-card-actions>
     </q-card>

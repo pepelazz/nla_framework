@@ -6,12 +6,12 @@
 
           <!--  кнопка редактирования    -->
           <q-item v-if="isEdit" clickable v-close-popup @click="$emit('edit')">
-            <q-item-section>редактировать</q-item-section>
+            <q-item-section>{{$t('message.edit')}}</q-item-section>
           </q-item>
 
           <!--  кнопка удаления/восстановления        -->
           <q-item v-if="isDelete" clickable v-close-popup @click="confirmItemDeleteRecover(item)">
-            <q-item-section v-if="!item.deleted">удалить</q-item-section>
+            <q-item-section v-if="!item.deleted">{{$t('message.delete')}}</q-item-section>
             <q-item-section v-else>восстановить</q-item-section>
           </q-item>
 

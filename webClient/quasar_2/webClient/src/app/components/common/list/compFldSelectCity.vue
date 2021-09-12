@@ -35,7 +35,7 @@
         <q-card-section>
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Отмена" v-close-popup/>
+          <q-btn flat :label="$t('message.cancel')" v-close-popup/>
           <q-btn flat label="Добавить" v-close-popup @click="add"/>
         </q-card-actions>
       </q-card>

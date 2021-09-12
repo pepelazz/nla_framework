@@ -47,6 +47,20 @@ func ParseDocTemplateFilename(docName, filename, globalDistPath string, docIndex
 		if arr[1] == "taskTmpl" {
 			path = fmt.Sprintf("%s/webClient/src/app/components/currentUser/tasks/taskTemplates", globalDistPath)
 		}
+		// в случае i18n пишем в отдельную директорию в зависимости от языка
+		if strings.HasPrefix(arr[1], "i18n") {
+			// проверка что суффикс для языка указан
+			if len(arr) < 3 {
+				log.Printf("ParseDocTemplateFilename %v length < 3. Missed language suffix for i18n", arr)
+			}
+			// извлекаем из названия шаблона префикс языка локализации
+			langDir := strings.TrimSuffix(arr[2], ".js")
+			if langDir == "en" {
+				langDir = "en-US"
+			}
+			path = fmt.Sprintf("%s/webClient/src/i18n/%s", globalDistPath, langDir)
+			distFilename = fmt.Sprintf("%s.js", docName)
+		}
 		distPath = path
 	}
 	// шаблоны для sql

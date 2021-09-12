@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
 
-    <comp-breadcrumb :list="[{label:'Редактирование профиля'}]"/>
+    <comp-breadcrumb :list="[{label: $t('profile.breadcrumb_label')}]"/>
 
     <div v-if="item" class="q-mt-sm">
       <!--  поля формы    -->
@@ -10,7 +10,7 @@
                   :fld="item[fld.name]"
                   :type="fld.type"
                   @update="item[fld.name] = $event"
-                  :label="fld.label"
+                  :label="$t('profile.' + fld.name)"
                   :selectOptions="fld.selectOptions ? fld.selectOptions() : []"
                   :ajaxSelectTitle="item[fld.ajaxSelectTitle]"
                   :columnClass="fld.columnClass"

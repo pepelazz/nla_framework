@@ -2,7 +2,7 @@
   <div>
     <q-item-section side>
       <q-btn v-if="!item.deleted" flat round icon="delete_forever" @click="isShowDeleteDialog=true">
-        <q-tooltip>Удалить</q-tooltip>
+        <q-tooltip>{{$t('message.delete')}}</q-tooltip>
       </q-btn>
       <q-btn v-if="item.deleted" flat round icon="check_circle_outline" @click="update">
         <q-tooltip>Восстановить</q-tooltip>
@@ -13,12 +13,12 @@
       <q-card>
         <q-card-section class="row items-center">
           <q-avatar rounded icon="warning" color="warning" text-color="white"/>
-          <span class="q-ml-sm">Удалить?</span>
+          <span class="q-ml-sm">{{$t('message.delete')}}?</span>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Отмена" v-close-popup/>
-          <q-btn flat label="Удалить" v-close-popup @click="update"/>
+          <q-btn flat :label="$t('message.cancel')" v-close-popup/>
+          <q-btn flat :label="$t('message.delete')" v-close-popup @click="update"/>
         </q-card-actions>
       </q-card>
     </q-dialog>

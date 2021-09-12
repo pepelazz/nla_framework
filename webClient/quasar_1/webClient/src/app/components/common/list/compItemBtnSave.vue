@@ -1,7 +1,7 @@
 <template>
   <div class="q-py-md">
-    <q-btn color="secondary" v-if="!readonly" label="сохранить" class="q-mr-sm" @click="$emit('save')"/>
-    <q-btn outline color="secondary" label="отмена" @click="$emit('cancel')"/>
+    <q-btn color="secondary" v-if="!readonly" :label="$t('message.save')" class="q-mr-sm" @click="$emit('save')"/>
+    <q-btn outline color="secondary" :label="$t('message.cancel')" @click="$emit('cancel')"/>
   </div>
 </template>
 

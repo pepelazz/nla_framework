@@ -6,7 +6,7 @@
         <q-list bordered class="rounded-borders" separator>
           <q-item>
             <q-item-section>
-              <q-item-label caption>{{computedListTitle}}</q-item-label>
+              <q-item-label caption class="text-capitalize">{{computedListTitle}}</q-item-label>
             </q-item-section>
             <q-item-section top side>
               <div class="text-grey-8 q-gutter-xs">

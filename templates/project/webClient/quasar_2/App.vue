@@ -36,6 +36,10 @@
 
           <q-space/>
 
+          [[- if .I18n.IsExist]]
+          <i18n-switcher/>
+          [[- end]]
+
           <!-- аватарка и меню пользователя -->
           <div class="q-gutter-sm row items-center no-wrap">
 
@@ -65,10 +69,13 @@
 
   import waitingAuthPage from './app/components/auth/waitingAuthPage'
   import firedPage from './app/components/auth/firedPage'
+  [[- if .I18n.IsExist]]
+  import i18nSwitcher from "src/app/components/i18nSwitcher"
+  [[- end]]
 
   export default {
     mixins: [currentUserMixin],
-    components: {authComp, currentUserToolbarMenu, sideMenu, waitingAuthPage, firedPage},
+    components: {authComp, currentUserToolbarMenu, sideMenu, waitingAuthPage, firedPage, [[- if .I18n.IsExist]]i18nSwitcher,[[- end]]},
     data() {
       return {
         leftSide: true,

@@ -41,6 +41,10 @@ func readData(p types.ProjectType) {
 	project.FillDocTemplatesFields()
 	project.GenerateGrid()
 	project.FillVueFlds()
+	if len(p.I18n.Data) == 0 {
+		project.FillI18n() // заполняем дефолтные значения для i18n если не заполнены пользователем при инициализации проекта
+	}
+
 	if len(project.Config.Postgres.TimeZone) == 0 {
 		// проставляем дефолтное время сервера, если не задано в настройках проекта
 		project.Config.Postgres.TimeZone = "Europe/Moscow"

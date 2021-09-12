@@ -13,7 +13,7 @@
                   </q-avatar>
                 </q-item-section>
                 <q-item-section>
-                  <q-item-label>{{ link.text }}</q-item-label>
+                  <q-item-label class="text-capitalize">{{link.text.includes("i18n_") ? $t(link.text.replace("i18n_", "")) : link.text}}</q-item-label>
                 </q-item-section>
               </q-item>
               <q-expansion-item v-else header-class="text-grey" closed>
@@ -23,15 +23,15 @@
                       <img :src="link.icon">
                     </q-avatar>
                   </q-item-section>
-                    <q-item-section>
-                      {{link.text}}
+                    <q-item-section class="text-capitalize">
+                      {{link.text.includes("i18n_") ? $t(link.text.replace("i18n_", "")) : link.text}}
                     </q-item-section>
                 </template>
                 <span v-for="link1 in link.linkList" :key="link1.text" >
                   <q-item v-if="isRole(link1.roles)" :inset-level="1" v-ripple clickable :to="link1.url"
                           exact>
                   <q-item-section>
-                    <q-item-label>{{ link1.text }}</q-item-label>
+                    <q-item-label class="text-capitalize">{{link1.text.includes("i18n_") ? $t(link1.text.replace("i18n_", "")) : link1.text}}</q-item-label>
                   </q-item-section>
                 </q-item>
                 </span>

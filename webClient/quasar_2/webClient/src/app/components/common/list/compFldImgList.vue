@@ -10,7 +10,7 @@
           <q-btn flat round size="sm" icon="link" color="white" class="absolute-top-right all-pointer-events"/>
         </a>
         <q-btn v-if="!readonly" flat round size="sm" icon="delete" color="white" @click="showDeleteDialog(item.file)" class="absolute-bottom-right all-pointer-events">
-          <q-tooltip>Удалить фото</q-tooltip>
+          <q-tooltip>{{$t('message.delete')}} фото</q-tooltip>
         </q-btn>
         <q-btn v-if="!readonly && index>0" flat round size="sm" icon="keyboard_backspace" color="white" @click="moveLeft(item.file, index)" class="absolute-bottom-left all-pointer-events">
           <q-tooltip>Поменять местами</q-tooltip>
@@ -50,7 +50,7 @@
           <q-input v-model="newImgUrl" label="ссылка на фото"/>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat label="Отмена" v-close-popup/>
+          <q-btn flat :label="$t('message.cancel')" v-close-popup/>
           <q-btn flat label="Ок" v-close-popup @click="addImgUrl"/>
         </q-card-actions>
       </q-card>
@@ -61,12 +61,12 @@
       <q-card>
         <q-card-section class="row items-center">
           <q-avatar rounded icon="warning" color="warning" text-color="white"/>
-          <span class="q-ml-sm">Удалить?</span>
+          <span class="q-ml-sm">{{$t('message.delete')}}?</span>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Отмена" v-close-popup/>
-          <q-btn flat label="Удалить" v-close-popup @click="remove"/>
+          <q-btn flat :label="$t('message.cancel')" v-close-popup/>
+          <q-btn flat :label="$t('message.delete')" v-close-popup @click="remove"/>
         </q-card-actions>
       </q-card>
     </q-dialog>

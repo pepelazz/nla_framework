@@ -7,7 +7,7 @@
         </template>
       </q-input>
       <div class="row wrap justify-center items-start content-start q-gutter-md" style="margin-left: 0">
-        <q-btn class="col" outline color="secondary" @click='$emit("cancel")'>отмена</q-btn>
+        <q-btn class="col" outline color="secondary" @click='$emit("cancel")'>{{$t('message.cancel')}}</q-btn>
         <q-btn class="col" color="primary" @click="ok">ok</q-btn>
       </div>
     </div>
@@ -28,7 +28,7 @@
         <template v-slot:prepend><q-icon name="lock"/></template>
       </q-input>
       <div class="row wrap justify-center items-start content-start q-gutter-md" style="margin-left: 0">
-        <q-btn class="col" outline color="secondary" @click='$emit("cancel")'>отмена</q-btn>
+        <q-btn class="col" outline color="secondary" @click='$emit("cancel")'>{{$t('message.cancel')}}</q-btn>
         <q-btn class="col" color="primary" @click="changePassword">ok</q-btn>
       </div>
     </div>

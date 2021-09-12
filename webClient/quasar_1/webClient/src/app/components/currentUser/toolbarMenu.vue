@@ -16,7 +16,7 @@
         </q-item>
         <q-separator/>
         <q-item clickable class="GL__menu-link">
-          <q-item-section @click="$router.push('/profile')">редактировать</q-item-section>
+          <q-item-section @click="$router.push('/profile')">{{$t('message.edit')}}</q-item-section>
         </q-item>
         <q-separator/>
         <q-item clickable class="GL__menu-link">

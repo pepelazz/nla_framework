@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <comp-breadcrumb :list="[{label:'Пользователи', docType: 'users'}]"/>
+    <comp-breadcrumb class="text-capitalize" :list="[{label: $t('user.name_plural'), docType: 'users'}]"/>
 
     <comp-doc-list ref="docList" doc-name="user" pg-method="user_list"
                    :list-sort-data="listSortData" :list-filter-data="listFilterData"

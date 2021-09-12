@@ -28,7 +28,7 @@
                 </q-item-section >
 
                 <q-item-section v-if="!readonly" side>
-                    <q-btn icon="delete" size="sm" v-if="!item.deleted" round flat @click="removeRecover(item.id)"><q-tooltip>Удалить</q-tooltip></q-btn>
+                    <q-btn icon="delete" size="sm" v-if="!item.deleted" round flat @click="removeRecover(item.id)"><q-tooltip>{{$t('message.delete')}}</q-tooltip></q-btn>
                     <q-btn icon="check_circle_outline" size="sm" v-if="item.deleted" round flat @click="removeRecover(item.id)"><q-tooltip>Восстановить</q-tooltip></q-btn>
                 </q-item-section>
             </q-item>

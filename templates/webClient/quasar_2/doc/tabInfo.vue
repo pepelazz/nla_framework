@@ -29,7 +29,7 @@
             <!--  кнопки   -->
             <comp-item-btn-save v-if="!isOpenInDialog" @save="save" @cancel="$router.push(docUrl)"/>
             <!--  при открытии в диалоге кнопку Отмена не показываем   -->
-            <q-btn v-else color="secondary" label="сохранить" class="q-mr-sm" @click="save"/>
+            <q-btn v-else color="secondary" :label="$t('message.save')" class="q-mr-sm" @click="save"/>
 
             [[range .Vue.Hooks.ItemHtml]]
             [[.]]

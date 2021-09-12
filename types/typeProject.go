@@ -23,6 +23,7 @@ type (
 		Roles                    []ProjectRole // список ролей в проекте
 		IsDebugMode              bool
 		OverridePathForTemplates map[string]string // map для замены путей к исходным файлам. Ключ - путь к генерируемому файлу, значение - новый путь к исходному файлу.
+		I18n I18nType
 	}
 	ProjectConfig struct {
 		Logo             string
@@ -114,6 +115,13 @@ type (
 		DadataToken string
 		QuasarVersion int // версия quasar-framework 1, 2
 	}
+
+	I18nType struct {
+		IsExist bool
+		LangList []string
+		Data  map[string]map[string]map[string]string //RU : message : save: 'сохранить'
+	}
+
 
 	BitrixConfig struct {
 		ApiUrl       string
@@ -281,12 +289,14 @@ func (p *ProjectType) FillSideMenu() {
 				p.Vue.Menu[i].Url = d.Vue.RouteName
 			}
 			if len(v.Text) == 0 {
+				// i18n_ признак, чтобы различать текст и локализацию в js меню
+				p.Vue.Menu[i].Text = fmt.Sprintf("i18n_menu.%s", d.Name)
 				// если есть локализованное название для списка, то используем его (там множественное число). Если нет, то название документа
-				if title, ok := d.Vue.I18n["listTitle"]; ok {
-					p.Vue.Menu[i].Text = title
-				} else {
-					p.Vue.Menu[i].Text = utils.UpperCaseFirst(d.NameRu)
-				}
+				//if title, ok := d.Vue.I18n["listTitle"]; ok {
+				//	p.Vue.Menu[i].Text = title
+				//} else {
+				//	p.Vue.Menu[i].Text = utils.UpperCaseFirst(d.NameRu)
+				//}
 			}
 			if len(v.Roles) == 0 {
 				p.Vue.Menu[i].Roles = d.Vue.Roles
@@ -306,12 +316,13 @@ func (p *ProjectType) FillSideMenu() {
 						p.Vue.Menu[i].LinkList[j].Url = d.Vue.RouteName
 					}
 					if len(v1.Text) == 0 {
+						p.Vue.Menu[i].LinkList[j].Text = fmt.Sprintf("i18n_%s.name", d.Name)
 						// если есть локализованное название для списка, то используем его (там множественное число). Если нет, то название документа
-						if title, ok := d.Vue.I18n["listTitle"]; ok {
-							p.Vue.Menu[i].LinkList[j].Text = title
-						} else {
-							p.Vue.Menu[i].LinkList[j].Text = utils.UpperCaseFirst(d.NameRu)
-						}
+						//if title, ok := d.Vue.I18n["listTitle"]; ok {
+						//	p.Vue.Menu[i].LinkList[j].Text = title
+						//} else {
+						//	p.Vue.Menu[i].LinkList[j].Text = utils.UpperCaseFirst(d.NameRu)
+						//}
 					}
 					if len(v1.Roles) == 0 {
 						p.Vue.Menu[i].LinkList[j].Roles = d.Vue.Roles
@@ -441,3 +452,17 @@ func (p *ProjectType) GetQuasarVersion() int  {
 	}
 	return p.Config.Vue.QuasarVersion
 }
+
+func (p *ProjectType) AddI18n(lang, prefix, key, value string)  {
+	if len(p.I18n.Data)==0 {
+		p.I18n.Data = map[string]map[string]map[string]string{}
+	}
+	if len(p.I18n.Data[lang]) == 0 {
+		p.I18n.Data[lang] = map[string]map[string]string{}
+	}
+	if len(p.I18n.Data[lang][prefix]) == 0 {
+		p.I18n.Data[lang][prefix] = map[string]string{}
+	}
+	p.I18n.Data[lang][prefix][key] = value
+}
+

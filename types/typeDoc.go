@@ -31,6 +31,7 @@ type (
 		StateMachine         *DocSm
 		IsRecursion          bool // признак, что документ имеет рекурсию. Есть parent_id - ссылка на самого себя
 		Integrations         DocIntegrations
+		I18n map[string]map[string]string //RU : save: 'сохранить'
 	}
 
 	TmplPathOverride struct {
@@ -363,4 +364,14 @@ func (d *DocType) GetProject() *ProjectType {
 		utils.CheckErr(errors.New("project is nill. Pass 'project' to GetDoc.\nExample:\n func GetDoc(p *t.ProjectType) t.DocType {\n \tdoc := t.DocType{\n\t\tProject: \tp,\n\t\tName:       name,\n... "), fmt.Sprintf("doc: %s", d.Name))
 	}
 	return d.Project
+}
+
+func (d *DocType) AddI18n(lang, key, value string)  {
+	if len(d.I18n)==0 {
+		d.I18n = map[string]map[string]string{}
+	}
+	if len(d.I18n[lang]) == 0 {
+		d.I18n[lang] = map[string]string{}
+	}
+	d.I18n[lang][key] = value
 }

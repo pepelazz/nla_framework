@@ -258,7 +258,6 @@ func (fld FldType) SetSqlSize(size int) FldType {
 	return fld
 }
 
-
 func (fld FldType) SetIsUniq() FldType {
 	fld.Sql.IsUniq = true
 	return fld
@@ -350,3 +349,4 @@ func (fld FldType) SetFromConfigTable(d *DocType, fldName string) FldType {
 	d.Sql.Hooks.BeforeInsertUpdate = append(d.Sql.Hooks.BeforeInsertUpdate, triggerStr)
 	return fld
 }
+
