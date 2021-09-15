@@ -26,7 +26,8 @@ triggers = [
     {name="user_fullname_update", when="before insert or update", ref="for each row", funcName="trigger_user_fullname_update"},
     {name="user_event", when="after insert or update", ref="for each row", funcName="notify_event"},
     # генерится из шаблона с учетом документов, который ссылаются на user
-    {name="user_trigger_after", when="after insert or update", ref="for each row", funcName="user_trigger_after"}
+    {name="user_trigger_after", when="after insert or update", ref="for each row", funcName="user_trigger_after"},
+    {name="user_trigger_before", when="before insert or update", ref="for each row", funcName="user_trigger_before"}
 ]
 
 methods = [
@@ -42,7 +43,8 @@ methods = [
     "user_update",
     "user_get_admin_emails", # для рассылки админам
     "user_get_by_email_with_password", # для рассылки админам
-    "user_trigger_after", # для рассылки админам
+    "user_trigger_before",
+    "user_trigger_after",
     [[if .IsTelegramIntegration -]]
     "user_telegram_auth",
     "user_get_by_telegram_id",
