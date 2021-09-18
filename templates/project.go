@@ -77,6 +77,7 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 		ReadTmplAndPrint(p, projectTmplPath + "/sql/03_UserTempEmailAuth/user_temp_phone_auth_create.sql", "/sql/template/function/_UserTempEmailAuth",  "user_temp_phone_auth_create.sql", nil)
 		ReadTmplAndPrint(p, projectTmplPath + "/sql/03_UserTempEmailAuth/user_temp_phone_auth_check_sms_code.sql", "/sql/template/function/_UserTempEmailAuth",  "user_temp_phone_auth_check_sms_code.sql", nil)
 		ReadTmplAndPrint(p, projectTmplPath + webClient + "/auth/phone.go", "/webServer/auth",  "phone.go", nil)
+		ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/auth/email/components/compRegisterForm.vue", "/webClient/src/app/components/auth/email/components",  "compRegisterForm.vue", nil)
 		ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/auth/phone/phoneAuthBtn.vue", "/webClient/src/app/components/auth/phone",  "phoneAuthBtn.vue", nil)
 		ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/auth/phone/components/compLoginForm.vue", "/webClient/src/app/components/auth/phone/components",  "compLoginForm.vue", nil)
 		ReadTmplAndPrint(p, projectTmplPath + webClient + "/app/components/auth/phone/components/compRecoverPasswordForm.vue", "/webClient/src/app/components/auth/phone/components",  "compRecoverPasswordForm.vue", nil)

@@ -14,9 +14,7 @@
     </div>
     <!--СООБЩЕНИЕ ПОСЛЕ ОТПРАВКИ ФОРМЫ РЕГИСТРАЦИИ -->
     <div v-if='isRegisterSuccess'>
-      <div style="padding: 0">Проверьте указанный в регистрации email.<br>Должно прийти письмо для
-        подтверждения почтового адреса.
-      </div>
+      <div style="padding: 0">{{$t('auth.register_message')}}</div>
     </div>
   </div>
 </template>
