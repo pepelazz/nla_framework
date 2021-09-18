@@ -5,7 +5,7 @@
     <div v-if="isShowForm && !isSuccess" class="row justify-center q-ma-lg">
       <q-card class="col-md-4 col-xs-12 q-pa-lg" style="min-width: 35%">
         <q-toolbar>
-          <q-toolbar-title><span class="text-weight-bold">Восстановление пароля</span></q-toolbar-title>
+          <q-toolbar-title><span class="text-weight-bold" style="text-transform: capitalize">{{$t('auth.password_recovery')}}</span></q-toolbar-title>
         </q-toolbar>
         <div class="q-gutter-md q-mt-md">
           <q-input v-for="fld in flds" :key="fld.model" outlined :type='fld.type' :label="fld.label"
@@ -26,9 +26,9 @@
       <template v-slot:avatar>
         <q-icon name="lock" color="white"/>
       </template>
-      Пароль успешно изменен
+      {{$t('auth.password_recovery_success_message')}}
       <template v-slot:action>
-        <q-btn flat color="white" label="Перейти к авторизации" @click="$router.push(homeUrl)"/>
+        <q-btn flat color="white" :label="$t('auth.password_recovery_go_to_login')" @click="$router.push(homeUrl)"/>
       </template>
     </q-banner>
 
@@ -59,8 +59,8 @@
             return {
                 regForm: {},
                 flds: [
-                    {model: 'password', label: 'пароль', type: 'password', icon: 'lock'},
-                    {model: 'passwordRepeat', label: 'повторите пароль', type: 'password', icon: 'lock'},
+                    {model: 'password', label: this.$t('auth.password'), type: 'password', icon: 'lock'},
+                    {model: 'passwordRepeat', label: this.$t('auth.password_repeat'), type: 'password', icon: 'lock'},
                 ],
                 isTokenNotValid: null,
                 isShowForm: false,
@@ -73,7 +73,7 @@
                 // -- валидация пароля
                 if (!this.regForm.password || this.regForm.password.length < 7) {
                     this.$q.notify({
-                        message: 'Пароль должен быть больше 7 знаков',
+                        message: this.$t('auth.invalid_password_must_be_more_7'),
                         type: 'negative',
                         position: 'top-right'
                     })
@@ -81,7 +81,7 @@
                 }
                 if (this.regForm.password !== this.regForm.passwordRepeat) {
                     this.$q.notify({
-                        message: 'Повторно введенный пароль не совпадает с первым вариантом',
+                        message: this.$t('auth.invalid_password_wrong_repeat'),
                         type: 'negative',
                         position: 'top-right'
                     })

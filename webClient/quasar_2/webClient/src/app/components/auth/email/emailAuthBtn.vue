@@ -2,12 +2,12 @@
   <div>
     <q-btn size='md' outline color='primary' @click='login' :disabled='disabled'>
       <q-icon left size="3em" name="perm_identity"/>
-      <div>войти</div>
+      <div>{{$t('auth.login')}}</div>
     </q-btn>
     <q-dialog v-model="modalIsOpened" persistent>
       <q-card style="min-width: 25%">
         <q-toolbar>
-          <q-toolbar-title style="display: flex"><span class="text-weight-bold" style="margin-left: auto; padding-left: 45px; margin-right: auto;">{{dialogTitle}}</span></q-toolbar-title>
+          <q-toolbar-title style="display: flex"><span class="text-weight-bold" style="text-transform: capitalize; margin-left: auto; padding-left: 45px; margin-right: auto;">{{dialogTitle}}</span></q-toolbar-title>
           <q-btn flat round dense icon="close" v-close-popup/>
         </q-toolbar>
 
@@ -41,9 +41,9 @@
     components: {compLoginForm, compRegisterForm, compRecoverPasswordForm},
     computed: {
       dialogTitle() {
-        if (this.emailRegister.isNewRegister) return 'Регистрация'
-        if (this.emailRegister.isPasswordRecover) return 'Восстановление пароля'
-        return 'Авторизация'
+        if (this.emailRegister.isNewRegister) return this.$t('auth.registration')
+        if (this.emailRegister.isPasswordRecover) return this.$t('auth.password_recovery')
+        return this.$t('auth.authorization')
       },
     },
     data() {
