@@ -316,7 +316,7 @@ func (p *ProjectType) FillSideMenu() {
 						p.Vue.Menu[i].LinkList[j].Url = d.Vue.RouteName
 					}
 					if len(v1.Text) == 0 {
-						p.Vue.Menu[i].LinkList[j].Text = fmt.Sprintf("i18n_%s.name", d.Name)
+						p.Vue.Menu[i].LinkList[j].Text = fmt.Sprintf("i18n_menu.%s", d.Name)
 						// если есть локализованное название для списка, то используем его (там множественное число). Если нет, то название документа
 						//if title, ok := d.Vue.I18n["listTitle"]; ok {
 						//	p.Vue.Menu[i].LinkList[j].Text = title
