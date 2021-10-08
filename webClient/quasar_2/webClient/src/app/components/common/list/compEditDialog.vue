@@ -32,10 +32,13 @@
   import {ref} from 'vue'
   import $utils from 'src/app/plugins/utils'
   import _ from 'lodash'
+  import { useQuasar } from 'quasar'
+
   export default {
     props: ['pgMethod', 'labelNew', 'labelEdit'],
     emits: ['update'],
     setup(props, {emit}) {
+      const $q = useQuasar()
       const item = ref(null)
       const isShowAddDialog = ref(false)
       const flds = ref([])
@@ -46,6 +49,15 @@
       }
       const save = () => {
         const itemForSave = Object.assign({}, item.value)
+        // проверка на required
+        let isNotAllFilled = false
+        _.flattenDeep(flds.value).filter(v => v.required).map(v => {
+          if (!itemForSave[v.name]) {
+            isNotAllFilled = true
+            $q.notify({type: 'negative', message: `не заполнено поле: ${v.label}`})
+          }
+        })
+        if (isNotAllFilled) return
         // для поля select преобразуем {label: '', value: ''} -> value
         _.flattenDeep(flds.value).filter(v => v.type === 'select').map(v => itemForSave[v.name] = itemForSave[v.name].value)
         // сохраняем в базу
