@@ -1,0 +1,63 @@
+<template>
+  <!-- ДИАЛОГ ДОБАВЛЕНИЯ/РЕДАКТИРОВАНИЯ  -->
+  <q-dialog v-if="item" v-model="isShowAddDialog" :persistent="item.id !== -1">
+    <q-card style="width: 700px; max-width: 80vw;">
+
+      <!-- ЗАГОЛОВОК     -->
+      <q-card-section v-if="item.id === -1 && labelNew">
+        <div class="text-h6" >{{ labelNew }}</div>
+      </q-card-section>
+      <q-card-section v-if="item.id > 0 && labelEdit">
+        <div class="text-h6" >{{ labelEdit }}</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <div v-for="fldRow in flds" class="row q-col-gutter-md q-mb-sm">
+          <div v-for="fld in fldRow" :class="fld.classCol || 'col-12'">
+            <q-input v-if="fld.type == 'text' || fld.type == 'number'" :label="fld.label" v-model="item[fld.name]" :type="fld.type" outlined/>
+            <q-select v-if="fld.type == 'select'" :label="fld.label" v-model="item[fld.name]" :options="fld.options" outlined/>
+          </div>
+        </div>
+      </q-card-section>
+
+      <q-card-actions align="right" class="bg-white text-teal">
+        <q-btn flat label="Отмена" @click="isShowAddDialog=false"/>
+        <q-btn flat label="Сохранить" @click="save"/>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+</template>
+
+<script>
+  import {ref} from 'vue'
+  import $utils from 'src/app/plugins/utils'
+  import _ from 'lodash'
+  export default {
+    props: ['pgMethod', 'labelNew', 'labelEdit'],
+    emits: ['update'],
+    setup(props, {emit}) {
+      const item = ref(null)
+      const isShowAddDialog = ref(false)
+      const flds = ref([])
+      const show = (d) => {
+        isShowAddDialog.value = true
+        item.value = d.item
+        flds.value = d.flds
+      }
+      const save = () => {
+        const itemForSave = Object.assign({}, item.value)
+        // для поля select преобразуем {label: '', value: ''} -> value
+        _.flattenDeep(flds.value).filter(v => v.type === 'select').map(v => itemForSave[v.name] = itemForSave[v.name].value)
+        // сохраняем в базу
+        $utils.callPgMethod(props.pgMethod, itemForSave, (res) => {
+          isShowAddDialog.value = false
+          emit('update')
+        })
+      }
+
+      return {
+        item, isShowAddDialog, show, flds, save,
+      }
+    }
+  }
+</script>

@@ -23,6 +23,7 @@ import compSearchRefInListWidget from './list/compSearchRefInListWidget'
 import compLinkListWidget from './list/compLinkListWidget'
 import compFileUpload from './list/compFileUpload'
 import compDialogConfirm from './list/compDialogConfirm'
+import compEditDialog from './list/compEditDialog'
 import statImgSrc from './utils/statImgSrc'
 import compDialogTaskAdd from './task/compDialogTaskAdd'
 import compDialogTaskDone from './task/compDialogTaskDone'
@@ -53,6 +54,7 @@ export default (Vue) => {
   Vue.component('comp-search-ref-in-list-widget', compSearchRefInListWidget)
   Vue.component('comp-link-list-widget', compLinkListWidget)
   Vue.component('comp-stat-img-src', statImgSrc)
+  Vue.component('comp-edit-dialog', compEditDialog)
   Vue.component('comp-dialog-confirm', compDialogConfirm)
   Vue.component('comp-dialog-task-add', compDialogTaskAdd)
   Vue.component('comp-dialog-task-done', compDialogTaskDone)

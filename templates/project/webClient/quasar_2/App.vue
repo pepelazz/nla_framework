@@ -54,7 +54,7 @@
       <side-menu :leftSide="leftSide" :currentUser="currentUser" @hide="leftSide=false"/>
 
       <q-page-container>
-        <router-view :key="$route.fullPath" :currentUser="currentUser" @reloadMsgList="$refs.messageList ? $refs.messageList.reload() : ''"/>
+        <router-view :key="$route.fullPath" :currentUser="currentUser"/>
       </q-page-container>
 
     </q-layout>
