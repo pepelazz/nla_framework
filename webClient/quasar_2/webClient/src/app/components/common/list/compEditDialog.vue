@@ -14,8 +14,9 @@
       <q-card-section class="q-pt-none">
         <div v-for="fldRow in flds" class="row q-col-gutter-md q-mb-sm">
           <div v-for="fld in fldRow" :class="fld.classCol || 'col-12'">
-            <q-input v-if="fld.type == 'text' || fld.type == 'number'" :label="fld.label" v-model="item[fld.name]" :type="fld.type" outlined/>
-            <q-select v-if="fld.type == 'select'" :label="fld.label" v-model="item[fld.name]" :options="fld.options" outlined/>
+            <q-input v-if="fld.type === 'text' || fld.type === 'number'" :label="fld.label" v-model="item[fld.name]" :type="fld.type" outlined/>
+            <q-select v-if="fld.type === 'select'" :label="fld.label" v-model="item[fld.name]" :options="fld.options" outlined/>
+            <comp-fld-ref-search v-if="fld.type === 'ref'" outlined :pgMethod="fld.pgMethod" :label="fld.label" :item='item[fld.name + "_title"]' :itemId='item[fld.name]'  @update="v=> item[fld.name] = v.id" @clear="item[fld.name] = null"/>
           </div>
         </div>
       </q-card-section>

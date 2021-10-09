@@ -98,6 +98,11 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc) {
 		p.Config.Vue.QuasarVersion = 1
 	}
 
+	// дефолтная версия Postgres 12
+	if len(p.Config.Postgres.Version) == 0 {
+		p.Config.Postgres.Version = "12"
+	}
+
 	// дефолты для бэкапа на яндекс диск
 	//if p.IsBackupOnYandexDisk() {
 	//	if p.Config.Backup.ToYandexDisk.FilesCount == 0 {

@@ -69,6 +69,7 @@ type (
 		Port     int64
 		Password string
 		TimeZone string // время для сервера default 'Europe/Moscow' (например 'Asia/Novosibirsk')
+		Version string // версия Postgres, по дефолту 12
 	}
 	WebServerConfig struct {
 		Port     int64
