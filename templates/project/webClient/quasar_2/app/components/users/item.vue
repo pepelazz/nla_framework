@@ -51,11 +51,11 @@
   import _ from 'lodash'
   import roles from './roles'
 
-  const i18nState = {
-    waiting_auth: 'ожидает авторизации',
-    working: 'работает',
-    fired: 'уволен',
-  }
+  // const i18nState = {
+  //   waiting_auth: 'ожидает авторизации',
+  //   working: 'работает',
+  //   fired: 'уволен',
+  // }
   export default {
     props: ['id'],
     computed: {
@@ -63,7 +63,7 @@
       // локализация статусов
       stateOptions: function () {
         return ['waiting_auth', 'working', 'fired'].map(v => {
-          return {value: v, label: i18nState[v]}
+          return {value: v, label:  this.$t(`user.state_${v}`)}
         })
       }
     },
@@ -113,7 +113,7 @@
     methods: {
       resultModify(res) {
         res.role = res.role.map(roleName => _.find(this.options, {value: roleName})).filter(v => v)
-        if (res.state) res.state = {value: res.state, label: i18nState[res.state]}
+        if (res.state) res.state = {value: res.state, label: this.$t(`user.state_${res.state}`)}
         return res
       },
       save() {

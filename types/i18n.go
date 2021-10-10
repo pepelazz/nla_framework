@@ -59,6 +59,9 @@ func (p *ProjectType) FillI18n()  {
 				"email": "email",
 				"role_admin": "админ",
 				"role_student": "сотрудник",
+				"state_waiting_auth": "ожидает авторизации",
+				"state_working": "работает",
+				"state_fired": "уволен",
 
 			},
 			"menu": {
@@ -121,6 +124,9 @@ func (p *ProjectType) FillI18n()  {
 				"email": "email",
 				"role_admin": "admin",
 				"role_student": "user",
+				"state_waiting_auth": "waiting auth",
+				"state_working": "working",
+				"state_fired": "fired",
 			},
 			"menu": {
 				"user": "users",
