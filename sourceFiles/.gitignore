@@ -2,6 +2,7 @@
 *.iml
 
 image/*
+uploaded_files/*
 postgres/volume
 postgres/logs
 src/webClient/node_modules
