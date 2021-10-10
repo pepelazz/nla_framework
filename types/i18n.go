@@ -57,6 +57,9 @@ func (p *ProjectType) FillI18n()  {
 				"grade": "должность",
 				"photo": "фото",
 				"email": "email",
+				"role_admin": "админ",
+				"role_student": "сотрудник",
+
 			},
 			"menu": {
 				"user": "пользователи",
@@ -116,6 +119,8 @@ func (p *ProjectType) FillI18n()  {
 				"grade": "grade",
 				"photo": "photo",
 				"email": "email",
+				"role_admin": "admin",
+				"role_student": "user",
 			},
 			"menu": {
 				"user": "users",

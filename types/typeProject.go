@@ -380,21 +380,21 @@ func (p ProjectType) PrintGoJobList() string {
 
 // печать списка go jobs
 func (p ProjectType) PrintJsRoles() string {
-	res := "{label: 'админ', value: 'admin'},\n"
+	res := "{label: i18n.global.t('user.role_admin'), value: 'admin'},\n"
 	isOverrideStudent := false
 	for _, r := range p.Roles {
 		if r.Name == "student" {
 			isOverrideStudent = true
-			res = res + fmt.Sprintf("\t\t{label: '%s', value: '%s'},\n", r.NameRu, r.Name)
+			res = res + fmt.Sprintf("\t\t{label: i18n.global.t('user.role_%s'), value: '%s'},\n", r.Name, r.Name)
 		}
 	}
 	// отдельно рассматриваем возможность переопределения дефолтной роли student
 	if !isOverrideStudent {
-		res = res + fmt.Sprintf("\t\t{label: 'сотрудник', value: 'student'},\n")
+		res = res + fmt.Sprintf("\t\t{label: i18n.global.t('user.role_student'), value: 'student'},\n")
 	}
 	for _, r := range p.Roles {
 		if r.Name != "student" {
-			res = res + fmt.Sprintf("\t\t{label: '%s', value: '%s'},\n", r.NameRu, r.Name)
+			res = res + fmt.Sprintf("\t\t{label: i18n.global.t('user.role_%s'), value: '%s'},\n", r.Name, r.Name)
 		}
 	}
 	return res
