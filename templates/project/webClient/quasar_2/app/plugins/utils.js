@@ -142,6 +142,14 @@ const formatPgDate = (d) => {
   return d ? moment(d, 'YYYY-MM-DDTHH:mm:ss').format('DD-MM-YYYY') : null
 }
 
+const notifySuccess = (msg) => {
+  Notify.create({
+    color: 'positive',
+    position: 'bottom-right',
+    message: msg
+  })
+}
+
 [[FunctionsList]]
 
 export default {
@@ -154,6 +162,7 @@ export default {
   updateUrlQuery,
   formatPgDateTime,
   formatPgDate,
+  notifySuccess,
   _,
   [[ExportDefaultList]]
 }
