@@ -447,6 +447,25 @@ func (p ProjectType) PrintApiCallPgFuncMethods() string {
 	return res
 }
 
+// PrintProcessPgErrorMsgs печать перевода сообщений из postgres
+// например `violates unique constraint "day_already_exist"` -> "отчет на данную дату уже существует"
+func (p ProjectType) PrintProcessPgErrorMsgs() string {
+	//if strings.Contains(err.Error(), `violates unique constraint "day_already_exist"`) {
+	//	return "отчет на данную дату уже существует"
+	//}
+	var res []string
+	for _, d := range project.Docs {
+		for _, m := range d.Sql.UniqConstrains {
+			if len(m.Message)>0 {
+				res = append(res, fmt.Sprintf("\tif strings.Contains(err.Error(), `violates unique constraint \"%s\"`) {\n" +
+					"\t\treturn `%s`\n" +
+					"\t}", m.Name, m.Message))
+			}
+		}
+	}
+	return strings.Join(res, "\n")
+}
+
 func (p *ProjectType) GetQuasarVersion() int  {
 	if p.Config.Vue.QuasarVersion == 0 {
 		return 1

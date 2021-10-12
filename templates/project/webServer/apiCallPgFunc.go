@@ -146,7 +146,7 @@ func apiCallPgFunc(c *gin.Context) {
 		var err error
 		queryRes, err = callPgFuncToJson(jsonParam.Method, jsonParam.Params)
 		if err != nil {
-			utils.HttpError(c, http.StatusBadRequest, fmt.Sprintf("%s", err))
+			utils.HttpError(c, http.StatusBadRequest, processPgErrorMsg(err))
 			return
 		}
 		// в случае если указан ключ для кэширования, сохраняем полученные данные из базы в кэш
@@ -225,4 +225,9 @@ func BeforeHookAddUserId(c *gin.Context, p interface{}) error {
 		m["user_id"] = user.Id
 	}
 	return nil
+}
+
+func processPgErrorMsg (err error) string  {
+[[.PrintProcessPgErrorMsgs]]
+	return err.Error()
 }

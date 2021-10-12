@@ -171,6 +171,7 @@ type (
 	DocSqlUniqConstraint struct {
 		Name string
 		UniqConditions string //
+		Message string // сообщение, которое передается на клиент, вместо стандартного сообщения из postgres
 	}
 
 	DocIntegrations struct {
