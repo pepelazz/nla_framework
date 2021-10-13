@@ -8,12 +8,12 @@ DECLARE
        {{- .GetBeforeTriggerDeclareVars}}
        searchTxtVar TEXT := '';
 BEGIN
-        {{.Sql.Hooks.Print "triggerBefore" "BeforeTriggerBefore"}}
 
         {{if .Sql.IsSearchText}}
         {{- /* заполнение ref полей */ -}}
         {{.GetBeforeTriggerFillRefVars}}
         {{- end}}
+        {{.Sql.Hooks.Print "triggerBefore" "BeforeTriggerBefore"}}
 
         {{- range .Flds}}
         {{- if eq .Vue.Type "tags"}}
