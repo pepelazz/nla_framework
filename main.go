@@ -11,7 +11,9 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"text/template"
 	//"github.com/otiai10/copy"
@@ -136,16 +138,16 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc) {
 	}
 
 	// копируем файлы проекта (которые не шаблоны)
-	err := copyFiles(project, "../../../pepelazz/nla_framework/sourceFiles", "../", modifyFunc)
+	err := copyFiles(project, getCurrentDir() + "/sourceFiles", "../", modifyFunc)
 	utils.CheckErr(err, "Copy sourceFiles")
 
 	// отдельно копируем webClient в зависимости от версии quasar-framework
-	err = copyFiles(project, fmt.Sprintf("../../../pepelazz/nla_framework/webClient/quasar_%v", project.GetQuasarVersion()), "../src/", modifyFunc)
+	err = copyFiles(project, fmt.Sprintf("%s/webClient/quasar_%v", getCurrentDir(), project.GetQuasarVersion()), "../src/", modifyFunc)
 	utils.CheckErr(err, "Copy sourceFiles")
 
 	// в случае если quasar-framework v1 то копируем часть устаревших sql файлов. Для поддержания кода старых проектов
 	if p.GetQuasarVersion() == 1 {
-		err = copyFiles(project, "../../../pepelazz/nla_framework/sourceFilesSQL_legacy", "../src/sql/", modifyFunc)
+		err = copyFiles(project, getCurrentDir() + "/sourceFilesSQL_legacy", "../src/sql/", modifyFunc)
 		utils.CheckErr(err, "Copy sourceFiles")
 	}
 
@@ -173,7 +175,7 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 				}
 				// заменяем ссылки в go файлах
 				if strings.HasSuffix(info.Name(), ".go") {
-					file = []byte(strings.Replace(string(file), "github.com/pepelazz/nla_framework", p.Config.LocalProjectPath, -1))
+					file = []byte(strings.Replace(string(file), getCurrentDir(), p.Config.LocalProjectPath, -1))
 				}
 				// изменение config.js
 				if strings.HasSuffix(path, "app"+string(os.PathSeparator)+"plugins"+string(os.PathSeparator)+"config.js") {
@@ -347,4 +349,12 @@ func sidemenuJsModify() string {
 		}
 	}
 	return res
+}
+
+func getCurrentDir() string  {
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		log.Fatalf("ParseTemplates runtime.Caller: No caller information")
+	}
+	return path.Dir(filename)
 }
