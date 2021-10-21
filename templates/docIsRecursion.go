@@ -8,7 +8,7 @@ import (
 )
 
 func docIsRecursionProccess(p types.ProjectType, d *types.DocType)  {
-	sourcePath := fmt.Sprintf("../../../pepelazz/nla_framework/templates/webClient/quasar_%v/doc/comp/recursiveChildList.vue", p.GetQuasarVersion())
+	sourcePath := fmt.Sprintf("%s/webClient/quasar_%v/doc/comp/recursiveChildList.vue", getCurrentDir(), p.GetQuasarVersion())
 	// проверяем возможность того, что путь к шаблону был переопределен внутри документа
 	if d.TemplatePathOverride != nil {
 		if tmpl, ok := d.TemplatePathOverride["recursiveChildList.vue"]; ok {

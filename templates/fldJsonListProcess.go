@@ -7,7 +7,7 @@ import (
 	"text/template"
 )
 
-// если в документе есть поле с типо jsonList, то создаем специальную компоненту
+// Если в документе есть поле с типа jsonList, то создаем специальную компоненту
 func fldJsonListProccess(p types.ProjectType, d *types.DocType, fld *types.FldType)  {
 	if fld.Vue.Type == types.FldVueTypeJsonList {
 		docName := d.Name
@@ -18,7 +18,7 @@ func fldJsonListProccess(p types.ProjectType, d *types.DocType, fld *types.FldTy
 			"PrintVueFldTemplate": PrintVueFldTemplate,
 			"GetJsonList": func() types.FldVueJsonList {return JsonList},
 		}
-		sourcePath := fmt.Sprintf("../../../pepelazz/nla_framework/templates/webClient/quasar_%v/doc/comp/fldJsonList.vue", p.GetQuasarVersion())
+		sourcePath := fmt.Sprintf("%s/webClient/quasar_%v/doc/comp/fldJsonList.vue", getCurrentDir(), p.GetQuasarVersion())
 		// проверяем возможность того, что путь к шаблону был переопределен внутри документа
 		if d.TemplatePathOverride != nil {
 			if tmpl, ok := d.TemplatePathOverride["fldJsonList.vue"]; ok {

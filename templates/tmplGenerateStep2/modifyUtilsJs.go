@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"github.com/pepelazz/nla_framework/types"
 	"github.com/pepelazz/nla_framework/utils"
+	"log"
+	"path"
+	"runtime"
 	"strings"
 	"text/template"
 )
@@ -22,7 +25,7 @@ func PluginUtilsJs(p types.ProjectType)  {
 			return funcBodyes
 		},
 	}
-	path := fmt.Sprintf("../../../pepelazz/nla_framework/templates/project/webClient/quasar_%v/app/plugins/utils.js", p.GetQuasarVersion())
+	path := fmt.Sprintf("%s/project/webClient/quasar_%v/app/plugins/utils.js", getPathDirTemplate(), p.GetQuasarVersion())
 	t, err := template.New("utils.js").Funcs(funcMap).Delims("[[", "]]").ParseFiles(path)
 	utils.CheckErr(err, "OverriteCopiedFiles ParseFiles")
 
@@ -34,7 +37,7 @@ func PluginUtilsJs(p types.ProjectType)  {
 func BootI18nJs(p types.ProjectType)  {
 	distPath := fmt.Sprintf("%s/webClient/src/boot", p.DistPath)
 
-	path := fmt.Sprintf("../../../pepelazz/nla_framework/templates/project/webClient/quasar_%v/boot/i18n.js", p.GetQuasarVersion())
+	path := fmt.Sprintf("%s/project/webClient/quasar_%v/boot/i18n.js", getPathDirTemplate(), p.GetQuasarVersion())
 	t, err := template.New("i18n.js").Delims("[[", "]]").ParseFiles(path)
 	utils.CheckErr(err, "OverriteCopiedFiles ParseFiles")
 
@@ -106,4 +109,13 @@ const %s = (v) => {
 		}
 	}
 	return
+}
+
+func getPathDirTemplate() string  {
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		log.Fatalf("ParseTemplates runtime.Caller: No caller information")
+	}
+	return strings.TrimSuffix(path.Dir(filename), "/tmplGenerateStep2")
+
 }

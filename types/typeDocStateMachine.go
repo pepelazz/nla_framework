@@ -208,7 +208,7 @@ func (action DocSmAction) GetUpdateFldsGrid() func() [][]FldType {
 }
 
 func (sm *DocSm) GenerateTmpls(doc *DocType, params map[string]interface{}) {
-	path := fmt.Sprintf("../../../pepelazz/nla_framework/templates/webClient/quasar_%v/doc/comp/stateMachine", doc.GetProject().GetQuasarVersion())
+	path := fmt.Sprintf("%s/templates/webClient/quasar_%v/doc/comp/stateMachine", getRootDirPath(), doc.GetProject().GetQuasarVersion())
 	cardTmplPath := path + "/cardTmpl.vue"
 	actionBtnPath := path + "/actionBtn.vue"
 	if params != nil {

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/pepelazz/nla_framework/utils"
 	"log"
+	"path"
+	"runtime"
 	"strconv"
 	"strings"
 	"text/template"
@@ -514,7 +516,7 @@ func (vt VueTab) AddCounter(d *DocType, tabName, pgMethod, pgParams string)  Vue
 		d.Vue.Mixins["docItemWithTabs"] = []VueMixin{}
 	}
 	d.Vue.Mixins["docItemWithTabs"] = append(d.Vue.Mixins["docItemWithTabs"], VueMixin{"tabCounter"+tabName, "./mixins/tabCounter"+tabName+".js"})
-	sourcePath := fmt.Sprintf("../../../pepelazz/nla_framework/templates/webClient/quasar_%v/doc/mixins/tabCounter.js", d.GetProject().GetQuasarVersion())
+	sourcePath := fmt.Sprintf("%s/templates/webClient/quasar_%v/doc/mixins/tabCounter.js", getRootDirPath(), d.GetProject().GetQuasarVersion())
 	funcMap := template.FuncMap{
 		"VarName": func() string {return "tabCounter"+tabName},
 		"PgMethod": func() string {return pgMethod},
@@ -549,4 +551,12 @@ func getDefaultClassStr(v string) string  {
 		return "col-md-8 col-sm-12 col-xs-12"
 	}
 	return v
+}
+
+func getRootDirPath() string  {
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		log.Fatalf("ParseTemplates runtime.Caller: No caller information")
+	}
+	return strings.TrimSuffix(path.Dir(filename), "/types")
 }
