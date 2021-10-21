@@ -175,7 +175,7 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 				}
 				// заменяем ссылки в go файлах
 				if strings.HasSuffix(info.Name(), ".go") {
-					file = []byte(strings.Replace(string(file), getCurrentDir(), p.Config.LocalProjectPath, -1))
+					file = []byte(strings.Replace(string(file), "github.com/pepelazz/nla_framework", p.Config.LocalProjectPath, -1))
 				}
 				// изменение config.js
 				if strings.HasSuffix(path, "app"+string(os.PathSeparator)+"plugins"+string(os.PathSeparator)+"config.js") {
