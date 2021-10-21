@@ -14,9 +14,11 @@ enable = true
 port = {{.Config.WebServer.Port}}
 url = "{{.Config.WebServer.Url}}"
 
+{{ if .Config.Graylog.Host -}}
 [graylog]
-host = "85.143.214.161"
-port = 12201
+host = "{{.Config.Graylog.Host}}"
+port = {{.Config.Graylog.Port}}
+{{- end}}
 
 [email]
 sender = "{{.Config.Email.Sender}}"

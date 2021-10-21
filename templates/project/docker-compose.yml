@@ -2,6 +2,8 @@
 {{$serverPath := .Config.WebServer.Path -}}
 {{$webPort := .Config.WebServer.Port -}}
 {{$volumes := .Config.Docker.Volumes -}}
+{{$graylogHost := .Config.Graylog.Host -}}
+{{$graylogPort := .Config.Graylog.Port -}}
 version: '2'
 services:
   bot:
@@ -18,11 +20,13 @@ services:
       {{- end}}
     ports:
       - "{{$webPort}}:{{$webPort}}"
+    {{if $graylogHost -}}
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://85.143.214.161:12201"
+        gelf-address: "udp://{{$graylogHost}}:{{$graylogPort}}"
         tag: docker.app.{{$projectNameSnake}}
+    {{end -}}
     depends_on:
       - postgres
 

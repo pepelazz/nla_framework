@@ -41,6 +41,7 @@ type (
 		User             UserConfig
 		Backup           BackupConfig
 		Docker 			 DockerConfig
+		Graylog 		 GraylogConfig
 	}
 	AuthConfig struct {
 		ByEmail               bool // дефолт - авторизация по email
@@ -189,6 +190,11 @@ type (
 	DockerConfig struct {
 		AfterCopy []string // дополнительные строки для копирования в Dockerfile
 		Volumes []string // маппинг директорий
+	}
+
+	GraylogConfig struct {
+		Host string
+		Port int
 	}
 )
 

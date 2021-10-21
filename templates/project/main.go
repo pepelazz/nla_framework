@@ -3,7 +3,9 @@ package main
 import (
 	"encoding/gob"
 	"flag"
+	{{ if .Config.Graylog.Host -}}
 	"{{.Config.LocalProjectPath}}/graylog"
+	{{end -}}
 	"{{.Config.LocalProjectPath}}/jobs"
 	"{{.Config.LocalProjectPath}}/pg"
 	"{{.Config.LocalProjectPath}}/types"
@@ -75,9 +77,11 @@ func main() {
 	err = pg.StartPostgres(config.Postgres)
 	utils.CheckErr(err, "StartPostgres")
 
+	{{ if .Config.Graylog.Host -}}
 	// подключаемся к серверу сбора логов
 	err = graylog.Init(config.Graylog)
 	utils.CheckErr(err, "Connect to GraylogConfig")
+	{{- end}}
 
 	// инициализируем генератор случайных чисел
 	rand.Seed(time.Now().UnixNano())

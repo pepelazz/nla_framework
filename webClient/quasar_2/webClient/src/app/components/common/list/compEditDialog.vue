@@ -65,7 +65,7 @@
         // сохраняем в базу
         $utils.callPgMethod(props.pgMethod, itemForSave, (res) => {
           isShowAddDialog.value = false
-          emit('update')
+          emit('update', res)
         })
       }
 
