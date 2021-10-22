@@ -406,25 +406,35 @@ func (p ProjectType) PrintJsRoles() string {
 	return res
 }
 
-// если не указан путь к локальному проекту, то вычисляем его автоматически
+// FillLocalPath Если не указан путь к локальному проекту, то вычисляем его автоматически
 func (p *ProjectType) FillLocalPath() string {
+	// для старого варианта, когда проект находится в директории GOPATH
 	if len(p.Config.LocalProjectPath) == 0 {
-		// путь к локальной директории
-		path, _ := filepath.Abs("./")
-		// находим gopath
-		gopath := os.Getenv("GOPATH")
-		if gopath == "" {
-			gopath = build.Default.GOPATH
+		if _, err := os.Stat("../go.mod"); os.IsNotExist(err) {
+			// путь к локальной директории
+			path, _ := filepath.Abs("./")
+			// находим gopath
+			gopath := os.Getenv("GOPATH")
+			if gopath == "" {
+				gopath = build.Default.GOPATH
+			}
+			// убираем из начала пути gopath
+			path = strings.TrimPrefix(path, gopath)
+			// приводим разделитель пути к unix стилю
+			path = strings.Replace(path, string(os.PathSeparator), "/", -1)
+			// убираем из начала еще src
+			path = strings.TrimPrefix(path, "/src/")
+			// убираем из конца projectTemplate и добавляем src
+			path = strings.TrimSuffix(path, "/projectTemplate") + "/src"
+			p.Config.LocalProjectPath = path
+		} else {
+			// для нового варианта, когда проект создается с модулями
+			path, _ := os.Getwd()
+			path = strings.Replace(path, string(os.PathSeparator), "/", -1)
+			arr := strings.Split(strings.TrimSuffix(path, "/projectTemplate"), "/")
+			p.Config.LocalProjectPath = arr[len(arr)-1] + "/src"
 		}
-		// убираем из начала пути gopath
-		path = strings.TrimPrefix(path, gopath)
-		// приводим разделитель пути к unix стилю
-		path = strings.Replace(path, string(os.PathSeparator), "/", -1)
-		// убираем из начала еще src
-		path = strings.TrimPrefix(path, "/src/")
-		// убираем из конца projectTemplate и добавляем src
-		path = strings.TrimSuffix(path, "/projectTemplate") + "/src"
-		p.Config.LocalProjectPath = path
+
 	}
 	return p.Config.LocalProjectPath
 }
