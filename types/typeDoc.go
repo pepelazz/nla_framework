@@ -150,7 +150,7 @@ type (
 	}
 
 	DocSqlHooks struct {
-		DeclareVars          map[string]string
+		DeclareVars          map[string]string // примеры названий шаблонов, которые используются как ключ: list, update, triggerBefore, triggerAfter
 		BeforeInsertUpdate   []string
 		BeforeInsert         []string
 		AfterInsert          []string
