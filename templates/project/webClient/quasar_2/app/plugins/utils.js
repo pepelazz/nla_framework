@@ -150,6 +150,14 @@ const notifySuccess = (msg) => {
   })
 }
 
+const notifyError = (msg) => {
+  Notify.create({
+    color: 'negative',
+    position: 'top-right',
+    message: msg
+  })
+}
+
 [[FunctionsList]]
 
 export default {
@@ -163,6 +171,7 @@ export default {
   formatPgDateTime,
   formatPgDate,
   notifySuccess,
+  notifyError,
   _,
   [[ExportDefaultList]]
 }
