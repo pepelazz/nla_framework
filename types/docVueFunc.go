@@ -191,6 +191,14 @@ func (d DocType) PrintVueMethods(tmplName string) string  {
 	return res
 }
 
+func (d DocType) PrintVueItemHookItemWatch() string  {
+	res := ""
+	for _, v := range d.Vue.Hooks.ItemWatch {
+		res = res + fmt.Sprintf("%s\n", v)
+	}
+	return res
+}
+
 func (d DocType) PrintVueItemHookBeforeSave() string  {
 	res := ""
 	for _, v := range d.Vue.Hooks.ItemBeforeSave {

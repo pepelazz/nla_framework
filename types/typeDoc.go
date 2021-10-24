@@ -217,6 +217,7 @@ type (
 		ItemBeforeSave   []string
 		ItemForSave      []string
 		ItemHtml         []string
+		ItemWatch        []string
 	}
 )
 

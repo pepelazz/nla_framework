@@ -68,6 +68,9 @@
                 [[ .PrintVueVars "docItem" ]]
             }
         },
+        watch: {
+          [[.PrintVueItemHookItemWatch]]
+        },
         methods: {
           [[ .PrintVueMethods "docItem" ]]
             resultModify(res) {
