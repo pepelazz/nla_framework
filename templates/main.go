@@ -301,7 +301,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		return fmt.Sprintf(`<comp-fld-date %s :label="$t('%s')" :date-string="$utils.formatPgDate(item.%s)" @update="v=> item.%s = v" :readonly='%s' %s/>`, borderStyle, labelI18n, name, name, readonly, params)
 	// дата с временем
 	case types.FldTypeDatetime:
-		return fmt.Sprintf(`<comp-fld-date-time %s :label="$t('%s')" :date-string="$utils.formatPgDateTime(item.%s)" @update="v=> item.%s = v" :readonly='%s' %s/>`, borderStyle, labelI18n, name, name, readonly, params)
+		return fmt.Sprintf(`<comp-fld-date-time %s :label="$t('%s')" :date-string="$utils.formatPgDateTime(item.%s)" @update="v=> item.%s = v" @clear="item.%s=null" :readonly='%s' %s/>`, borderStyle, labelI18n, name, name, name, readonly, params)
 	case types.FldVueTypePhone:
 		return fmt.Sprintf(`<q-input %s mask="+# (###) ### - ####" v-model="item.%s" :label="$t('%s')" :readonly='%s' %s><template v-slot:prepend><q-icon name="phone"/></template></q-input>`, borderStyle, name, labelI18n, readonly, params)
 	case types.FldVueTypeEmail:

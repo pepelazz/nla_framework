@@ -51,7 +51,7 @@
     <!-- date   -->
     <comp-fld-date  v-if="type=='date' && vif" :label="label" :date-string="formatDateForSelector(fld)" @update="v=>$emit('update', v)" :readonly="readonly"/>
     <!-- datetime   -->
-    <comp-fld-date-time  v-if="type=='datetime' && vif" :label="label" :date-string="formatDateTimeForSelector(fld)" @update="v=>$emit('update', v)" :readonly="readonly"/>
+    <comp-fld-date-time  v-if="type=='datetime' && vif" :label="label" :date-string="formatDateTimeForSelector(fld)" @update="v=>$emit('update', v)" @clear="$emit('clear')" :readonly="readonly"/>
 
     <div class="q-gutter-sm" v-if="type=='checkbox' && vif">
       <q-checkbox v-model="localFld" :label="label" @update:model-value="v=>$emit('update', v)"/>

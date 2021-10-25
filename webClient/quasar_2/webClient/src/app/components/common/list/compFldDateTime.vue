@@ -21,6 +21,7 @@
           </q-time>
         </q-popup-proxy>
       </q-icon>
+      <q-icon name="close" @click="clear" class="cursor-pointer q-ml-sm" v-if="date" />
     </template>
   </q-input>
 </template>
@@ -47,6 +48,12 @@ export default {
           this.$emit('update', res)
         }
       }
+    },
+  },
+  methods: {
+    clear() {
+      this.date = null
+      this.$emit('clear')
     },
   },
   mounted() {
