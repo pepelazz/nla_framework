@@ -467,10 +467,18 @@ func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams,
 
 	// признак, что среди полей есть поле tag. Тогда надо добавить mixin
 	tagFlds := []string{}
-	for _, fld := range refDoc.NewFlds {
+	for i, fld := range refDoc.NewFlds {
 		if fld.Vue.Type == FldVueTypeTags {
 			tagFlds = append(tagFlds, fld.Name)
 		}
+		// добавляем в поле DocType с именем, чтобы сработал код по формированию labelI18n
+		// код где это используется
+		// templates/main.go
+		//	var labelI18n string
+		//	if fld.Doc != nil {
+		//		labelI18n = fld.Doc.Name + "." + name
+		//	}
+		refDoc.NewFlds[i].Doc = &DocType{Name: refDoc.TableName}
 	}
 
 	// прописываем пути шаблона

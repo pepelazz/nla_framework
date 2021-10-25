@@ -26,7 +26,7 @@
             </q-item>
         </q-list>
 
-        <!-- диалог добавления       -->
+        <!-- диалог добавления -->
         [[if IsShowAdd]]<q-dialog v-model="isShowAddDialog">
             <q-card style="width: 500px; max-width: 80vw;">
                 <q-bar>
