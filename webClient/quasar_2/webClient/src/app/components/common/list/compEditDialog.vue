@@ -14,10 +14,10 @@
       <q-card-section class="q-pt-none">
         <div v-for="fldRow in flds" class="row q-col-gutter-md q-mb-sm">
           <div v-for="fld in fldRow" :class="fld.classCol || 'col-12'">
-            <q-input v-if="fld.type === 'text' || fld.type === 'number'" :label="fld.label" v-model="item[fld.name]" :type="fld.type" outlined/>
-            <q-select v-if="fld.type === 'select'" :label="fld.label" v-model="item[fld.name]" :options="fld.options" outlined/>
-            <comp-fld-ref-search v-if="fld.type === 'ref'" outlined :pgMethod="fld.pgMethod" :ext="fld.ext || {}" :label="fld.label" :item='item[fld.name + "_title"]' :itemId='item[fld.name]'  @update="v=> item[fld.name] = v.id" @clear="item[fld.name] = null"/>
-            <comp-fld-date v-if="fld.type === 'date'" outlined  :date-string="$utils.formatPgDate(item[fld.name])" @update="v=> item[fld.name] = v" />
+            <q-input v-if="fld.type === 'text' || fld.type === 'number'" :label="fld.label" v-model="item[fld.name]" :type="fld.type" outlined :readonly="fld.readonly"/>
+            <q-select v-if="fld.type === 'select'" :label="fld.label" v-model="item[fld.name]" :options="fld.options" outlined :readonly="fld.readonly"/>
+            <comp-fld-ref-search v-if="fld.type === 'ref'" outlined :pgMethod="fld.pgMethod" :ext="fld.ext || {}" :label="fld.label" :item='item[fld.name + "_title"]' :itemId='item[fld.name]'  @update="v=> fld.updateFn ? fld.updateFn(item, v) :item[fld.name] = v.id" @clear="item[fld.name] = null" :readonly="fld.readonly"/>
+            <comp-fld-date v-if="fld.type === 'date'" outlined  :date-string="$utils.formatPgDate(item[fld.name])" @update="v=> item[fld.name] = v" :readonly="fld.readonly"/>
           </div>
         </div>
       </q-card-section>
@@ -31,47 +31,51 @@
 </template>
 
 <script>
-  import {ref} from 'vue'
-  import $utils from 'src/app/plugins/utils'
-  import _ from 'lodash'
-  import { useQuasar } from 'quasar'
+import {ref} from 'vue'
+import $utils from 'src/app/plugins/utils'
+import _ from 'lodash'
+import { useQuasar } from 'quasar'
 
-  export default {
-    props: ['pgMethod', 'labelNew', 'labelEdit'],
-    emits: ['update'],
-    setup(props, {emit}) {
-      const $q = useQuasar()
-      const item = ref(null)
-      const isShowAddDialog = ref(false)
-      const flds = ref([])
-      const show = (d) => {
-        isShowAddDialog.value = true
-        item.value = d.item
-        flds.value = d.flds
-      }
-      const save = () => {
-        const itemForSave = Object.assign({}, item.value)
-        // проверка на required
-        let isNotAllFilled = false
-        _.flattenDeep(flds.value).filter(v => v.required).map(v => {
-          if (!itemForSave[v.name]) {
-            isNotAllFilled = true
-            $q.notify({type: 'negative', message: `не заполнено поле: ${v.label}`})
-          }
-        })
-        if (isNotAllFilled) return
-        // для поля select преобразуем {label: '', value: ''} -> value
-        _.flattenDeep(flds.value).filter(v => v.type === 'select').map(v => itemForSave[v.name] = itemForSave[v.name].value)
-        // сохраняем в базу
-        $utils.callPgMethod(props.pgMethod, itemForSave, (res) => {
-          isShowAddDialog.value = false
-          emit('update', res)
-        })
-      }
+export default {
+  props: ['pgMethod', 'labelNew', 'labelEdit'],
+  emits: ['update'],
+  setup(props, {emit}) {
+    const $q = useQuasar()
+    const item = ref(null)
+    const isShowAddDialog = ref(false)
+    const flds = ref([])
+    let beforeSaveCb
+    const show = (d) => {
+      isShowAddDialog.value = true
+      item.value = d.item
+      flds.value = d.flds
+      beforeSaveCb = d.beforeSaveCb
+    }
+    const save = () => {
+      const itemForSave = Object.assign({}, item.value)
+      // проверка на required
+      let isNotAllFilled = false
+      _.flattenDeep(flds.value).filter(v => v.required).map(v => {
+        if (!itemForSave[v.name]) {
+          isNotAllFilled = true
+          $q.notify({type: 'negative', message: `не заполнено поле: ${v.label}`})
+        }
+      })
+      if (isNotAllFilled) return
+      // для поля select преобразуем {label: '', value: ''} -> value
+      _.flattenDeep(flds.value).filter(v => v.type === 'select').map(v => itemForSave[v.name] = itemForSave[v.name].value)
+      // если указан модификатор beforeSaveCb, то выполняем вызов функции
+      if (beforeSaveCb) beforeSaveCb(itemForSave)
+      // сохраняем в базу
+      $utils.callPgMethod(props.pgMethod, itemForSave, (res) => {
+        isShowAddDialog.value = false
+        emit('update', res)
+      })
+    }
 
-      return {
-        item, isShowAddDialog, show, flds, save,
-      }
+    return {
+      item, isShowAddDialog, show, flds, save,
     }
   }
+}
 </script>
