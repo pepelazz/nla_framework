@@ -1,7 +1,7 @@
 <template>
   <q-input :dense='dense' outlined :label="label" v-model="date" :readonly="readonly" mask="##-##-####">
-    <template v-slot:append v-if="is_remove">
-      <q-btn round flat size="sm" icon="clear" @click="clear"/>
+    <template v-slot:append v-if="!readonly && date">
+      <q-icon name="close" @click="clear" class="cursor-pointer q-ml-sm"/>
     </template>
     <template v-slot:prepend v-if="!readonly">
       <q-icon name="event" class="cursor-pointer">
