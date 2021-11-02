@@ -67,10 +67,13 @@
     },
     data() {
       return {
+        [[- if .Vue.SortList]]
         listSortData: [
-          {value: 'created_at', title: 'Дата'},
-          {value: 'title', title: 'Название'}
+          [[- range .Vue.SortList]]
+          {value: '[[.Value]]', title: '[[.Label]]'},
+          [[- end]]
         ],
+        [[- end]]
         listFilterData: [
           {value: {deleted: false}, title: 'Активные'},
           {value: {deleted: true}, title: 'Удаленные'}

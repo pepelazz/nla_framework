@@ -64,6 +64,7 @@ type (
 		IsOpenNewInTab bool // создание новой записи открывается в новом табе
 		List 		VueDocList // дополнительные настройки списка документов
 		FilterList  []VueDocListFilter // список фильтров
+		SortList []VueDocListSort // список сортировок
 	}
 
 	VueTab struct {
@@ -108,6 +109,11 @@ type (
 		IsRef bool
 		RefTable string
 		ColClass string
+	}
+
+	VueDocListSort struct {
+		Label string
+		Value string
 	}
 
 
@@ -264,6 +270,14 @@ func (d *DocType) Init() {
 			d.Vue.Mixins["docItemWithTabs"] = []VueMixin{}
 		}
 		d.Vue.Mixins["docItemWithTabs"] = append(d.Vue.Mixins["docItemWithTabs"], VueMixin{Title: "taskList", Import: "../../mixins/taskList"})
+	}
+
+	// если не прописаны сортировки, то указываем дефолтные
+	if d.Vue.SortList == nil {
+		d.Vue.SortList = []VueDocListSort{
+			{Value: "created_at", Label: "Дата"},
+			{Value: "title", Label: "Название"},
+		}
 	}
 }
 
