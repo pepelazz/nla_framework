@@ -323,7 +323,7 @@ func routesJsModify() string {
 
 // функция для построения бокового меню во Vue
 func sidemenuJsModify() string {
-	res := "// for codeGenerate ##sidemenu_slot1"
+	res := "// for codeGenerate ##sidemenu_slot1\n"
 	printMenuItem := func(m types.VueMenu) string {
 		roles := ""
 		if m.Roles != nil && len(m.Roles) > 0 {
