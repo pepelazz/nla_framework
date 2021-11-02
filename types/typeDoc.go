@@ -109,6 +109,7 @@ type (
 		IsRef bool
 		RefTable string
 		ColClass string
+		Options []FldVueOptionsItem
 	}
 
 	VueDocListSort struct {

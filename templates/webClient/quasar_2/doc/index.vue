@@ -9,11 +9,11 @@
     <div class="row q-mt-sm q-col-gutter-sm">
       [[- range .Vue.FilterList]]
         [[- if .IsRef]]
-        <div class="[[.ColClass]]">
+        <div class="[[if .ColClass]] [[.ColClass]] [[else]] col-md-2 col-sm-4 col-xs-6 [[- end]]">
           <comp-fld-ref-search dense outlined pgMethod="[[.RefTable]]_list" label="[[.Label]]" :item='filter[[ToCamel .RefTable]]Title' :itemId='filter[[ToCamel .RefTable]]Id' :ext='{isClearable: true}'  @update="updateFilter[[ToCamel .RefTable]]" @clear="updateFilter[[ToCamel .RefTable]]"  class='q-mb-sm col-md-4 col-sm-6 col-xs-12' />
         </div>
         [[- else]]
-        <div class="[[.ColClass]]">
+        <div class="[[if .ColClass]] [[.ColClass]] [[else]] col-md-3 col-sm-4 col-xs-6 [[- end]]">
           <q-select dense outlined v-model="filter[[ToCamel .FldName]]" :options="options[[ToCamel .FldName]]" label="[[.Label]]" @update:model-value="v => updateFilter[[ToCamel .FldName]](v.value)"  class='q-mb-sm col-md-4 col-sm-6 col-xs-12'>
             <template v-slot:append v-if="filter[[ToCamel .FldName]]">
               <q-icon name="close" @click.stop="updateFilter[[ToCamel .FldName]](null)" class="cursor-pointer" />
@@ -85,7 +85,13 @@
         [[- else]]
         filter[[ToCamel .FldName]]: null,
         options[[ToCamel .FldName]]: [
+        [[- if .Options]]
+          [[- range .Options]]
+          {label: '[[.Label]]', value: '[[.Value]]'},
+          [[- end]]
+        [[- else]]
         [[ PrintFldSelectOptions $doc .FldName ]]
+        [[- end]]
         ],
         [[- end]]
         [[- end]]
