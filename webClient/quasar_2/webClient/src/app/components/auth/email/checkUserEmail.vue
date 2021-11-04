@@ -7,7 +7,7 @@
         <img src="https://a.radikal.ru/a01/1806/fc/49f02b5a592a.jpg" alt="">
       </div>
       <div class="row justify-center">
-        <q-banner inline-actions class="bg-grey-3 q-pa-md">{{$t('auth.check_user_email_message')}}</q-banner>
+        <q-banner inline-actions class="bg-grey-3 q-pa-md" v-html="$t('auth.check_user_email_message')"/>
       </div>
       <div class="row justify-center" style="margin-top: 50px">
         <q-btn @click="$router.push(homeUrl)" color="primary">Перейти к авторизации</q-btn>

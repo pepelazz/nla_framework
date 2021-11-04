@@ -11,7 +11,7 @@
         <q-banner class="bg-grey-3">
           <template v-slot:avatar>
             <q-avatar rounded>
-              <img src="https://image.flaticon.com/icons/svg/440/440682.svg">
+              <img src="image/fired.png">
             </q-avatar>
           </template>
           Ваш аккаунт заблокирован. Обратитесь к администратору.

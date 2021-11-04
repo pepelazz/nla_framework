@@ -263,7 +263,7 @@ func (p *ProjectType) FillVueFlds() {
 					// для ссылки на таблицу user проставляем иконки отдельно
 					if fld.Sql.Ref == "user" {
 						fld.Vue.Ext["pathUrl"] = "/users"
-						fld.Vue.Ext["avatar"] = "https://image.flaticon.com/icons/svg/423/423063.svg"
+						fld.Vue.Ext["avatar"] = "image/users.svg"
 					}
 				}
 				if k == "addNewUrl" && len(fld.Sql.Ref) > 0 {
