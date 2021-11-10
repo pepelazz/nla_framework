@@ -14,11 +14,11 @@
       <q-card-section class="q-pt-none">
         <div v-for="fldRow in flds" class="row q-col-gutter-md q-mb-sm">
           <div v-for="fld in fldRow" :class="fld.classCol || 'col-12'">
-            <q-input v-if="(fld.type === 'text' || fld.type === 'number') && fld?.vif(item)" :label="fld.label" v-model="item[fld.name]" :type="fld.type" outlined :readonly="fld.readonly"/>
-            <q-select v-if="fld.type === 'select' && fld?.vif(item)" :label="fld.label" v-model="item[fld.name]" :options="fld.options" outlined :readonly="fld.readonly"/>
-            <comp-fld-ref-search v-if="fld.type === 'ref' && fld?.vif(item)" outlined :pgMethod="fld.pgMethod" :ext="fld.ext || {}" :label="fld.label" :item='item[fld.name + "_title"]' :itemId='item[fld.name]'  @update="v=> fld.updateFn ? fld.updateFn(item, v) :item[fld.name] = v.id" @clear="item[fld.name] = null" :readonly="fld.readonly"/>
-            <comp-fld-date v-if="fld.type === 'date' && fld?.vif(item)" outlined  :date-string="$utils.formatPgDate(item[fld.name])" @update="v=> item[fld.name] = v" :readonly="fld.readonly"/>
-            <q-checkbox v-if="fld.type === 'checkbox' && fld?.vif(item)" :label="fld.label" v-model="item[fld.name]" />
+            <q-input v-if="(fld.type === 'text' || fld.type === 'number') && fld.vif(item)" :label="fld.label" v-model="item[fld.name]" :type="fld.type" outlined :readonly="fld.readonly"/>
+            <q-select v-if="fld.type === 'select' && fld.vif(item)" :label="fld.label" v-model="item[fld.name]" :options="fld.options" outlined :readonly="fld.readonly"/>
+            <comp-fld-ref-search v-if="fld.type === 'ref' && fld.vif(item)" outlined :pgMethod="fld.pgMethod" :ext="fld.ext || {}" :label="fld.label" :item='item[fld.name + "_title"]' :itemId='item[fld.name]'  @update="v=> fld.updateFn ? fld.updateFn(item, v) :item[fld.name] = v.id" @clear="item[fld.name] = null" :readonly="fld.readonly"/>
+            <comp-fld-date v-if="fld.type === 'date' && fld.vif(item)" outlined  :date-string="$utils.formatPgDate(item[fld.name])" @update="v=> item[fld.name] = v" :readonly="fld.readonly"/>
+            <q-checkbox v-if="fld.type === 'checkbox' && fld.vif(item)" :label="fld.label" v-model="item[fld.name]" />
           </div>
         </div>
       </q-card-section>
@@ -49,7 +49,10 @@ export default {
     const show = (d) => {
       isShowAddDialog.value = true
       item.value = d.item
-      flds.value = d.flds
+      flds.value = d.flds.map(v => v.map(fld => {
+          if (!fld.vif) fld.vif = () => true
+          return fld
+      }))
       beforeSaveCb = d.beforeSaveCb
     }
     const save = () => {
