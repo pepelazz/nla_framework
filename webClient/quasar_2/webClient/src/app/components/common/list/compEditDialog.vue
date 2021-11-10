@@ -18,6 +18,7 @@
             <q-select v-if="fld.type === 'select'" :label="fld.label" v-model="item[fld.name]" :options="fld.options" outlined :readonly="fld.readonly"/>
             <comp-fld-ref-search v-if="fld.type === 'ref'" outlined :pgMethod="fld.pgMethod" :ext="fld.ext || {}" :label="fld.label" :item='item[fld.name + "_title"]' :itemId='item[fld.name]'  @update="v=> fld.updateFn ? fld.updateFn(item, v) :item[fld.name] = v.id" @clear="item[fld.name] = null" :readonly="fld.readonly"/>
             <comp-fld-date v-if="fld.type === 'date'" outlined  :date-string="$utils.formatPgDate(item[fld.name])" @update="v=> item[fld.name] = v" :readonly="fld.readonly"/>
+            <q-checkbox v-if="fld.type === 'checkbox'" :label="fld.label" v-model="item[fld.name]" />
           </div>
         </div>
       </q-card-section>
