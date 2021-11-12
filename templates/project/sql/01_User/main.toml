@@ -50,6 +50,9 @@ methods = [
     "user_get_by_telegram_id",
     [[- end]]
     [[if .Config.Auth.ByPhone -]] "user_get_by_phone_with_password",[[- end]]
+    [[- range .Config.Auth.UserSqlFunction]]
+    "[[.]]",
+    [[- end]]
 #    "user_create",
 #    "user_change_role",
 ]

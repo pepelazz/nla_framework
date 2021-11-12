@@ -49,6 +49,7 @@ type (
 		SqlHooks              AuthConfigSqlHooks
 		IsPassStepWaitingAuth bool // возможность отключить статус waiting_auth для вновь зарегестрированных пользователей
 		SmsService            AuthConfigSmsService
+		UserSqlFunction []string // дополнительные sql функции для таблицы User
 	}
 	AuthConfigSqlHooks struct {
 		CheckIsUserExist []string

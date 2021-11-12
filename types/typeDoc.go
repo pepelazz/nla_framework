@@ -41,7 +41,7 @@ type (
 
 	DocVue struct {
 		RouteName      string
-		Routes         [][]string // можно указать роуты, тогда они не формируются автоматически
+		Routes         [][]string // можно указать роуты, тогда они не формируются автоматически. например Routes: [][]string{{"industry", "industry/index.vue"}, {"industry/info", "industry/info.vue"}, {"industry/:id", "industry/item.vue"}},
 		Path           string     // путь к папке с компонентами, если отличается от стандартного. Например client/deal... Используется для вложенных путей
 		MenuIcon       string
 		BreadcrumbIcon string
