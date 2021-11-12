@@ -29,7 +29,7 @@ BEGIN
 
     -- проверка наличия обязательных параметров
     checkMsg = check_required_params_with_func_name('user_auth_create', params,
-                                                    ARRAY ['auth_provider', 'auth_provider_id', 'auth_token']);
+                                                    ARRAY ['auth_provider', 'auth_provider_id']);
     IF checkMsg IS NOT NULL
     THEN
         RETURN checkMsg;
@@ -102,7 +102,7 @@ BEGIN
                     params ->> 'first_name',
                     params ->> 'username',
                     params ->> 'avatar',
-                COALESCE((params ->> 'auth_token') :: TEXT, NULL),
+                COALESCE((params ->> 'auth_token') :: TEXT,  md5(random() :: TEXT)),
                 COALESCE((params ->> 'email') :: TEXT, NULL),
                 COALESCE((params ->> 'phone') :: TEXT, NULL),
                 COALESCE((params -> 'options') :: JSONB, NULL),
