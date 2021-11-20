@@ -544,6 +544,9 @@ func getDefaultClassStr(v string) string  {
 	if len(v) == 0 || v == "col-4" {
 		return "col-md-4 col-sm-6 col-xs-12"
 	}
+	if v == "col-1" {
+		return "col-md-1 col-sm-2 col-xs-6"
+	}
 	if v == "col-2" {
 		return "col-md-2 col-sm-3 col-xs-6"
 	}
