@@ -50,8 +50,8 @@ export default {
       isShowAddDialog.value = true
       item.value = d.item
       flds.value = d.flds.map(v => v.map(fld => {
-          if (!fld.vif) fld.vif = () => true
-          return fld
+        if (!fld.vif) fld.vif = () => true
+        return fld
       }))
       beforeSaveCb = d.beforeSaveCb
     }
@@ -71,10 +71,15 @@ export default {
       // если указан модификатор beforeSaveCb, то выполняем вызов функции
       if (beforeSaveCb) beforeSaveCb(itemForSave)
       // сохраняем в базу
-      $utils.callPgMethod(props.pgMethod, itemForSave, (res) => {
+      if (props.pgMethod) {
+        $utils.callPgMethod(props.pgMethod, itemForSave, (res) => {
+          isShowAddDialog.value = false
+          emit('update', res)
+        })
+      } else {
         isShowAddDialog.value = false
-        emit('update', res)
-      })
+        emit('update', itemForSave)
+      }
     }
 
     return {
