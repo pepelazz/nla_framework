@@ -11,9 +11,9 @@
     <!-- список   -->
     <q-list bordered separator v-if="isShowList">
       <q-item v-for="item in filteredList" :key="item.filename">
-        <q-item-section avatar @click="downloadFile(item)">
-          <q-avatar rounded>
-            <img src="https://image.flaticon.com/icons/svg/1037/1037308.svg">
+        <q-item-section avatar @click="downloadFile(item)" class="cursor-pointer">
+          <q-avatar  size="md">
+            <img src="image/file.svg">
           </q-avatar>
         </q-item-section>
         <q-item-section>
