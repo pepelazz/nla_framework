@@ -19,6 +19,13 @@ func FillDocI18n(p types.ProjectType) {
 			if len(p.Docs[i].I18n[lang]) == 0 {
 				p.Docs[i].I18n[lang] = map[string]string{}
 			}
+			// если doc.Name = 'message' то добавляем варианты message, которые на уровне проекта
+			// на случай если создали doc с именем message
+			if p.Docs[i].Name == "message" {
+				for k, v := range p.I18n.Data[lang]["message"] {
+					p.Docs[i].I18n[lang][k] = v
+				}
+			}
 			//NAME
 			if _, ok := p.Docs[i].I18n[lang]["name"]; !ok {
 				if lang == "ru" {

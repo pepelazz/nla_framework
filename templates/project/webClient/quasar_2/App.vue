@@ -9,7 +9,7 @@
     <fired-page v-if="isFired"/>
 
     <!-- основная страница, после авторизации  -->
-    <q-layout view="hHh Lpr lFf" v-if="isLoggedIn && isWorking">
+    <q-layout view="hHh lpR fFf" v-if="isLoggedIn && isWorking">
 
       <q-header elevated class="bg-white text-grey-8 q-py-xs">
         <q-toolbar>
