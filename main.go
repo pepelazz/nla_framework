@@ -292,7 +292,11 @@ func configJsModify(p types.ProjectType, file []byte) (res []byte) {
 	if strings.HasPrefix(p.Config.WebServer.Url, "http") {
 		fileStr = strings.Replace(fileStr, "[[urlWithHttp]]", p.Config.WebServer.Url, -1)
 	} else {
-		fileStr = strings.Replace(fileStr, "[[urlWithHttp]]", "https://" + p.Config.WebServer.Url , -1)
+		if len( p.Config.WebServer.Url) > 0 {
+			fileStr = strings.Replace(fileStr, "[[urlWithHttp]]", "https://" + p.Config.WebServer.Url , -1)
+		} else {
+			fileStr = strings.Replace(fileStr, "[[urlWithHttp]]", "" , -1)
+		}
 	}
 	fileStr = strings.Replace(fileStr, "[[logoSrc]]", p.Config.Logo, -1)
 	fileStr = strings.Replace(fileStr, "[[dadataToken]]", p.Config.Vue.DadataToken, -1)
