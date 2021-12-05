@@ -48,6 +48,9 @@
       },
     },
     methods: {
+      changeDate(newVal) {
+        if (newVal) this.date = newVal
+      },
       clear() {
         this.$emit('clear')
         this.date = null
