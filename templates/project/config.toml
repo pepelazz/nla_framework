@@ -3,7 +3,7 @@
 user = "postgres"
 password = "{{.Config.Postgres.Password}}"
 dbName = "{{.Config.Postgres.DbName}}"
-host = "postgres"
+host = "{{if .Config.Postgres.Host}}{{.Config.Postgres.Host}}{{else}}postgres{{end}}"
 port = 5432
 modelDir = ["./sql/model"]
 viewDir = ["./sql/view"]
