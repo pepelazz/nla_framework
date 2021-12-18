@@ -2,7 +2,7 @@
   <q-drawer :modelValue="leftSide" side="left" bordered show-if-above
             content-class="bg-grey-2"
             :width="240" @hide="$emit('hide')">
-    <q-scroll-area class="fit">
+<!--    <q-scroll-area class="fit">-->
       <q-list padding>
         <div v-for="link in menuLinks" :key="link.text">
             <span v-if="isRole(link.roles)">
@@ -39,7 +39,7 @@
             </span>
         </div>
       </q-list>
-    </q-scroll-area>
+<!--    </q-scroll-area>-->
   </q-drawer>
 </template>
 
