@@ -1,13 +1,14 @@
 package graylog
 
 import (
+	"fmt"
 	"github.com/pepelazz/nla_framework/types"
 	"gopkg.in/aphistic/golf.v0"
-	"fmt"
 )
 
 var (
 	Graylog *GraylogType
+	appName string
 )
 
 type GraylogType struct {
@@ -18,14 +19,15 @@ func Init(config types.GraylogConfig) (err error) {
 	Graylog = &GraylogType{}
 	host := config.Host
 	port := config.Port
+	appName = config.AppName
 	Graylog.Client, _ = golf.NewClient()
 	err = Graylog.Client.Dial(fmt.Sprintf("udp://%s:%v", host, port))
 	return
 }
 
-func (g *GraylogType) L() (*golf.Logger) {
+func (g *GraylogType) L() *golf.Logger {
 	l, _ := g.Client.NewLogger()
-	l.SetAttr("app", "fourPl")
+	l.SetAttr("app", appName)
 	return l
 }
 

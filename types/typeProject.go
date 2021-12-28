@@ -23,7 +23,7 @@ type (
 		Roles                    []ProjectRole // список ролей в проекте
 		IsDebugMode              bool
 		OverridePathForTemplates map[string]string // map для замены путей к исходным файлам. Ключ - путь к генерируемому файлу, значение - новый путь к исходному файлу.
-		I18n I18nType
+		I18n                     I18nType
 	}
 	ProjectConfig struct {
 		Logo             string
@@ -40,8 +40,8 @@ type (
 		Yandex           YandexConfig
 		User             UserConfig
 		Backup           BackupConfig
-		Docker 			 DockerConfig
-		Graylog 		 GraylogConfig
+		Docker           DockerConfig
+		Graylog          GraylogConfig
 	}
 	AuthConfig struct {
 		ByEmail               bool // дефолт - авторизация по email
@@ -49,7 +49,7 @@ type (
 		SqlHooks              AuthConfigSqlHooks
 		IsPassStepWaitingAuth bool // возможность отключить статус waiting_auth для вновь зарегестрированных пользователей
 		SmsService            AuthConfigSmsService
-		UserSqlFunction []string // дополнительные sql функции для таблицы User
+		UserSqlFunction       []string // дополнительные sql функции для таблицы User
 	}
 	AuthConfigSqlHooks struct {
 		CheckIsUserExist []string
@@ -63,16 +63,16 @@ type (
 		Roles UserConfigRolesForMethods
 	}
 	UserConfigRolesForMethods struct {
-		UserList []string
+		UserList   []string
 		UserUpdate []string
 	}
 	PostrgesConfig struct {
 		DbName   string
 		Port     int64
 		Password string
-		Host string
+		Host     string
 		TimeZone string // время для сервера default 'Europe/Moscow' (например 'Asia/Novosibirsk')
-		Version string // версия Postgres, по дефолту 12
+		Version  string // версия Postgres, по дефолту 12
 	}
 	WebServerConfig struct {
 		Port     int64
@@ -86,19 +86,19 @@ type (
 		IsDocker bool
 	}
 	EmailConfig struct {
-		Sender     string
-		Password   string
-		Host       string
-		Port       int64
-		SenderName string
+		Sender                string
+		Password              string
+		Host                  string
+		Port                  int64
+		SenderName            string
 		IsSendWithEmptySender bool
 	}
 	ProjectVue struct {
-		UiAppName string
+		UiAppName     string
 		UiAppLogoOnly string
-		Routes    [][]string
-		Menu      []VueMenu
-		Hooks     ProjectVueHooks
+		Routes        [][]string
+		Menu          []VueMenu
+		Hooks         ProjectVueHooks
 		// кастомные шаблоны сообщений, которые выводятся в правом боковом списке
 		MessageTmpls             []ProjectVueMessageTmpl
 		IsHideTaskToolbar        bool // не показывааем боковое меню с задачами
@@ -116,16 +116,15 @@ type (
 	}
 
 	VueConfig struct {
-		DadataToken string
+		DadataToken   string
 		QuasarVersion int // версия quasar-framework 1, 2
 	}
 
 	I18nType struct {
-		IsExist bool
+		IsExist  bool
 		LangList []string
-		Data  map[string]map[string]map[string]string //RU : message : save: 'сохранить'
+		Data     map[string]map[string]map[string]string //RU : message : save: 'сохранить'
 	}
-
 
 	BitrixConfig struct {
 		ApiUrl       string
@@ -165,8 +164,8 @@ type (
 	ProjectGoRoutes struct {
 		Imports []string
 		NotAuth []string // роуты вне блока, требующего авторизации
-		Api []string // роуты в блоке, требующего авторизации
-		Static []string // роуты в static блоке
+		Api     []string // роуты в блоке, требующего авторизации
+		Static  []string // роуты в static блоке
 	}
 	ProjectVueHooks struct {
 		Profile ProjectVueHooksProfile
@@ -191,12 +190,13 @@ type (
 	}
 	DockerConfig struct {
 		AfterCopy []string // дополнительные строки для копирования в Dockerfile
-		Volumes []string // маппинг директорий
+		Volumes   []string // маппинг директорий
 	}
 
 	GraylogConfig struct {
-		Host string
-		Port int
+		Host    string
+		Port    int
+		AppName string
 	}
 )
 
@@ -474,9 +474,9 @@ func (p ProjectType) PrintProcessPgErrorMsgs() string {
 	var res []string
 	for _, d := range project.Docs {
 		for _, m := range d.Sql.UniqConstrains {
-			if len(m.Message)>0 {
-				res = append(res, fmt.Sprintf("\tif strings.Contains(err.Error(), `violates unique constraint \"%s\"`) {\n" +
-					"\t\treturn `%s`\n" +
+			if len(m.Message) > 0 {
+				res = append(res, fmt.Sprintf("\tif strings.Contains(err.Error(), `violates unique constraint \"%s\"`) {\n"+
+					"\t\treturn `%s`\n"+
 					"\t}", m.Name, m.Message))
 			}
 		}
@@ -484,15 +484,15 @@ func (p ProjectType) PrintProcessPgErrorMsgs() string {
 	return strings.Join(res, "\n")
 }
 
-func (p *ProjectType) GetQuasarVersion() int  {
+func (p *ProjectType) GetQuasarVersion() int {
 	if p.Config.Vue.QuasarVersion == 0 {
 		return 1
 	}
 	return p.Config.Vue.QuasarVersion
 }
 
-func (p *ProjectType) AddI18n(lang, prefix, key, value string)  {
-	if len(p.I18n.Data)==0 {
+func (p *ProjectType) AddI18n(lang, prefix, key, value string) {
+	if len(p.I18n.Data) == 0 {
 		p.I18n.Data = map[string]map[string]map[string]string{}
 	}
 	if len(p.I18n.Data[lang]) == 0 {
@@ -503,4 +503,3 @@ func (p *ProjectType) AddI18n(lang, prefix, key, value string)  {
 	}
 	p.I18n.Data[lang][prefix][key] = value
 }
-

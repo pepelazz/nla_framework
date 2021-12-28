@@ -1,10 +1,10 @@
 package types
 
 import (
+	"fmt"
 	"github.com/pelletier/go-toml"
 	"os"
 	"strconv"
-	"fmt"
 )
 
 type Config struct {
@@ -15,15 +15,15 @@ type Config struct {
 	Graylog GraylogConfig
 
 	Email EmailConfig
-	[[if .IsBitrixIntegration -]]
+[[if.IsBitrixIntegration -]]
 	Bitrix BitrixConfig
-	[[- end]]
-	[[if .IsTelegramIntegration -]]
+[[- end]]
+[[if.IsTelegramIntegration -]]
 	Telegram TelegramConfig
-	[[- end]]
-	[[if .IsOdataIntegration -]]
+[[- end]]
+[[if.IsOdataIntegration -]]
 	Odata OdataConfig
-	[[- end]]
+[[- end]]
 }
 
 func ReadConfigFile(path string) (c *Config, err error) {
@@ -92,6 +92,9 @@ func ReadConfigFile(path string) (c *Config, err error) {
 		if tree.Has("graylog.port") {
 			c.Graylog.Port = int(tree.Get("graylog.port").(int64))
 		}
+		if tree.Has("graylog.appName") {
+			c.Graylog.AppName = tree.Get("graylog.appName").(string)
+		}
 	}
 
 	if tree.Has("email") {
@@ -128,58 +131,58 @@ func ReadConfigFile(path string) (c *Config, err error) {
 			c.Email.IsSendWithEmptySender = tree.Get("email.isSendWithEmptySender").(bool)
 		}
 	}
-	[[if .IsBitrixIntegration -]]
-	if tree.Has("bitrix") {
-		if tree.Has("bitrix.apiUrl") {
-			c.Bitrix.ApiUrl = tree.Get("bitrix.apiUrl").(string)
-		}
-		if tree.Has("bitrix.userId") {
-			c.Bitrix.UserId = tree.Get("bitrix.userId").(string)
-		}
-		if tree.Has("bitrix.webhookToken") {
-			c.Bitrix.WebhookToken = tree.Get("bitrix.webhookToken").(string)
-		}
-	}
-	[[- end]]
+[[if.IsBitrixIntegration -]]
+if tree.Has("bitrix") {
+if tree.Has("bitrix.apiUrl") {
+c.Bitrix.ApiUrl = tree.Get("bitrix.apiUrl").(string)
+}
+if tree.Has("bitrix.userId") {
+c.Bitrix.UserId = tree.Get("bitrix.userId").(string)
+}
+if tree.Has("bitrix.webhookToken") {
+c.Bitrix.WebhookToken = tree.Get("bitrix.webhookToken").(string)
+}
+}
+[[- end]]
 
-	[[if .IsTelegramIntegration -]]
-	if tree.Has("telegram") {
-		if tree.Has("telegram.botName") {
-			c.Telegram.BotName = tree.Get("telegram.botName").(string)
-			if len(os.Getenv("TG_BOT_NAME")) > 0 {
-				// перезаписываем, если есть глобальная переменная
-				c.Telegram.BotName = os.Getenv("TG_BOT_NAME")
-			}
-		}
-		if tree.Has("telegram.token") {
-			c.Telegram.Token = tree.Get("telegram.token").(string)
-			if len(os.Getenv("TELEGRAM_BOT_TOKEN")) > 0 {
-				// перезаписываем, если есть глобальная переменная
-				c.Telegram.Token = os.Getenv("TELEGRAM_BOT_TOKEN")
-			}
-		}
-	}
-	[[- end]]
+[[if.IsTelegramIntegration -]]
+if tree.Has("telegram") {
+if tree.Has("telegram.botName") {
+c.Telegram.BotName = tree.Get("telegram.botName").(string)
+if len(os.Getenv("TG_BOT_NAME")) > 0 {
+// перезаписываем, если есть глобальная переменная
+c.Telegram.BotName = os.Getenv("TG_BOT_NAME")
+}
+}
+if tree.Has("telegram.token") {
+c.Telegram.Token = tree.Get("telegram.token").(string)
+if len(os.Getenv("TELEGRAM_BOT_TOKEN")) > 0 {
+// перезаписываем, если есть глобальная переменная
+c.Telegram.Token = os.Getenv("TELEGRAM_BOT_TOKEN")
+}
+}
+}
+[[- end]]
 
-	[[if .IsOdataIntegration -]]
-	if tree.Has("odata") {
-		if tree.Has("odata.url") {
-			c.Odata.Url = tree.Get("odata.url").(string)
-		}
-		if tree.Has("odata.login") {
-			c.Odata.Login = tree.Get("odata.login").(string)
-		}
-		if tree.Has("odata.password") {
-			c.Odata.Password = tree.Get("odata.password").(string)
-		}
-		if tree.Has("odata.exchangePlanName") {
-			c.Odata.ExchangePlanName = tree.Get("odata.exchangePlanName").(string)
-		}
-		if tree.Has("odata.exchangePlanGuid") {
-			c.Odata.ExchangePlanGuid = tree.Get("odata.exchangePlanGuid").(string)
-		}
-	}
-	[[- end]]
+[[if.IsOdataIntegration -]]
+if tree.Has("odata") {
+if tree.Has("odata.url") {
+c.Odata.Url = tree.Get("odata.url").(string)
+}
+if tree.Has("odata.login") {
+c.Odata.Login = tree.Get("odata.login").(string)
+}
+if tree.Has("odata.password") {
+c.Odata.Password = tree.Get("odata.password").(string)
+}
+if tree.Has("odata.exchangePlanName") {
+c.Odata.ExchangePlanName = tree.Get("odata.exchangePlanName").(string)
+}
+if tree.Has("odata.exchangePlanGuid") {
+c.Odata.ExchangePlanGuid = tree.Get("odata.exchangePlanGuid").(string)
+}
+}
+[[- end]]
 
-	return
+return
 }

@@ -360,6 +360,16 @@ func GetFldTag(name, nameRu string, rowCol [][]int, params ...string) (fld FldTy
 }
 
 // создание поля-виджета со связями многие-к-многим
+// пример с доп полями
+//t.GetFldLinkListWidget("user_department_link", [][]int{{2, 1}}, "col-8", map[string]interface{}{
+//		"tableDependRoute": "employee",
+//		"readonly": "!isAdmin",
+//		"flds": "[[" +
+//			"{name: 'position', label: 'должность', type: 'string', columnClass: 'col-6'}, " +
+//			"{name: 'is_boss', label: 'начальник', type: 'checkbox', columnClass: 'col-6'}" +
+//		"]]",
+//		"slotOtherFlds": "<q-item-label caption><q-badge v-if='slotProps.item.is_boss' label='начальник' class='q-mr-sm'/>  <span>{{slotProps.item.position}}</span></q-item-label>",
+//}),
 func GetFldLinkListWidget(linkTable string, rowCol [][]int, classStr string, opts map[string]interface{}) (fld FldType) {
 	classStr = getDefaultClassStr(classStr)
 	return FldType{Type: FldTypeVueComposition,  Vue: FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {

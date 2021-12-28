@@ -18,6 +18,7 @@ url = "{{.Config.WebServer.Url}}"
 [graylog]
 host = "{{.Config.Graylog.Host}}"
 port = {{.Config.Graylog.Port}}
+appName = "{{.Config.Postgres.DbName}}"
 {{- end}}
 
 [email]
