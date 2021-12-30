@@ -23,9 +23,14 @@
 </template>
 
 <script>
+    import config from "src/app/plugins/config";
     export default {
         data() {
             return {}
         },
+        mounted() {
+          // стираем токен
+          localStorage.removeItem(config.appName)
+        }
     }
 </script>
