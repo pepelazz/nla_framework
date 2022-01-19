@@ -138,8 +138,8 @@ const formatPgDateTime = (d) => {
   return d ? moment(d, 'YYYY-MM-DDTHH:mm:ss').format('DD-MM-YYYY HH:mm') : null
 }
 
-const formatPgDate = (d) => {
-  return d ? moment(d, 'YYYY-MM-DDTHH:mm:ss').format('DD-MM-YYYY') : null
+const formatPgDate = (d, formatStr) => {
+  return d ? moment(d, 'YYYY-MM-DDTHH:mm:ss').locale('ru').format(formatStr ? formatStr :'DD-MM-YYYY') : null
 }
 
 const formatNumber = (v, digits) => {
