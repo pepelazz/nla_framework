@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func (d DocType) PrintListRowAvatar() string  {
+func (d DocType) PrintListRowAvatar() string {
 	res := fmt.Sprintf(`
 		<router-link :to="currentUrl + item.id" style="cursor: pointer">
 			<q-item-section avatar>
@@ -30,14 +30,14 @@ func (d DocType) PrintListRowAvatar() string  {
 	return res
 }
 
-func (d DocType) PrintListRowLabel() string  {
+func (d DocType) PrintListRowLabel() string {
 	isFolder := "" // признак, что является parent, в случае если рекурсия
 	if d.IsRecursion {
 		isFolder = "<q-item-label caption><q-icon name='folder' v-if='item.is_folder'/></q-item-label>"
 	}
 	clickOpenItem := ""
 	if d.Vue.IsVueTitleClickable {
-		clickOpenItem = fmt.Sprintf(` @click="$router.push(currentUrl + item.id)" style="cursor: pointer" `, )
+		clickOpenItem = fmt.Sprintf(` @click="$router.push(currentUrl + item.id)" style="cursor: pointer" `)
 	}
 	res := fmt.Sprintf(`
         <q-item-section>
@@ -54,7 +54,7 @@ func (d DocType) PrintListRowLabel() string  {
 	return res
 }
 
-func (d *DocType) AddVueMethod(tmplName, methodName, method string)  {
+func (d *DocType) AddVueMethod(tmplName, methodName, method string) {
 	if d.Vue.Methods == nil {
 		d.Vue.Methods = map[string]map[string]string{}
 	}
@@ -77,7 +77,7 @@ func (d *DocType) Filli18n() {
 }
 
 // добавление зафиксированной кнопки сохранения (правый нижний угол)
-func (d *DocVue) AddFixedSaveBtn()  {
+func (d *DocVue) AddFixedSaveBtn() {
 	if d.Hooks.ItemHtml == nil {
 		d.Hooks.ItemHtml = []string{}
 	}
@@ -91,7 +91,7 @@ func (d *DocVue) AddFixedSaveBtn()  {
 	</q-page-sticky>`)
 }
 
-func (d DocType) PrintVueItemOptionsFld() string  {
+func (d DocType) PrintVueItemOptionsFld() string {
 	arr := []string{}
 	for _, fld := range d.Flds {
 		if fld.Sql.IsOptionFld {
@@ -104,7 +104,7 @@ func (d DocType) PrintVueItemOptionsFld() string  {
 	return ""
 }
 
-func (d DocType) PrintVueImport(tmplName string) string  {
+func (d DocType) PrintVueImport(tmplName string) string {
 	isLodashAdded := false
 	res := []string{}
 	// ссылки на миксины
@@ -127,7 +127,7 @@ func (d DocType) PrintVueImport(tmplName string) string  {
 	if tmplName == "docItem" {
 		// если есть поле с типом multipleSelect то добавляем lodash
 		for _, fld := range d.Flds {
-			if fld.Vue.Type == FldVueTypeMultipleSelect && !isLodashAdded{
+			if fld.Vue.Type == FldVueTypeMultipleSelect && !isLodashAdded {
 				res = append(res, "\timport _ from 'lodash'")
 				isLodashAdded = true
 				break
@@ -153,11 +153,11 @@ func (d DocType) PrintVueImport(tmplName string) string  {
 }
 
 // печать дополнительных переменныз
-func (d DocType) PrintVueVars(tmplName string) string  {
+func (d DocType) PrintVueVars(tmplName string) string {
 	// извлекаем map с переменными из описания документа
 	vars := map[string]string{}
 	if d.Vue.Vars != nil {
-		if m , ok := d.Vue.Vars[tmplName]; ok {
+		if m, ok := d.Vue.Vars[tmplName]; ok {
 			// копируем переменные в map, который указан выше
 			for k, v := range m {
 				vars[k] = v
@@ -172,11 +172,11 @@ func (d DocType) PrintVueVars(tmplName string) string  {
 	return res
 }
 
-func (d DocType) PrintVueMethods(tmplName string) string  {
+func (d DocType) PrintVueMethods(tmplName string) string {
 	// извлекаем map с методами из описания документа
 	methods := map[string]string{}
 	if d.Vue.Methods != nil {
-		if m , ok := d.Vue.Methods[tmplName]; ok {
+		if m, ok := d.Vue.Methods[tmplName]; ok {
 			// копируем методы в map, который указан выше
 			for k, v := range m {
 				methods[k] = v
@@ -191,7 +191,7 @@ func (d DocType) PrintVueMethods(tmplName string) string  {
 	return res
 }
 
-func (d DocType) PrintVueItemHookItemWatch() string  {
+func (d DocType) PrintVueItemHookItemWatch() string {
 	res := ""
 	for _, v := range d.Vue.Hooks.ItemWatch {
 		res = res + fmt.Sprintf("%s\n", v)
@@ -199,7 +199,7 @@ func (d DocType) PrintVueItemHookItemWatch() string  {
 	return res
 }
 
-func (d DocType) PrintVueItemHookBeforeSave() string  {
+func (d DocType) PrintVueItemHookBeforeSave() string {
 	res := ""
 	for _, v := range d.Vue.Hooks.ItemBeforeSave {
 		res = res + fmt.Sprintf("%s\n", v)
@@ -295,7 +295,7 @@ func (d DocType) PrintVueItemStateMachineCardMounted() string {
 	return res
 }
 
-func (d DocVue) PrintMixins(tmplName string) string  {
+func (d DocVue) PrintMixins(tmplName string) string {
 	res := []string{}
 	if d.Mixins != nil {
 		if arr, ok := d.Mixins[tmplName]; ok {
@@ -308,7 +308,7 @@ func (d DocVue) PrintMixins(tmplName string) string  {
 	return strings.Join(res, ", ")
 }
 
-func (d DocType) PrintComponents(tmplName string) string  {
+func (d DocType) PrintComponents(tmplName string) string {
 	res := []string{}
 	if d.Vue.Components != nil {
 		if m, ok := d.Vue.Components[tmplName]; ok {
@@ -318,9 +318,9 @@ func (d DocType) PrintComponents(tmplName string) string  {
 		}
 	}
 
-	if tmplName ==  "docItemWithTabs" {
+	if tmplName == "docItemWithTabs" {
 		for _, t := range d.Vue.Tabs {
-			res = append(res, t.Title + "Tab")
+			res = append(res, t.Title+"Tab")
 		}
 	}
 
@@ -331,7 +331,7 @@ func (d DocType) PrintComponents(tmplName string) string  {
 	return strings.Join(res, ", ")
 }
 
-func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts map[string]interface{}) string {
+func GetVueCompLinkListWidget(p ProjectType, d DocType, tableName string, opts map[string]interface{}) string {
 	var tableIdFldName, tableDependName, tableDependFldName, tableDependRoute, label, avatarSrc string
 	tableIdName := d.Name
 	linkTableName := tableName
@@ -410,7 +410,7 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 	}
 
 	if len(tableIdFldName) == 0 || len(tableDependName) == 0 || len(tableDependFldName) == 0 || len(tableDependRoute) == 0 {
-		utils.CheckErr(errors.New(fmt.Sprintf("GetFldLinkListWidget. Something wrong with table name: '%s'. For this widget link table must be named <table1_name>_<table2_name>_link", tableName)), "doc: " + d.Name)
+		utils.CheckErr(errors.New(fmt.Sprintf("GetFldLinkListWidget. Something wrong with table name: '%s'. For this widget link table must be named <table1_name>_<table2_name>_link", tableName)), "doc: "+d.Name)
 	}
 
 	return fmt.Sprintf("<comp-link-list-widget label='%s' :id='id' tableIdName='%s' tableIdFldName='%s' tableDependName='%s' tableDependFldName='%s' tableDependRoute='/%s' linkTableName='%s' avatarSrc='%s' :hideCreateNew='%v' :readonly='%s' %s %s %s %s>%s</comp-link-list-widget>", label, tableIdName, tableIdFldName, tableDependName, tableDependFldName, tableDependRoute, linkTableName, avatarSrc, hideCreateNew, readonly, searchExt, filterListFn, fldsProp, ext, slotOtherFlds)
@@ -418,25 +418,24 @@ func GetVueCompLinkListWidget (p ProjectType, d DocType, tableName string, opts 
 
 // параметры для VueCompRefListWidget
 type VueCompRefListWidgetParams struct {
-	Label     string
-	FldName   string
-	TableName string // название таблицы, список из которой выводим
-	RefFldName string // название ref-поля в таблице, по которому осуществляется связь
-	Avatar     string
-	Route 	   string // путь для формирования ссылки
-	IsHideAdd bool
-	IsHideDelete bool
-	NewFlds 	[]FldType // поля при создании новой записи
-	TitleTemplate string // шаблон для строки с названием
-	IsStateMachine bool // признак, что документ реализует поведение машины состояний. Тогда несколько иная логика создания
-	Readonly string
-	OrderBy string // default: created_at desc
-	PgExt string // дополнительные параметры для postgres запроса
+	Label          string
+	FldName        string
+	TableName      string // название таблицы, список из которой выводим
+	RefFldName     string // название ref-поля в таблице, по которому осуществляется связь
+	Avatar         string
+	Route          string // путь для формирования ссылки
+	IsHideAdd      bool
+	IsHideDelete   bool
+	NewFlds        []FldType // поля при создании новой записи
+	TitleTemplate  string    // шаблон для строки с названием
+	IsStateMachine bool      // признак, что документ реализует поведение машины состояний. Тогда несколько иная логика создания
+	Readonly       string
+	OrderBy        string // default: created_at desc
+	PgExt          string // дополнительные параметры для postgres запроса
 }
 
-
 // создание поля-виджета со связями один-к-многим
-func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams, rowCol [][]int, params... string) (fld FldType) {
+func GetFldVueCompositionRefList(d *DocType, refDoc VueCompRefListWidgetParams, rowCol [][]int, params ...string) (fld FldType) {
 	if len(refDoc.Label) == 0 {
 		log.Fatalf("doc: '%s'. Missed Label in FldVueCompositionRefList", d.Name)
 	}
@@ -461,7 +460,7 @@ func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams,
 		refDoc.Route = refDoc.TableName
 	}
 
-	if len(refDoc.OrderBy)==0 {
+	if len(refDoc.OrderBy) == 0 {
 		refDoc.OrderBy = "created_at desc"
 	}
 
@@ -490,25 +489,24 @@ func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams,
 		DistPath:     fmt.Sprintf("../src/webClient/src/app/components/%s/comp", d.PgName()),
 		DistFilename: snaker.SnakeToCamelLower(refDoc.FldName) + "RefListWidget.vue",
 		FuncMap: map[string]interface{}{
-			"GetTableName": func() string {return refDoc.TableName},
-			"GetRefFldName": func() string {return refDoc.RefFldName},
-			"GetLabel": func() string {return refDoc.Label},
-			"IsShowAdd": func() bool {return !refDoc.IsHideAdd},
-			"IsShowDelete": func() bool {return !refDoc.IsHideDelete},
-			"GetRoute": func() string {return refDoc.Route},
-			"GetAvatar": func() string {return refDoc.Avatar},
-			"GetNewFlds": func() []FldType {return refDoc.NewFlds},
-			"GetTagFlds": func() []string {return tagFlds},
-			"GetOrderBy": func() string {return refDoc.OrderBy},
-			"GetPgExt": func() string {return refDoc.PgExt},
+			"GetTableName":  func() string { return refDoc.TableName },
+			"GetRefFldName": func() string { return refDoc.RefFldName },
+			"GetLabel":      func() string { return refDoc.Label },
+			"IsShowAdd":     func() bool { return !refDoc.IsHideAdd },
+			"IsShowDelete":  func() bool { return !refDoc.IsHideDelete },
+			"GetRoute":      func() string { return refDoc.Route },
+			"GetAvatar":     func() string { return refDoc.Avatar },
+			"GetNewFlds":    func() []FldType { return refDoc.NewFlds },
+			"GetTagFlds":    func() []string { return tagFlds },
+			"GetOrderBy":    func() string { return refDoc.OrderBy },
+			"GetPgExt":      func() string { return refDoc.PgExt },
 			"GetTitleTemplate": func() string {
 				if len(refDoc.TitleTemplate) > 0 {
 					return refDoc.TitleTemplate
 				}
 				return "<q-item-label>{{v.title}}</q-item-label>"
 			},
-			"IsStateMachine": func() bool {return refDoc.IsStateMachine},
-
+			"IsStateMachine": func() bool { return refDoc.IsStateMachine },
 		},
 	}
 
@@ -524,7 +522,7 @@ func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams,
 	if d.Vue.Components["docItem"] == nil {
 		d.Vue.Components["docItem"] = map[string]string{}
 	}
-	d.Vue.Components["docItem"][snaker.SnakeToCamelLower(refDoc.FldName) + "RefListWidget"] = importAddress
+	d.Vue.Components["docItem"][snaker.SnakeToCamelLower(refDoc.FldName)+"RefListWidget"] = importAddress
 
 	// параметры самого поля
 	//classStr := "col-md-4 col-xs-6"
@@ -539,23 +537,23 @@ func GetFldVueCompositionRefList (d *DocType, refDoc VueCompRefListWidgetParams,
 	if len(d.Vue.Readonly) > 0 {
 		readonly = fmt.Sprintf(":readonly='%s'", d.Vue.Readonly)
 	}
-	if len(refDoc.Readonly)>0{
+	if len(refDoc.Readonly) > 0 {
 		readonly = fmt.Sprintf(":readonly='%s'", refDoc.Readonly)
 	}
 
 	// параметры самого поля
 	classStr := getDefaultClassStr("")
-	if len(params)>0 {
-		classStr= getDefaultClassStr(params[0])
+	if len(params) > 0 {
+		classStr = getDefaultClassStr(params[0])
 	}
-	fld = FldType{Type:FldTypeVueComposition,  Vue:FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
-		return fmt.Sprintf("<%[1]s v-if='item.id != -1' :id='item.id' %s/>", strings.Replace(snaker.CamelToSnake(refDoc.FldName + "RefListWidget"), "_", "-", -1), readonly)
+	fld = FldType{Type: FldTypeVueComposition, Vue: FldVue{RowCol: rowCol, Class: []string{classStr}, Composition: func(p ProjectType, d DocType, fld FldType) string {
+		return fmt.Sprintf("<%[1]s v-if='item.id != -1' :id='item.id' %s/>", strings.Replace(snaker.CamelToSnake(refDoc.FldName+"RefListWidget"), "_", "-", -1), readonly)
 	}}}
 	return fld
 }
 
 // заголовки табов
-func (d DocType) PrintVueItemTabs()  string{
+func (d DocType) PrintVueItemTabs() string {
 	res := []string{}
 	sep := "\n\t\t\t\t\t\t\t\t"
 	for _, tab := range d.Vue.Tabs {
@@ -569,7 +567,7 @@ func (d DocType) PrintVueItemTabs()  string{
 }
 
 // список компонентов для отображения содержимого табов
-func (d DocType) PrintVueItemTabPanels()  string{
+func (d DocType) PrintVueItemTabPanels() string {
 	res := []string{}
 	params := ":id='id' :isOpenInDialog='isOpenInDialog' @updated='v=>$emit(`updated`, v)'"
 	if d.IsRecursion {
