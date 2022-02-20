@@ -88,6 +88,9 @@ func (d DocType) PrintSqlModelTriggers() (res string) {
 	if d.Sql.IsAfterTrigger {
 		arr = append(arr, fmt.Sprintf("\t{name=\"%s_trigger_after\", when=\"after insert or update\", ref=\"for each row\", funcName=\"%s_trigger_after\"}", d.Name, d.Name))
 	}
+	if d.Sql.IsNotifyEventTrigger {
+		arr = append(arr, fmt.Sprintf("\t{name=\"%s_event\", when=\"after insert or update\", ref=\"for each row\", funcName=\"notify_event\"}", d.Name))
+	}
 	if len(arr) > 0 {
 		res = fmt.Sprintf("triggers = [\n%s\n]", strings.Join(arr, ",\n"))
 	}
@@ -195,11 +198,10 @@ func (d DocType) PrintSqlFuncListRoleConditions() string {
 	res := ""
 	res = fmt.Sprintf(`if is_user_role((params->>'user_id')::int, '{"admin"}') is not true then
         params = params || jsonb_build_object('manager_id', params->>'user_id');
-    end if;`, )
+    end if;`)
 
 	return res
 }
-
 
 func (d DocType) PrintSqlFuncListWhereCond() string {
 	arr := []string{"['ilike', 'search_text', 'search_text']"}
@@ -310,7 +312,7 @@ func (d DocType) PrintSqlFuncUpdateCheckParams() string {
 
 func (d DocType) PrintSqlFuncUpdateCheckIsNew() string {
 	str := `if (params ->> 'id')::int = -1 then`
-	if (d.IsBitrixIntegration() || d.IsOdataIntegration()) {
+	if d.IsBitrixIntegration() || d.IsOdataIntegration() {
 		str = fmt.Sprintf(`IF %sRow.id ISNULL THEN`, d.Name)
 	}
 	return str
@@ -318,10 +320,10 @@ func (d DocType) PrintSqlFuncUpdateCheckIsNew() string {
 
 func (d DocType) PrintSqlFuncUpdateQueryStr() string {
 	str := fmt.Sprintf(`concat('UPDATE %s SET ', updateValue, ' WHERE id=', params ->> 'id', ' RETURNING *;')`, d.Name)
-	if (d.IsBitrixIntegration()) {
+	if d.IsBitrixIntegration() {
 		str = fmt.Sprintf(`concat('UPDATE %[1]s SET ', updateValue, ' WHERE btx_id=', quote_literal(%[1]sRow.btx_id), ' RETURNING *')`, d.Name)
 	}
-	if (d.IsOdataIntegration()) {
+	if d.IsOdataIntegration() {
 		str = fmt.Sprintf(`concat('UPDATE %[1]s SET ', updateValue, ' WHERE uuid=', quote_literal(%[1]sRow.uuid), ' RETURNING *')`, d.Name)
 	}
 	return str
@@ -422,7 +424,7 @@ func (d DocType) GetSearchTextString() string {
 	arr := []string{}
 	for _, fld := range d.Flds {
 		if fld.Sql.IsSearch {
-			if (len(fld.Sql.Ref) == 0) {
+			if len(fld.Sql.Ref) == 0 {
 				arr = append(arr, "new."+fld.Name)
 			} else {
 				arr = append(arr, snaker.SnakeToCamelLower(strings.TrimSuffix(fld.Name, "_id"))+"Title")
@@ -437,7 +439,7 @@ func (d DocType) GetSearchTextJson() string {
 	arr := []string{}
 	for _, fld := range d.Flds {
 		if fld.Sql.IsSearch {
-			if (len(fld.Sql.Ref) == 0) {
+			if len(fld.Sql.Ref) == 0 {
 				arr = append(arr, fmt.Sprintf("'%[1]s', new.%[1]s", fld.Name))
 			} else {
 				fldName := strings.TrimSuffix(fld.Name, "_id")
@@ -474,7 +476,7 @@ func (d DocType) GetBeforeTriggerDeclareVars() string {
 			}
 		}
 	}
-	res = res  + "\n" + d.Sql.Hooks.Print("triggerBefore", "declareVars")
+	res = res + "\n" + d.Sql.Hooks.Print("triggerBefore", "declareVars")
 
 	return res
 }

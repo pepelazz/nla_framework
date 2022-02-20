@@ -16,7 +16,7 @@ const (
 
 type (
 	DocType struct {
-		Project 	   		*ProjectType // ссылка на проект
+		Project              *ProjectType // ссылка на проект
 		Name                 string
 		NameRu               string
 		Type                 string
@@ -31,7 +31,7 @@ type (
 		StateMachine         *DocSm
 		IsRecursion          bool // признак, что документ имеет рекурсию. Есть parent_id - ссылка на самого себя
 		Integrations         DocIntegrations
-		I18n map[string]map[string]string //RU : save: 'сохранить'
+		I18n                 map[string]map[string]string //RU : save: 'сохранить'
 	}
 
 	TmplPathOverride struct {
@@ -40,31 +40,31 @@ type (
 	}
 
 	DocVue struct {
-		RouteName      string
-		Routes         [][]string // можно указать роуты, тогда они не формируются автоматически. например Routes: [][]string{{"industry", "industry/index.vue"}, {"industry/info", "industry/info.vue"}, {"industry/:id", "industry/item.vue"}},
-		Path           string     // путь к папке с компонентами, если отличается от стандартного. Например client/deal... Используется для вложенных путей
-		MenuIcon       string
-		BreadcrumbIcon string
-		Roles          []string
-		Grid           []VueGridDiv
-		Mixins         map[string][]VueMixin        // название файла - название миксина. Для прописывания импорта
-		Components     map[string]map[string]string // название файла - название миксина: путь для импорта. Для прописывания импорта
-		Vars           map[string]map[string]string // название файла - название переменной - значение
-		Methods        map[string]map[string]string // название файла - название метода - текст функции
-		TmplFuncs      map[string]func(DocType) string
-		I18n           map[string]string
-		GloablI18n     map[string]map[string]string // для вынесение справочника в utils.js, чтобы потом можно было вызывать $util.i18n_<название функции>
-		Tabs           []VueTab
-		Hooks          DocVueHooks // куски vue кода
-		Readonly       string
-		ListUrlQueryParams []string // список параметров, которые можно передавать в url для фильтрации
-		IsVueTitleClickable bool // включаем возможность перехода на item из списка не только при клике по аватарке, но и по названию
-		IsHideDeleteOptions bool // возможность не показыввать опцию "удалить" в списке
-		IsHideCreateNewBtn bool // возможность не показыввать кнопку "+" в списке
-		IsOpenNewInTab bool // создание новой записи открывается в новом табе
-		List 		VueDocList // дополнительные настройки списка документов
-		FilterList  []VueDocListFilter // список фильтров
-		SortList []VueDocListSort // список сортировок
+		RouteName           string
+		Routes              [][]string // можно указать роуты, тогда они не формируются автоматически. например Routes: [][]string{{"industry", "industry/index.vue"}, {"industry/info", "industry/info.vue"}, {"industry/:id", "industry/item.vue"}},
+		Path                string     // путь к папке с компонентами, если отличается от стандартного. Например client/deal... Используется для вложенных путей
+		MenuIcon            string
+		BreadcrumbIcon      string
+		Roles               []string
+		Grid                []VueGridDiv
+		Mixins              map[string][]VueMixin        // название файла - название миксина. Для прописывания импорта
+		Components          map[string]map[string]string // название файла - название миксина: путь для импорта. Для прописывания импорта
+		Vars                map[string]map[string]string // название файла - название переменной - значение
+		Methods             map[string]map[string]string // название файла - название метода - текст функции
+		TmplFuncs           map[string]func(DocType) string
+		I18n                map[string]string
+		GloablI18n          map[string]map[string]string // для вынесение справочника в utils.js, чтобы потом можно было вызывать $util.i18n_<название функции>
+		Tabs                []VueTab
+		Hooks               DocVueHooks // куски vue кода
+		Readonly            string
+		ListUrlQueryParams  []string           // список параметров, которые можно передавать в url для фильтрации
+		IsVueTitleClickable bool               // включаем возможность перехода на item из списка не только при клике по аватарке, но и по названию
+		IsHideDeleteOptions bool               // возможность не показыввать опцию "удалить" в списке
+		IsHideCreateNewBtn  bool               // возможность не показыввать кнопку "+" в списке
+		IsOpenNewInTab      bool               // создание новой записи открывается в новом табе
+		List                VueDocList         // дополнительные настройки списка документов
+		FilterList          []VueDocListFilter // список фильтров
+		SortList            []VueDocListSort   // список сортировок
 	}
 
 	VueTab struct {
@@ -98,25 +98,24 @@ type (
 	}
 
 	AddBtnsSlot_UploadFile struct {
-		Url string
+		Url     string
 		FileExt []string
 		Tooltip string
 	}
 
 	VueDocListFilter struct {
-		Label string
-		FldName string
-		IsRef bool
+		Label    string
+		FldName  string
+		IsRef    bool
 		RefTable string
 		ColClass string
-		Options []FldVueOptionsItem
+		Options  []FldVueOptionsItem
 	}
 
 	VueDocListSort struct {
 		Label string
 		Value string
 	}
-
 
 	DocTemplate struct {
 		Source       string
@@ -127,15 +126,16 @@ type (
 	}
 
 	DocSql struct {
-		Methods         map[string]*DocSqlMethod
-		IsUniqLink      bool        // флаг, что таблица является связью двух таблиц и связь между ними уникальная
-		IsBeforeTrigger bool        // флаг что добавляем before триггер
-		IsAfterTrigger  bool        // флаг что добавляем after триггер
-		IsSearchText    bool        // флаг что добавляем поле search_text
-		Indexes         []string    // индексы
-		Hooks           DocSqlHooks // куски sql кода
-		CheckConstrains []DocSqlCheckConstraint // список ограничений в таблице
-		UniqConstrains []DocSqlUniqConstraint // список ограничений на уникаальность
+		Methods              map[string]*DocSqlMethod
+		IsUniqLink           bool                    // флаг, что таблица является связью двух таблиц и связь между ними уникальная
+		IsBeforeTrigger      bool                    // флаг что добавляем before триггер
+		IsAfterTrigger       bool                    // флаг что добавляем after триггер
+		IsNotifyEventTrigger bool                    // флаг что добавляем notify_event триггер
+		IsSearchText         bool                    // флаг что добавляем поле search_text
+		Indexes              []string                // индексы
+		Hooks                DocSqlHooks             // куски sql кода
+		CheckConstrains      []DocSqlCheckConstraint // список ограничений в таблице
+		UniqConstrains       []DocSqlUniqConstraint  // список ограничений на уникаальность
 	}
 
 	DocIsBaseTemplates struct {
@@ -163,7 +163,7 @@ type (
 		AfterInsert          []string
 		AfterInsertUpdate    []string
 		BeforeTriggerBefore  []string
-		AfterTriggerBefore  []string
+		AfterTriggerBefore   []string
 		AfterTriggerAfter    []string
 		ListBeforeBuildWhere []string
 		ListAfterBuildWhere  []string
@@ -171,14 +171,14 @@ type (
 	}
 
 	DocSqlCheckConstraint struct {
-		Name string
+		Name            string
 		CheckConditions string //
 	}
 
 	DocSqlUniqConstraint struct {
-		Name string
+		Name           string
 		UniqConditions string //
-		Message string // сообщение, которое передается на клиент, вместо стандартного сообщения из postgres
+		Message        string // сообщение, которое передается на клиент, вместо стандартного сообщения из postgres
 	}
 
 	DocIntegrations struct {
@@ -204,7 +204,7 @@ type (
 		IsDebugMode bool   // показываем открытый get метод для тестирования импорта
 		Filter      []string
 		Hooks       DocIntegrationsOdataHooks
-		Import []string // список дополнительных import'ов для файла odataDoc.go
+		Import      []string // список дополнительных import'ов для файла odataDoc.go
 		//Result struct {
 		//	StructDesc string // описание вложенной структуры для маппинга json
 		//	PathStr string // путь до массива с данными. Например, Result.Tasks
@@ -213,10 +213,10 @@ type (
 	}
 
 	DocIntegrationsOdataHooks struct {
-		TypeAddFlds string // дополнительные поля в go структуру, для чтения из odata
-		PgTypeAddFlds string // дополнительные поля в go структуру, для записи в базу
-		ConvertAddFlds string // код для конвертирования
-		UrlAddFlds []string // дополнительные поля в url запроса
+		TypeAddFlds    string   // дополнительные поля в go структуру, для чтения из odata
+		PgTypeAddFlds  string   // дополнительные поля в go структуру, для записи в базу
+		ConvertAddFlds string   // код для конвертирования
+		UrlAddFlds     []string // дополнительные поля в url запроса
 	}
 
 	DocVueHooks struct {
@@ -258,7 +258,7 @@ func (d *DocType) Init() {
 	for i := range d.Flds {
 		d.Flds[i].Doc = d
 		// если у документа опередлено условие readonly, то распространяем его на поле. Только если отдельно у поля не определено свое условие
-		if d.Vue.Readonly != "false" && d.Flds[i].Vue.Readonly != "true"  {
+		if d.Vue.Readonly != "false" && d.Flds[i].Vue.Readonly != "true" {
 			d.Flds[i].Vue.Readonly = d.Vue.Readonly
 		}
 	}
@@ -321,7 +321,7 @@ func (d *DocType) AddVueListUploadFile(url string, fileExt []string, tooltip str
 	if d.Vue.List.AddBtnsSlot == nil {
 		d.Vue.List.AddBtnsSlot = []VueDocListAddBtnsSlot{}
 	}
-	d.Vue.List.AddBtnsSlot = append(d.Vue.List.AddBtnsSlot, VueDocListAddBtnsSlot{ UploadFile: AddBtnsSlot_UploadFile{url, fileExt, tooltip}})
+	d.Vue.List.AddBtnsSlot = append(d.Vue.List.AddBtnsSlot, VueDocListAddBtnsSlot{UploadFile: AddBtnsSlot_UploadFile{url, fileExt, tooltip}})
 }
 
 // sugar для добавление компоненты во vue
@@ -383,8 +383,8 @@ func (d *DocType) GetProject() *ProjectType {
 	return d.Project
 }
 
-func (d *DocType) AddI18n(lang, key, value string)  {
-	if len(d.I18n)==0 {
+func (d *DocType) AddI18n(lang, key, value string) {
+	if len(d.I18n) == 0 {
 		d.I18n = map[string]map[string]string{}
 	}
 	if len(d.I18n[lang]) == 0 {
