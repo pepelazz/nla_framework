@@ -91,6 +91,9 @@ func (d DocType) PrintSqlModelTriggers() (res string) {
 	if d.Sql.IsNotifyEventTrigger {
 		arr = append(arr, fmt.Sprintf("\t{name=\"%s_event\", when=\"after insert or update\", ref=\"for each row\", funcName=\"notify_event\"}", d.Name))
 	}
+	for _, trigger := range d.Sql.CustomTriggers {
+		arr = append(arr, "\t"+trigger)
+	}
 	if len(arr) > 0 {
 		res = fmt.Sprintf("triggers = [\n%s\n]", strings.Join(arr, ",\n"))
 	}

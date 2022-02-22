@@ -131,6 +131,7 @@ type (
 		IsBeforeTrigger      bool                    // флаг что добавляем before триггер
 		IsAfterTrigger       bool                    // флаг что добавляем after триггер
 		IsNotifyEventTrigger bool                    // флаг что добавляем notify_event триггер
+		CustomTriggers       []string                // дополнительные строчки с триггерами. Пример: {name="acquire_game_player_created", when="before insert or update", ref="for each row", funcName="builtin_fld_update"}
 		IsSearchText         bool                    // флаг что добавляем поле search_text
 		Indexes              []string                // индексы
 		Hooks                DocSqlHooks             // куски sql кода
