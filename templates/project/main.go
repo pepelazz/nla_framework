@@ -24,6 +24,9 @@ import (
 	"math/rand"
 	"os"
 	"time"
+	{{- range.Go.Routes.ImportsMainGo}}
+    "{{.}}"
+    {{- end}}
 )
 
 var (
@@ -107,6 +110,10 @@ func main() {
 
 	// инициализируем брокера для обработки подключений по SSE
 	sse.Init()
+
+    {{- range.Go.HooksBeforeStartWebServer}}
+    {{.}}
+    {{- end}}
 
 	webServer.StartWebServer(*config)
 }

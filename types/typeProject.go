@@ -154,18 +154,20 @@ type (
 		InitialData []string                  // данные при первоначальной загрузке
 	}
 	ProjectGo struct {
-		JobList []string // список job'ов
-		Routes  ProjectGoRoutes
+		JobList                   []string // список job'ов
+		Routes                    ProjectGoRoutes
+		HooksBeforeStartWebServer []string
 	}
 	ProjectRole struct {
 		Name   string
 		NameRu string
 	}
 	ProjectGoRoutes struct {
-		Imports []string
-		NotAuth []string // роуты вне блока, требующего авторизации
-		Api     []string // роуты в блоке, требующего авторизации
-		Static  []string // роуты в static блоке
+		Imports       []string
+		NotAuth       []string // роуты вне блока, требующего авторизации
+		Api           []string // роуты в блоке, требующего авторизации
+		Static        []string // роуты в static блоке
+		ImportsMainGo []string // роуты в основном main.go
 	}
 	ProjectVueHooks struct {
 		Profile ProjectVueHooksProfile
