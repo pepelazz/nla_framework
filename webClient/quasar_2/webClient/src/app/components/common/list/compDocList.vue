@@ -165,6 +165,7 @@
       reloadList() {
         this.itemList = []
         this.listParams.page = 0
+        this.$refs.infiniteScroll.poll()
         this.$refs.infiniteScroll.resume()
         this.loadList({list: this.itemList, params: this.listParams})
         this.$forceUpdate()
