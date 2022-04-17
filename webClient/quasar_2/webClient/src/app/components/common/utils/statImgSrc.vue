@@ -11,7 +11,7 @@
         computed: {
             imgUrl: function () {
                 if (this.src) {
-                    return this.src.includes('http') || this.src.startsWith('image') ? this.src : `${this.$config.apiUrl()}${this.src}`
+                    return (this.src.includes('http') || this.src.startsWith('image')) ? this.src : `${this.$config.apiUrl()}${this.src}`
                 } else {
                     return 'https://www.foot.com/wp-content/uploads/2017/03/placeholder.gif'
                 }

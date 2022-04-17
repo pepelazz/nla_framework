@@ -84,6 +84,13 @@
         default: true,
       },
       ext: {},
+      formFieldParams: {
+        type: Array,
+        default: () => [],
+      },
+      isUpdateFldsInPostgres: {
+        default: true,
+      }, // флаг, чтобы отключить обновления записи в БД после загрузки фото
     },
     computed: {
       uploadUrl: function() {
@@ -94,7 +101,7 @@
         return [{name: 'Auth-token', value: authToken}]
       },
       formField: function () {
-        let res = [{name: 'tableName', value: this.ext.tableName}, {name: 'tableId', value: this.ext.tableId}]
+        let res = [...[{name: 'tableName', value: this.ext.tableName}, {name: 'tableId', value: this.ext.tableId}], ...this.formFieldParams]
         if (this.ext.width) res.push({name: 'width', value: this.ext.width})
         if (this.ext.crop) res.push({name: 'crop', value: this.ext.crop})
         return res
@@ -182,47 +189,57 @@
       },
       remove() {
         let i = this.list.findIndex(v => v.file === this.selectedForDeleteFilename && !v.deleted)
-        // помечаем файл как удааленный
+        // помечаем файл как удаленный
         this.list[i].deleted = true
         let item = this.list.splice(i, 1)
         this.list.push(item[0])
         // обновляем список файлов в самой записи
-        this.$utils.postCallPgMethod({
-          method: `${this.ext.methodUpdate || this.ext.tableName + '_update'}`,
-          params: {id: this.ext.tableId, [this.ext.fldName]: this.list}
-        }).subscribe(res => {
+        if (this.isUpdateFldsInPostgres) {
+          this.$utils.postCallPgMethod({
+            method: `${this.ext.methodUpdate || this.ext.tableName + '_update'}`,
+            params: {id: this.ext.tableId, [this.ext.fldName]: this.list}
+          }).subscribe(res => {
+            this.$emit('update', this.list)
+          })
+        } else {
           this.$emit('update', this.list)
-        })
+        }
       },
       // загрузка url ссылки на фото
       addImgUrl: function () {
         this.isShowDialog = false
         this.list.push({file: this.newImgUrl})
         // обновляем запись
-        this.$utils.postCallPgMethod({
-          method: `${this.ext.methodUpdate || this.ext.tableName + '_update'}`,
-          params: {id: this.ext.tableId, [this.ext.fldName]: this.list}
-        }).subscribe(res => {
-          if (res.ok) {
-            this.newImgUrl = null
-          }
-        })
+        if (this.isUpdateFldsInPostgres) {
+          this.$utils.postCallPgMethod({
+            method: `${this.ext.methodUpdate || this.ext.tableName + '_update'}`,
+            params: {id: this.ext.tableId, [this.ext.fldName]: this.list}
+          }).subscribe(res => {
+            if (res.ok) {
+              this.newImgUrl = null
+            }
+          })
+        } else {
+          this.$emit('update', this.list)
+        }
       },
       finish() {
         this.$refs.uploader.reset()
         this.isShowDialog = false
         this.$emit('update', this.list)
         // обновляем запись
-        this.$utils.postCallPgMethod({
-          method: `${this.ext.methodUpdate || this.ext.tableName + '_update'}`,
-          params: {id: this.ext.tableId, [this.ext.fldName]: this.list}
-        }).subscribe(res => {
-        })
+        if (this.isUpdateFldsInPostgres) {
+          this.$utils.postCallPgMethod({
+            method: `${this.ext.methodUpdate || this.ext.tableName + '_update'}`,
+            params: {id: this.ext.tableId, [this.ext.fldName]: this.list}
+          }).subscribe(res => {
+          })
+        }
       },
     },
     mounted() {
-      // проверки только если не readonly
-      if (!this.readonly) {
+      // проверки только если не readonly и если флаг, что надо обновить запись в БД
+      if (!this.readonly && this.isUpdateFldsInPostgres) {
         if (!this.ext) {
           throw new Error('compFldFiles missed param: "ext"')
         }
