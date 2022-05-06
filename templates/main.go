@@ -28,11 +28,11 @@ var funcMap = template.FuncMap{
 	"ToLower":             strings.ToLower,
 	"UpperCaseFirst":      utils.UpperCaseFirst,
 	"ToLowerCamel":        strcase.ToLowerCamel,
-	"ToCamel":        	   strcase.ToCamel,
+	"ToCamel":             strcase.ToCamel,
 	"PrintVueFldTemplate": PrintVueFldTemplate,
-	"ArrayStringJoin": arrayStringJoin,
+	"ArrayStringJoin":     arrayStringJoin,
 	"GetPgTimeZone": func() string {
-		if project !=nil {
+		if project != nil {
 			return project.Config.Postgres.TimeZone
 		}
 		return "null"
@@ -158,7 +158,7 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 					continue
 				}
 				params := map[string]string{}
-				if len(d.Vue.Path)> 0 {
+				if len(d.Vue.Path) > 0 {
 					params["doc.Vue.Path"] = d.Vue.Path
 				}
 
@@ -182,12 +182,12 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 				if d.IsStateMachine() {
 					if tName == "sql_function_update.sql" {
 						if _, ok := d.Templates["sql_function_update.sql"]; ok {
-							d.Templates["sql_function_update.sql"].Tmpl = stateMachineReadTmplUpdate(funcMap,  currentDir + "/sql/function/stateMachine_update.sql")
+							d.Templates["sql_function_update.sql"].Tmpl = stateMachineReadTmplUpdate(funcMap, currentDir+"/sql/function/stateMachine_update.sql")
 						}
 					}
 					if tName == "webClient_item.vue" && p.GetQuasarVersion() == 1 {
 						if _, ok := d.Templates["webClient_item.vue"]; ok {
-							d.Templates["webClient_item.vue"].Tmpl = stateMachineReadTmplWebclientItem(funcMap, currentDir + "/webClient/quasar_1/doc/comp/stateMachine/webClient_item.vue")
+							d.Templates["webClient_item.vue"].Tmpl = stateMachineReadTmplWebclientItem(funcMap, currentDir+"/webClient/quasar_1/doc/comp/stateMachine/webClient_item.vue")
 						}
 					}
 				}
@@ -200,10 +200,10 @@ func ParseTemplates(p types.ProjectType) map[string]*template.Template {
 				d.Sql.Methods = map[string]*types.DocSqlMethod{}
 			}
 			if _, ok := d.Sql.Methods[d.Name+"_create"]; !ok {
-				d.Sql.Methods[d.Name+"_create"] = &types.DocSqlMethod{Name: d.Name+"_create"}
+				d.Sql.Methods[d.Name+"_create"] = &types.DocSqlMethod{Name: d.Name + "_create"}
 			}
 			if _, ok := d.Sql.Methods[d.Name+"_action"]; !ok {
-				d.Sql.Methods[d.Name+"_action"] = &types.DocSqlMethod{Name: d.Name+"_action"}
+				d.Sql.Methods[d.Name+"_action"] = &types.DocSqlMethod{Name: d.Name + "_action"}
 			}
 		}
 
@@ -278,7 +278,7 @@ func PrintVueFldTemplate(fld types.FldType) string {
 	} else {
 		params = params + " class='q-mb-sm' "
 	}
-	if len(fld.Vue.Vif)>0 {
+	if len(fld.Vue.Vif) > 0 {
 		params = params + fmt.Sprintf(" v-if=\"%s\" ", fld.Vue.Vif)
 	}
 	// не во всех случаях fld.Doc доступен, но там и label не нужен. Например doc.AddFld(t.GetFldVueCompositionRefList(&doc, t.VueCompRefListWidgetParams{...
@@ -321,11 +321,11 @@ func PrintVueFldTemplate(fld types.FldType) string {
 		var extJsonStr []byte
 		if rawJson, ok := fld.Vue.Ext["rawJsonExt"]; ok {
 			// если есть доп параметры, то вручную дописываем их к json строке
-			if len(fld.Vue.Ext)>0{
+			if len(fld.Vue.Ext) > 0 {
 				rawJson = strings.TrimSuffix(rawJson, "}")
 				for k, v := range fld.Vue.Ext {
 					if k != "rawJsonExt" {
- 						rawJson = fmt.Sprintf(`%s, %s: "%s"`, rawJson, k, v)
+						rawJson = fmt.Sprintf(`%s, %s: "%s"`, rawJson, k, v)
 					}
 				}
 				rawJson = rawJson + "}"
@@ -446,8 +446,7 @@ func PrintFldSelectOptions(doc types.DocType, fldName string) string {
 	return fmt.Sprintf("\t%s", strings.Join(res, ",\n\t\t\t\t\t"))
 }
 
-
-func arrayStringJoin(arr []string) string  {
+func arrayStringJoin(arr []string) string {
 	tmpArr := []string{}
 	for _, v := range arr {
 		tmpArr = append(tmpArr, fmt.Sprintf(`"%s"`, v))
@@ -455,7 +454,7 @@ func arrayStringJoin(arr []string) string  {
 	return strings.Join(tmpArr, ", ")
 }
 
-func getCurrentDir() string  {
+func getCurrentDir() string {
 	_, filename, _, ok := runtime.Caller(0)
 	if !ok {
 		log.Fatalf("ParseTemplates runtime.Caller: No caller information")

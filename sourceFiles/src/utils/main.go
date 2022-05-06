@@ -2,18 +2,19 @@ package utils
 
 import (
 	"bytes"
+	"crypto/rand"
 	"encoding/gob"
+	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator"
 	"github.com/pepelazz/nla_framework/types"
 	"io/ioutil"
+	"log"
 	"mime/multipart"
 	"net/http"
-	"fmt"
 	"strconv"
-	"encoding/json"
-	"crypto/rand"
-	"errors"
-	"log"
 	"strings"
 )
 
@@ -100,6 +101,15 @@ func ExtractPostReqParams(c *gin.Context, res interface{}) bool {
 	if err != nil {
 		HttpError(c, http.StatusMethodNotAllowed, fmt.Sprintf("extractPostReqParams json.Unmarshal %s params: %s", err.Error(), paramStr))
 		return false
+	}
+
+	validate := validator.New()
+	err = validate.Struct(res)
+	if err != nil {
+		for _, vErr := range err.(validator.ValidationErrors) {
+			HttpError(c, http.StatusBadRequest, fmt.Sprintf("missed '%s' in params", vErr.Field()))
+			return false
+		}
 	}
 
 	return true
@@ -240,7 +250,7 @@ func ReadUploadedFile(c *gin.Context, exts []string) (file multipart.File, filen
 		fileKey = key
 		// извлекаем название файла из headers формы
 		for _, h := range headers {
-			if h != nil && len(h.Filename) > 0{
+			if h != nil && len(h.Filename) > 0 {
 				fileName = h.Filename
 			}
 		}
@@ -257,7 +267,7 @@ func ReadUploadedFile(c *gin.Context, exts []string) (file multipart.File, filen
 	if len(fileExt) == 0 {
 		return nil, fileName, errors.New("wrong file extansion")
 	}
-	if exts != nil && len(exts) > 0{
+	if exts != nil && len(exts) > 0 {
 		isExtTrue := false
 		for _, v := range exts {
 			if fileExt == v {
