@@ -2,7 +2,7 @@ package types
 
 import (
 	"fmt"
-	"github.com/pelletier/go-toml"
+	"github.com/pepelazz/go-toml"
 	"os"
 	"strconv"
 )
