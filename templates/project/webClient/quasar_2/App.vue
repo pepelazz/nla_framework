@@ -78,7 +78,7 @@
     components: {authComp, currentUserToolbarMenu, sideMenu, waitingAuthPage, firedPage, [[- if .I18n.IsExist]]i18nSwitcher,[[- end]]},
     data() {
       return {
-        leftSide: true,
+        leftSide: false,
         isShowMsgList: false,
         isShowTaskList: false,
         messageCounter: 0,
