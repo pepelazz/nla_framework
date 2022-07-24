@@ -21,6 +21,7 @@ const (
 	FldTypeDatetime          = "datetime"
 	FldTypeTextArray         = "text[]"
 	FldTypeIntArray          = "int[]"
+	FldTypeDoubleArray       = "double precision[]"
 	FldVueTypeSelect         = "select"
 	FldVueTypeMultipleSelect = "multipleSelect"
 	FldVueTypeTags           = "tags"
@@ -78,7 +79,7 @@ type (
 	FldVueOptionsItem struct {
 		Label string      `json:"label"`
 		Value interface{} `json:"value"`
-		Color string `json:"color"`
+		Color string      `json:"color"`
 	}
 
 	FldVueJsonList struct {
@@ -138,6 +139,8 @@ func (fld *FldType) GoType() string {
 		return "float64"
 	case FldTypeIntArray:
 		return "[]int"
+	case FldTypeDoubleArray:
+		return "[]float64"
 	case FldTypeTextArray:
 		return "[]string"
 	case FldTypeDate, FldTypeDatetime, FldTypeUuid:
@@ -174,6 +177,8 @@ func (fld *FldType) PgUpdateType() string {
 		return "jsonArrayText"
 	case FldTypeIntArray:
 		return "jsonArrayInt"
+	case FldTypeDoubleArray:
+		return "jsonArrayDouble"
 	default:
 		return fld.Type
 	}
@@ -232,11 +237,13 @@ func (fld FldType) SetIsOptionFld() FldType {
 	fld.Sql.IsOptionFld = true
 	return fld
 }
+
 // признак что поле участвует в поиске. В options.title записывается значение. А также добавляется в колонку search_txt
 func (fld FldType) SetIsSearch() FldType {
 	fld.Sql.IsSearch = true
 	return fld
 }
+
 // дефолтное значение для колонки в postgres таблицы
 func (fld FldType) SetDefault(s string) FldType {
 	fld.Sql.Default = s
@@ -349,4 +356,3 @@ func (fld FldType) SetFromConfigTable(d *DocType, fldName string) FldType {
 	d.Sql.Hooks.BeforeInsertUpdate = append(d.Sql.Hooks.BeforeInsertUpdate, triggerStr)
 	return fld
 }
-

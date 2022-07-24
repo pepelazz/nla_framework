@@ -63,6 +63,11 @@ BEGIN
                                     valueStr = concat(valueStr,
                                                       COALESCE(quote_literal(int_array_from_json(i.value :: JSONB)),
                                                                'NULL'), ',');
+                            WHEN 'jsonArrayDouble'
+                                THEN
+                                    valueStr = concat(valueStr,
+                                                      COALESCE(quote_literal(double_array_from_json(i.value :: JSONB)),
+                                                               'NULL'), ',');
                             WHEN 'timestamp'
                                 THEN
                                     valueStr = concat(valueStr, COALESCE(

@@ -10,7 +10,7 @@ import (
 	"text/template"
 )
 
-func docIsIntegrationProccess(p types.ProjectType, d *types.DocType)  {
+func docIsIntegrationProccess(p types.ProjectType, d *types.DocType) {
 	if d.IsBitrixIntegration() {
 		docIsIntegrationBitrixProccess(p, d)
 	}
@@ -20,19 +20,19 @@ func docIsIntegrationProccess(p types.ProjectType, d *types.DocType)  {
 }
 
 func docIsIntegrationBitrixProccess(p types.ProjectType, d *types.DocType) {
-	sourcePath :=  getCurrentDir() + "/integrations/bitrix/bitrixDoc.go"
+	sourcePath := getCurrentDir() + "/integrations/bitrix/bitrixDoc.go"
 	// проверяем возможность того, что путь к шаблону был переопределен внутри документа
 	if d.TemplatePathOverride != nil {
 		if tmpl, ok := d.TemplatePathOverride["bitrixDoc.go"]; ok {
-			if len(tmpl.Source)> 0 {
+			if len(tmpl.Source) > 0 {
 				sourcePath = tmpl.Source
 			}
 		}
 	}
 	docName := d.Name
 	localFuncMap := template.FuncMap{
-		"LocalProjectPath": func() string{ return p.Config.LocalProjectPath},
-		"DocNameCamel": func() string{ return snaker.SnakeToCamel(docName)},
+		"LocalProjectPath": func() string { return p.Config.LocalProjectPath },
+		"DocNameCamel":     func() string { return snaker.SnakeToCamel(docName) },
 		"IsBtxFld": func(fld types.FldType) bool {
 			return len(getBtxFld(*d, fld).Name) > 0
 		},
@@ -86,7 +86,7 @@ func docIsIntegrationBitrixProccess(p types.ProjectType, d *types.DocType) {
 	d.Templates["webClient_comp_bitrixDoc.go"] = &types.DocTemplate{Tmpl: t, DistPath: distPath, DistFilename: snaker.SnakeToCamelLower(d.Name) + ".go"}
 }
 
-func getBtxFld(d types.DocType, fld types.FldType) types.BitrixFld  {
+func getBtxFld(d types.DocType, fld types.FldType) types.BitrixFld {
 	if btxFldInt, ok := fld.IntegrationData["bitrix"]; ok {
 		if btxFld, ok := btxFldInt.(types.BitrixFld); ok {
 			return btxFld
@@ -102,7 +102,7 @@ func docIsIntegrationOdataProccess(p types.ProjectType, d *types.DocType) {
 	// проверяем возможность того, что путь к шаблону был переопределен внутри документа
 	if d.TemplatePathOverride != nil {
 		if tmpl, ok := d.TemplatePathOverride["odataDoc.go"]; ok {
-			if len(tmpl.Source)> 0 {
+			if len(tmpl.Source) > 0 {
 				sourcePath = tmpl.Source
 			}
 		}
@@ -117,10 +117,10 @@ func docIsIntegrationOdataProccess(p types.ProjectType, d *types.DocType) {
 		}
 	}
 	localFuncMap := template.FuncMap{
-		"LocalProjectPath": func() string{ return p.Config.LocalProjectPath},
-		"DocNameCamel": func() string{ return snaker.SnakeToCamel(docName)},
-		"GetOdataName": func() string { return odataName},
-		"GetOdataFldNames": func() []string {return odataFldNames},
+		"LocalProjectPath": func() string { return p.Config.LocalProjectPath },
+		"DocNameCamel":     func() string { return snaker.SnakeToCamel(docName) },
+		"GetOdataName":     func() string { return odataName },
+		"GetOdataFldNames": func() []string { return odataFldNames },
 		"IsOdataFld": func(fld types.FldType) bool {
 			return len(getOdataFld(*d, fld).Name) > 0
 		},
@@ -174,7 +174,7 @@ func docIsIntegrationOdataProccess(p types.ProjectType, d *types.DocType) {
 	d.Templates["webClient_comp_odataDoc.go"] = &types.DocTemplate{Tmpl: t, DistPath: distPath, DistFilename: snaker.SnakeToCamelLower(d.Name) + ".go"}
 }
 
-func getOdataFld(d types.DocType, fld types.FldType) types.OdataFld  {
+func getOdataFld(d types.DocType, fld types.FldType) types.OdataFld {
 	if odataFldInt, ok := fld.IntegrationData["odata"]; ok {
 		if odataFld, ok := odataFldInt.(types.OdataFld); ok {
 			return odataFld

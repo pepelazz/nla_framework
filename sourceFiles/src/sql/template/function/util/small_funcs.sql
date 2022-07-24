@@ -21,7 +21,7 @@ BEGIN
 END
 $function$;
 
--- функция конвертации json массива в текстовый массив
+-- функция конвертации json массива в массив целых чисел
 DROP FUNCTION IF EXISTS int_array_from_json(jsonArr JSONB );
 CREATE OR REPLACE FUNCTION int_array_from_json(jsonArr JSONB)
   RETURNS INT []
@@ -35,6 +35,23 @@ BEGIN
 
   RETURN COALESCE((SELECT array_agg(e) :: INT []
                    FROM jsonb_array_elements_text(jsonArr) e), '{}' :: INT []);
+END
+$function$;
+
+-- функция конвертации json массива в массив дробных чисел
+DROP FUNCTION IF EXISTS double_array_from_json(jsonArr JSONB );
+CREATE OR REPLACE FUNCTION double_array_from_json(jsonArr JSONB)
+  RETURNS double precision []
+LANGUAGE plpgsql
+AS $function$
+BEGIN
+
+  IF jsonArr ISNULL OR jsonArr = 'null'
+  THEN RETURN NULL;
+  END IF;
+
+  RETURN COALESCE((SELECT array_agg(e) :: double precision []
+                   FROM jsonb_array_elements_text(jsonArr) e), '{}' :: double precision []);
 END
 $function$;
 
