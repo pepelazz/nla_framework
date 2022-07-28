@@ -390,7 +390,7 @@ func GetVueCompLinkListWidget(p ProjectType, d DocType, tableName string, opts m
 			fldsProp = fmt.Sprintf("\n\t\t\t\t\t\t:flds= \"%s\"", v)
 		}
 		if v, ok := opts["slotOtherFlds"]; ok {
-			slotOtherFlds = fmt.Sprintf("\n\t\t\t\t\t\t<template v-slot:default='slotProps'>\n\t\t\t\t\t\t\t%s\n\t\t\t\t\t\t\t</template>", v)
+			slotOtherFlds = fmt.Sprintf("\n\t\t\t\t\t\t<template v-slot:otherFlds='slotProps'>\n\t\t\t\t\t\t\t%s\n\t\t\t\t\t\t\t</template>", v)
 		}
 		if v, ok := opts["tableDependRoute"]; ok {
 			tableDependRoute = cast.ToString(v)

@@ -1,5 +1,5 @@
 <template>
-  <q-input :dense='dense' outlined :label="label" v-model="date" :readonly="readonly" mask="##-##-####">
+  <q-input :dense='dense' outlined :label="label" v-model="date" :readonly="readonly" mask="##-##-####" :hint="hint">
     <template v-slot:append v-if="!readonly && date">
       <q-icon name="close" @click="clear" class="cursor-pointer q-ml-sm"/>
     </template>
@@ -21,7 +21,7 @@
   import {date as qDate} from 'quasar'
   // import moment from 'moment'
   export default {
-    props: ['dateString', 'label', 'dense', 'is_remove', 'readonly'],
+    props: ['dateString', 'label', 'dense', 'is_remove', 'readonly', 'hint'],
     data() {
       return {
         // date: this.dateString || qDate.formatDate(new Date(), 'DD-MM-YYYY'),
