@@ -374,7 +374,7 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 			onConflictFldUpdateStr = fmt.Sprintf("%s, %s=$%v", onConflictFldUpdateStr, f.Name, cnt)
 		}
 		arrow := "->>"
-		if utils.CheckContainsSliceStr(f.Type, "jsonb", FldTypeTextArray, FldTypeIntArray) {
+		if utils.CheckContainsSliceStr(f.Type, "jsonb", FldTypeTextArray, FldTypeIntArray, FldTypeDoubleArray) {
 			arrow = "->"
 		}
 		paramStr := fmt.Sprintf("\t\t\t(params %s '%s')::%s", arrow, f.Name, f.PgInsertType())
@@ -386,6 +386,10 @@ func (d DocType) PrintSqlFuncInsertNew() (res string) {
 		if f.Type == FldTypeIntArray {
 			paramStr = fmt.Sprintf("\t\t\tint_array_from_json(params %s '%s')", arrow, f.Name)
 			//int_array_from_json(params -> 'role')
+		}
+		if f.Type == FldTypeDoubleArray {
+			paramStr = fmt.Sprintf("\t\t\tdouble_array_from_json(params %s '%s')", arrow, f.Name)
+			//double_array_from_json(params -> 'role')
 		}
 		// в случае наличия дефолтного значения делаем конструкцию coalesce
 		if len(f.Sql.Default) > 0 {
