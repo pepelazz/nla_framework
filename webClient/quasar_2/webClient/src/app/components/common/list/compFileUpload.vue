@@ -18,6 +18,7 @@
             :headers='headers'
             @uploaded='uploaded'
             @failed='failed'
+            :form-fields="formFields"
           />
         </q-card-section>
       </q-card>
@@ -26,77 +27,80 @@
 </template>
 
 <script>
-  export default {
-    props: ['url', 'fileExt', 'icon', 'tooltip', 'label', 'is_btn_with_label', 'size', 'color', 'notifyResultFunc'],
-    computed: {
-      uploadUrl() {
-        return `${this.$config.apiUrl()}/api/${this.url}`
-      },
-      headers: function () {
-        const authToken = localStorage.getItem(this.$config.appName)
-        return [{name: 'Auth-token', value: authToken}]
-      },
-      btnSize() {
-        return this.size || 'sm'
-      },
-      btnColor() {
-        return this.color || 'primary'
-      },
+export default {
+  props: ['url', 'fileExt', 'icon', 'tooltip', 'label', 'is_btn_with_label', 'size', 'color', 'notifyResultFunc', 'formFlds'],
+  computed: {
+    uploadUrl() {
+      return `${this.$config.apiUrl()}/api/${this.url}`
     },
-    data() {
-      return {
-        isOpenUpload: false,
-        iconName: 'cloud_upload',
-        labelName: 'Выберите файл для загрузки',
+    headers: function () {
+      const authToken = localStorage.getItem(this.$config.appName)
+      return [{name: 'Auth-token', value: authToken}]
+    },
+    btnSize() {
+      return this.size || 'sm'
+    },
+    btnColor() {
+      return this.color || 'primary'
+    },
+    formFields() {
+      return this.formFlds || []
+    }
+  },
+  data() {
+    return {
+      isOpenUpload: false,
+      iconName: 'cloud_upload',
+      labelName: 'Выберите файл для загрузки',
+    }
+  },
+  methods: {
+    checkFileType (files) {
+      if (this.fileExt && this.fileExt.length > 0) {
+        let isRightExt = files.filter(file => this.fileExt.filter(ext => file.name.includes(`.${ext}`)).length > 0)
+        if (isRightExt.length === 0) {
+          this.$q.notify({type: 'negative', message: `файл должен иметь расширение ${this.fileExt}`})
+        }
+        return isRightExt
       }
+      return files
     },
-    methods: {
-      checkFileType (files) {
-        if (this.fileExt && this.fileExt.length > 0) {
-          let isRightExt = files.filter(file => this.fileExt.filter(ext => file.name.includes(`.${ext}`)).length > 0)
-          if (isRightExt.length === 0) {
-            this.$q.notify({type: 'negative', message: `файл должен иметь расширение ${this.fileExt}`})
-          }
-          return isRightExt
-        }
-        return files
-      },
-      uploaded({xhr: {response}}) {
-        const res = JSON.parse(response)
-        if (!res.ok) {
-          this.$q.notify({
-            color: 'negative',
-            position: 'bottom',
-            message: res.message,
-          })
-        } else {
-          this.$refs.uploader.reset()
-          this.isOpenUpload = false
-          this.$emit('result', res.result)
-          this.$emit('reloadList')
-          this.$q.notify({
-            color: 'positive',
-            position: 'bottom',
-            message: this.notifyResultFunc ? this.notifyResultFunc(res.result) : res.result,
-          })
-        }
-      },
-      failed(msg) {
-        let msgText = 'ошибка загрузки'
-        if (msg.xhr && msg.xhr.responseText) {
-          let res = JSON.parse(msg.xhr.responseText)
-          if (res.message) msgText = res.message
-        }
+    uploaded({xhr: {response}}) {
+      const res = JSON.parse(response)
+      if (!res.ok) {
         this.$q.notify({
           color: 'negative',
           position: 'bottom',
-          message: msgText,
+          message: res.message,
         })
-      },
+      } else {
+        this.$refs.uploader.reset()
+        this.isOpenUpload = false
+        this.$emit('result', res.result)
+        this.$emit('reloadList')
+        this.$q.notify({
+          color: 'positive',
+          position: 'bottom',
+          message: this.notifyResultFunc ? this.notifyResultFunc(res.result) : res.result,
+        })
+      }
     },
-    mounted() {
-      if (this.icon) this.iconName = this.icon
-      if (this.label) this.labelName = this.label
-    }
+    failed(msg) {
+      let msgText = 'ошибка загрузки'
+      if (msg.xhr && msg.xhr.responseText) {
+        let res = JSON.parse(msg.xhr.responseText)
+        if (res.message) msgText = res.message
+      }
+      this.$q.notify({
+        color: 'negative',
+        position: 'bottom',
+        message: msgText,
+      })
+    },
+  },
+  mounted() {
+    if (this.icon) this.iconName = this.icon
+    if (this.label) this.labelName = this.label
   }
+}
 </script>
