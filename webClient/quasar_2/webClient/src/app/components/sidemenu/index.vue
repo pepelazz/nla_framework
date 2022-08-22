@@ -5,7 +5,7 @@
 <!--    <q-scroll-area class="fit">-->
       <q-list padding>
         <div v-for="link in menuLinks" :key="link.text">
-            <span v-if="isRole(link.roles)">
+            <span v-if="isRole(link.roles, link.conditionFunc)">
               <q-item v-if="!link.isFolder" v-ripple clickable :to="link.url" exact>
                 <q-item-section avatar>
                   <q-avatar rounded>
@@ -28,7 +28,7 @@
                     </q-item-section>
                 </template>
                 <span v-for="link1 in link.linkList" :key="link1.text" >
-                  <q-item v-if="isRole(link1.roles)" :inset-level="1" v-ripple clickable :to="link1.url"
+                  <q-item v-if="isRole(link1.roles, link1.conditionFunc)" :inset-level="1" v-ripple clickable :to="link1.url"
                           exact>
                   <q-item-section>
                     <q-item-label v-html='link1.text.includes("i18n_") ? $t(link1.text.replace("i18n_", "")) : link1.text'/>
@@ -48,7 +48,12 @@
         props: ['leftSide', 'currentUser'],
         computed: {
           isRole() {
-              return (roles) => {
+            return (roles, conditionFunc) => {
+                  if (conditionFunc) {
+                    let isAccess = conditionFunc(this.currentUser)
+                    console.log('isAccess:', isAccess)
+                    if (!isAccess) return false
+                  }
                   if (!roles || roles.length === 0) return true
                   if (!this.currentUser.role) return false
                   let isAccess = false
@@ -61,6 +66,7 @@
         },
         data() {
             return {
+                //
                 menuLinks: [
                     // for codeGenerate ##sidemenu_slot1
                 ],

@@ -106,13 +106,19 @@ type (
 		IsHideUserAvatarUploader bool // не даем возможность пользователям загружать аватарки
 	}
 	VueMenu struct {
-		DocName  string // если указано docName, то url и иконка копируются из описания документа
-		Icon     string
-		Text     string
-		Url      string
-		IsFolder bool
-		LinkList []VueMenu
-		Roles    []string
+		DocName         string // если указано docName, то url и иконка копируются из описания документа
+		Icon            string
+		Text            string
+		Url             string
+		IsFolder        bool
+		LinkList        []VueMenu
+		Roles           []string
+		ConditionalFunc string // функция с дополнительным условием для отображения меню пользователю
+		// функция получает на вход currentUser и возвращает bool
+		//           conditionFunc: (currentUser) => {
+		//                      return currentUser.id < 3
+		//                    }
+
 	}
 
 	VueConfig struct {

@@ -60,11 +60,11 @@ func readData(p types.ProjectType) {
 		for _, fld := range d.Flds {
 			// проверяем чтобы не было поля user_id, потому что это служебное поле
 			if fld.Name == "user_id" {
-				utils.CheckErr(errors.New("field with name 'user_id' is not allowed. Rename field. "), "doc: " + d.Name)
+				utils.CheckErr(errors.New("field with name 'user_id' is not allowed. Rename field. "), "doc: "+d.Name)
 			}
 			for _, v := range fld.Vue.Options {
 				if strings.Contains(cast.ToString(v.Value), " ") {
-					utils.CheckErr(errors.New(fmt.Sprintf("field with name '%s' contains value '%s'. Remove spaces from value.", fld.Name, v.Value)), "doc: " + d.Name)
+					utils.CheckErr(errors.New(fmt.Sprintf("field with name '%s' contains value '%s'. Remove spaces from value.", fld.Name, v.Value)), "doc: "+d.Name)
 				}
 			}
 		}
@@ -80,7 +80,7 @@ func readData(p types.ProjectType) {
 		if d.Sql.IsUniqLink {
 			for _, fld := range d.Flds {
 				if fld.Name == "title" && fld.Sql.IsUniq {
-					utils.CheckErr(errors.New("field 'title' must be not uniq. Remove fld 'title' or t.GetFldTitle().SetIsNotUniq()"), "doc: " + d.Name)
+					utils.CheckErr(errors.New("field 'title' must be not uniq. Remove fld 'title' or t.GetFldTitle().SetIsNotUniq()"), "doc: "+d.Name)
 				}
 			}
 		}
@@ -138,7 +138,7 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc) {
 	}
 
 	// копируем файлы проекта (которые не шаблоны)
-	err := copyFiles(project, getCurrentDir() + "/sourceFiles", "../", modifyFunc)
+	err := copyFiles(project, getCurrentDir()+"/sourceFiles", "../", modifyFunc)
 	utils.CheckErr(err, "Copy sourceFiles")
 
 	// отдельно копируем webClient в зависимости от версии quasar-framework
@@ -147,7 +147,7 @@ func Start(p types.ProjectType, modifyFunc copyFileModifyFunc) {
 
 	// в случае если quasar-framework v1 то копируем часть устаревших sql файлов. Для поддержания кода старых проектов
 	if p.GetQuasarVersion() == 1 {
-		err = copyFiles(project, getCurrentDir() + "/sourceFilesSQL_legacy", "../src/sql/", modifyFunc)
+		err = copyFiles(project, getCurrentDir()+"/sourceFilesSQL_legacy", "../src/sql/", modifyFunc)
 		utils.CheckErr(err, "Copy sourceFiles")
 	}
 
@@ -241,7 +241,7 @@ func copyFiles(p types.ProjectType, source, dist string, modifyFunc copyFileModi
 				}
 				// для оптимизации записи файлов webClient (чтобы ускорить рестарт quasar), проверяем что файл изменен и только в этом случае его перезаписываем
 				if strings.Contains(dist+dirPath+info.Name(), "webClient") {
-					if existFile, err := ioutil.ReadFile(dist+dirPath+info.Name()); err == nil {
+					if existFile, err := ioutil.ReadFile(dist + dirPath + info.Name()); err == nil {
 						isEqual := utils.ByteSliceEqual(existFile, file)
 						if isEqual {
 							return nil
@@ -292,10 +292,10 @@ func configJsModify(p types.ProjectType, file []byte) (res []byte) {
 	if strings.HasPrefix(p.Config.WebServer.Url, "http") {
 		fileStr = strings.Replace(fileStr, "[[urlWithHttp]]", p.Config.WebServer.Url, -1)
 	} else {
-		if len( p.Config.WebServer.Url) > 0 {
-			fileStr = strings.Replace(fileStr, "[[urlWithHttp]]", "https://" + p.Config.WebServer.Url , -1)
+		if len(p.Config.WebServer.Url) > 0 {
+			fileStr = strings.Replace(fileStr, "[[urlWithHttp]]", "https://"+p.Config.WebServer.Url, -1)
 		} else {
-			fileStr = strings.Replace(fileStr, "[[urlWithHttp]]", "" , -1)
+			fileStr = strings.Replace(fileStr, "[[urlWithHttp]]", "", -1)
 		}
 	}
 	fileStr = strings.Replace(fileStr, "[[logoSrc]]", p.Config.Logo, -1)
@@ -333,7 +333,11 @@ func sidemenuJsModify() string {
 		if m.Roles != nil && len(m.Roles) > 0 {
 			roles = fmt.Sprintf(`'%s'`, strings.Join(m.Roles, `', '`))
 		}
-		return fmt.Sprintf("{icon: '%s', text: '%s', url: '/%s', roles: [%s]},\n", m.Icon, m.Text, m.Url, roles)
+		resStr := fmt.Sprintf("icon: '%s', text: '%s', url: '/%s', roles: [%s]", m.Icon, m.Text, m.Url, roles)
+		if len(m.ConditionalFunc) > 0 {
+			resStr = fmt.Sprintf("%s, conditionalFunc: %s", resStr, m.ConditionalFunc)
+		}
+		return fmt.Sprintf("{%s},\n", resStr)
 	}
 	for _, m := range project.Vue.Menu {
 		if !m.IsFolder {
@@ -355,7 +359,7 @@ func sidemenuJsModify() string {
 	return res
 }
 
-func getCurrentDir() string  {
+func getCurrentDir() string {
 	_, filename, _, ok := runtime.Caller(0)
 	if !ok {
 		log.Fatalf("ParseTemplates runtime.Caller: No caller information")
