@@ -44,6 +44,7 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	ReadTmplAndPrint(p, projectTmplPath+"/webServer/main.go", "/webServer", "main.go", nil)
 	ReadTmplAndPrint(p, projectTmplPath+"/webServer/apiCallPgFunc.go", "/webServer", "apiCallPgFunc.go", nil)
 	ReadTmplAndPrint(p, projectTmplPath+"/sql/initialData.sql", "/sql/template/function/", "initialData.sql", nil)
+	ReadTmplAndPrint(p, projectTmplPath+"/sql/user_trigger_before.sql", "/sql/template/function/_User/", "user_trigger_before.sql", nil)
 	ReadTmplAndPrint(p, projectTmplPath+"/sql/user_trigger_after.sql", "/sql/template/function/_User/", "user_trigger_after.sql", template.FuncMap{"PrintUserAfterTriggerUpdateLinkedRecords": types.PrintUserAfterTriggerUpdateLinkedRecords})
 	ReadTmplAndPrint(p, projectTmplPath+"/sql/01_User/main.toml", "/sql/model/01_User", "main.toml", nil)
 	ReadTmplAndPrint(p, projectTmplPath+"/sql/03_UserTempEmailAuth/main.toml", "/sql/model/03_UserTempEmailAuth", "main.toml", nil)
