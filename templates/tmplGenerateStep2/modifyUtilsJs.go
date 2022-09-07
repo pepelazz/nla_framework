@@ -12,7 +12,7 @@ import (
 )
 
 // шаблоны для сообщений о задачах, i18n и пр
-func PluginUtilsJs(p types.ProjectType)  {
+func PluginUtilsJs(p types.ProjectType) {
 	distPath := fmt.Sprintf("%s/webClient/src/app/plugins", p.DistPath)
 
 	funcNames, funcBodyes := getI18nForSelectFlds(p)
@@ -34,7 +34,7 @@ func PluginUtilsJs(p types.ProjectType)  {
 }
 
 // i18n.js
-func BootI18nJs(p types.ProjectType)  {
+func BootI18nJs(p types.ProjectType) {
 	distPath := fmt.Sprintf("%s/webClient/src/boot", p.DistPath)
 
 	path := fmt.Sprintf("%s/project/webClient/quasar_%v/boot/i18n.js", getPathDirTemplate(), p.GetQuasarVersion())
@@ -48,7 +48,7 @@ func BootI18nJs(p types.ProjectType)  {
 func getI18nForSelectFlds(p types.ProjectType) (funcNames, funcBodyes string) {
 	for _, d := range p.Docs {
 		for _, fld := range d.Flds {
-			if fld.Vue.Type == types.FldVueTypeSelect || fld.Vue.Type == types.FldVueTypeMultipleSelect  || fld.Vue.Type == types.FldVueTypeRadio {
+			if fld.Vue.Type == types.FldVueTypeSelect || fld.Vue.Type == types.FldVueTypeMultipleSelect || fld.Vue.Type == types.FldVueTypeRadio {
 				// флаг, для определения указан ли цвет
 				isColor := false
 				fNname := fmt.Sprintf("i18n_%s_%s", d.Name, fld.Name)
@@ -56,8 +56,8 @@ func getI18nForSelectFlds(p types.ProjectType) (funcNames, funcBodyes string) {
 				funcNames = fmt.Sprintf("%s%s,\n\t", funcNames, fNname)
 				arr := []string{}
 				for _, v := range fld.Vue.Options {
-					arr = append(arr, fmt.Sprintf("%s: '%s'", v.Value, v.Label))
-					if len(v.Color)>0{
+					arr = append(arr, fmt.Sprintf("'%s': '%s'", v.Value, v.Label))
+					if len(v.Color) > 0 {
 						isColor = true
 					}
 				}
@@ -77,7 +77,7 @@ const %s = (v) => {
 					funcNames = fmt.Sprintf("%s%s,\n\t", funcNames, fNname)
 					arr := []string{}
 					for _, v := range fld.Vue.Options {
-						arr = append(arr, fmt.Sprintf("%s: '%s'", v.Value, v.Color))
+						arr = append(arr, fmt.Sprintf("'%s': '%s'", v.Value, v.Color))
 					}
 					funcBodyes = fmt.Sprintf(`%s
 const %s = (v) => {
@@ -111,7 +111,7 @@ const %s = (v) => {
 	return
 }
 
-func getPathDirTemplate() string  {
+func getPathDirTemplate() string {
 	_, filename, _, ok := runtime.Caller(0)
 	if !ok {
 		log.Fatalf("ParseTemplates runtime.Caller: No caller information")
