@@ -95,12 +95,18 @@ type (
 
 	VueDocListAddBtnsSlot struct {
 		UploadFile AddBtnsSlot_UploadFile
+		Comp       AddBtnsSlot_Comp
 	}
 
 	AddBtnsSlot_UploadFile struct {
 		Url     string
 		FileExt []string
 		Tooltip string
+	}
+
+	AddBtnsSlot_Comp struct {
+		CompName string
+		Params   string
 	}
 
 	VueDocListFilter struct {

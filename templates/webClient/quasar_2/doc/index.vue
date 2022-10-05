@@ -37,6 +37,7 @@
       <template #addBtnsSlot>
         [[range .Vue.List.AddBtnsSlot]]
         [[- if .UploadFile.Url]]<comp-file-upload url='[[.UploadFile.Url]]' :file-ext='[ [[ArrayStringJoin .UploadFile.FileExt]] ]' tooltip="[[.UploadFile.Tooltip]]" style="display: contents" @reloadList="$refs.docList.reloadList()"/>[[- end]]
+        [[- if .Comp.CompName]]<[[.Comp.CompName]] [[.Comp.Params]] style="display: contents" @reloadList="$refs.docList.reloadList()"/>[[- end]]
         [[- end]]
       </template>
       [[- end]]
