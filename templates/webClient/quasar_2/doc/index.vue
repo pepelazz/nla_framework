@@ -58,9 +58,11 @@
 </template>
 
 <script>
+[[ .PrintVueImport "docIndex" ]]
   import currentUserMixin from '../../../app/mixins/currentUser'
   export default {
     props: ['isOpenInDialog', 'ext'],
+    components: {[[- .PrintComponents "docIndex" -]]},
     mixins: [currentUserMixin],
     computed: {
       currentUrl: () => '/[[.Vue.RouteName]]/',
