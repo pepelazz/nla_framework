@@ -163,6 +163,7 @@ type (
 		JobList                   []string // список job'ов
 		Routes                    ProjectGoRoutes
 		HooksBeforeStartWebServer []string
+		Flags                     []ProjectGoFlag // дополнительные флаги для запуска приложения
 	}
 	ProjectRole struct {
 		Name   string
@@ -205,6 +206,11 @@ type (
 		Host    string
 		Port    int
 		AppName string
+	}
+
+	ProjectGoFlag struct {
+		Desc         string // например "isTest := flag.Bool(\"test\", false, \"a bool\")"
+		ProcessBlock string //
 	}
 )
 

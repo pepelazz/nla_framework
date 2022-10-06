@@ -24,6 +24,9 @@ import (
 	"math/rand"
 	"os"
 	"time"
+    {{- if .Config.Graylog.Host}}
+	"fmt"
+    {{- end}}
 	{{- range.Go.Routes.ImportsMainGo}}
     "{{.}}"
     {{- end}}
@@ -45,6 +48,9 @@ func main() {
 	tgBotName := flag.String("telegram_bot_name", "", "an string")
 	tgBotToken:= flag.String("telegram_bot_token", "", "an string")
 	{{- end}}
+    {{- range.Go.Flags}}
+    {{.Desc}}
+    {{- end}}
 	flag.Parse()
 
 	if *isDev {
@@ -72,6 +78,10 @@ func main() {
 		_ = os.Setenv("IS_DEVELOPMENT", "true")
 	}
 
+    {{- range.Go.Flags}}
+    {{.ProcessBlock}}
+    {{- end}}
+
 	// read config.toml
 	config, err = types.ReadConfigFile("./config.toml")
 	utils.CheckErr(err, "Read config")
@@ -83,7 +93,9 @@ func main() {
 	{{ if .Config.Graylog.Host -}}
 	// подключаемся к серверу сбора логов
 	err = graylog.Init(config.Graylog)
-	utils.CheckErr(err, "Connect to GraylogConfig")
+	if err != nil {
+	    fmt.Printf("Connect to GraylogConfig %s\n", err)
+	}
 	{{- end}}
 
 	// инициализируем генератор случайных чисел
