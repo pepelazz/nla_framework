@@ -95,4 +95,14 @@ body.body--dark {
 }
 
 </style>
+[[- else]]
+
+<style lang="scss">
+body {
+  .main-header {
+    background-color: #fff;
+    color: $grey-8;
+  }
+}
+</style>
 [[- end]]
