@@ -104,6 +104,7 @@ type (
 		IsHideTaskToolbar        bool // не показывааем боковое меню с задачами
 		IsHideMessageToolbar     bool // не показывааем боковое меню с сообщениями
 		IsHideUserAvatarUploader bool // не даем возможность пользователям загружать аватарки
+		Theme                    VueTheme
 	}
 	VueMenu struct {
 		DocName         string // если указано docName, то url и иконка копируются из описания документа
@@ -200,6 +201,10 @@ type (
 	DockerConfig struct {
 		AfterCopy []string // дополнительные строки для копирования в Dockerfile
 		Volumes   []string // маппинг директорий
+	}
+
+	VueTheme struct {
+		IsDarkThemeExist bool // возможность включения темной темы
 	}
 
 	GraylogConfig struct {
