@@ -92,7 +92,9 @@ func main() {
 
 	{{ if .Config.Graylog.Host -}}
 	// подключаемся к серверу сбора логов
-	err = graylog.Init(config.Graylog)
+	err = graylog.Init(config.Graylog, func() map[string]string {
+        return {{ if .Config.Graylog.Attrs -}}{{.Config.Graylog.Attrs}}{{else}}nil{{end}}
+    }())
 	if err != nil {
 	    fmt.Printf("Connect to GraylogConfig %s\n", err)
 	}

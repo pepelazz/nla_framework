@@ -211,6 +211,7 @@ type (
 		Host    string
 		Port    int
 		AppName string
+		Attrs   string // дополнительные аттрибуты для проекта. Либо map[string]string либо функция, которая возвращает map[string]string. Например
 	}
 
 	ProjectGoFlag struct {
