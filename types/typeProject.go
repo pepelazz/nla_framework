@@ -164,6 +164,7 @@ type (
 		JobList                   []string // список job'ов
 		Routes                    ProjectGoRoutes
 		HooksBeforeStartWebServer []string
+		MainGoImports             []string
 		Flags                     []ProjectGoFlag // дополнительные флаги для запуска приложения
 	}
 	ProjectRole struct {

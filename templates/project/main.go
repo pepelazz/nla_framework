@@ -30,6 +30,9 @@ import (
 	{{- range.Go.Routes.ImportsMainGo}}
     "{{.}}"
     {{- end}}
+    {{- range .Go.MainGoImports}}
+        "{{.}}"
+    {{- end}}
 )
 
 var (
