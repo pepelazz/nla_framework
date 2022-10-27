@@ -93,6 +93,10 @@ func main() {
 	err = pg.StartPostgres(config.Postgres)
 	utils.CheckErr(err, "StartPostgres")
 
+    if os.Getenv("IS_DEVELOPMENT") != "true" {
+        time.Sleep(5 * time.Second)
+    }
+
 	{{ if .Config.Graylog.Host -}}
 	// подключаемся к серверу сбора логов
 	err = graylog.Init(config.Graylog, func() map[string]string {
