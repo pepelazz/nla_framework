@@ -89,13 +89,13 @@ func main() {
 	config, err = types.ReadConfigFile("./config.toml")
 	utils.CheckErr(err, "Read config")
 
-	// postgres
-	err = pg.StartPostgres(config.Postgres)
-	utils.CheckErr(err, "StartPostgres")
-
     if os.Getenv("IS_DEVELOPMENT") != "true" {
         time.Sleep(5 * time.Second)
     }
+
+	// postgres
+	err = pg.StartPostgres(config.Postgres)
+	utils.CheckErr(err, "StartPostgres")
 
 	{{ if .Config.Graylog.Host -}}
 	// подключаемся к серверу сбора логов
