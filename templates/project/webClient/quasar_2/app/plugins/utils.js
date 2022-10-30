@@ -22,6 +22,19 @@ const postApiRequest = ({url, params, isShowError = true}) => {
   )
 }
 
+const postApiRequestWithParams = ({url, params, isShowError = true}) => {
+  return ajax({
+    url: `${config.apiUrl()}${url}`,
+    method: 'POST',
+    headers: getHttpHeaders(),
+    body: params,
+  }).pipe(
+      take(1),
+      map(processResponse()),
+      catchError(processError(isShowError))
+  )
+}
+
 const postCallPgMethod = ({method, params, isShowError = true, successMsg = null}) => {
   return ajax({
     url: `${config.apiUrl()}/api/call_pg_func`,
@@ -166,6 +179,7 @@ const notifyError = (msg) => {
 
 export default {
   postApiRequest,
+  postApiRequestWithParams,
   postCallPgMethod,
   callPgMethod,
   pgCall,
