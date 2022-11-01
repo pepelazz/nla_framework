@@ -195,8 +195,8 @@
       if (this.startFilter) {
         this.listParams = Object.assign(this.listParams, this.startFilter)
       }
-      this.loadList({list: this.itemList, params: this.listParams})
-      this.reloadListDebounce = debounce(this.reloadListDebounce, 300)
+      // this.loadList({list: this.itemList, params: this.listParams})
+      // this.reloadListDebounce = debounce(this.reloadListDebounce, 300)
     }
   }
 </script>
