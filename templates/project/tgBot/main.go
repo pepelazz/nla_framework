@@ -1,23 +1,22 @@
 package tgBot
 
 import (
-	"fmt"
-	"[[.Config.LocalProjectPath]]/types"
 	"[[.Config.LocalProjectPath]]/cacheUtil"
 	"[[.Config.LocalProjectPath]]/pg"
+	"[[.Config.LocalProjectPath]]/types"
+	"encoding/json"
+	"fmt"
 	"github.com/tidwall/gjson"
 	tb "gopkg.in/tucnak/telebot.v2"
-	"strconv"
 	"strings"
 	"time"
-	"encoding/json"
 )
 
 type tgUser struct {
 	Id string
 }
 
-func (u *tgUser) Recipient() string  {
+func (u *tgUser) Recipient() string {
 	return u.Id
 }
 
@@ -70,8 +69,6 @@ func Start(config types.Config) {
 		selector.Row(btnPrev, btnNext),
 	)
 
-
-
 	bot.Handle("/hello", func(m *tb.Message) {
 		_, err := bot.Send(m.Sender, "Hello World!")
 		if err != nil {
@@ -92,7 +89,7 @@ func Start(config types.Config) {
 			bot.Send(m.Sender, "Hello!", menu)
 			return
 		}
-		user, _ := userFindByTelegramId(strconv.Itoa(m.Sender.ID))
+		user, _ := userFindByTelegramId(m.Sender.ID)
 		if user != nil {
 			fmt.Printf("user: %s (%s) send '%s'\n", user.Fullname, m.Sender.Username, m.Text)
 		} else {
@@ -127,28 +124,28 @@ func Start(config types.Config) {
 	bot.Start()
 }
 
-func SendMsg(tgId, msg string)  {
+func SendMsg(tgId, msg string) {
 	if bot != nil && len(tgId) > 0 && len(msg) > 0 {
 		msg = strings.Replace(msg, "\\n", "\n", -1)
 		answer, err := bot.Send(&tgUser{tgId}, msg, tb.ModeHTML)
 		if err != nil {
 			fmt.Printf("bot.Send error: %s tgId:%s msg:'%s'\n", err, tgId, msg)
 		}
-		if answer!=nil {
+		if answer != nil {
 			fmt.Printf("bot.Send: tgId:%s msg:'%s' answer: %s\n", tgId, msg, answer.Text)
 		}
 	}
 }
 
-func pgListener(event string)  {
+func pgListener(event string) {
 	tableName := gjson.Get(event, "table").Str
 	if tableName == "send_msg_to_user_telegram" {
 		SendMsg(gjson.Get(event, "telegram_id").String(), gjson.Get(event, "msg").String())
 	}
 }
 
-func userFindByTelegramId(tgId string) (user *types.User, err error) {
-	cacheKey := "telegram_id" + tgId
+func userFindByTelegramId(tgId interface{}) (user *types.User, err error) {
+	cacheKey := fmt.Sprintf("telegram_id%v", tgId)
 	// ищем пользователя в кэше
 	userIntreface, _ := cacheUtil.GoCacheGet(cacheKey)
 	if userIntreface != nil {
