@@ -63,8 +63,9 @@ type (
 		Roles UserConfigRolesForMethods
 	}
 	UserConfigRolesForMethods struct {
-		UserList   []string
-		UserUpdate []string
+		UserList    []string
+		UserUpdate  []string
+		UserGetById []string
 	}
 	PostrgesConfig struct {
 		DbName   string
