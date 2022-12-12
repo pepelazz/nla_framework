@@ -26,5 +26,14 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE)
   })
 
+  // в случаях когда список на экране index.vue загружается до конца, то не срабатывает кнопка back в браузере
+  // Ошибка DOMException: A history state object with URL 'http://localhost:8080undefined/'
+  // для этого добавляем данную функцию
+  Router.beforeEach((to, from, next) => {
+    if (!window.history.state.current) window.history.state.current = to.fullPath;
+    if (!window.history.state.back) window.history.state.back = from.fullPath;
+    return next();
+  });
+
   return Router
 })
