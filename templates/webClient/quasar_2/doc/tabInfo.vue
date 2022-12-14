@@ -76,12 +76,15 @@
             resultModify: this.resultModify,
         })
         },
-    },
-    mounted() {
+      reload() {
         let cb = (v) => {
-            this.item = this.resultModify(v)
+          this.item = this.resultModify(v)
         }
         this.$utils.getDocItemById.call(this, {method: '[[.PgName]]_get_by_id', cb})
+      }
+    },
+    mounted() {
+      this.reload()
     }
     }
 </script>
