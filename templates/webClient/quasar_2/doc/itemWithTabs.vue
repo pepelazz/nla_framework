@@ -18,7 +18,7 @@
 
             <q-separator />
 
-            <q-tab-panels v-model="tab" :keep-alive="true">
+            <q-tab-panels v-model="tab">
                 [[.PrintVueItemTabPanels]]
             </q-tab-panels>
 
