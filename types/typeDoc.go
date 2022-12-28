@@ -65,6 +65,7 @@ type (
 		List                VueDocList         // дополнительные настройки списка документов
 		FilterList          []VueDocListFilter // список фильтров
 		SortList            []VueDocListSort   // список сортировок
+		Breadcrumb          string             // возможность переопределить breadcrumb в шаблоне item. Например, <comp-breadcrumb class="text-capitalize" :list="[{label: $t('[[.Name]].name_plural'), docType:'[[.Name]]'}]"/>
 	}
 
 	VueTab struct {

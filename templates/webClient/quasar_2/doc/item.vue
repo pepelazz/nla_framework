@@ -1,7 +1,11 @@
 <template>
   <q-page padding>
-
+    [[- if .Vue.Breadcrumb]]
+    [[.Vue.Breadcrumb]]
+    [[- else]]
     <comp-breadcrumb v-if="!isOpenInDialog" :list="[{label:'[[index .Vue.I18n "listTitle"]]', to:'/[[.Vue.RouteName]]',  docType: '[[.Name]]'}, [[if .IsRecursion]] parentProductBreadcrumb, [[end]] {label: item ? (item.title ? item.title : 'Редактирование') : '',  docType: 'edit'}]"/>
+    [[- end]]
+
 
     <div v-if="item" class="q-mt-sm">
       <!--  поля формы    -->
