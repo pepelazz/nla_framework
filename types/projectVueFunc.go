@@ -53,9 +53,17 @@ func (p *ProjectType) FillVueBaseRoutes() {
 	}
 }
 
-func (pv *ProjectVue) AddRoute(r []string)  {
+func (pv *ProjectVue) AddRoute(r []string) {
 	if pv.Routes == nil {
 		pv.Routes = [][]string{}
 	}
 	pv.Routes = append(pv.Routes, r)
+}
+
+// добавление в список boot в quasar.conf.js
+func (pv *ProjectVue) AddQuasarBoot(name string) {
+	if pv.QuasarBoot == nil {
+		pv.QuasarBoot = []string{}
+	}
+	pv.QuasarBoot = append(pv.QuasarBoot, name)
 }

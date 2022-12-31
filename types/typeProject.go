@@ -106,6 +106,7 @@ type (
 		IsHideMessageToolbar     bool // не показывааем боковое меню с сообщениями
 		IsHideUserAvatarUploader bool // не даем возможность пользователям загружать аватарки
 		Theme                    VueTheme
+		QuasarBoot               []string
 	}
 	VueMenu struct {
 		DocName         string // если указано docName, то url и иконка копируются из описания документа

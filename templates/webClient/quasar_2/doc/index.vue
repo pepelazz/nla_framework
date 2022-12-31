@@ -41,6 +41,13 @@
         [[- end]]
       </template>
       [[- end]]
+      [[- if .Vue.List.AddFilterSlot]]
+      <template #addFilterSlot>
+        [[- range .Vue.List.AddFilterSlot]]
+          [[.]]
+        [[- end]]
+      </template>
+      [[- end]]
 
 
       <template #listItem="{item}">

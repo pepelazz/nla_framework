@@ -91,7 +91,8 @@ type (
 
 	// параметры для настройки списка документов
 	VueDocList struct {
-		AddBtnsSlot []VueDocListAddBtnsSlot
+		AddBtnsSlot   []VueDocListAddBtnsSlot
+		AddFilterSlot []string
 	}
 
 	VueDocListAddBtnsSlot struct {
