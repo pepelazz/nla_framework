@@ -556,11 +556,16 @@ func GetFldVueCompositionRefList(d *DocType, refDoc VueCompRefListWidgetParams, 
 func (d DocType) PrintVueItemTabs() string {
 	res := []string{}
 	sep := "\n\t\t\t\t\t\t\t\t"
-	for _, tab := range d.Vue.Tabs {
+	for i, tab := range d.Vue.Tabs {
+		// при создании показываем только первый таб
+		vif := ""
+		if i > 0 {
+			vif = "v-if='id>-1'"
+		}
 		if len(tab.HtmlInner) == 0 {
-			res = append(res, fmt.Sprintf("<q-tab name='%s'  icon='%s' label='%s'/>", tab.Title, tab.Icon, tab.TitleRu))
+			res = append(res, fmt.Sprintf("<q-tab %s name='%s'  icon='%s' label='%s'/>", vif, tab.Title, tab.Icon, tab.TitleRu))
 		} else {
-			res = append(res, fmt.Sprintf("<q-tab name='%s'  icon='%s' label='%s'>%[5]s\t%[4]s%[5]s</q-tab>", tab.Title, tab.Icon, tab.TitleRu, tab.HtmlInner, sep))
+			res = append(res, fmt.Sprintf("<q-tab %s name='%s'  icon='%s' label='%s'>%[5]s\t%[4]s%[5]s</q-tab>", vif, tab.Title, tab.Icon, tab.TitleRu, tab.HtmlInner, sep))
 		}
 	}
 	return strings.Join(res, sep)
