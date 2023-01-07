@@ -565,7 +565,7 @@ func (d DocType) PrintVueItemTabs() string {
 		if len(tab.HtmlInner) == 0 {
 			res = append(res, fmt.Sprintf("<q-tab %s name='%s'  icon='%s' label='%s'/>", vif, tab.Title, tab.Icon, tab.TitleRu))
 		} else {
-			res = append(res, fmt.Sprintf("<q-tab %s name='%s'  icon='%s' label='%s'>%[5]s\t%[4]s%[5]s</q-tab>", vif, tab.Title, tab.Icon, tab.TitleRu, tab.HtmlInner, sep))
+			res = append(res, fmt.Sprintf("<q-tab %s name='%s'  icon='%s' label='%s'>%[6]s\t%[5]s%[6]s</q-tab>", vif, tab.Title, tab.Icon, tab.TitleRu, tab.HtmlInner, sep))
 		}
 	}
 	return strings.Join(res, sep)
