@@ -27,7 +27,8 @@
 
     <comp-doc-list ref="docList" :listTitle="$t('[[.Name]].name_plural')" :listDeletedTitle="$t('[[.Name]].name_plural_deleted')" pg-method="[[.PgName]]_list"
                    :list-sort-data="listSortData" :list-filter-data="listFilterData"
-                  [[if not .Vue.IsHideCreateNewBtn]] :newDocUrl="currentUrl + 'new'" [[- end]]
+                   [[if .Vue.CreateNewModal.Flds]] :new-doc-event-only="true" @clickAddBtn="clickAddBtn" [[- end]]
+                  [[if and (not .Vue.IsHideCreateNewBtn) (not .Vue.CreateNewModal.Flds)]] :newDocUrl="currentUrl + 'new'" [[- end]]
                   [[if .Vue.IsOpenNewInTab]] :isOpenNewInTab="true" [[- end]]
                    [[- if .Vue.ListUrlQueryParams]] :urlQueryParams="[ [[range .Vue.ListUrlQueryParams]]'[[.]]',[[- end]] ]" [[end]]
                    [[- if .IsRecursion]] :ext="ext ? Object.assign(ext, {parent_id: 'null'}) : {parent_id: 'null'}" [[else]] :ext="ext" [[end]]
@@ -63,6 +64,12 @@
 
     </comp-doc-list>
   </q-page>
+
+  [[- if .Vue.CreateNewModal.Flds]]
+  <!-- диалог добавления -->
+  <comp-edit-dialog ref="addDialogRef" labelNew="[[- if .Vue.CreateNewModal.Label]] [[- .Vue.CreateNewModal.Label]] [[- else]]Новая [[.NameRu]] [[- end]]" pgMethod="[[if .Vue.CreateNewModal.PgMethod]] [[- .Vue.CreateNewModal.PgMethod]] [[- else -]] [[.Name]]_update [[- end]]" @update="v => $router.push('/[[.Name]]/' + v.id)"/>
+  [[- end]]
+
 </template>
 
 <script>
@@ -124,6 +131,23 @@
         this.filter[[ToCamel .FldName]] = v ? this.options[[ToCamel .FldName]].find(v1 => v1.value === v) : null
       },
       [[- end]]
+      [[- end]]
+
+      [[- if .Vue.CreateNewModal.Flds]]
+      clickAddBtn() {
+        this.$refs.addDialogRef.show({
+          item: {id: -1, title: null, to_user_id: null},
+          flds: [
+            [[- range .Vue.CreateNewModal.Flds]]
+            [
+              [[- range .]]
+              [[$doc.PrintCompEditDialogFld .]],
+              [[- end]]
+            ],
+            [[- end]]
+          ],
+        })
+      }
       [[- end]]
     },
     mounted() {

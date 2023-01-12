@@ -583,3 +583,44 @@ func (d DocType) PrintVueItemTabPanels() string {
 	}
 	return strings.Join(res, "\n\t\t\t\t\t\t\t\t")
 }
+
+// PrintCompEditDialogFld Печать поля для vue компоненты comp-edit-dialog
+func (d DocType) PrintCompEditDialogFld(fld FldType) string {
+	col := "col-12"
+	if len(fld.Vue.Class) > 0 {
+		col = strings.Join(fld.Vue.Class, " ")
+	}
+	res := fmt.Sprintf("{name: '%s', label: '%s', classCol: '%s', required: %v", fld.Name, fld.NameRu, col, fld.Vue.IsRequired)
+	fldType := ""
+	if fld.Type == FldTypeString {
+		fldType = "text"
+	}
+	if fld.Type == FldTypeInt || fld.Type == FldTypeDouble {
+		fldType = "number"
+	}
+	if fld.Type == FldTypeDate || fld.Type == FldTypeDatetime {
+		fldType = "date"
+	}
+	if fld.Type == FldTypeBool {
+		fldType = "checkbox"
+	}
+	if len(fld.Sql.Ref) > 0 {
+		fldType = "ref"
+		res = fmt.Sprintf("%s, pgMethod: '%s_list'", res, fld.Sql.Ref)
+		if ext, ok := fld.Vue.Ext["rawJsonExt"]; ok {
+			res = fmt.Sprintf("%s, ext: %s", res, ext)
+		}
+	}
+	if fld.Vue.Type == FldVueTypeSelect {
+		fldType = "select"
+		options := "["
+		for _, opt := range fld.Vue.Options {
+			options = fmt.Sprintf("%s {value: '%s', label: '%s'},", options, opt.Value, opt.Value)
+		}
+		options = options + "]"
+		res = fmt.Sprintf("%s, options: %s", res, options)
+
+	}
+	res = fmt.Sprintf("%s, type: '%s'", res, fldType)
+	return res + "}"
+}

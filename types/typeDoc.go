@@ -57,15 +57,16 @@ type (
 		Tabs                []VueTab
 		Hooks               DocVueHooks // куски vue кода
 		Readonly            string
-		ListUrlQueryParams  []string           // список параметров, которые можно передавать в url для фильтрации
-		IsVueTitleClickable bool               // включаем возможность перехода на item из списка не только при клике по аватарке, но и по названию
-		IsHideDeleteOptions bool               // возможность не показыввать опцию "удалить" в списке
-		IsHideCreateNewBtn  bool               // возможность не показыввать кнопку "+" в списке
-		IsOpenNewInTab      bool               // создание новой записи открывается в новом табе
-		List                VueDocList         // дополнительные настройки списка документов
-		FilterList          []VueDocListFilter // список фильтров
-		SortList            []VueDocListSort   // список сортировок
-		Breadcrumb          string             // возможность переопределить breadcrumb в шаблоне item. Например, <comp-breadcrumb class="text-capitalize" :list="[{label: $t('[[.Name]].name_plural'), docType:'[[.Name]]'}]"/>
+		ListUrlQueryParams  []string                 // список параметров, которые можно передавать в url для фильтрации
+		IsVueTitleClickable bool                     // включаем возможность перехода на item из списка не только при клике по аватарке, но и по названию
+		IsHideDeleteOptions bool                     // возможность не показыввать опцию "удалить" в списке
+		IsHideCreateNewBtn  bool                     // возможность не показыввать кнопку "+" в списке
+		IsOpenNewInTab      bool                     // создание новой записи открывается в новом табе
+		List                VueDocList               // дополнительные настройки списка документов
+		FilterList          []VueDocListFilter       // список фильтров
+		SortList            []VueDocListSort         // список сортировок
+		Breadcrumb          string                   // возможность переопределить breadcrumb в шаблоне item. Например, <comp-breadcrumb class="text-capitalize" :list="[{label: $t('[[.Name]].name_plural'), docType:'[[.Name]]'}]"/>
+		CreateNewModal      VueDocListCreateNewModal // возможность создания новой записи через Modal окно
 	}
 
 	VueTab struct {
@@ -123,6 +124,12 @@ type (
 	VueDocListSort struct {
 		Label string
 		Value string
+	}
+
+	VueDocListCreateNewModal struct {
+		Label    string      // название окна
+		PgMethod string      // по дефолту стандартный [название таблицы]_update метод
+		Flds     [][]FldType // список полей
 	}
 
 	DocTemplate struct {
