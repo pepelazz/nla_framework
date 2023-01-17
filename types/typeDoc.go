@@ -116,6 +116,7 @@ type (
 		Label    string
 		FldName  string
 		IsRef    bool
+		IsDate   bool
 		RefTable string
 		ColClass string
 		Options  []FldVueOptionsItem

@@ -12,6 +12,10 @@
         <div class="[[if .ColClass]] [[.ColClass]] [[else]] col-md-2 col-sm-4 col-xs-6 [[- end]]">
           <comp-fld-ref-search dense outlined pgMethod="[[.RefTable]]_list" label="[[.Label]]" :item='filter[[ToCamel .RefTable]]Title' :itemId='filter[[ToCamel .RefTable]]Id' :ext='{isClearable: true}'  @update="updateFilter[[ToCamel .RefTable]]" @clear="updateFilter[[ToCamel .RefTable]]"  class='q-mb-sm col-md-4 col-sm-6 col-xs-12' />
         </div>
+        [[- else if .IsDate]]
+        <div class="[[if .ColClass]] [[.ColClass]] [[else]] col-md-2 col-sm-4 col-xs-6 [[- end]]">
+          <comp-fld-date outlined label="[[.Label]]" :date-string="$utils.formatPgDate(filter[[ToCamel .FldName]])" @update="updateFilter[[ToCamel .FldName]]" @clear="updateFilter[[ToCamel .FldName]](null)" dense/>
+        </div>
         [[- else]]
         <div class="[[if .ColClass]] [[.ColClass]] [[else]] col-md-2 col-sm-4 col-xs-6 [[- end]]">
           <q-select dense outlined v-model="filter[[ToCamel .FldName]]" :options="options[[ToCamel .FldName]]" label="[[.Label]]" @update:model-value="v => updateFilter[[ToCamel .FldName]](v.value)"  class='q-mb-sm col-md-4 col-sm-6 col-xs-12'>
@@ -99,6 +103,8 @@
         [[- if .IsRef]]
         filter[[ToCamel .RefTable]]Title: null,
         filter[[ToCamel .RefTable]]Id: null,
+        [[- else if .IsDate]]
+        filter[[ToCamel .FldName]]: null,
         [[- else]]
         filter[[ToCamel .FldName]]: null,
         options[[ToCamel .FldName]]: [
@@ -124,6 +130,11 @@
             this.filter[[ToCamel .RefTable]]Title = res.title
           })
         }
+      },
+      [[- else if .IsDate]]
+      updateFilter[[ToCamel .FldName]](v) {
+        this.$refs.docList.changeItemList({'[[.FldName]]': v ? this.$utils.formatPgDate(v) : null})
+        this.filter[[ToCamel .FldName]] = v
       },
       [[- else]]
       updateFilter[[ToCamel .FldName]](v) {
