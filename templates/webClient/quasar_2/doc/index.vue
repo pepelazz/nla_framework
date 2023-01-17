@@ -133,7 +133,7 @@
       },
       [[- else if .IsDate]]
       updateFilter[[ToCamel .FldName]](v) {
-        this.$refs.docList.changeItemList({'[[.FldName]]': v ? this.$utils.formatPgDate(v) : null})
+        this.$refs.docList.changeItemList({'[[.FldName]]': v ? v : null})
         this.filter[[ToCamel .FldName]] = v
       },
       [[- else]]
