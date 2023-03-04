@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row q-col-gutter-sm">
     <div :class="colClassComputed">
       <q-infinite-scroll @load="itemListLoad" :offset="250" ref="infiniteScroll">
         <!-- список         -->
@@ -87,6 +87,9 @@
         </template>
       </q-infinite-scroll>
     </div>
+
+    <slot name="rightSideColumn"/>
+
     <!-- кнопка создания нового документа   -->
     <q-page-sticky v-if="!readonly && (newDocUrl || newDocEventOnly)" position="bottom-right" :offset="[18, 18]">
       <q-btn v-if="!newDocEventOnly" fab icon="add" color="accent" @click="openNewDoc"/>
