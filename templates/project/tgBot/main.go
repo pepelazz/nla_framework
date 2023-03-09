@@ -137,10 +137,25 @@ func SendMsg(tgId, msg string) {
 	}
 }
 
+func SendSticker(tgId, fileId string) {
+	if bot != nil && len(tgId) > 0 && len(fileId) > 0 {
+		sticker := &tb.Sticker{
+			File: tb.File{FileID: fileId},
+		}
+		_, err := bot.Send(&tgUser{tgId}, sticker, tb.ModeHTML)
+		if err != nil {
+			fmt.Printf("bot.Send error: %s tgId:%s msg:'%s'\n", err, tgId, fileId)
+		}
+	}
+}
+
 func pgListener(event string) {
 	tableName := gjson.Get(event, "table").Str
 	if tableName == "send_msg_to_user_telegram" {
 		SendMsg(gjson.Get(event, "telegram_id").String(), gjson.Get(event, "msg").String())
+	}
+	if tableName == "send_sticker_to_user_telegram" {
+		SendSticker(gjson.Get(event, "telegram_id").String(), gjson.Get(event, "fileId").String())
 	}
 }
 
