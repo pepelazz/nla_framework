@@ -155,7 +155,7 @@ func pgListener(event string) {
 		SendMsg(gjson.Get(event, "telegram_id").String(), gjson.Get(event, "msg").String())
 	}
 	if tableName == "send_sticker_to_user_telegram" {
-		SendSticker(gjson.Get(event, "telegram_id").String(), gjson.Get(event, "fileId").String())
+		SendSticker(gjson.Get(event, "telegram_id").String(), gjson.Get(event, "file_id").String())
 	}
 }
 
