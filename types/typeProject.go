@@ -130,9 +130,10 @@ type (
 	}
 
 	I18nType struct {
-		IsExist  bool
-		LangList []string
-		Data     map[string]map[string]map[string]string //RU : message : save: 'сохранить'
+		DefaultLang string // по умолчанию ru-RU. Можно en-US и далее
+		IsExist     bool
+		LangList    []string
+		Data        map[string]map[string]map[string]string //RU : message : save: 'сохранить'
 	}
 
 	BitrixConfig struct {

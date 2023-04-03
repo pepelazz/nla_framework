@@ -29,7 +29,7 @@ func PluginUtilsJs(p types.ProjectType) {
 	t, err := template.New("utils.js").Funcs(funcMap).Delims("[[", "]]").ParseFiles(path)
 	utils.CheckErr(err, "OverriteCopiedFiles ParseFiles")
 
-	err = executeToFile(t, "", distPath, "utils.js")
+	err = executeToFile(t, p, distPath, "utils.js")
 	utils.CheckErr(err, "OverriteCopiedFiles ExecuteToFile")
 }
 
@@ -39,10 +39,10 @@ func BootI18nJs(p types.ProjectType) {
 
 	path := fmt.Sprintf("%s/project/webClient/quasar_%v/boot/i18n.js", getPathDirTemplate(), p.GetQuasarVersion())
 	t, err := template.New("i18n.js").Delims("[[", "]]").ParseFiles(path)
-	utils.CheckErr(err, "OverriteCopiedFiles ParseFiles")
+	utils.CheckErr(err, "OverrideCopiedFiles ParseFiles")
 
-	err = executeToFile(t, "", distPath, "i18n.js")
-	utils.CheckErr(err, "OverriteCopiedFiles ExecuteToFile")
+	err = executeToFile(t, p, distPath, "i18n.js")
+	utils.CheckErr(err, "OverrideCopiedFiles ExecuteToFile")
 }
 
 func getI18nForSelectFlds(p types.ProjectType) (funcNames, funcBodyes string) {

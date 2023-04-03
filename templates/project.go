@@ -52,6 +52,7 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	ReadTmplAndPrint(p, projectTmplPath+"/sql/03_UserTempEmailAuth/user_temp_email_auth_create.sql", "/sql/template/function/_UserTempEmailAuth", "user_temp_email_auth_create.sql", nil)
 	ReadTmplAndPrint(p, projectTmplPath+"/jobs/main.go", "/jobs", "main.go", nil)
 	ReadTmplAndPrint(p, projectTmplPath+"/pg/pgListener.go", "/pg", "pgListener.go", nil)
+	ReadTmplAndPrint(p, projectTmplPath+"/utils/email.go", "/utils", "email.go", nil)
 
 	ReadTmplAndPrint(p, projectTmplPath+webClient+"/index.template.html", "/webClient/src", "index.template.html", nil)
 	ReadTmplAndPrint(p, projectTmplPath+webClient+"/quasar.conf.js", "/webClient", "quasar.conf.js", nil)
