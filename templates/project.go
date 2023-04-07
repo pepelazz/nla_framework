@@ -67,6 +67,7 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	ReadTmplAndPrint(p, projectTmplPath+webClient+"/app/components/home.vue", "/webClient/src/app/components", "home.vue", nil)
 	ReadTmplAndPrint(p, projectTmplPath+webClient+"/app/components/auth/index.vue", "/webClient/src/app/components/auth", "index.vue", nil)
 	ReadTmplAndPrint(p, projectTmplPath+webClient+"/app/components/auth/loginPage.vue", "/webClient/src/app/components/auth", "loginPage.vue", nil)
+	ReadTmplAndPrint(p, projectTmplPath+webClient+"/app/components/auth/waitingAuthPage.vue", "/webClient/src/app/components/auth", "waitingAuthPage.vue", nil)
 	ReadTmplAndPrint(p, projectTmplPath+webClient+"/app/components/auth/email/components/compRegisterForm.vue", "/webClient/src/app/components/auth/email/components", "compRegisterForm.vue", nil)
 
 	// заполняем словарь локализаций для всех документов

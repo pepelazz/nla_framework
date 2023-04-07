@@ -6,6 +6,7 @@ import config from './config'
 import _ from 'lodash'
 import fp from 'lodash/fp'
 import moment from 'moment'
+import {i18n} from 'boot/i18n'
 
 const postApiRequest = ({url, params, isShowError = true}) => {
   return ajax({
@@ -101,7 +102,7 @@ const saveItem = function ({method, itemForSaveMod = {}, resultModify, cb}) {
   postCallPgMethod({
     method,
     params: itemForSave,
-    successMsg: 'изменения сохранены'
+    successMsg: i18n.global.t('message.saved')
   }).subscribe(v => {
     if (v.ok) {
       // в случае создания нового документа, после сохранения и получения id из базы переходим по новому url
