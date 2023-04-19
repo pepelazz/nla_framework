@@ -94,7 +94,7 @@ const saveItem = function ({method, itemForSaveMod = {}, resultModify, cb}) {
       this.$q.notify({
         color: 'negative',
         position: 'bottom',
-        message: `не заполнено поле '${v.label}'`,
+        message: `${i18n.global.t('message.fld_not_filled')} '${v.label}'`,
       })
     })
     return
