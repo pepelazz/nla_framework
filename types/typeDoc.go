@@ -293,8 +293,8 @@ func (d *DocType) Init() {
 	// если не прописаны сортировки, то указываем дефолтные
 	if d.Vue.SortList == nil {
 		d.Vue.SortList = []VueDocListSort{
-			{Value: "created_at", Label: "Дата"},
-			{Value: "title", Label: "Название"},
+			{Value: "created_at", Label: "this.$t('message.created_at')"},
+			{Value: "title", Label: "this.$t('message.title')"},
 		}
 	}
 }

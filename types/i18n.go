@@ -17,6 +17,10 @@ func (p *ProjectType) FillI18n() {
 				"saved":                  "изменения сохранены",
 				"fld_not_filled":         "не заполнено поле",
 				"select_file_for_upload": "Выберите файл для загрузки",
+				"created_at":             "дата",
+				"title":                  "название",
+				"filter_active":          "активные",
+				"filter_deleted":         "удаленные",
 			},
 			"auth": {
 				"login":                             "войти",
@@ -84,6 +88,10 @@ func (p *ProjectType) FillI18n() {
 				"saved":                  "saved",
 				"fld_not_filled":         "field not_filled",
 				"select_file_for_upload": "select file for upload",
+				"created_at":             "date",
+				"title":                  "title",
+				"filter_active":          "active",
+				"filter_deleted":         "deleted",
 			},
 			"auth": {
 				"login":                             "login",

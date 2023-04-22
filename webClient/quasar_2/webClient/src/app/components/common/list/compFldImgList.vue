@@ -28,7 +28,7 @@
     <q-dialog v-model="isShowDialog">
       <q-uploader
         ref="uploader"
-        label="Выберите файл для загрузки"
+        :label="$t('message.select_file_for_upload')"
         multiple
         :url="uploadUrl"
         :headers='headers'

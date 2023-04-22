@@ -46,12 +46,12 @@
     data() {
       return {
         listSortData: [
-          {value: 'created_at', title: 'Дата'},
-          {value: 'fullname', title: 'ФИО'}
+          {value: 'created_at', title: this.$t('message.created_at')},
+          {value: 'title', title: this.$t('message.title')},
         ],
         listFilterData: [
-          {value: {deleted: false}, title: 'Активные'},
-          {value: {deleted: true}, title: 'Удаленные'}
+          {value: {deleted: false}, title: this.$t('message.filter_active')},
+          {value: {deleted: true}, title: this.$t('message.filter_deleted')}
         ],
       }
     },

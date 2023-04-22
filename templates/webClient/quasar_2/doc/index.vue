@@ -91,13 +91,13 @@
         [[- if .Vue.SortList]]
         listSortData: [
           [[- range .Vue.SortList]]
-          {value: '[[.Value]]', title: '[[.Label]]'},
+          {value: '[[.Value]]', title: [[.Label]]},
           [[- end]]
         ],
         [[- end]]
         listFilterData: [
-          {value: {deleted: false}, title: 'Активные'},
-          {value: {deleted: true}, title: 'Удаленные'}
+          {value: {deleted: false}, title: this.$t('message.filter_active')},
+          {value: {deleted: true}, title: this.$t('message.filter_deleted')}
         ],
         [[- range .Vue.FilterList]]
         [[- if .IsRef]]

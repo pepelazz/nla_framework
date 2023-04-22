@@ -51,7 +51,7 @@ export default {
     return {
       isOpenUpload: false,
       iconName: 'cloud_upload',
-      labelName: 'Выберите файл для загрузки',
+      labelName: this.$t('message.select_file_for_upload'),
     }
   },
   methods: {
