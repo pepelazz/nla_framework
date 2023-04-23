@@ -6,6 +6,7 @@ import (
 	"github.com/pepelazz/nla_framework/utils"
 	"github.com/serenize/snaker"
 	"log"
+	"strings"
 	"text/template"
 )
 
@@ -391,6 +392,14 @@ func (dv *DocVue) I18nAdd(titleEn, titleRu string) {
 		dv.I18n = map[string]string{}
 	}
 	dv.I18n[titleEn] = titleRu
+}
+
+// PrintSortListLabel функция для печати в шаблоне названия либо в кавычках, либо без. Если это вычислимое значения, типа this.$t(, то без кавычек. Иначе это строка и тогда в кавычках
+func (dv DocVue) PrintSortListLabel(str string) string {
+	if strings.HasPrefix(str, "this.$t") {
+		return str
+	}
+	return fmt.Sprintf("'%s'", str)
 }
 
 func (d *DocType) GetProject() *ProjectType {

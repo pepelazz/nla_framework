@@ -1,4 +1,6 @@
 [[$doc:=.]]
+[[$parent:=.]]
+
 
 <template>
   <q-page :padding="!isOpenInDialog">
@@ -89,9 +91,10 @@
     data() {
       return {
         [[- if .Vue.SortList]]
+        [[$parent = .Vue]]
         listSortData: [
           [[- range .Vue.SortList]]
-          {value: '[[.Value]]', title: [[.Label]]},
+          {value: '[[.Value]]', title: [[$parent.PrintSortListLabel .Label]]},
           [[- end]]
         ],
         [[- end]]
