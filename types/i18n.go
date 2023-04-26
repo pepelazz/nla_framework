@@ -21,6 +21,7 @@ func (p *ProjectType) FillI18n() {
 				"title":                  "название",
 				"filter_active":          "активные",
 				"filter_deleted":         "удаленные",
+				"upload_photo":           "загрузить фото",
 			},
 			"auth": {
 				"login":                             "войти",
@@ -92,6 +93,7 @@ func (p *ProjectType) FillI18n() {
 				"title":                  "title",
 				"filter_active":          "active",
 				"filter_deleted":         "deleted",
+				"upload_photo":           "upload photo",
 			},
 			"auth": {
 				"login":                             "login",
