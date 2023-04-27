@@ -111,7 +111,7 @@
         }
       },
       failed(msg) {
-        let msgText = 'ошибка загрузки'
+        let msgText = this.$t('message.upload_error')
         if (msg.xhr && msg.xhr.responseText) {
           let res = JSON.parse(msg.xhr.responseText)
           if (res.message) msgText = res.message

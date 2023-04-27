@@ -17,10 +17,10 @@
         </q-btn>
       </comp-stat-img-src>
       <q-btn v-if="!readonly" flat round icon="add" size="sm" @click="isShowDialog = true">
-        <q-tooltip>Добавить фото</q-tooltip>
+        <q-tooltip>{{ $t('message.add_photo') }}</q-tooltip>
       </q-btn>
       <q-btn v-if="!readonly && ext && ext.canAddUrls" size="sm" flat round icon="add" @click="isShowDialogAddUrl = true">
-        <q-tooltip>Добавить ссылку</q-tooltip>
+        <q-tooltip>{{ $t('message.add_link') }}</q-tooltip>
       </q-btn>
     </div>
 
@@ -134,7 +134,7 @@
         }
       },
       failed(msg) {
-        let msgText = 'ошибка загрузки'
+        let msgText = this.$t('message.upload_error')
         if (msg.xhr && msg.xhr.responseText) {
           let res = JSON.parse(msg.xhr.responseText)
           if (res.message) msgText = res.message
@@ -156,11 +156,11 @@
         }
         let msgText = 'данный файл не соответствует ограничениям'
         if (msg.length > 0 && msg[0].failedPropValidation === 'accept') {
-          msgText = `Допустимы только файлы с раширением: ${this.ext.accept} `
+          msgText = `${this.$t('message.only_files_with_extension')}: ${this.ext.accept} `
         }
         if (msg.length > 0 && msg[0].failedPropValidation === 'max-file-size') {
           let size = niceBytes(this.ext.maxFileSize || 10000000)
-          msgText = `Допустимы только файлы не больше: ${size}`
+          msgText = `${this.$t('message.only_files_no_larger_than')}: ${size}`
         }
         this.$q.notify({
           color: 'negative',
