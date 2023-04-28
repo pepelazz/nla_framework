@@ -43,7 +43,7 @@
       dialogTitle() {
         if (this.registerFrom.isNewRegister) return 'Регистрация'
         if (this.registerFrom.isPasswordRecover) return 'Восстановление пароля'
-        return 'Авторизация'
+        return this.$t('auth.authorization')
       },
     },
     data() {

@@ -45,7 +45,7 @@ const CurrentUser = class {
 
 const loginProcess = (isTrue) => {
   if (isTrue) {
-    Loading.show({message: 'авторизация'})
+    Loading.show({message: 'authorization...'})
     isInLogingProcess$.next(true)
   } else {
     Loading.hide()
