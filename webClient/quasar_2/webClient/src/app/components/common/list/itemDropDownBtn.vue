@@ -12,7 +12,7 @@
           <!--  кнопка удаления/восстановления        -->
           <q-item v-if="isDelete" clickable v-close-popup @click="confirmItemDeleteRecover(item)">
             <q-item-section v-if="!item.deleted">{{$t('message.delete')}}</q-item-section>
-            <q-item-section v-else>восстановить</q-item-section>
+            <q-item-section v-else>{{$t('message.restore')}}</q-item-section>
           </q-item>
 
         </q-list>
@@ -29,10 +29,10 @@
         // let that = this
         const itemDetail = item[this.itemProp] ? item[this.itemProp] : ''
         this.$q.dialog({
-          title: 'Подтвердите',
-            message: `${item.deleted ? 'восстановить' : 'удалить'} : <strong>${itemDetail}</strong>`,
-            ok: 'ok',
-            cancel: 'отмена',
+            title: this.$t('message.dialog_delete_title'),
+            message: `${item.deleted ? this.$t('message.restore') : this.$t('message.delete') } : <strong>${itemDetail}</strong>`,
+            ok: this.$t('message.ok'),
+            cancel: this.$t('message.cancel'),
             html: true,
         }).onOk(() => {
           this.$utils.postCallPgMethod({
