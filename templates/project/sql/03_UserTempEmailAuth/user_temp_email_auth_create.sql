@@ -48,16 +48,17 @@ BEGIN
   INTO authToken;
 
   EXECUTE (
-    'INSERT INTO user_temp_email_auth (email, last_name, first_name, password, token, auth_token) VALUES ($1, $2, $3, $4, $5, $6) '
+    'INSERT INTO user_temp_email_auth (email, last_name, first_name, password, token, auth_token, options) VALUES ($1, $2, $3, $4, $5, $6, $7) '
     ||
-    'ON CONFLICT (email) DO UPDATE SET email=$1, last_name=$2, first_name=$3, password=$4, token=$5, auth_token=$6')
+    'ON CONFLICT (email) DO UPDATE SET email=$1, last_name=$2, first_name=$3, password=$4, token=$5, auth_token=$6, options=$7')
   USING
     params ->> 'email',
     params ->> 'last_name',
     params ->> 'first_name',
     params ->> 'password',
     params ->> 'token',
-    authToken;
+    authToken,
+    coalesce(params -> 'options', '{}'::jsonb);
 
   RETURN jsonb_build_object('ok', TRUE, 'result', NULL);
 

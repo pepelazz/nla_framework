@@ -1,13 +1,13 @@
 package auth
 
 import (
+	"[[.Config.LocalProjectPath]]/pg"
+	"[[.Config.LocalProjectPath]]/types"
+	"[[.Config.LocalProjectPath]]/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/pepelazz/nla_framework/pg"
-	"github.com/pepelazz/nla_framework/types"
-	"github.com/pepelazz/nla_framework/utils"
 	"github.com/rs/xid"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
@@ -38,13 +38,13 @@ func EmailAuth(c *gin.Context) {
 	}{}
 
 	type UserRegisterData struct {
-		Login      string `json:"login"`
-		Password   string `json:"password"`
-		LastName   string `json:"last_name"`
-		FirstName  string `json:"first_name"`
-		AuthToken  string `json:"auth_token"`
-		Token      string `json:"token"`
-		Email      string `json:"email"`
+		Login     string `json:"login"`
+		Password  string `json:"password"`
+		LastName  string `json:"last_name"`
+		FirstName string `json:"first_name"`
+		AuthToken string `json:"auth_token"`
+		Token     string `json:"token"`
+		Email     string `json:"email"`
 	}
 
 	var userRegData UserRegisterData
@@ -69,7 +69,7 @@ func EmailAuth(c *gin.Context) {
 		userRegData.LastName = reqParams.Params.LastName
 		userRegData.FirstName = reqParams.Params.FirstName
 
-		jsonStr, err := json.Marshal(userRegData);
+		jsonStr, err := json.Marshal(userRegData)
 		err = pg.CallPgFunc("user_temp_email_auth_create", jsonStr, nil, nil)
 		if err != nil {
 			utils.HttpError(c, http.StatusOK, "pg call user_temp_email_auth_create err:"+fmt.Sprintf("%s", err))
@@ -122,7 +122,7 @@ func EmailAuthCheckUserEmail(c *gin.Context) {
 	}
 
 	user := types.User{}
-	jsonStr, err := json.Marshal(queryData.Params);
+	jsonStr, err := json.Marshal(queryData.Params)
 	err = pg.CallPgFunc("user_temp_email_auth_check_token", jsonStr, &user, nil)
 	if err != nil {
 		if len(err.Error()) > 0 {
@@ -153,7 +153,7 @@ func EmailAuthStartRecoverPassword(c *gin.Context) {
 	// проверяем что такой пользователь с таким email есть в базе
 	user := types.User{}
 	queryData.Params.Email = strings.ToLower(queryData.Params.Email)
-	jsonStr, err := json.Marshal(queryData.Params);
+	jsonStr, err := json.Marshal(queryData.Params)
 	err = pg.CallPgFunc("user_get_by_email_with_password", jsonStr, &user, nil)
 	if err != nil {
 		utils.HttpError(c, http.StatusOK, "pg call user_get_by_email_with_password err:"+fmt.Sprintf("%s", err))
@@ -236,7 +236,7 @@ func EmailAuthRecoverPassword(c *gin.Context) {
 			}
 			// по email находим пользователя
 			user := types.User{}
-			jsonStr, err := json.Marshal(v);
+			jsonStr, err := json.Marshal(v)
 			err = pg.CallPgFunc("user_get_by_email_with_password", jsonStr, &user, nil)
 			if err != nil {
 				utils.HttpError(c, http.StatusOK, "pg call user_get_by_email_with_password err:"+fmt.Sprintf("%s", err))

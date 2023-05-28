@@ -39,6 +39,7 @@ func SetWebServerConfig(config types.WebServer) {
 
 func SetEmailConfig(config types.EmailConfig) {
 	emailConfig = config
+	fmt.Printf("\n-- emailConfig: %v\n\n", emailConfig)
 }
 
 func GetBytes(key interface{}) ([]byte, error) {
