@@ -48,6 +48,7 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	ReadTmplAndPrint(p, projectTmplPath+"/sql/user_trigger_before.sql", "/sql/template/function/_User/", "user_trigger_before.sql", nil)
 	ReadTmplAndPrint(p, projectTmplPath+"/sql/user_trigger_after.sql", "/sql/template/function/_User/", "user_trigger_after.sql", template.FuncMap{"PrintUserAfterTriggerUpdateLinkedRecords": types.PrintUserAfterTriggerUpdateLinkedRecords})
 	ReadTmplAndPrint(p, projectTmplPath+"/sql/01_User/main.toml", "/sql/model/01_User", "main.toml", nil)
+	ReadTmplAndPrint(p, projectTmplPath+"/sql/01_User/user_list.sql", "/sql/template/function/_User", "user_list.sql", nil)
 	ReadTmplAndPrint(p, projectTmplPath+"/sql/03_UserTempEmailAuth/main.toml", "/sql/model/03_UserTempEmailAuth", "main.toml", nil)
 	ReadTmplAndPrint(p, projectTmplPath+"/sql/03_UserTempEmailAuth/user_temp_email_auth_check_token.sql", "/sql/template/function/_UserTempEmailAuth", "user_temp_email_auth_check_token.sql", nil)
 	ReadTmplAndPrint(p, projectTmplPath+"/sql/03_UserTempEmailAuth/user_temp_email_auth_create.sql", "/sql/template/function/_UserTempEmailAuth", "user_temp_email_auth_create.sql", nil)
