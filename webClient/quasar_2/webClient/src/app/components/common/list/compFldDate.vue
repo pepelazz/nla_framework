@@ -22,7 +22,7 @@
   // import moment from 'moment'
   export default {
     props: ['dateString', 'label', 'dense', 'is_remove', 'readonly', 'hint'],
-    emits: ['update'],
+    emits: ['update', 'clear'],
     data() {
       return {
         // date: this.dateString || qDate.formatDate(new Date(), 'DD-MM-YYYY'),

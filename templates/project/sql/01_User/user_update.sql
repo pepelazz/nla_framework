@@ -47,8 +47,6 @@ BEGIN
 
     queryStr = concat('UPDATE "user" SET ', updateValue, ' WHERE id=', params ->> 'id', ' RETURNING *');
 
-    raise notice 'queryStr %', queryStr;
-
     EXECUTE (queryStr)
         INTO temp_var;
 
