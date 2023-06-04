@@ -18,6 +18,7 @@ DECLARE
     condQueryStr TEXT;
     whereStr     TEXT;
     checkMsg     TEXT;
+    {{.Sql.Hooks.Print "list" "declareVars"}}
 BEGIN
 
     checkMsg = check_required_params(params, ARRAY ['user_id']);
