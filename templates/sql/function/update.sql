@@ -67,7 +67,7 @@ BEGIN
 
     {{.Sql.Hooks.Print "update" "afterInsertUpdate"}}
 
-    RETURN {{.PgName}}_get_by_id(jsonb_build_object('id', {{.Name}}Row.id));
+    RETURN {{.PgName}}_get_by_id(jsonb_build_object('id', {{.Name}}Row.id, 'user_id', (params->>'user_id')::int));
 
 END
 
