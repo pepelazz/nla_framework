@@ -61,6 +61,8 @@ func WriteProjectFiles(p types.ProjectType, tmplMap map[string]*template.Templat
 	ReadTmplAndPrint(p, projectTmplPath+webClient+"/quasar.conf.js", "/webClient", "quasar.conf.js", nil)
 	ReadTmplAndPrint(p, projectTmplPath+webClient+"/package.json", "/webClient", "package.json", nil)
 	ReadTmplAndPrint(p, projectTmplPath+webClient+"/App.vue", "/webClient/src", "App.vue", nil)
+	ReadTmplAndPrint(p, projectTmplPath+webClient+"/css/app.scss", "/webClient/src/css", "app.scss", nil)
+	ReadTmplAndPrint(p, projectTmplPath+webClient+"/css/quasar.variables.scss", "/webClient/src/css", "quasar.variables.scss", nil)
 	ReadTmplAndPrint(p, projectTmplPath+webClient+"/app/components/users/roles.js", "/webClient/src/app/components/users", "roles.js", nil)
 	ReadTmplAndPrint(p, projectTmplPath+webClient+"/app/components/users/item.vue", "/webClient/src/app/components/users", "item.vue", nil)
 	ReadTmplAndPrint(p, projectTmplPath+webClient+"/app/components/users/index.vue", "/webClient/src/app/components/users", "index.vue", nil)

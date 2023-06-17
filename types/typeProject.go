@@ -107,6 +107,7 @@ type (
 		IsHideUserAvatarUploader bool // не даем возможность пользователям загружать аватарки
 		Theme                    VueTheme
 		QuasarBoot               []string
+		IndexHtmlHead            []string // строки, которые добаляются в head файла index.template.html
 	}
 	VueMenu struct {
 		DocName         string // если указано docName, то url и иконка копируются из описания документа
