@@ -38,6 +38,9 @@ var funcMap = template.FuncMap{
 		return "null"
 	},
 	"PrintFldSelectOptions": PrintFldSelectOptions,
+	"StringContainsQuote": func(str string) bool {
+		return strings.Contains(str, `"`)
+	},
 }
 
 func ParseTemplates(p types.ProjectType) map[string]*template.Template {

@@ -15,7 +15,7 @@ import (
 	[[- end]]
 	"net/http"
 	[[- range .Go.Routes.Imports]]
-		"[[.]]"
+		[[if StringContainsQuote . ]] [[.]] [[ else ]] "[[.]]" [[end]]
 	[[- end]]
 	"fmt"
 )
