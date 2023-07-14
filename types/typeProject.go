@@ -74,6 +74,10 @@ type (
 		Host     string
 		TimeZone string // время для сервера default 'Europe/Moscow' (например 'Asia/Novosibirsk')
 		Version  string // версия Postgres, по дефолту 12
+		Command  string // команды конфигурации для postgres. Дефолт 'postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c max_connections=200'
+		// варианты команд
+		// -c shared_buffers=1GB // по дефолту 128Мб. Рекомедация: mem / 4
+		// -c effective_cache_size=4GB // по дефолту 4Gb. Рекомедация: mem * 3 / 4
 	}
 	WebServerConfig struct {
 		Port     int64

@@ -39,7 +39,7 @@ services:
       - {{$serverPath}}/postgres/logs:/logs
     ports:
       - "{{.Config.Postgres.Port}}:5432"
-    command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c max_connections=200
+    command: {{if .Config.Postgres.Command}} {{.Config.Postgres.Command}} {{else}} postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c max_connections=200 {{end}}
     environment:
       POSTGRES_PASSWORD: {{.Config.Postgres.Password}}
 
