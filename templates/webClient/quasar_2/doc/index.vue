@@ -120,6 +120,8 @@
         [[- end]]
         ],
         [[- end]]
+        [[- if .IsSaveLocalStorage]]
+        localStorageKey_[[ToCamel $doc.Name]][[ToCamel .FldName]]: 'filter_[[ToCamel $doc.Name]][[ToCamel .FldName]]', [[- end]]
         [[- end]]
       }
     },
@@ -128,6 +130,9 @@
       [[- if .IsRef]]
       updateFilter[[ToCamel .RefTable]](v) {
         this.$refs.docList.changeItemList({'[[.FldName]]': v ? v.id : null})
+        [[- if .IsSaveLocalStorage]]
+        localStorage.setItem(this.localStorageKey_[[ToCamel $doc.Name]][[ToCamel .FldName]], v ? v.id : null)
+        [[- end]]
         if (v) {
           this.$utils.callPgMethod(`[[.RefTable]]_get_by_id`, {id: v.id}, (res) => {
             this.filter[[ToCamel .RefTable]]Title = res.title
@@ -170,10 +175,17 @@
       const urlParams = new URLSearchParams(window.location.search)
       [[- range .Vue.FilterList]]
       [[- if .IsRef]]
-      if (urlParams.has('[[.FldName]]')) {
-        let id = +urlParams.get('[[.FldName]]')
-        if (id) this.updateFilter[[ToCamel .RefTable]]({id})
-      }
+        [[- if .IsSaveLocalStorage]]
+          const [[ToCamel $doc.Name]][[ToCamel .FldName]]Id = localStorage.getItem(this.localStorageKey_[[ToCamel $doc.Name]][[ToCamel .FldName]])
+          if (+[[ToCamel $doc.Name]][[ToCamel .FldName]]Id) {
+            this.updateFilter[[ToCamel .RefTable]]({id: +[[ToCamel $doc.Name]][[ToCamel .FldName]]Id})
+          }
+        [[- else]]
+          if (urlParams.has('[[.FldName]]')) {
+            let id = +urlParams.get('[[.FldName]]')
+            if (id) this.updateFilter[[ToCamel .RefTable]]({id})
+          }
+        [[- end]]
       [[- else]]
       if (urlParams.has('[[.FldName]]')) {
         let name = urlParams.get('[[.FldName]]')

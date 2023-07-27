@@ -114,13 +114,14 @@ type (
 	}
 
 	VueDocListFilter struct {
-		Label    string
-		FldName  string
-		IsRef    bool
-		IsDate   bool
-		RefTable string
-		ColClass string
-		Options  []FldVueOptionsItem
+		Label              string
+		FldName            string
+		IsRef              bool
+		IsDate             bool
+		RefTable           string
+		ColClass           string
+		Options            []FldVueOptionsItem
+		IsSaveLocalStorage bool
 	}
 
 	VueDocListSort struct {
