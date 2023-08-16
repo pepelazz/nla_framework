@@ -24,7 +24,7 @@
                   <q-menu auto-close>
                     <q-list dense style="min-width: 100px">
                       <q-item clickable v-for="item in listSortData" :key="item.value">
-                        <q-item-section @click="changeItemList({order_by: `${item.value}`})">{{item.title}}
+                        <q-item-section @click="changeItemList({order_by: `${item.value} nulls last`})">{{item.title}}
                         </q-item-section>
                       </q-item>
                     </q-list>
@@ -35,7 +35,7 @@
                   <q-menu auto-close>
                     <q-list dense style="min-width: 100px">
                       <q-item clickable v-for="item in listSortData" :key="item.value">
-                        <q-item-section @click="changeItemList({order_by: `${item.value} desc`})">{{item.title}}
+                        <q-item-section @click="changeItemList({order_by: `${item.value} desc nulls last`})">{{item.title}}
                         </q-item-section>
                       </q-item>
                     </q-list>
