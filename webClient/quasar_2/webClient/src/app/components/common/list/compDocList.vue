@@ -186,12 +186,12 @@
       }
     },
     watch: {
-      searchTxt(v) {
-        if (this.searchFldName && (v.length === 0 || v.length > 3)) {
+      searchTxt: debounce(function(v){
+        if (this.searchFldName) {
           this.listParams[this.searchFldName] = v
           this.reloadListDebounce()
         }
-      }
+      }, 300)
     },
     mounted() {
       // если указан начальный фильтр, то применяем его при первоначальной загрузке
