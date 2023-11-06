@@ -228,6 +228,11 @@ func (fld FldType) SetIsRequired() FldType {
 	return fld
 }
 
+func (fld FldType) SetSqlIsRequired() FldType {
+	fld.Sql.IsRequired = true
+	return fld
+}
+
 func (fld FldType) AddRefFldsForOptions(p ...string) FldType {
 	fld.Sql.RefFldsForOptions = p
 	return fld
