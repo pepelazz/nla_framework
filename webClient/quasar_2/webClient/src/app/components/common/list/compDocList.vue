@@ -16,7 +16,7 @@
                   <q-btn v-else size="12px" flat dense round icon="add" @click="$emit('clickAddBtn')"/>
                 </template>
                 <!-- дополнительные кнопки   -->
-                <slot name="addBtnsSlot"/>
+                <slot name="addBtnsSlot" :listParams="listParams"/>
                 <!-- кнопка поиска  -->
                 <q-btn size="12px" v-if="searchFldName" flat dense round icon="search" @click="toggleSearchFld"/>
                 <!--  СОРТИРОВКА ПО ВОЗРАСТАНИЮ  -->
