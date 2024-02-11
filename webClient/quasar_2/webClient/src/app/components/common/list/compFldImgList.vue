@@ -184,7 +184,8 @@
       moveLeft(file, i) {
         let origin = this.list[i]
         this.list[i] = this.list[i - 1]
-        this.$set(this.list, i - 1, origin)
+        this.list[i - 1] = origin
+        //this.$set(this.list, i - 1, origin)
         this.$emit('update', this.list)
       },
       remove() {
