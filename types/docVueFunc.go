@@ -615,7 +615,7 @@ func (d DocType) PrintCompEditDialogFld(fld FldType) string {
 		fldType = "select"
 		options := "["
 		for _, opt := range fld.Vue.Options {
-			options = fmt.Sprintf("%s {value: '%s', label: '%s'},", options, opt.Value, opt.Value)
+			options = fmt.Sprintf("%s {value: '%s', label: '%s'},", options, opt.Value, opt.Label)
 		}
 		options = options + "]"
 		res = fmt.Sprintf("%s, options: %s", res, options)
