@@ -31,7 +31,7 @@ DECLARE
     taskTypeId int;
 BEGIN
 
-    -- проверика наличия id
+    -- проверка наличия id
     checkMsg = check_required_params(params, ARRAY ['task_type_title']);
     IF checkMsg IS NOT NULL
     THEN

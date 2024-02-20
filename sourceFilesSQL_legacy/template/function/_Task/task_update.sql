@@ -30,7 +30,7 @@ DECLARE
     queryStr    TEXT;
 BEGIN
 
-    -- проверика наличия id
+    -- проверка наличия id
     checkMsg = check_required_params(params, ARRAY ['id']);
     IF checkMsg IS NOT NULL
     THEN
@@ -38,7 +38,7 @@ BEGIN
     END IF;
 
     if (params ->> 'id')::int = -1 then
-        -- проверика наличия обязательных параметров
+        -- проверка наличия обязательных параметров
         checkMsg = check_required_params(params, ARRAY ['task_type_id']);
         IF checkMsg IS NOT NULL
         THEN

@@ -31,7 +31,7 @@ DECLARE
 
 BEGIN
 
-    -- проверика наличия обязательных параметров
+    -- проверка наличия обязательных параметров
     checkMsg = check_required_params(params, ARRAY ['roles']);
     IF checkMsg IS NOT NULL
     THEN

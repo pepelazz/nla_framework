@@ -24,7 +24,7 @@ DECLARE
 
 BEGIN
 
-    -- проверика наличия обязательных параметров
+    -- проверка наличия обязательных параметров
     checkMsg = check_required_params(params, ARRAY ['id']);
     IF checkMsg IS NOT NULL
     THEN

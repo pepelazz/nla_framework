@@ -17,7 +17,7 @@ DECLARE
     result                 jsonb;
 BEGIN
 
-    -- проверика наличия id
+    -- проверка наличия id
     checkMsg = check_required_params_with_func_name('{{$PgName}}_get_by_id', params, ARRAY ['id']);
     IF checkMsg IS NOT NULL
     THEN

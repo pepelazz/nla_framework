@@ -17,7 +17,7 @@ DECLARE
 
 BEGIN
 
-  -- проверика наличия id
+  -- проверка наличия id
   checkMsg = check_required_params_with_func_name('user_get_by_id_for_ui', params, ARRAY ['id']);
   IF checkMsg IS NOT NULL
   THEN

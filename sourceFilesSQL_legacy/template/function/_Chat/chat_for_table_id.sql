@@ -17,7 +17,7 @@ DECLARE
     tableId int;
 BEGIN
 
-    -- проверика наличия id
+    -- проверка наличия id
     checkMsg = check_required_params_with_func_name('chat_for_table_id', params, ARRAY ['table_name', 'table_id']);
     IF checkMsg IS NOT NULL
     THEN

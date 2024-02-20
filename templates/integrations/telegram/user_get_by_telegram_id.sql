@@ -15,7 +15,7 @@ DECLARE
     result    JSONB;
 BEGIN
 
-    -- проверика наличия id
+    -- проверка наличия id
     checkMsg = check_required_params_with_func_name('user_get_by_telegram_id', params, ARRAY ['id']);
     IF checkMsg IS NOT NULL
     THEN

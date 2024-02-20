@@ -20,7 +20,7 @@ DECLARE
 
 BEGIN
 
-  -- проверика наличия id
+  -- проверка наличия id
   checkMsg = check_required_params(params, ARRAY ['auth_provider', 'auth_provider_id', 'email']);
   IF checkMsg IS NOT NULL
   THEN

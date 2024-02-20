@@ -24,7 +24,7 @@ DECLARE
 
 BEGIN
 
-    -- проверика наличия id
+    -- проверка наличия id
     checkMsg = check_required_params(params, ARRAY ['id', 'user_id']);
     IF checkMsg IS NOT NULL
     THEN

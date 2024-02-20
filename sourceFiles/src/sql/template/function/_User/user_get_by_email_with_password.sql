@@ -19,7 +19,7 @@ DECLARE
 
 BEGIN
 
-    -- проверика наличия id
+    -- проверка наличия id
     checkMsg = check_required_params_with_func_name('user_get_by_email_with_password', params, ARRAY ['email']);
     IF checkMsg IS NOT NULL
     THEN

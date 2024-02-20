@@ -17,7 +17,7 @@ DECLARE
     productParts           jsonb;
 BEGIN
 
-    -- проверика наличия id
+    -- проверка наличия id
     checkMsg = check_required_params_with_func_name('file_get_by_token', params, ARRAY ['token']);
     IF checkMsg IS NOT NULL
     THEN
