@@ -38,6 +38,7 @@
                   [[if .Vue.IsOpenNewInTab]] :isOpenNewInTab="true" [[- end]]
                    [[- if .Vue.ListUrlQueryParams]] :urlQueryParams="[ [[range .Vue.ListUrlQueryParams]]'[[.]]',[[- end]] ]" [[end]]
                    [[- if .IsRecursion]] :ext="ext ? Object.assign(ext, {parent_id: 'null'}) : {parent_id: 'null'}" [[else]] :ext="ext" [[end]]
+                   [[- if .Vue.List.ColClass]] col-class="[[.Vue.List.ColClass]]" [[- end]]
                    search-fld-name="search_text" :readonly="[[.Vue.Readonly]]">
 
       [[- if .Vue.List.AddBtnsSlot]]

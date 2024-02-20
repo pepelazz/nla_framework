@@ -95,6 +95,7 @@ type (
 	VueDocList struct {
 		AddBtnsSlot   []VueDocListAddBtnsSlot
 		AddFilterSlot []string
+		ColClass      string // класс для списка. col-12 делает список во всю ширину
 	}
 
 	VueDocListAddBtnsSlot struct {
